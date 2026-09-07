@@ -1,5 +1,5 @@
 +++
-title = "Deploying hugo-theme-hello-friend-ia from a path long enough to wrap"
+title = "Deploying hugo-theme-hello-friend-ai from a path long enough to wrap"
 slug = "long-title-no-cover"
 description = "The row that has no thumbnail and a title that does not fit: the case where the date has nowhere to go but down."
 date = "2026-01-10"

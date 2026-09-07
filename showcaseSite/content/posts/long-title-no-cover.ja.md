@@ -1,5 +1,5 @@
 +++
-title = "hugo-theme-hello-friend-ia という折り返すほど長いパスからのデプロイ"
+title = "hugo-theme-hello-friend-ai という折り返すほど長いパスからのデプロイ"
 slug = "long-title-no-cover"
 description = "サムネイルがなく、タイトルが収まらない行。日付が下に落ちるしかなくなる場合です。"
 date = "2026-01-10"

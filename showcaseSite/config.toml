@@ -106,7 +106,7 @@
       "Powered by <a href=\"https://gohugo.io\">Hugo</a>",
       "Made with &#10084; by <a href=\"https://github.com/rhazdon\">Djordje Atlialp</a>",
       "Fork maintained by <a href=\"https://github.com/mehdilaruelle\">Mehdi Laruelle</a>",
-      "<a href=\"https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/\">← Back to the default demo</a>"
+      "<a href=\"https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/\">← Back to the default demo</a>"
     ]
 
 # Four languages, where the exampleSite has one. Two of them are here for a
@@ -127,7 +127,7 @@
     subtitle     = "Feature showcase"
     description  = "Every option the theme has, turned on at once"
     homeSubtitle = "Every switch flipped, so you can see what they do"
-    llmsNote     = "A demonstration site for the Hello Friend IA theme. The articles exist to show what the theme does, not to be quoted as fact."
+    llmsNote     = "A demonstration site for the Hello Friend AI theme. The articles exist to show what the theme does, not to be quoted as fact."
   [languages.en.params.portrait]
     alt = "The Hugo logo"
   [languages.en.menu]
@@ -167,7 +167,7 @@
     subtitle     = "Vitrine des fonctionnalités"
     description  = "Toutes les options du thème, activées d’un coup"
     homeSubtitle = "Tous les interrupteurs enclenchés, pour voir ce qu’ils font"
-    llmsNote     = "Site de démonstration du thème Hello Friend IA. Les articles sont là pour montrer ce que fait le thème, pas pour être cités."
+    llmsNote     = "Site de démonstration du thème Hello Friend AI. Les articles sont là pour montrer ce que fait le thème, pas pour être cités."
   [languages.fr.params.portrait]
     alt = "Le logo Hugo"
   [languages.fr.menu]
@@ -204,7 +204,7 @@
     subtitle     = "機能ショーケース"
     description  = "テーマのすべてのオプションを一度に有効にしたサイト"
     homeSubtitle = "すべてのスイッチを入れた状態です"
-    llmsNote     = "Hello Friend IA テーマのデモサイトです。記事はテーマの機能を示すためのもので、事実として引用するためのものではありません。"
+    llmsNote     = "Hello Friend AI テーマのデモサイトです。記事はテーマの機能を示すためのもので、事実として引用するためのものではありません。"
     # One language capped, so the truncated shape is built, not just described.
     llmsFullLimit = 2
   [languages.ja.params.portrait]
@@ -254,7 +254,7 @@
     subtitle     = "عرض الميزات"
     description  = "كل خيارات القالب مُفعَّلة دفعة واحدة"
     homeSubtitle = "كل المفاتيح مُشغَّلة، لترى ما تفعله"
-    llmsNote     = "موقع عرض توضيحي لقالب Hello Friend IA. المقالات موجودة لإظهار ما يفعله القالب، لا للاقتباس منها كحقائق."
+    llmsNote     = "موقع عرض توضيحي لقالب Hello Friend AI. المقالات موجودة لإظهار ما يفعله القالب، لا للاقتباس منها كحقائق."
   [languages.ar.params.portrait]
     alt = "شعار Hugo"
   [languages.ar.menu]

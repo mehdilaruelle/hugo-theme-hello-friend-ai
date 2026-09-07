@@ -1,5 +1,5 @@
 ---
-title: "Hello Friend IA"
+title: "Hello Friend AI"
 description: "テーマのすべてのオプションを一度に有効にし、四つの言語で動かし、それぞれが何を要するかを記事にしています。"
 ---
 
@@ -9,7 +9,7 @@ description: "テーマのすべてのオプションを一度に有効にし、
 
 ここはショーケースです。テーマのすべてのオプションが一度に有効になっており、
 四つの言語で動いています。記事はそれぞれ、そのうちの一つが何を要するかを
-説明します。[既定のデモ](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)
+説明します。[既定のデモ](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 はすべてを無効のままにしています。テーマは箱から出したときに機能一覧ではなく、
 それ自身らしく見えるべきだからです。
 
