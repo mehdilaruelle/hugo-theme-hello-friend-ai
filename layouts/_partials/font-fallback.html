@@ -35,6 +35,9 @@
 {{- $fallback := site.Params.fontFallback | default dict -}}
 {{- $css := "" -}}
 {{- if ne $fallback false -}}
+  {{- /* true, a string, a number: anything that is not a table carries no
+         overrides, and reading a field off it ends the build. */ -}}
+  {{- if not (reflect.IsMap $fallback) -}}{{- $fallback = dict -}}{{- end -}}
   {{- $bold := slice "Arial Bold" "Arial-BoldMT" "Helvetica Bold" "Helvetica-Bold" "Liberation Sans Bold" -}}
   {{- $faces := slice
     (dict "key" "" "weight" ""
@@ -57,7 +60,7 @@
       {{- $over = index $fallback . -}}
     {{- end -}}
     {{- if ne $over false -}}
-      {{- $over = $over | default dict -}}
+      {{- if not (reflect.IsMap $over) -}}{{- $over = dict -}}{{- end -}}
       {{- $sizeAdjust := $over.sizeAdjust | default .sizeAdjust -}}
       {{- $ascent := $over.ascentOverride | default .ascentOverride -}}
       {{- $descent := $over.descentOverride | default .descentOverride -}}

@@ -544,6 +544,9 @@ Set `semiBold = false` or `bold = false` to drop one of them, or
 `fontFallback = false` under `params` to drop all three and leave the swap as it
 was.
 
+`fontFallback = true` keeps all three at the measured defaults, which is also
+what an unset `fontFallback` does.
+
 `.github/scripts/font-metrics.mjs` reads the first four numbers out of any WOFF:
 
 ```bash
