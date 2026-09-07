@@ -17,9 +17,15 @@ const setExpanded = () =>
     String(!menu.classList.contains("hidden"))
   );
 
+// Crossings only: a phone fires resize when the URL bar folds away or the
+// keyboard opens, which is not a request to close the menu.
+let wasMobile = null;
 const isMobileMenu = () => {
-  menuTrigger && menuTrigger.classList.toggle("hidden", !isMobile());
-  menu && menu.classList.toggle("hidden", isMobile());
+  const mobile = isMobile();
+  if (mobile === wasMobile) return;
+  wasMobile = mobile;
+  menuTrigger && menuTrigger.classList.toggle("hidden", !mobile);
+  menu && menu.classList.toggle("hidden", mobile);
   setExpanded();
 };
 
