@@ -11,7 +11,7 @@ series = ["Showcase"]
   name = "Jane Doe"
 +++
 
-Ce site a son propre dossier, `showcaseSite/`, qui contient ses quatre articles
+Ce site a son propre dossier, `showcaseSite/`, qui contient ses articles
 et un fichier de configuration. Ce fichier est posé par-dessus celui de la démo —
 Hugo fusionne la configuration au lieu de la remplacer, donc il n'a qu'à nommer
 ce qui change :
@@ -37,5 +37,5 @@ langue affiche la même liste. Les images et la vidéo de la démo restent mont�
 depuis celle-ci : ce sont des fichiers, pas du texte, et rien ne justifie d'en
 garder deux exemplaires.
 
-Deux des quatre portent un `cover` et deux non, donc la liste mélange les lignes
+Certains portent un `cover` et d’autres non, donc la liste mélange les lignes
 avec et sans miniature — et c'est ça qui méritait d'être vérifié.

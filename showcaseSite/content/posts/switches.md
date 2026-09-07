@@ -11,7 +11,7 @@ series = ["Showcase"]
   name = "Jane Doe"
 +++
 
-This site has its own folder, `showcaseSite/`, holding its four articles and a
+This site has its own folder, `showcaseSite/`, holding its articles and a
 configuration file. That file is layered over the demo's — Hugo merges
 configuration rather than replacing it, so it only has to name what changes:
 
@@ -35,5 +35,5 @@ The articles are the showcase's own, in all four languages, so every language
 shows the same list. The demo's images and video are still mounted from it —
 those are files rather than prose, and there is no reason to keep two of each.
 
-Two of the four carry a `cover` and two do not, so the list mixes rows with and
+Some carry a `cover` and some do not, so the list mixes rows with and
 without a thumbnail, which is the part worth checking.
