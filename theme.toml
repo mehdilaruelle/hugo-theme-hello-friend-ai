@@ -1,7 +1,9 @@
 name = "hello-friend-ai"
 license = "MIT"
 licenselink = "https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai/blob/master/LICENSE.md"
-description = "A simple theme for Hugo. That's it."
+description = "A fast, maintained fork of hello-friend-ng, with a declarative AI crawler policy, llms.txt and a Markdown copy of every page."
+homepage = "https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai"
+demosite = "https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/"
 tags = ["blog", "clean", "customizable", "dark", "highlighting", "light", "minimal", "monochromatic", "multilingual", "personal", "responsive", "simple", "technical"]
 features = ["blog", "shortcode", "syntax highlighting"]
 min_version = "0.158.0"
