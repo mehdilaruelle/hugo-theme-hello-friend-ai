@@ -1,9 +1,9 @@
-The MIT License (MIT)
+MIT License
 
-Original work Copyright (c) 2018 Track3<br />
-Original work Copyright (c) 2019 panr<br />
-Modified work Copyright (c) 2019 Djordje Atlialp<br />
-Modified work Copyright (c) 2026 mehdilaruelle<br />
+Copyright (c) 2018 Track3
+Copyright (c) 2019 panr
+Copyright (c) 2019 Djordje Atlialp
+Copyright (c) 2026 mehdilaruelle
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -4,7 +4,7 @@
 &nbsp;·&nbsp;
 [every option turned on →](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/)
 
-[![Hello Friend AI](images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
+[![Hello Friend AI](https://raw.githubusercontent.com/mehdilaruelle/hugo-theme-hello-friend-ai/master/images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 
 **100 on accessibility, best practices and SEO** on PageSpeed Insights — on both
 demo sites, on mobile and on desktop, with every option in the theme switched on
