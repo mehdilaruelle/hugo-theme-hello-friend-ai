@@ -30,29 +30,13 @@ if (!existsSync(root) || !statSync(root).isDirectory()) {
 let bad = 0;
 const fail = (msg) => { console.log(`  BAD  ${msg}`); bad++; };
 
-// Entities are wrong in prose, right inside a tag. A tag, not anything between
-// angle brackets, or "A < B &amp; C > D" takes the entity out with it.
-const prose = (s) => s.replace(/<\/?[A-Za-z][^>]*>/g, "");
-// A shortcode rendering its inner content emits an HTML block, where < > & "
-// have to stay written as entities: <code>a &lt; b</code> is a code sample, not
-// a leak. Nothing else is excused there — a &rsquo; inside a block is the same
-// noise it is in prose.
-// Only < > & and " — named, decimal or hex, since all three say the same
-// thing. Not &#39;: an apostrophe is not markup in text, so one written as an
-// entity is a leak like any other, and excusing it here would hide it.
-const MARKUP = /&(?:lt|gt|amp|quot|#(?:34|38|60|62)|#x(?:22|26|3[ce]));/gi;
-// A whole tag, not a word in angle brackets: "<example &lt; here" opens no
-// block, and taking it for one would excuse the entities below it.
-const OPENS_HTML = /^ {0,3}<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^>]*)?>/;
-const entities = (s) => {
-  let block = false;
-  const text = s.split("\n").map((line) => {
-    if (block && !line.trim()) block = false;
-    else if (!block && OPENS_HTML.test(line)) block = true;
-    return block ? line.replace(MARKUP, "") : line;
-  }).join("\n");
-  return prose(text).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
-};
+// Entities are wrong in prose, right inside a tag, and right inside <code>,
+// where escaping a literal < is the only way to show one. A tag, not anything
+// between angle brackets, or "A < B &amp; C > D" takes the entity with it.
+const prose = (s) => s
+  .replace(/<(code|pre)(?:\s[^>]*)?>[\s\S]*?<\/\1\s*>/gi, "")
+  .replace(/<\/?[A-Za-z][^>]*>/g, "");
+const entities = (s) => prose(s).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
 
 // The destination without the title: [About](/about/ "About") is /about/.
 const destination = (raw) => {

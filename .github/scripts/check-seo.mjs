@@ -26,6 +26,10 @@ const isSvg = (v) => new URL(v, "https://example.invalid/").pathname.toLowerCase
 
 // A Hugo alias is a redirect stub, not a page these invariants describe.
 const ALIAS = /http-equiv\s*=\s*["']?refresh/i;
+// The whole element, so a summary is read from the faq that owns it: the
+// language switcher puts one on every page of the site.
+const FAQ_BLOCK = /<details\b[^>]*\bclass\s*=\s*["']?faq\b[^>]*>[\s\S]*?<\/details\s*>/gi;
+const SUMMARY = /<summary\b[^>]*>([\s\S]*?)<\/summary>/i;
 
 const LINK = /<link\b[^>]*>/gi;
 // The tags whose content is prose a person reads, not a URL or a token.
@@ -140,6 +144,38 @@ for (const file of walk(root)) {
   const directives = robots.flatMap((r) => r.toLowerCase().split(/[\s,]+/)).filter(Boolean);
   if (SEARCH_FORM.test(html) && !directives.includes("noindex")) {
     failures.push([file, "a search page", "is not marked noindex"]);
+  }
+
+  // 6b. The FAQ pairs reach the head through a store filled while the content
+  //     renders, which fails silently when it fails. Counted both ways.
+  //     Decoded, or a question with an & or an apostrophe never matches itself.
+  const details = html.match(FAQ_BLOCK) ?? [];
+  const shown = details.map((d) => decode((d.match(SUMMARY)?.[1] ?? "").replace(/<[^>]*>/g, "")).trim());
+  const faqs = blocks.filter((b) => b && b["@type"] === "FAQPage");
+  const asked = faqs
+    .flatMap((b) => (Array.isArray(b.mainEntity) ? b.mainEntity : []))
+    .map((q) => (q && typeof q.name === "string" ? q.name.trim() : ""));
+  if (details.length && !faqs.length) {
+    failures.push([file, "a faq shortcode on the page", "and no FAQPage in the head"]);
+  }
+  // As multisets: one direction would let [A, B] on the page pass [A, A] in
+  // the head, which is a substitution rather than an omission.
+  const bag = (a) => [...a].sort().join(" | ");
+  if (bag(shown) !== bag(asked)) {
+    const only = (a, b) => {
+      const rest = [...b];
+      return a.filter((x) => {
+        const i = rest.indexOf(x);
+        if (i < 0) return true;
+        rest.splice(i, 1);
+        return false;
+      });
+    };
+    const why = [
+      only(asked, shown).map((q) => `only in the head: "${q}"`),
+      only(shown, asked).map((q) => `only on the page: "${q}"`),
+    ].flat().join("; ") || `${shown.length} details, ${asked.length} questions`;
+    failures.push([file, "the page and the FAQPage ask different questions", why]);
   }
 
   // 7. An entity that survived into the text. plainify leaves the entities

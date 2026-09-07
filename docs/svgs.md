@@ -3,7 +3,9 @@
 The `name` in a `[[params.social]]` entry is matched against this list, ignoring
 case and surrounding spaces. A name that is not here draws a generic link glyph,
 and the build warns and names the value — it used to render an anchor with
-nothing inside it, which no visitor could see or click.
+nothing inside it, which no visitor could see or click. Under
+`--panicOnWarning` that warning stops the build, so a typo is caught rather
+than shipped. Write `link` to draw that glyph on purpose and no warning.
 
 - [amazon](https://simpleicons.org/?q=amazon)
 - [anilist](https://simpleicons.org/?q=anilist)
@@ -58,6 +60,7 @@ nothing inside it, which no visitor could see or click.
 - [letterboxd](https://simpleicons.org/?q=letterboxd)
 - [librepay](https://simpleicons.org/?q=liberapay)
 - [lichess](https://simpleicons.org/?q=lichess)
+- link - the generic chain glyph the theme falls back to, and the one to ask for when a link is not a social profile
 - [linkedin](https://feathericons.com/?query=linked)
 - [mastodon](https://simpleicons.org/?q=mastodon)
 - [matrix](https://simpleicons.org/?q=matrix)
