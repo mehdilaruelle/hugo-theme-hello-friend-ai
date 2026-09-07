@@ -37,8 +37,13 @@ const prose = (s) => s.replace(/<\/?[A-Za-z][^>]*>/g, "");
 // have to stay written as entities: <code>a &lt; b</code> is a code sample, not
 // a leak. Nothing else is excused there — a &rsquo; inside a block is the same
 // noise it is in prose.
-const MARKUP = /&(?:lt|gt|amp|quot|#(?:34|38|39|60|62));/g;
-const OPENS_HTML = /^ {0,3}<\/?[A-Za-z][A-Za-z0-9-]*(?:[ \t/>]|$)/;
+// Only < > & and " — named, decimal or hex, since all three say the same
+// thing. Not &#39;: an apostrophe is not markup in text, so one written as an
+// entity is a leak like any other, and excusing it here would hide it.
+const MARKUP = /&(?:lt|gt|amp|quot|#(?:34|38|60|62)|#x(?:22|26|3[ce]));/gi;
+// A whole tag, not a word in angle brackets: "<example &lt; here" opens no
+// block, and taking it for one would excuse the entities below it.
+const OPENS_HTML = /^ {0,3}<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^>]*)?>/;
 const entities = (s) => {
   let block = false;
   const text = s.split("\n").map((line) => {
