@@ -46,9 +46,8 @@
                                         {{- if $thumbnail }}
                                             {{- /* Through image.html, like every other picture here:
                                                    thumbnail.html shipped a 900 px file into a 52 px box
-                                                   and missed _static, so a cover mounted from static/
-                                                   shifted the row. 156 square is that box at 3x. alt is
-                                                   empty -- the title beside it names the link. */ -}}
+                                                   and shifted the row. 156 square is that box at 3x.
+                                                   alt is empty -- the title beside it names the link. */ -}}
                                             {{ partial "image.html" (dict "src" .Params.cover "alt" "" "page" . "position" "post-thumbnail" "fill" "156x156") }}
                                         {{- end }}
                                         <span class="post-title">{{ partial "title.html" . }}</span>

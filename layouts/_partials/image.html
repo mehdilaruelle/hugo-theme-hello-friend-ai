@@ -1,5 +1,6 @@
 {{- /* One content image. Resizing needs the file to resolve as a resource: a
-       page bundle, or assets/ -- static/ can be mounted in. Takes src, alt,
+       page bundle, or assets/. A file under static/ is not one, so it goes
+       out whole and unmeasured. Takes src, alt,
        position, style, page, loading, fetchpriority, maxWidth, sizes, fill. */ -}}
 
 {{- $src := .src -}}
@@ -17,7 +18,7 @@
   {{- with $page.Resources.GetMatch $src -}}
     {{- $img = . -}}
   {{- else -}}
-    {{- with resources.Get (printf "_static%s" $src) -}}{{- $img = . -}}{{- else -}}{{- with resources.Get $src -}}{{- $img = . -}}{{- end -}}{{- end -}}
+    {{- with resources.Get $src -}}{{- $img = . -}}{{- end -}}
   {{- end -}}
 {{- end -}}
 

@@ -1,6 +1,6 @@
 +++
 title = "A page with a cover from static"
-cover = "/img/cover.png"
+cover = "/img/cover-static.png"
 coverCaption = "A cover under `static/`, joined to the site's base URL."
 noindex = true
 +++

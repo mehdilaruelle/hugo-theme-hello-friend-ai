@@ -397,9 +397,11 @@ The crop is centred, and is the one `object-fit: cover` was already making at
 display time. The dimensions are emitted with it, so the row reserves its space
 before the image arrives.
 
-A cover mounted from `static/` is resolved the same way as one in `assets/`.
-Two kinds are passed through at full size instead, because neither can be
-cropped: a remote URL, and an SVG.
+A cover has to live in `assets/` or in the page bundle to be cropped and
+measured. Three kinds are passed through at full size instead: a remote URL
+and an SVG, because neither can be cropped, and a file under `static/`, which
+Hugo does not make a resource — so there is nothing to crop or measure. The
+same rule decides whether `og:image:width` goes out, under "Responsive images".
 
 A GIF cover is cropped here and left alone everywhere else. Resizing one loses
 its animation, which is worth keeping on an article cover shown at full width
