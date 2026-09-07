@@ -30,9 +30,12 @@ if (!existsSync(root) || !statSync(root).isDirectory()) {
 let bad = 0;
 const fail = (msg) => { console.log(`  BAD  ${msg}`); bad++; };
 
-// Entities are wrong in prose, right inside a tag. A tag, not anything between
-// angle brackets, or "A < B &amp; C > D" takes the entity out with it.
-const prose = (s) => s.replace(/<\/?[A-Za-z][^>]*>/g, "");
+// Entities are wrong in prose, right inside a tag, and right inside <code>,
+// where escaping a literal < is the only way to show one. A tag, not anything
+// between angle brackets, or "A < B &amp; C > D" takes the entity with it.
+const prose = (s) => s
+  .replace(/<(code|pre)(?:\s[^>]*)?>[\s\S]*?<\/\1\s*>/gi, "")
+  .replace(/<\/?[A-Za-z][^>]*>/g, "");
 const entities = (s) => prose(s).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
 
 // The destination without the title: [About](/about/ "About") is /about/.

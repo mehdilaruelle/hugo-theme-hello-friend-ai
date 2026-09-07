@@ -6,10 +6,10 @@
 
 [![Hello Friend IA](images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)
 
-**100 / 100 / 100 / 100** on PageSpeed Insights — performance, accessibility,
-best practices and SEO — on the showcase, on mobile and on desktop, with every
-option in the theme switched on at once. The default demo matches it on desktop,
-and scored 98 on mobile performance in the latest run.
+**100 on accessibility, best practices and SEO** on PageSpeed Insights — on both
+demo sites, on mobile and on desktop, with every option in the theme switched on
+at once. Performance is 100 on desktop on both; on mobile the latest run gives
+the demo 99 and the showcase 96.
 [The four reports →](#speed)
 
 > **This is a fork.** All the credit for the theme goes to
@@ -72,6 +72,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
   - [Built in shortcodes](#built-in-shortcodes)
     - [image](#image)
     - [video](#video)
+    - [faq](#faq)
   - [Code highlighting](#code-highlighting)
   - [Favicon](#favicon)
   - [Audio Support](#audio-support)
@@ -108,30 +109,34 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 
 Both demo sites are measured, not a private one, so you can re-run these
 yourself. Accessibility, best practices and SEO are **100 everywhere**, and
-performance is 100 in three of the four runs:
+performance is 100 on desktop:
 
 | | performance | accessibility | best practices | SEO |
 | --- | --- | --- | --- | --- |
-| [demo, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/k5kx11k4x2?form_factor=desktop) | 100 | 100 | 100 | 100 |
-| [demo, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/k5kx11k4x2?form_factor=mobile) | 98 | 100 | 100 | 100 |
-| [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/iwdd7ko6hl?form_factor=desktop) | 100 | 100 | 100 | 100 |
-| [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/iwdd7ko6hl?form_factor=mobile) | 100 | 100 | 100 | 100 |
+| [demo, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/zaeq4mt669?form_factor=desktop) | 100 | 100 | 100 | 100 |
+| [demo, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/zaeq4mt669?form_factor=mobile) | 99 | 100 | 100 | 100 |
+| [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=desktop) | 100 | 100 | 100 | 100 |
+| [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=mobile) | 96 | 100 | 100 | 100 |
 
-Measured on 5 September 2026, on the renamed URLs.
+Measured on 6 September 2026.
 
-Performance is the category that moves between runs, and the 98 is what that
-looks like rather than a fault in the page. Nothing in that run is red: every
-metric passes — FCP 1.5 s, LCP 2.1 s, TBT 0 ms, CLS 0, Speed Index 2.4 s — and
-98 is simply what the mobile scoring curves return for a paint that is good
-rather than excellent. Two things say it is the run and not the page: the same
-demo scored 100 on mobile on 29 August and 99 on the 25th, and the showcase —
-the heavier of the two pages by some distance — scored 100 on mobile in this
-same batch, one second apart.
+**Read a mobile performance score as a range.** Speed Index is the metric that
+moves: two runs of the demo nine hours apart, with nothing changed that the home
+page renders, read 3.8 s and 1.5 s — scoring 97 and 99 — while FCP, LCP, TBT and
+CLS stayed exactly where they were. Re-run before believing a drop.
 
-The showcase is the one worth looking at: it turns every option in the theme on
-at once — four languages, a background image, thumbnails, excerpts, covers,
-diagrams, maths, search — and still scores 100 in every category, on both form
-factors.
+What does not move is small, and Lighthouse says where it goes. It hands out the
+mobile score in five parts, and on the demo run above four of them are full: FCP
+10/10, TBT 30/30, CLS 25/25, Speed Index 10/10. The missing point is LCP, 24/25,
+at 2.0 s. The showcase loses four the same way — LCP 2.3 s and FCP 1.7 s — on a
+page that turns every option in the theme on at once: four languages, a
+background image, thumbnails, excerpts, covers, diagrams, maths and search.
+
+The largest thing Lighthouse still offers, around 205 KiB under efficient cache
+lifetimes, is not the theme's to give: GitHub Pages serves everything with
+`Cache-Control: max-age=600`. Every asset the theme emits is fingerprinted, so
+on a host where you set headers yourself, a year and `immutable` is safe and
+that item disappears.
 
 None of it is bought with layout: **Cumulative Layout Shift is 0 on all four**,
 and Total Blocking Time is 0 ms.
@@ -673,6 +678,26 @@ ffmpeg -i demo.gif -vf "scale=1600:-2:flags=lanczos" -c:v libvpx-vp9 -crf 34 -b:
 ffmpeg -i demo.gif -vf "scale=1600:-2:flags=lanczos" -c:v libx264 -crf 26 -preset slow -pix_fmt yuv420p -movflags +faststart -an demo.mp4
 ffmpeg -i demo.gif -vf "scale=1600:-2:flags=lanczos" -frames:v 1 demo.jpg
 ```
+
+#### faq
+
+A question and its answer, written once and read twice: a `<details>` element
+for a person, and a `FAQPage` block in the `<head>` for a machine.
+
+```markdown
+{{< faq "Does the theme send anything to a service?" >}}
+No. Everything is produced at build time.
+{{< /faq >}}
+```
+
+The answer takes Markdown. Repeat the shortcode for each pair; they collect into
+one `FAQPage` per page. The `<details>` opens without JavaScript.
+
+Use it where a page really is a list of questions, and nowhere else — it is the
+only shortcode here that asks you to write content in a particular shape, and a
+theme has no business dictating the form of a post. Google restricted the FAQ
+rich result to government and health sites in 2023, so expect the markup to be
+read rather than drawn; answer engines read it either way.
 
 ### Code highlighting
 

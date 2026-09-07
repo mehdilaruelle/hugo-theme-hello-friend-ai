@@ -327,3 +327,22 @@
     "itemListElement" $items -}}
 <script type="application/ld+json">{{ $trail | jsonify | safeJS }}</script>
 {{- end -}}
+
+{{- /* The faq shortcode fills .Store while the content renders; the head is
+       earlier. Reading .Content forces that render, so this does not depend on
+       a neighbour having touched .Summary first. */ -}}
+{{- $noop := .Content -}}
+{{- with .Store.Get "faq" -}}
+  {{- $questions := slice -}}
+  {{- range . -}}
+    {{- $questions = $questions | append (dict
+      "@type" "Question"
+      "name" .q
+      "acceptedAnswer" (dict "@type" "Answer" "text" .a)) -}}
+  {{- end -}}
+  {{- $faq := dict
+    "@context" "https://schema.org"
+    "@type" "FAQPage"
+    "mainEntity" $questions -}}
+<script type="application/ld+json">{{ $faq | jsonify | safeJS }}</script>
+{{- end -}}

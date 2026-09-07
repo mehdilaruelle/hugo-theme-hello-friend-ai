@@ -1,0 +1,27 @@
+@use "variables" as *;
+
+.faq {
+  border-top: 1px solid $dark-border-color;
+  padding: 0.6em 0;
+
+  @media (prefers-color-scheme: light) {
+    border-top-color: $light-border-color;
+  }
+
+  [data-theme=dark] & {
+    border-top-color: $dark-border-color;
+  }
+
+  [data-theme=light] & {
+    border-top-color: $light-border-color;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  > :not(summary) {
+    margin-left: 1.2em;
+  }
+}

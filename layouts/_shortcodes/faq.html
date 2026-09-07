@@ -1,0 +1,17 @@
+{{- $q := .Get 0 | default "" | strings.TrimSpace -}}
+{{- if not $q -}}
+  {{- errorf "faq: needs a question, as {{< faq \"Why?\" >}} — %s" .Position -}}
+{{- end -}}
+{{- $html := .Inner | .Page.RenderString -}}
+{{- if not ($html | plainify | strings.TrimSpace) -}}
+  {{- errorf "faq: %q has no answer — %s" $q .Position -}}
+{{- end -}}
+{{- /* Plain for the Question node, HTML for the reader. */ -}}
+{{- $pairs := .Page.Store.Get "faq" | default slice -}}
+{{- .Page.Store.Set "faq" ($pairs | append (dict
+      "q" $q
+      "a" ($html | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace))) -}}
+<details class="faq">
+  <summary>{{ $q }}</summary>
+  {{ $html }}
+</details>
