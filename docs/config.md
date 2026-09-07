@@ -928,6 +928,11 @@ Shortcodes are the one thing rendered, since `{{< video >}}` means nothing
 outside Hugo; they become the HTML they would have produced, which Markdown
 passes through and which carries the real URLs rather than a guess at them.
 
+A shortcode that renders its own body sends it through Goldmark, whose
+typographer writes curly quotes and dashes as HTML entities. Those are decoded
+on the way out, so the Markdown reads as text; `&lt;` and `&amp;` are left
+alone, since a code sample inside a shortcode needs them.
+
 Each file ends with the canonical URL, so a passage quoted out of it can be
 traced back to the page it came from.
 

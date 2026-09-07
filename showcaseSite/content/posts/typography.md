@@ -79,3 +79,11 @@ The `image` shortcode, centred:
 
 `position` stays physical on purpose. Asking for `left` means the left of the
 page, in any language — unlike the margins around it, which mirror.
+
+## A shortcode with a body
+
+A callout is a site's own shortcode, not the theme's. It renders its body, so the body picks up the typographer -- and a code sample inside it keeps `a < b` written as an entity.
+
+{{< callout >}}
+What I'd call a callout: "quoted", spaced ... and `a < b` in code.
+{{< /callout >}}

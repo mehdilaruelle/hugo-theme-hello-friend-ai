@@ -1,7 +1,7 @@
 {{- /* safeHTML on everything printed: a partial that prints rather than
        returns is an HTML template whatever its extension, and without it the
        body leaves full of entities. Shared with llms-full.txt. */ -}}
-{{- $body := .RenderShortcodes -}}
+{{- $body := partial "md/body.html" . -}}
 {{- $note := .Description | default .Summary -}}
 # {{ partial "title.html" . | safeHTML }}
 {{ with $note }}

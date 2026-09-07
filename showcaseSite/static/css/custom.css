@@ -1,3 +1,7 @@
 /* Loaded through params.customCSS, to keep that path exercised.
    Deliberately subtle: the demo should not look different because of it. */
 .post-title a { text-underline-offset: 3px; }
+
+/* The callout shortcode this site defines for itself, in
+   layouts/_shortcodes/callout.html. */
+.callout { border-left: 3px solid currentColor; padding-left: 1rem; opacity: .85; }

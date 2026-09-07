@@ -78,3 +78,11 @@ Le shortcode `image`, centré :
 `position` reste physique à dessein. Demander `left`, c'est demander la gauche
 de la page, dans n'importe quelle langue — contrairement aux marges autour, qui
 se reflètent.
+
+## Un shortcode avec un corps
+
+Une callout est un shortcode du site, pas du thème. Elle rend son corps, qui passe donc par le typographe -- et un extrait de code à l'intérieur garde `a < b` écrit en entité.
+
+{{< callout >}}
+Ce que j'appelle une callout : « citée », espacée ... et `a < b` dans du code.
+{{< /callout >}}
