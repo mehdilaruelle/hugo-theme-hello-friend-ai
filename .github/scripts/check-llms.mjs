@@ -53,10 +53,23 @@ const destination = (raw) => {
 const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
+// The generated lists close the file: a "## " heading over nothing but list
+// items. A section carrying anything else — a paragraph, the note, the line
+// naming llms-full.txt — is the page's own body, whose bullets are prose an
+// author wrote rather than pages a map claims. Taking everything below the
+// first "## " instead would read a body's own heading as the map's.
+const CANONICAL = /\n---\n\n[^\n]*\n?$/;
+const onlyEntries = (part) => part.split("\n").slice(1).every((l) => !l.trim() || l.startsWith("- "));
+const mapSection = (s) => {
+  const parts = s.split("\r\n").join("\n").replace(CANONICAL, "\n").split(/^(?=## )/m);
+  let i = parts.length;
+  while (i > 1 && onlyEntries(parts[i - 1])) i--;
+  return parts.slice(i).join("");
+};
 // A listing entry, not any mention: a page kept out of the generated lists is
 // still one an author may link to in prose.
 const bare = (u) => u.replace(/index\.md$/, "");
-const listed = (s) => [...s.matchAll(LIST_LINK)].map((m) => bare(destination(m[1])));
+const listed = (s) => [...mapSection(s).matchAll(LIST_LINK)].map((m) => bare(destination(m[1])));
 // llms-full.txt entries close as page.md.md does — rule, blank line, page URL.
 const carriedIn = (full) => {
   const lines = full.split("\n");
@@ -96,7 +109,7 @@ for (const [lang, prefix] of Object.entries(langs)) {
   const found = entities(s);
   if (found) fail(`${lang}: ${found.length} HTML entities, e.g. ${found[0]}`);
 
-  const links = [...s.matchAll(LIST_LINK)].map((m) => destination(m[1]));
+  const links = [...mapSection(s).matchAll(LIST_LINK)].map((m) => destination(m[1]));
   if (!links.length) fail(`${lang}: no links`);
   for (const url of links) {
     if (!url.startsWith(base)) { fail(`${lang}: ${url} is outside ${base}`); continue; }

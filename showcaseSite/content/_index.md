@@ -15,3 +15,8 @@ than like a feature list.
 
 It is ordinary Markdown, rendered between the subtitle and the social icons. A
 site that wants none simply has no `_index.md`, which is what the demo does.
+
+## Start here
+
+- [Every switch and what it costs]({{< ref "posts/switches.md" >}})
+- [About]({{< ref "about.md" >}})
