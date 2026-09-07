@@ -9,7 +9,7 @@
 {{ with $desc }}
 > {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
 {{ end }}
-{{- with .RenderShortcodes | strings.TrimSpace }}
+{{- with partial "md/body.html" . | strings.TrimSpace }}
 {{ . }}
 {{ end }}
 {{- with site.Params.llmsNote }}

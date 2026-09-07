@@ -1,0 +1,4 @@
+{{- /* Not a theme shortcode: a site's own, of the shape every callout and
+       notice has, because it is .Inner going through Goldmark that puts
+       typographic entities in the Markdown copy. */ -}}
+<div class="callout">{{ .Inner | markdownify }}</div>

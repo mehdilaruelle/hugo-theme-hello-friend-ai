@@ -1,0 +1,10 @@
+{{- /* The body as Markdown. A shortcode rendering its inner content sends it
+       through Goldmark, whose typographer returns &rsquo; and its kin: right in
+       the HTML the shortcode produced, noise in a file read as text. Only those
+       are decoded — < > & " are markup once decoded, and a code sample inside a
+       shortcode is entitled to keep them written as entities. */ -}}
+{{- $body := .RenderShortcodes -}}
+{{- range $entity, $char := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" -}}
+  {{- $body = replace $body $entity $char -}}
+{{- end -}}
+{{- return $body -}}
