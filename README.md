@@ -64,6 +64,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - [SEO](#seo)
 - [Requirements](#requirements)
 - [How to start](#how-to-start)
+  - [As a Hugo Module](#as-a-hugo-module)
 - [How to configure](#how-to-configure)
 - [More](#more-things)
   - [The font, and the fallbacks](#the-font-and-the-fallbacks-that-match-it)
@@ -358,7 +359,30 @@ If you don't want to make any radical changes, it's the best option, because you
 git submodule add https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai.git themes/hello-friend-ai
 ```
 
-The directory name matters: keep it `hello-friend-ai`, since that is the value `theme` takes in your configuration.
+The directory name matters for all three of those: keep it `hello-friend-ai`, since that is the value `theme` takes in your configuration.
+
+### As a Hugo Module
+
+The theme is also a Hugo Module, which is the one route with no directory to
+name and no submodule bookkeeping — updates are a version bump rather than a
+checkout. It needs [Go](https://go.dev/dl/) installed; the three routes above do
+not.
+
+``` bash
+hugo mod init github.com/you/your-site   # once, if your site is not a module yet
+hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai
+```
+
+Then import it in your configuration instead of setting `theme` to a directory:
+
+``` toml
+[module]
+  [[module.imports]]
+    path = "github.com/mehdilaruelle/hugo-theme-hello-friend-ai"
+```
+
+Update it with `hugo mod get -u`, and pin a release the way you would any Go
+dependency — `hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai@v5.0.0`.
 
 Coming from an earlier version, the theme directory has had three names: it was
 `hello-friend-ng` before v4, `hello-friend-ia` in v4, and is `hello-friend-ai`
