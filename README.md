@@ -370,7 +370,7 @@ not.
 
 ``` bash
 hugo mod init github.com/you/your-site   # once, if your site is not a module yet
-hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai
+hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai/v5
 ```
 
 Then import it in your configuration instead of setting `theme` to a directory:
@@ -378,11 +378,18 @@ Then import it in your configuration instead of setting `theme` to a directory:
 ``` toml
 [module]
   [[module.imports]]
-    path = "github.com/mehdilaruelle/hugo-theme-hello-friend-ai"
+    path = "github.com/mehdilaruelle/hugo-theme-hello-friend-ai/v5"
 ```
 
 Update it with `hugo mod get -u`, and pin a release the way you would any Go
-dependency — `hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai@v5.0.0`.
+dependency — `hugo mod get github.com/mehdilaruelle/hugo-theme-hello-friend-ai/v5@v5.2.0`.
+
+**The `/v5` is not optional, and it changes.** Go requires a module at major
+version 2 or above to carry the major in its path, so the import path moves to
+`/v6` the day this theme releases a v6 — a rename, a dropped option, anything
+breaking. Nothing updates it for you: `hugo mod get -u` keeps you on the newest
+v5 and says nothing about v6 existing. That is the cost of this route; the three
+above have no equivalent, since a checkout follows whatever the branch does.
 
 Coming from an earlier version, the theme directory has had three names: it was
 `hello-friend-ng` before v4, `hello-friend-ia` in v4, and is `hello-friend-ai`
