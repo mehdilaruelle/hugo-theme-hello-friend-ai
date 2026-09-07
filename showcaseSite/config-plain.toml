@@ -1,0 +1,16 @@
+# The showcase with the two lines that separate the front page's body from the
+# generated lists taken away, and nothing else: no llmsNote, and no
+# llms-full.txt. Only then is a "## Start here" over a link list the map's shape
+# exactly, which is the case CI could not otherwise reach.
+[outputs]
+  home = ["HTML", "RSS", "JSON", "llms", "md"]
+
+[languages]
+  [languages.en.params]
+    llmsNote = ""
+  [languages.fr.params]
+    llmsNote = ""
+  [languages.ja.params]
+    llmsNote = ""
+  [languages.ar.params]
+    llmsNote = ""

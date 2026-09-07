@@ -4,6 +4,7 @@
 //   node .github/scripts/check-llms.mjs <public-dir> <base-url>
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const root = args[0] || "public";
@@ -53,17 +54,48 @@ const destination = (raw) => {
 const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
-// The generated lists close the file: a "## " heading over nothing but list
-// items. A section carrying anything else — a paragraph, the note, the line
-// naming llms-full.txt — is the page's own body, whose bullets are prose an
-// author wrote rather than pages a map claims. Taking everything below the
-// first "## " instead would read a body's own heading as the map's.
+// The generated lists close the file, under headings the templates take from
+// i18n, so the theme's own translations name them exactly. Read from beside
+// this script, which sits in the theme, plus any the site overrides.
+const HEADING_KEYS = ["posts", "pages", "contents"];
+const headingsIn = (toml) => {
+  const out = [];
+  let section = "";
+  for (const line of toml.split("\n")) {
+    const head = line.match(/^\s*\[([^\]]+)\]/);
+    if (head) { section = head[1]; continue; }
+    const other = line.match(/^\s*other\s*=\s*"(.*)"\s*$/);
+    if (other && HEADING_KEYS.includes(section)) out.push(other[1]);
+  }
+  return out;
+};
+const generatedHeadings = () => {
+  const out = new Set(["Posts", "Pages", "Contents"]); // the templates' fallbacks
+  let read = false;
+  for (const dir of [fileURLToPath(new URL("../../i18n/", import.meta.url)), join(process.cwd(), "i18n")]) {
+    try {
+      for (const f of readdirSync(dir).filter((n) => n.endsWith(".toml"))) {
+        for (const h of headingsIn(readFileSync(join(dir, f), "utf8"))) out.add(h);
+        read = true;
+      }
+    } catch { /* no i18n there */ }
+  }
+  return { headings: out, read };
+};
+const { headings: GENERATED, read: NAMES_KNOWN } = generatedHeadings();
+// With no i18n to read, the headings of every language but English are unknown,
+// and a half-known set would cut the map short. Fall back whole: a section of
+// nothing but list items is taken for a generated one. That reads a body's own
+// "## Start here" over a link list as the map, which is exactly what naming the
+// headings avoids — so it is the fallback, not the rule.
 const CANONICAL = /\n---\n\n[^\n]*\n?$/;
 const onlyEntries = (part) => part.split("\n").slice(1).every((l) => !l.trim() || l.startsWith("- "));
+const isGenerated = (part) => GENERATED.has(part.split("\n")[0].slice(3).trim());
 const mapSection = (s) => {
   const parts = s.split("\r\n").join("\n").replace(CANONICAL, "\n").split(/^(?=## )/m);
+  const test = NAMES_KNOWN ? isGenerated : onlyEntries;
   let i = parts.length;
-  while (i > 1 && onlyEntries(parts[i - 1])) i--;
+  while (i > 1 && test(parts[i - 1])) i--;
   return parts.slice(i).join("");
 };
 // A listing entry, not any mention: a page kept out of the generated lists is

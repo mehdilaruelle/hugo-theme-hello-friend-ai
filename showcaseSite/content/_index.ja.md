@@ -20,3 +20,4 @@ description: "テーマのすべてのオプションを一度に有効にし、
 
 - [すべてのスイッチとその代償]({{< ref "posts/switches.md" >}})
 - [このサイトについて]({{< ref "about.md" >}})
+- [図について]({{< relref "posts/diagrams.md" >}})
