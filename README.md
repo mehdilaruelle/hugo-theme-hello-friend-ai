@@ -1,10 +1,10 @@
-# Hello Friend IA
+# Hello Friend AI
 
-**[See the theme live →](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)**
+**[See the theme live →](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)**
 &nbsp;·&nbsp;
-[every option turned on →](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/showcase/)
+[every option turned on →](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/)
 
-[![Hello Friend IA](images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)
+[![Hello Friend AI](images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 
 **100 on accessibility, best practices and SEO** on PageSpeed Insights — on both
 demo sites, on mobile and on desktop, with every option in the theme switched on
@@ -47,10 +47,10 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
   [Front page content](#front-page-content).
 - CI builds the exampleSite on every change and fails on any new deprecation.
 - The exampleSite is published as a
-  [live demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/) on
+  [live demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/) on
   every push, so what you see is what the current code produces. A second build
   of the same site, with
-  [every option turned on](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/showcase/),
+  [every option turned on](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/),
   is published alongside it — and built in CI, so an optional feature cannot
   break unnoticed.
 
@@ -118,7 +118,9 @@ performance is 100 on desktop:
 | [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=desktop) | 100 | 100 | 100 | 100 |
 | [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=mobile) | 96 | 100 | 100 | 100 |
 
-Measured on 6 September 2026.
+Measured on 6 September 2026, before the rename, so the four links still name
+the address they were run against. They are the same pages; the report URL is
+replaced once Pages has rebuilt under the new one.
 
 **Read a mobile performance score as a range.** Speed Index is the metric that
 moves: two runs of the demo nine hours apart, with nothing changed that the home
@@ -330,32 +332,33 @@ error — a build that looked successful and shipped an unstyled site.
 
 ## How to start
 
-You can download the theme manually by going to [https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia) and pasting it to `themes/hello-friend-ia` in your root directory.
+You can download the theme manually by going to [https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai) and pasting it to `themes/hello-friend-ai` in your root directory.
 
 You can also clone it directly to your Hugo folder:
 
 ``` bash
-git clone https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia.git themes/hello-friend-ia
+git clone https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai.git themes/hello-friend-ai
 ```
 
 If you don't want to make any radical changes, it's the best option, because you can get new updates when they are available. To do so, include it as a git submodule:
 
 ``` bash
-git submodule add https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia.git themes/hello-friend-ia
+git submodule add https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai.git themes/hello-friend-ai
 ```
 
-The directory name matters: keep it `hello-friend-ia`, since that is the value `theme` takes in your configuration.
+The directory name matters: keep it `hello-friend-ai`, since that is the value `theme` takes in your configuration.
 
-Coming from an earlier version, the names changed: the repository moved from
-`hugo-theme-hello-friend-ng-ia` to `hugo-theme-hello-friend-ia`, and the theme
-directory from `hello-friend-ng` to `hello-friend-ia`. GitHub redirects the old
-clone and submodule URLs, so fetching still works; Hugo redirects nothing, so
-the directory has to be renamed by hand.
+Coming from an earlier version, the theme directory has had three names: it was
+`hello-friend-ng` before v4, `hello-friend-ia` in v4, and is `hello-friend-ai`
+now. The repository moved with it each time, most recently from
+`hugo-theme-hello-friend-ia`. GitHub redirects the old clone and submodule URLs,
+so fetching still works; Hugo redirects nothing, so the directory has to be
+renamed by hand. Substitute whichever of the two old names you have for `<old>`.
 
 If you cloned the theme, or pasted it in:
 
 ``` bash
-mv themes/hello-friend-ng themes/hello-friend-ia
+mv themes/<old> themes/hello-friend-ai
 ```
 
 If you added it as a submodule, the old path is recorded in `.gitmodules`, in
@@ -364,15 +367,14 @@ leaves the next `git submodule update` — and any fresh clone of your site —
 pointing at a path that no longer exists:
 
 ``` bash
-git mv themes/hello-friend-ng themes/hello-friend-ia
-git submodule set-url themes/hello-friend-ia https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia.git
-git submodule sync themes/hello-friend-ia
+git mv themes/<old> themes/hello-friend-ai
+git submodule set-url themes/hello-friend-ai https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai.git
+git submodule sync themes/hello-friend-ai
 git commit -am "Rename the theme directory"
 ```
 
-Either way, finish by setting `theme = "hello-friend-ia"` in your
-configuration. Miss that step and Hugo reports
-`module "hello-friend-ng" not found`.
+Either way, finish by setting `theme = "hello-friend-ai"` in your
+configuration. Miss that step and Hugo reports `module "<old>" not found`.
 
 The section name matters too: articles go in `content/posts/`. Hugo resolves an
 article's template by section name, and the theme's article layouts are
@@ -403,7 +405,7 @@ Note: There are more options to configure. Take a look into the `config.toml` in
 baseurl      = "localhost"
 title        = "My Blog"
 locale       = "en-US"
-theme        = "hello-friend-ia"
+theme        = "hello-friend-ai"
 pagination.pagerSize     = 10
 
 [params]
@@ -436,7 +438,7 @@ pagination.pagerSize     = 10
 
 [languages]
   [languages.en]
-    title = "Hello Friend IA"
+    title = "Hello Friend AI"
     copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
     readOtherPosts = "Read other posts"
 
@@ -444,7 +446,7 @@ pagination.pagerSize     = 10
     subtitle  = "A simple theme for Hugo"
 
     [languages.en.params.logo]
-      logoText = "hello friend ia"
+      logoText = "hello friend ai"
       logoHomeLink = "/"
     # or
     #
@@ -620,9 +622,9 @@ in place of `homeSubtitle` — that line is written to be read on the page, and 
 search result gives you more room than it uses. Without one, `homeSubtitle`
 stays the fallback.
 
-The [showcase](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/showcase/)
+The [showcase](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/)
 has one, in all four of its languages. The
-[default demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)
+[default demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 has none, so the two sites show the front page with it and without.
 
 ### Built-in shortcodes

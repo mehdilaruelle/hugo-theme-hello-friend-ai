@@ -1,5 +1,5 @@
 ---
-title: "Hello Friend IA"
+title: "Hello Friend AI"
 description: "Every option the theme has, turned on at once, in four languages, with an article on what each one costs."
 ---
 
@@ -9,7 +9,7 @@ start reading.
 
 This is the showcase. Every option the theme has is turned on at once, in four
 languages, and each article says what one of them costs. The
-[default demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ia/)
+[default demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 leaves them all off, so that a theme looks like itself out of the box rather
 than like a feature list.
 

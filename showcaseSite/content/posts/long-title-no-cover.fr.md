@@ -1,5 +1,5 @@
 +++
-title = "Déployer hugo-theme-hello-friend-ia depuis un chemin assez long pour passer à la ligne"
+title = "Déployer hugo-theme-hello-friend-ai depuis un chemin assez long pour passer à la ligne"
 slug = "long-title-no-cover"
 description = "La ligne sans miniature dont le titre ne tient pas : le cas où la date n'a nulle part où aller, sinon en dessous."
 date = "2026-01-10"

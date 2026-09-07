@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          path: hello-friend-ia
+          path: hello-friend-ai
 
       - name: Configure Pages
         id: pages
@@ -48,13 +48,13 @@ jobs:
       # Two sites, one deployment. Pages publishes a single directory tree per
       # repository, so the second site is a directory inside the first.
       - name: Build the demo
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: |
           hugo --themesDir ../.. --gc --minify --panicOnWarning \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
 
       - name: Build the showcase
-        working-directory: hello-friend-ia/showcaseSite
+        working-directory: hello-friend-ai/showcaseSite
         run: |
           hugo --themesDir ../.. --gc --minify --panicOnWarning \
             --config ../exampleSite/config.toml,config.toml \
@@ -62,7 +62,7 @@ jobs:
           mv public ../exampleSite/public/showcase
 
       - name: Fail if a stylesheet did not make it into either site
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: |
           for dir in public public/showcase; do
             if ! ls "${dir}"/*.css >/dev/null 2>&1; then
@@ -78,7 +78,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: hello-friend-ia/exampleSite/public
+          path: hello-friend-ai/exampleSite/public
 
   deploy:
     name: Publish

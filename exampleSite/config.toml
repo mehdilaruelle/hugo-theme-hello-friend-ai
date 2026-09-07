@@ -1,7 +1,7 @@
 baseURL = "https://example.com"
-title   = "Hello Friend IA"
+title   = "Hello Friend AI"
 locale  = "en-US"
-theme   = "hello-friend-ia"
+theme   = "hello-friend-ai"
 
 # Shown in the footer, and in the feed's <copyright>. Markup is allowed: the
 # footer renders it, and the feed reduces it to its text.
@@ -101,9 +101,9 @@ disableHugoGeneratorInject = false
   # One language, so they live here. With more than one they move under
   # [languages.<code>.params], since they are text a visitor reads — see
   # docs/config.md, and the showcase site for a worked example.
-  subtitle     = "Hello Friend IA Theme"
+  subtitle     = "Hello Friend AI Theme"
   description  = "Nice theme for homepages and blogs"
-  homeSubtitle = "A Hugo theme powered by <strong>IA</strong>"
+  homeSubtitle = "A Hugo theme powered by <strong>AI</strong>"
 
   # Set a background for the homepage
   # backgroundImage = "assets/images/background.jpg"

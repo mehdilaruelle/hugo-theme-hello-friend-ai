@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          path: hello-friend-ia
+          path: hello-friend-ai
 
       - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
         run: |
@@ -63,13 +63,13 @@ jobs:
           sass --version
 
       - name: Build
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: hugo --themesDir ../.. --gc --minify --panicOnWarning
 
       # The showcase turns on everything the default demo leaves off, so a
       # template change that only breaks an optional feature still fails here.
       - name: Build the showcase
-        working-directory: hello-friend-ia/showcaseSite
+        working-directory: hello-friend-ai/showcaseSite
         run: |
           hugo --themesDir ../.. --gc --minify --panicOnWarning \
             --config ../exampleSite/config.toml,config.toml
@@ -78,7 +78,7 @@ jobs:
       # what the libsass fallback used to do, silently. Assert there is CSS in
       # it, not just a file.
       - name: The stylesheet has rules in it
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: |
           css=$(find public -name 'main-*.css' | head -1)
           [ -n "$css" ] || { echo "no stylesheet was emitted"; exit 1; }
@@ -95,7 +95,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          path: hello-friend-ia
+          path: hello-friend-ai
 
       - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
         run: |
@@ -107,7 +107,7 @@ jobs:
       # implements. It used to fall back to libsass and ship a site with no
       # styles at all; it now refuses. This holds that contract.
       - name: The build refuses, and says why
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: |
           # timeout, not just an assertion: a hang here is a failure mode of its
           # own and should be reported as one rather than as a job timeout.
@@ -130,7 +130,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          path: hello-friend-ia
+          path: hello-friend-ai
 
       - name: Resolve and install the newest Hugo and Dart Sass
         env:
@@ -155,11 +155,11 @@ jobs:
           sass --version
 
       - name: Build
-        working-directory: hello-friend-ia/exampleSite
+        working-directory: hello-friend-ai/exampleSite
         run: hugo --themesDir ../.. --gc --minify --panicOnWarning
 
       - name: Build the showcase
-        working-directory: hello-friend-ia/showcaseSite
+        working-directory: hello-friend-ai/showcaseSite
         run: |
           hugo --themesDir ../.. --gc --minify --panicOnWarning \
             --config ../exampleSite/config.toml,config.toml

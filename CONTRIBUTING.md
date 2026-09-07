@@ -8,8 +8,8 @@ Where to report what:
 
 - Anything specific to this fork — a Hugo deprecation, the CI, the demo site —
   belongs in this repository's
-  [issues](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia/issues)
-  and [pull requests](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ia/pulls).
+  [issues](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai/issues)
+  and [pull requests](https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai/pulls).
 - Anything about the theme itself is worth sending
   [upstream](https://github.com/rhazdon/hugo-theme-hello-friend-ng/issues) too,
   so every user benefits rather than only those on this fork.
