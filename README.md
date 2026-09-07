@@ -8,8 +8,8 @@
 
 **100 on accessibility, best practices and SEO** on PageSpeed Insights — on both
 demo sites, on mobile and on desktop, with every option in the theme switched on
-at once. Performance is 100 on desktop on both; on mobile the latest run gives
-the demo 99 and the showcase 96.
+at once. Lighthouse 13's agentic browsing category is 100 on all four runs too.
+Performance is 100 on desktop on both, and 97 on mobile on both.
 [The four reports →](#speed)
 
 > **This is a fork.** All the credit for the theme goes to
@@ -100,7 +100,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Support for [utterances](https://utteranc.es/) comment system
 - Front page content from `content/_index.md`, see [Front page content](#front-page-content)
 - JSON-LD structured data, breadcrumbs and a complete `hreflang` set, see [SEO](#seo)
-- 100 on accessibility, best practices and SEO on both demo sites, see [Speed](#speed)
+- 100 on accessibility, best practices, SEO and agentic browsing on both demo sites, see [Speed](#speed)
 - Optional `llms.txt`, `llms-full.txt` and a Markdown copy of every page, list pages included, see [llms.txt](docs/config.md#llmstxt)
 - A declarative AI crawler policy: refuse training without refusing citation, see [AI crawlers](docs/config.md#ai-crawlers)
 - Per-page AI control: `noai` to keep one page out of the text outputs, and a licence that travels with the text, see [Keeping a page out of things](docs/config.md#keeping-a-page-out-of-things)
@@ -108,37 +108,49 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 ### Speed
 
 Both demo sites are measured, not a private one, so you can re-run these
-yourself. Accessibility, best practices and SEO are **100 everywhere**, and
-performance is 100 on desktop:
+yourself. Everything except mobile performance is **100 across the board**:
 
-| | performance | accessibility | best practices | SEO |
-| --- | --- | --- | --- | --- |
-| [demo, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/zaeq4mt669?form_factor=desktop) | 100 | 100 | 100 | 100 |
-| [demo, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia/zaeq4mt669?form_factor=mobile) | 99 | 100 | 100 | 100 |
-| [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=desktop) | 100 | 100 | 100 | 100 |
-| [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ia-showcase/9xv9eq5bpw?form_factor=mobile) | 96 | 100 | 100 | 100 |
+| | performance | accessibility | best practices | SEO | agentic browsing |
+| --- | --- | --- | --- | --- | --- |
+| [demo, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai/58sqyqzgs3?form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
+| [demo, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai/58sqyqzgs3?form_factor=mobile) | 97 | 100 | 100 | 100 | 100 |
+| [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai-showcase/m6jn7yn4mm?form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
+| [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai-showcase/m6jn7yn4mm?form_factor=mobile) | 97 | 100 | 100 | 100 | 100 |
 
-Measured on 6 September 2026, before the rename, so the four links still name
-the address they were run against. They are the same pages; the report URL is
-replaced once Pages has rebuilt under the new one.
+Measured on 7 September 2026 with Lighthouse 13.4.1, on these URLs.
 
 **Read a mobile performance score as a range.** Speed Index is the metric that
-moves: two runs of the demo nine hours apart, with nothing changed that the home
-page renders, read 3.8 s and 1.5 s — scoring 97 and 99 — while FCP, LCP, TBT and
-CLS stayed exactly where they were. Re-run before believing a drop.
+moves: runs of the same demo, with nothing changed that the home page renders,
+have read 1.5 s, 3.8 s and 3.9 s — scoring 99, 97 and 97 — while FCP, LCP, TBT
+and CLS stayed exactly where they were. Re-run before believing a drop.
 
 What does not move is small, and Lighthouse says where it goes. It hands out the
-mobile score in five parts, and on the demo run above four of them are full: FCP
-10/10, TBT 30/30, CLS 25/25, Speed Index 10/10. The missing point is LCP, 24/25,
-at 2.0 s. The showcase loses four the same way — LCP 2.3 s and FCP 1.7 s — on a
-page that turns every option in the theme on at once: four languages, a
-background image, thumbnails, excerpts, covers, diagrams, maths and search.
+mobile score in five weighted parts. The demo takes two in full — Total Blocking
+Time 30/30 and Cumulative Layout Shift 25/25 — and loses fractions on the other
+three: First Contentful Paint 9.6/10 at 1.5 s, Largest Contentful Paint 24/25 at
+2.1 s, Speed Index 8.3/10 at 3.9 s.
 
-The largest thing Lighthouse still offers, around 205 KiB under efficient cache
+The showcase is the interesting one. FCP, LCP, TBT and CLS come back *identical*
+to the demo's, to the precision Lighthouse prints, and the only difference in the
+entire run is a tenth of a second of Speed Index: 4.0 s against 3.9 s, 8/10
+against 8.3/10. A page with four languages, a background image, thumbnails,
+excerpts, covers, diagrams, maths and search measures the same as one with none
+of it.
+
+The largest thing Lighthouse still offers, around 206 KiB under efficient cache
 lifetimes, is not the theme's to give: GitHub Pages serves everything with
 `Cache-Control: max-age=600`. Every asset the theme emits is fingerprinted, so
 on a host where you set headers yourself, a year and `immutable` is safe and
 that item disappears.
+
+**On agentic browsing.** Lighthouse 13 added the category, and both sites return
+100 on it. Take the number for what it measures: on a page with no WebMCP
+integration it comes down to a well-formed accessibility tree and a
+Cumulative Layout Shift of 0, which is the same markup discipline a screen reader
+benefits from. Its `llms.txt` check does not contribute here at all — it reports
+*not applicable*, because it looks at the origin root and these demos are served
+from a subpath of `github.io`. The file is where it should be relative to each
+site, and on a blog at its own domain root the check would see it.
 
 None of it is bought with layout: **Cumulative Layout Shift is 0 on all four**,
 and Total Blocking Time is 0 ms.
