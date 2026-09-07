@@ -85,5 +85,5 @@ page, in any language — unlike the margins around it, which mirror.
 A callout is a site's own shortcode, not the theme's. It renders its body, so the body picks up the typographer -- and a code sample inside it keeps `a < b` written as an entity.
 
 {{< callout >}}
-What I'd call a callout: "quoted", spaced ... and `a < b` in code.
+What I'd call a callout: "quoted", spaced ... and `a < b` in code. In prose too: 1 < 2 & up.
 {{< /callout >}}

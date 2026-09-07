@@ -36,7 +36,25 @@ const fail = (msg) => { console.log(`  BAD  ${msg}`); bad++; };
 const prose = (s) => s
   .replace(/<(code|pre)(?:\s[^>]*)?>[\s\S]*?<\/\1\s*>/gi, "")
   .replace(/<\/?[A-Za-z][^>]*>/g, "");
-const entities = (s) => prose(s).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
+// The same holds outside <code>: a shortcode rendering its inner content emits
+// a raw HTML block, and < > & " have to stay written as entities anywhere in
+// one, since decoding them there would change the markup. Named, decimal or
+// hex, the three saying the same thing — but not &#39;, an apostrophe being no
+// more markup in a block than in prose, and nothing else either: a &rsquo; in a
+// block is the same noise it is anywhere.
+const MARKUP = /&(?:lt|gt|amp|quot|#(?:34|38|60|62)|#x(?:22|26|3[ce]));/gi;
+// A whole tag, not a word in angle brackets: "<example &lt; here" opens no
+// block, and taking it for one would excuse the entities below it.
+const OPENS_HTML = /^ {0,3}<\/?[A-Za-z][A-Za-z0-9-]*(?:\s[^>]*)?>/;
+const entities = (s) => {
+  let block = false;
+  const text = s.split("\n").map((line) => {
+    if (block && !line.trim()) block = false;
+    else if (!block && OPENS_HTML.test(line)) block = true;
+    return block ? line.replace(MARKUP, "") : line;
+  }).join("\n");
+  return prose(text).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
+};
 
 // The destination without the title: [About](/about/ "About") is /about/.
 const destination = (raw) => {
