@@ -55,8 +55,8 @@ const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
 // The generated lists close the file, under headings the templates take from
-// i18n, so the theme's own translations name them exactly. Read from beside
-// this script, which sits in the theme, plus any the site overrides.
+// i18n, so the theme's own translations name them — as does the site's, which
+// may override any of them.
 const HEADING_KEYS = ["posts", "pages", "contents"];
 const headingsIn = (toml) => {
   const out = [];
@@ -65,17 +65,17 @@ const headingsIn = (toml) => {
     const head = line.match(/^\s*\[([^\]]+)\]/);
     if (head) { section = head[1]; continue; }
     const other = line.match(/^\s*other\s*=\s*"(.*)"\s*$/);
-    if (other && HEADING_KEYS.includes(section)) out.push(other[1]);
+    if (other && HEADING_KEYS.includes(section)) out.push([other[1], section]);
   }
   return out;
 };
 const generatedHeadings = () => {
-  const out = new Set(["Posts", "Pages", "Contents"]); // the templates' fallbacks
+  const out = new Map([["Posts", "posts"], ["Pages", "pages"], ["Contents", "contents"]]);
   let read = false;
   for (const dir of [fileURLToPath(new URL("../../i18n/", import.meta.url)), join(process.cwd(), "i18n")]) {
     try {
       for (const f of readdirSync(dir).filter((n) => n.endsWith(".toml"))) {
-        for (const h of headingsIn(readFileSync(join(dir, f), "utf8"))) out.add(h);
+        for (const [h, k] of headingsIn(readFileSync(join(dir, f), "utf8"))) out.set(h, k);
         read = true;
       }
     } catch { /* no i18n there */ }
@@ -83,19 +83,27 @@ const generatedHeadings = () => {
   return { headings: out, read };
 };
 const { headings: GENERATED, read: NAMES_KNOWN } = generatedHeadings();
-// With no i18n to read, the headings of every language but English are unknown,
-// and a half-known set would cut the map short. Fall back whole: a section of
-// nothing but list items is taken for a generated one. That reads a body's own
-// "## Start here" over a link list as the map, which is exactly what naming the
-// headings avoids — so it is the fallback, not the rule.
+// With no i18n to read only English is known, and a half-known set would cut
+// the map short, so the fallback is whole: a section of nothing but list items.
 const CANONICAL = /\n---\n\n[^\n]*\n?$/;
 const onlyEntries = (part) => part.split("\n").slice(1).every((l) => !l.trim() || l.startsWith("- "));
-const isGenerated = (part) => GENERATED.has(part.split("\n")[0].slice(3).trim());
+const headingOf = (part) => GENERATED.get(part.split("\n")[0].slice(3).trim());
 const mapSection = (s) => {
   const parts = s.split("\r\n").join("\n").replace(CANONICAL, "\n").split(/^(?=## )/m);
-  const test = NAMES_KNOWN ? isGenerated : onlyEntries;
   let i = parts.length;
-  while (i > 1 && test(parts[i - 1])) i--;
+  const seen = new Set();
+  while (i > 1) {
+    if (!NAMES_KNOWN) { if (!onlyEntries(parts[i - 1])) break; }
+    else {
+      // Each key is emitted once, so a heading repeating one — a body's own
+      // "## Posts" above the list it names, or a translation a site replaced —
+      // belongs to the body.
+      const key = headingOf(parts[i - 1]);
+      if (!key || seen.has(key)) break;
+      seen.add(key);
+    }
+    i--;
+  }
   return parts.slice(i).join("");
 };
 // A listing entry, not any mention: a page kept out of the generated lists is
