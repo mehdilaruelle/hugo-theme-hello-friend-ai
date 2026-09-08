@@ -35,8 +35,7 @@
 {{- $fallback := site.Params.fontFallback | default dict -}}
 {{- $css := "" -}}
 {{- if ne $fallback false -}}
-  {{- /* true, a string, a number: anything that is not a table carries no
-         overrides, and reading a field off it ends the build. */ -}}
+  {{- /* Not a table: no overrides, and reading a field off it ends the build. */ -}}
   {{- if not (reflect.IsMap $fallback) -}}{{- $fallback = dict -}}{{- end -}}
   {{- $bold := slice "Arial Bold" "Arial-BoldMT" "Helvetica Bold" "Helvetica-Bold" "Liberation Sans Bold" -}}
   {{- $faces := slice
