@@ -1,4 +1,4 @@
-// Asserts the eight invariants the theme's head and structured data rest on.
+// Asserts the nine invariants the theme's head and structured data rest on.
 //
 // Each is something a build reports nothing about: a page can name two URLs as
 // its own, announce a card picture no platform renders, or carry two
@@ -46,6 +46,7 @@ const decode = (v) =>
     return m;
   });
 
+const TITLE = /<title[^>]*>([\s\S]*?)<\/title\s*>/i;
 const META = /<meta\b[^>]*>/gi;
 const REL = new RegExp(attr("rel"), "i");
 const HREF = new RegExp(attr("href"), "i");
@@ -205,6 +206,30 @@ for (const file of walk(root)) {
   } else if (said.some((v) => v.length > 1)) {
     failures.push([file, "a description tag is repeated", "a page describes itself once in each"]);
   }
+
+  // 9. One title per page. #188 was og:title reading .Title raw while the title
+  //    element and twitter:title asked title.html, and nothing guarded the next
+  //    one: twitter:title then missed the pager suffix on 19 showcase pagers.
+  //    The title element carries " :: site" by design, so it is asked to
+  //    contain the card's title rather than equal it.
+  const titles = [all(og, "og:title"), all(named, "twitter:title")];
+  if (titles.every((v) => v.length === 1)) {
+    const [ogTitle, twTitle] = titles.map((v) => decode(v[0]).trim());
+    if (ogTitle !== twTitle) {
+      failures.push([file, `og:title "${ogTitle}"
+    twitter:title "${twTitle}"`, "one page, two different titles"]);
+    }
+    const shown = decode(html.match(TITLE)?.[1] ?? "").trim();
+    if (shown && !shown.includes(ogTitle)) {
+      failures.push([file, `title "${shown}" omits og:title "${ogTitle}"`, "the tab and the card name different pages"]);
+    }
+    const headline = blocks.map((b) => b && b.headline).find(Boolean);
+    if (headline && decode(headline).trim() !== ogTitle) {
+      failures.push([file, `headline "${headline}" against og:title "${ogTitle}"`, "the structured data names a third title"]);
+    }
+  } else if (titles.some((v) => v.length > 1)) {
+    failures.push([file, "a title tag is repeated", "a page titles itself once in each"]);
+  }
 }
 
 // A directory that exists and holds no pages is the shape a wrong path takes,
@@ -224,3 +249,4 @@ console.log("canonical and og:url agree, one robots tag each, no SVG on a card")
 console.log("every JSON-LD block parses, an owned picture is in its BlogPosting, search is noindex");
 console.log("no description or alt carries an entity that was escaped twice");
 console.log("the meta, Open Graph and Twitter descriptions are the same sentence");
+console.log("the title element, og:title, twitter:title and the headline name one page");

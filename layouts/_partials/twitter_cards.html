@@ -7,6 +7,7 @@
   params.social, which this theme does not document.
 */ -}}
 {{- $social := partial "social-image.html" . -}}
+{{- $canonical := partial "canonical.html" . -}}
 {{- with $social.url }}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ . }}">
@@ -17,7 +18,7 @@
 <meta name="twitter:card" content="summary">
 {{- end }}
 {{- with partial "title.html" . | plainify }}
-<meta name="twitter:title" content="{{ . }}">
+<meta name="twitter:title" content="{{ partial "pager-suffix.html" (dict "text" . "pager" $canonical.pager) }}">
 {{- end }}
 {{- $description := partial "description-meta.html" . -}}
 {{- with $description }}
