@@ -55,7 +55,7 @@
 {{- with $img -}}
   {{- $url = . -}}
   {{- if not (partial "is-remote.html" $url) -}}
-    {{- with or ($.Resources.GetMatch $url) (resources.Get (printf "_static%s" $url)) (resources.Get $url) -}}
+    {{- with or ($.Resources.GetMatch $url) (resources.Get $url) -}}
       {{- $url = .Permalink -}}
       {{- if reflect.IsImageResourceWithMeta . -}}
         {{- if gt .Width 0 -}}

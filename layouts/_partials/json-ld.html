@@ -108,7 +108,7 @@
        outside assets/ is a static file, so the path stands. */ -}}
 {{- with site.Params.portrait.path -}}
   {{- $portrait := . | absURL -}}
-  {{- with or (resources.Get (printf "_static%s" .)) (resources.Get .) -}}
+  {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}
   {{- end -}}
   {{- $person = merge $person (dict "image" $portrait) -}}
@@ -246,7 +246,7 @@
   {{- end -}}
   {{- with $logo -}}
     {{- $node := dict "@type" "ImageObject" "url" (. | absURL) -}}
-    {{- with or (resources.Get (printf "_static%s" .)) (resources.Get .) -}}
+    {{- with resources.Get . -}}
       {{- $node = merge $node (dict "url" .Permalink) -}}
       {{- /* Asking an SVG for its dimensions is a build error. */ -}}
       {{- if and (eq .ResourceType "image") (ne .MediaType.SubType "svg") -}}
