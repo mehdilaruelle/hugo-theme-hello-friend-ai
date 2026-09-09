@@ -89,12 +89,18 @@ const generatedHeadings = () => {
   const out = new Map([["Posts", "posts"], ["Pages", "pages"], ["Contents", "contents"]]);
   let read = false;
   for (const dir of [fileURLToPath(new URL("../../i18n/", import.meta.url)), join(process.cwd(), "i18n")]) {
+    // All of a directory's headings or none of them, read before any is kept: a
+    // file that cannot be read halfway through would otherwise leave every
+    // language after it unnamed, which is the half-known set below.
+    let found;
     try {
-      for (const f of readdirSync(dir).filter((n) => n.endsWith(".toml"))) {
-        for (const [h, k] of headingsIn(readFileSync(join(dir, f), "utf8"))) out.set(h, k);
-        read = true;
-      }
-    } catch { /* no i18n there */ }
+      found = readdirSync(dir)
+        .filter((n) => n.endsWith(".toml"))
+        .flatMap((f) => headingsIn(readFileSync(join(dir, f), "utf8")));
+    } catch { continue; /* no i18n there, or not the whole of it */ }
+    for (const [h, k] of found) out.set(h, k);
+    // Files with none of the three keys name nothing, so they are not a set.
+    if (found.length) read = true;
   }
   return { headings: out, read };
 };
