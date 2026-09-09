@@ -401,7 +401,8 @@ A cover has to live in `assets/` or in the page bundle to be cropped and
 measured. Three kinds are passed through at full size instead: a remote URL
 and an SVG, because neither can be cropped, and a file under `static/`, which
 Hugo does not make a resource — so there is nothing to crop or measure. The
-same rule decides whether `og:image:width` goes out, under "Responsive images".
+same rule decides whether `og:image:width` goes out — see
+[Responsive images](#responsive-images).
 
 A GIF cover is cropped here and left alone everywhere else. Resizing one loses
 its animation, which is worth keeping on an article cover shown at full width
