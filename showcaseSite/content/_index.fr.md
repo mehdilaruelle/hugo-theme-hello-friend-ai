@@ -21,3 +21,4 @@ la démo.
 
 - [Chaque interrupteur et ce qu'il coûte]({{< ref "posts/switches.md" >}})
 - [À propos]({{< ref "about.md" >}})
+- [Les diagrammes]({{< relref "posts/diagrams.md" >}})

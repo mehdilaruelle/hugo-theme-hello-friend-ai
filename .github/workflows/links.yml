@@ -119,6 +119,16 @@ jobs:
           node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
             --absent=https://example.com/subpath/showcase/kept-out/
 
+      # With neither the note nor the llms-full line between them, a body
+      # heading over a link list has the generated lists shape exactly.
+      - name: Check llms.txt with no note and no llms-full
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-plain.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-plain
+          node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
+
       # A failed template prints the failure and the build stays green:
       # %!q(bool=true) went out in a heading, past every checker above.
       - name: Check no template failed silently (showcase)

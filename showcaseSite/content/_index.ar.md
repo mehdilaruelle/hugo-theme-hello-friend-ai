@@ -18,3 +18,4 @@ description: "كل خيارات القالب مُفعَّلة دفعة واحد�
 
 - [كل مفتاح وما يكلّفه]({{< ref "posts/switches.md" >}})
 - [عن الموقع]({{< ref "about.md" >}})
+- [المخططات]({{< relref "posts/diagrams.md" >}})

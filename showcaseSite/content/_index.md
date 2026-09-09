@@ -20,3 +20,4 @@ site that wants none simply has no `_index.md`, which is what the demo does.
 
 - [Every switch and what it costs]({{< ref "posts/switches.md" >}})
 - [About]({{< ref "about.md" >}})
+- [Diagrams]({{< relref "posts/diagrams.md" >}})
