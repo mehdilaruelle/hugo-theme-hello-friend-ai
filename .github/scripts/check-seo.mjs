@@ -212,8 +212,15 @@ for (const file of walk(root)) {
   //    one: twitter:title then missed the pager suffix on 19 showcase pagers.
   //    The title element carries " :: site" by design, so it is asked to
   //    contain the card's title rather than equal it.
+  //    Presence as well as agreement, as in 1: og:title carries a site.Title
+  //    fallback that twitter:title has none of, so comparing only when both are
+  //    there would let an empty title.html name the site in one and drop the
+  //    other -- #188's own shape, unreported.
   const titles = [all(og, "og:title"), all(named, "twitter:title")];
-  if (titles.every((v) => v.length === 1)) {
+  if (titles.some((v) => v.length !== 1)) {
+    const [ogCount, twCount] = titles.map((v) => v.length);
+    failures.push([file, `${ogCount} og:title, ${twCount} twitter:title`, "a page titles itself once in each"]);
+  } else {
     const [ogTitle, twTitle] = titles.map((v) => decode(v[0]).trim());
     if (ogTitle !== twTitle) {
       failures.push([file, `og:title "${ogTitle}"
@@ -227,8 +234,6 @@ for (const file of walk(root)) {
     if (headline && decode(headline).trim() !== ogTitle) {
       failures.push([file, `headline "${headline}" against og:title "${ogTitle}"`, "the structured data names a third title"]);
     }
-  } else if (titles.some((v) => v.length > 1)) {
-    failures.push([file, "a title tag is repeated", "a page titles itself once in each"]);
   }
 }
 
