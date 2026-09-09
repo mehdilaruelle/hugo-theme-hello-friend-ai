@@ -34,6 +34,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # i18n.html falls back to English, so a key that only ever reached en.toml
+  # builds green, warns about nothing, and puts an English heading in front of
+  # everyone who does not read English. Nothing else asserts the twenty other
+  # files kept up. No Hugo here — it reads the source.
+  i18n:
+    name: Every language carries every key
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name != 'schedule'
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the translations against en.toml
+        run: node .github/scripts/check-i18n.mjs .
+
   build:
     name: Build exampleSite
     runs-on: ubuntu-latest

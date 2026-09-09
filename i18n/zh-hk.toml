@@ -146,3 +146,9 @@ other = "{{ .Total }} 個頁面中的 {{ .Kept }} 個，順序與 llms.txt 一�
 #
 [headingAnchor]
 other = "本節連結"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "相關文章"

@@ -146,3 +146,9 @@ other = "{{ .Total }} में से {{ .Kept }} पृष्ठ, उसी �
 #
 [headingAnchor]
 other = "इस अनुभाग का लिंक"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "संबंधित पोस्ट"

@@ -146,3 +146,9 @@ other = "{{ .Kept }} von {{ .Total }} Seiten, in der Reihenfolge von llms.txt."
 #
 [headingAnchor]
 other = "Link zu diesem Abschnitt"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Ähnliche Beiträge"

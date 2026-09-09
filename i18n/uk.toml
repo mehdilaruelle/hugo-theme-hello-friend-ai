@@ -150,3 +150,9 @@ other = "{{ .Kept }} сторінок із {{ .Total }}, у порядку, ук
 #
 [headingAnchor]
 other = "Посилання на цей розділ"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Схожі записи"
