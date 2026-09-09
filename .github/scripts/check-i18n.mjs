@@ -1,10 +1,8 @@
 // Every key en.toml defines has to exist in the other twenty translations.
 //
-// i18n.html looks a key up with an English fallback, so a translation that
-// never got the key renders English rather than failing: the build is green,
-// no warning is printed, and the only place the omission shows is on the page
-// of somebody who does not read English. That is how relatedPosts shipped in
-// en.toml alone while headingAnchor, added one release earlier, got all 21.
+// i18n.html falls back to English, so a key that never reached a translation
+// builds green and shows up only on the page of somebody who does not read
+// English — which is how relatedPosts shipped in en.toml alone.
 //
 //   node check-i18n.mjs <theme-root>
 
@@ -14,16 +12,11 @@ import { join } from 'node:path';
 const root = process.argv[2] || '.';
 const dir = join(root, 'i18n');
 
-// CLDR plural categories. A language picks the ones it needs — Russian says
-// one/few/many, Japanese says other — so these are the subkeys that legitimately
-// differ between files. Every other subkey names a distinct string and must not.
+// CLDR categories: the only subkeys allowed to differ between files.
 const PLURAL = new Set(['zero', 'one', 'two', 'few', 'many', 'other']);
 
 const problems = [];
 
-// Line-based on purpose: these files are flat [section] + key = "value" and
-// nothing else, so a line this cannot read is a line worth reporting rather
-// than a parser to grow.
 const parse = (file) => {
   const sections = new Map();
   let current = null;
@@ -55,8 +48,6 @@ const parse = (file) => {
   return sections;
 };
 
-// {{ .Count }} and friends. A translation that drops one renders a sentence
-// with the number missing from it.
 const placeholders = (section) => {
   const found = new Set();
   for (const value of section.values()) {
@@ -104,8 +95,7 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
   }
 }
 
-// The other direction: a template can name a key no file defines, and the
-// fallback hides that too.
+// The other direction: a template naming a key no file defines.
 const templates = [];
 const walk = (path) => {
   for (const entry of readdirSync(path, { withFileTypes: true })) {
@@ -117,12 +107,11 @@ const walk = (path) => {
 walk(join(root, 'layouts'));
 
 for (const path of templates) {
-  // Without this the examples in i18n.html's own doc comment count as calls.
+  // Comments stripped, or i18n.html's own doc examples count as calls.
   const html = readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 
-  // "key" on its own is just a dict field — font-fallback.html has three of
-  // them — so the partial has to be named. Every caller puts the key on the
-  // same line as the partial.
+  // The partial has to be named: "key" alone is an ordinary dict field, as in
+  // font-fallback.html. Every caller keeps the key on that same line.
   const calls = [
     ...html.matchAll(/partial\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_-]+)"/g),
     ...html.matchAll(/\bi18n\s+"([A-Za-z0-9_-]+)"/g),

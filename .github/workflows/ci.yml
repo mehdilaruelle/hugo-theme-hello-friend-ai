@@ -35,9 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # i18n.html falls back to English, so a key that only ever reached en.toml
-  # builds green, warns about nothing, and puts an English heading in front of
-  # everyone who does not read English. Nothing else asserts the twenty other
-  # files kept up. No Hugo here — it reads the source.
+  # builds green and warns about nothing. Source only, no Hugo.
   i18n:
     name: Every language carries every key
     runs-on: ubuntu-latest
