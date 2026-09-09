@@ -2,8 +2,9 @@
   "Posts" becomes "Posts (page 2)". Takes text and pager; returns the text
   unchanged on the first pager, and an empty string unchanged always.
 
-  One place because six things say it and they have to agree: the title, the
-  heading, the meta description, og:title, og:description, twitter:description.
+  One place because seven things say it and they have to agree: the title, the
+  heading, the meta description, og:title, og:description, twitter:title,
+  twitter:description.
 */ -}}
 {{- $text := .text -}}
 {{- $pager := .pager | default 1 -}}
