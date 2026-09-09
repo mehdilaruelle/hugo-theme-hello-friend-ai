@@ -7,5 +7,7 @@ noindex = "false"
 reads any non-empty string as true, so this page used to carry the robots tag
 and drop out of `sitemap.xml` — the opposite of what its front matter asks.
 
-It is here so the spelling is built on every run: this page should appear in
-`sitemap.xml` and carry no `robots` tag.
+It is here so the spelling is built on every run. Every page carries a `robots`
+tag either way, so what to look for is which one: this page should get
+`max-image-preview:large` and appear in `sitemap.xml`, where a page that really
+asked to be hidden gets `noindex` and stays out.
