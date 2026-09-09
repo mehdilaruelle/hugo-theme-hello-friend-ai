@@ -12,15 +12,15 @@ which opens without JavaScript, and the same text goes into a `FAQPage` block in
 the `<head>`.
 
 {{< faq "Does the theme send anything to a service?" >}}
-No. Everything is produced at build time: the search index, `llms.txt` and the
-Markdown copies are all static files.
+No. Everything is produced at build time: the site's search index, `llms.txt`
+and the Markdown copies are all static files.
 {{< /faq >}}
 
 {{< faq "Do I have to write my posts this way?" >}}
 No, and you probably should not. This is the one feature that asks you to write
-content in a particular shape, so it is worth using only where a page really is
-a list of questions — a FAQ page, an objections section, a changelog of
-decisions.
+a page's content in a particular shape, so it is worth using only where a
+page really is a list of questions — a FAQ page, an objections section, a
+changelog of decisions.
 {{< /faq >}}
 
 {{< faq "Will Google show a rich result for it?" >}}
