@@ -84,5 +84,5 @@ se reflètent.
 Une callout est un shortcode du site, pas du thème. Elle rend son corps, qui passe donc par le typographe -- et un extrait de code à l'intérieur garde `a < b` écrit en entité.
 
 {{< callout >}}
-Ce que j'appelle une callout : « citée », espacée ... et `a < b` dans du code.
+Ce que j'appelle une callout : « citée », espacée ... et `a < b` dans du code. En prose aussi : 1 < 2 & plus.
 {{< /callout >}}

@@ -36,7 +36,23 @@ const fail = (msg) => { console.log(`  BAD  ${msg}`); bad++; };
 const prose = (s) => s
   .replace(/<(code|pre)(?:\s[^>]*)?>[\s\S]*?<\/\1\s*>/gi, "")
   .replace(/<\/?[A-Za-z][^>]*>/g, "");
-const entities = (s) => prose(s).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
+// Raw HTML anywhere, not only <code>: < > & " must stay entities there, since
+// decoding them changes the markup. Any spelling of those four, and nothing
+// else — a &rsquo; in a block is the noise it is in prose.
+const MARKUP = /&(?:lt|gt|amp|quot|#0*(?:34|38|60|62)|#x0*(?:22|26|3[ce]));/gi;
+const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
+const entities = (s) => {
+  let open = false;
+  const text = s.split("\n").map((line) => {
+    if (open && !line.trim()) open = false;
+    const tag = open ? null : TAG.exec(line);
+    // Closed on its own line, so it carries no further: "<span>x</span>" must
+    // not excuse the prose under it.
+    if (tag) open = !tag[1] && !new RegExp(`</${tag[2]}\\s*>`, "i").test(line);
+    return open || tag ? line.replace(MARKUP, "") : line;
+  }).join("\n");
+  return prose(text).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
+};
 
 // The destination without the title: [About](/about/ "About") is /about/.
 const destination = (raw) => {
