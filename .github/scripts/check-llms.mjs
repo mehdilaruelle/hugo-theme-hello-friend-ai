@@ -89,16 +89,24 @@ const generatedHeadings = () => {
   const out = new Map();
   let read = false;
   for (const dir of [fileURLToPath(new URL("../../i18n/", import.meta.url)), join(process.cwd(), "i18n")]) {
+    // All of a directory's headings or none of them, read before any is kept: a
+    // file that cannot be read halfway through would otherwise leave every
+    // language after it unnamed, which is the half-known set below.
+    let found;
     try {
-      for (const f of readdirSync(dir).filter((n) => n.endsWith(".toml"))) {
-        const lang = f.replace(/\.toml$/, "").toLowerCase();
-        const named = out.get(lang) || new Map();
-        // The site's i18n is read second, so an override lands last and wins.
-        for (const [h, k] of headingsIn(readFileSync(join(dir, f), "utf8"))) named.set(k, h);
-        out.set(lang, named);
-        read = true;
-      }
-    } catch { /* no i18n there */ }
+      found = readdirSync(dir)
+        .filter((n) => n.endsWith(".toml"))
+        .map((f) => [f.replace(/\.toml$/, "").toLowerCase(), headingsIn(readFileSync(join(dir, f), "utf8"))]);
+    } catch { continue; /* no i18n there, or not the whole of it */ }
+    for (const [lang, pairs] of found) {
+      if (!pairs.length) continue;
+      const named = out.get(lang) || new Map();
+      // The site's i18n is read second, so an override lands last and wins.
+      for (const [h, k] of pairs) named.set(k, h);
+      out.set(lang, named);
+    }
+    // Files with none of the three keys name nothing, so they are not a set.
+    if (found.some(([, pairs]) => pairs.length)) read = true;
   }
   return { byLang: out, read };
 };
