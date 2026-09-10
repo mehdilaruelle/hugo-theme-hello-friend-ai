@@ -700,6 +700,11 @@ tells the crawler not to index what it finds is contradicting itself — a
 contradiction search consoles report, and crawl budget spent on nothing. Its
 translations stop pointing at it with `hreflang` for the same reason.
 
+Write it as a boolean. `noindex: false` and `noindex: 0` mean what they say, and
+so do the quoted `"false"` and `"0"` — a template reads any non-empty string as
+true, so those two used to hide the page that had just asked to be indexed.
+Anything else truthy, quoted or not, means yes.
+
 The search page is kept out the same way, without being asked. A page with
 `layout: search` is thin by construction — an empty results list and a form —
 and Google's guidance is to keep internal search results out of the index, since
