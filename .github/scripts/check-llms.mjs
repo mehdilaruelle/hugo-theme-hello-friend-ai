@@ -86,7 +86,7 @@ const headingsIn = (toml) => {
   return out;
 };
 const generatedHeadings = () => {
-  const out = new Map([["Posts", "posts"], ["Pages", "pages"], ["Contents", "contents"]]);
+  const out = new Map();
   let read = false;
   for (const dir of [fileURLToPath(new URL("../../i18n/", import.meta.url)), join(process.cwd(), "i18n")]) {
     // All of a directory's headings or none of them, read before any is kept: a
@@ -96,31 +96,50 @@ const generatedHeadings = () => {
     try {
       found = readdirSync(dir)
         .filter((n) => n.endsWith(".toml"))
-        .flatMap((f) => headingsIn(readFileSync(join(dir, f), "utf8")));
+        .map((f) => [f.replace(/\.toml$/, "").toLowerCase(), headingsIn(readFileSync(join(dir, f), "utf8"))]);
     } catch { continue; /* no i18n there, or not the whole of it */ }
-    for (const [h, k] of found) out.set(h, k);
+    for (const [lang, pairs] of found) {
+      if (!pairs.length) continue;
+      const named = out.get(lang) || new Map();
+      // The site's i18n is read second, so an override lands last and wins.
+      for (const [h, k] of pairs) named.set(k, h);
+      out.set(lang, named);
+    }
     // Files with none of the three keys name nothing, so they are not a set.
-    if (found.length) read = true;
+    if (found.some(([, pairs]) => pairs.length)) read = true;
   }
-  return { headings: out, read };
+  return { byLang: out, read };
 };
-const { headings: GENERATED, read: NAMES_KNOWN } = generatedHeadings();
+const { byLang: BY_LANG, read: NAMES_KNOWN } = generatedHeadings();
+// Only the keys the file's own template emits, in the file's own language: a
+// heading is otherwise accepted that no template could have written there.
+const FALLBACK = { posts: "Posts", pages: "Pages", contents: "Contents" };
+const MAP_KEYS = ["posts", "pages"];
+const MIRROR_KEYS = ["contents"];
+const accepts = (lang, keys) => {
+  const named = BY_LANG.get(lang) || new Map();
+  const out = new Map();
+  for (const k of keys) {
+    out.set(FALLBACK[k], k); // what the template prints when the key is missing
+    if (named.has(k)) out.set(named.get(k), k);
+  }
+  return out;
+};
 // With no i18n to read only English is known, and a half-known set would cut
 // the map short, so the fallback is whole: a section of nothing but list items.
 const CANONICAL = /\n---\n\n[^\n]*\n?$/;
 const onlyEntries = (part) => part.split("\n").slice(1).every((l) => !l.trim() || l.startsWith("- "));
-const headingOf = (part) => GENERATED.get(part.split("\n")[0].slice(3).trim());
-const mapSection = (s) => {
+const mapSection = (s, accepted) => {
   const parts = s.split("\r\n").join("\n").replace(CANONICAL, "\n").split(/^(?=## )/m);
   let i = parts.length;
   const seen = new Set();
   while (i > 1) {
-    if (!NAMES_KNOWN) { if (!onlyEntries(parts[i - 1])) break; }
-    else {
-      // Each key is emitted once, so a heading repeating one — a body's own
-      // "## Posts" above the list it names, or a translation a site replaced —
-      // belongs to the body.
-      const key = headingOf(parts[i - 1]);
+    // Named and shaped: a generated list is entries and nothing else, so a
+    // section carrying prose is the body however its heading reads.
+    if (!onlyEntries(parts[i - 1])) break;
+    if (NAMES_KNOWN) {
+      // Each key is emitted once, so a heading repeating one belongs to the body.
+      const key = accepted.get(parts[i - 1].split("\n")[0].slice(3).trim());
       if (!key || seen.has(key)) break;
       seen.add(key);
     }
@@ -131,7 +150,7 @@ const mapSection = (s) => {
 // A listing entry, not any mention: a page kept out of the generated lists is
 // still one an author may link to in prose.
 const bare = (u) => u.replace(/index\.md$/, "");
-const listed = (s) => [...mapSection(s).matchAll(LIST_LINK)].map((m) => bare(destination(m[1])));
+const listed = (s, accepted) => [...mapSection(s, accepted).matchAll(LIST_LINK)].map((m) => bare(destination(m[1])));
 // llms-full.txt entries close as page.md.md does — rule, blank line, page URL.
 const carriedIn = (full) => {
   const lines = full.split("\n");
@@ -171,7 +190,7 @@ for (const [lang, prefix] of Object.entries(langs)) {
   const found = entities(s);
   if (found) fail(`${lang}: ${found.length} HTML entities, e.g. ${found[0]}`);
 
-  const links = [...mapSection(s).matchAll(LIST_LINK)].map((m) => destination(m[1]));
+  const links = [...mapSection(s, accepts(lang, MAP_KEYS)).matchAll(LIST_LINK)].map((m) => destination(m[1]));
   if (!links.length) fail(`${lang}: no links`);
   for (const url of links) {
     if (!url.startsWith(base)) { fail(`${lang}: ${url} is outside ${base}`); continue; }
@@ -225,6 +244,12 @@ const slash = (p) => p.split("\\").join("/");
 const rootPrefix = slash(root).replace(/\/$/, "") + "/";
 const mds = walk(root).filter((f) => f.endsWith("index.md"));
 const rels = mds.map((f) => slash(f).slice(rootPrefix.length));
+// A mirror's language, by the prefix its path carries.
+const langOfFile = (f) => {
+  const rel = slash(f).slice(rootPrefix.length);
+  return Object.keys(langs).find((l) => langs[l] && rel.startsWith(langs[l]))
+    || Object.keys(langs).find((l) => !langs[l]);
+};
 if (!mds.length) fail("no Markdown pages were written");
 let edges = 0;
 for (const f of mds) {
@@ -289,7 +314,7 @@ for (const url of absent) {
   if (!existsSync(page)) { fail(`--absent ${url} is not a page of this build`); continue; }
   for (const [lang, prefix] of Object.entries(langs)) {
     const map = join(root, prefix, "llms.txt");
-    if (existsSync(map) && listed(readFileSync(map, "utf8")).includes(url)) {
+    if (existsSync(map) && listed(readFileSync(map, "utf8"), accepts(lang, MAP_KEYS)).includes(url)) {
       fail(`${lang}: llms.txt maps ${url}, which asked to stay out`);
     }
     const full = join(root, prefix, "llms-full.txt");
@@ -298,7 +323,7 @@ for (const url of absent) {
     }
   }
   for (const f of mds) {
-    if (listed(readFileSync(f, "utf8")).includes(url)) fail(`${f}: lists ${url}, which asked to stay out`);
+    if (listed(readFileSync(f, "utf8"), accepts(langOfFile(f), MIRROR_KEYS)).includes(url)) fail(`${f}: lists ${url}, which asked to stay out`);
   }
   // The other half of the contract, which nothing else here would notice.
   if (readFileSync(page, "utf8").includes(`${url}index.md`)) {
