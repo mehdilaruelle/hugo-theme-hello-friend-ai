@@ -146,3 +146,9 @@ other = "{{ .Kept }} af {{ .Total }} sider, i den rækkefølge llms.txt angiver.
 #
 [headingAnchor]
 other = "Link til dette afsnit"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Relaterede indlæg"

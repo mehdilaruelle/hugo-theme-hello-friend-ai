@@ -147,3 +147,9 @@ other = "{{ .Total }} ページのうち {{ .Kept }} ページ、llms.txt と同
 #
 [headingAnchor]
 other = "このセクションへのリンク"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "関連記事"

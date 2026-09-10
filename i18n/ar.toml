@@ -161,3 +161,9 @@ other = "{{ .Kept }} صفحة من أصل {{ .Total }}، بالترتيب الذ
 #
 [headingAnchor]
 other = "رابط إلى هذا القسم"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "مقالات ذات صلة"

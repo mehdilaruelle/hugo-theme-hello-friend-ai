@@ -146,3 +146,9 @@ other = "{{ .Kept }} dari {{ .Total }} halaman, dalam urutan yang tercantum di l
 #
 [headingAnchor]
 other = "Tautan ke bagian ini"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Postingan terkait"

@@ -146,3 +146,9 @@ other = "{{ .Kept }} din {{ .Total }} pagini, în ordinea în care le listează 
 #
 [headingAnchor]
 other = "Link către această secțiune"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Articole similare"
