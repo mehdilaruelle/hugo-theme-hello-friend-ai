@@ -160,7 +160,7 @@
 {{- /* KaTeX, opt-in through math in the front matter or params: "$" is ordinary
        text in a shell snippet, and a false positive fetches 300 KB for nothing.
        Pinned with an integrity hash. */ -}}
-{{- if or .Params.math .Site.Params.math }}
+{{- if or (partial "switch.html" .Params.math) (partial "switch.html" .Site.Params.math) }}
 {{- /* Before the link it warms, or it warms nothing. crossorigin because the
        fetch below carries it: a connection opened in the other credentials
        mode cannot be reused, and the handshake is paid twice. */ -}}

@@ -37,7 +37,7 @@
        since the module URL sits in a data attribute the preload scanner never
        reads. Skipped when the math gate already emitted it -- one origin
        serves both. crossorigin because import() is always a CORS fetch. */ -}}
-{{- if not (or .Params.math .Site.Params.math) }}
+{{- if not (or (partial "switch.html" .Params.math) (partial "switch.html" .Site.Params.math)) }}
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 {{- end }}
 {{- /* The initialiser is a file, not an inline module, so a site with a strict
@@ -60,7 +60,7 @@
 {{- end }}
 {{ end }}
 
-{{ if or .Params.math .Site.Params.math }}
+{{ if or (partial "switch.html" .Params.math) (partial "switch.html" .Site.Params.math) }}
 {{- /* Pinned to an exact version with an integrity hash on each file. A range
        like katex@0.18 would let a new release change the JavaScript executed
        for visitors with no reviewed change here, and an integrity hash cannot

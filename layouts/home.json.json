@@ -20,18 +20,22 @@
 */ -}}
 {{- $limit := site.Params.searchContentLimit | default 4000 -}}
 {{- $index := slice -}}
-{{- range where site.RegularPages "Params.searchable" "!=" false -}}
-  {{- /* Empty rather than the zero time: search.js already renders the date
-         only when there is one. */ -}}
-  {{- $date := "" -}}
-  {{- if not .Date.IsZero -}}{{- $date = .Date.Format "2006-01-02" -}}{{- end -}}
-  {{- $index = $index | append (dict
-      "title"   (partial "title.html" .)
-      "url"     .RelPermalink
-      "date"    $date
-      "tags"    (.Params.tags | default slice)
-      "summary" (.Summary | plainify | htmlUnescape | chomp)
-      "content" (.Plain | htmlUnescape | chomp | truncate $limit "" | htmlUnescape)
-  ) -}}
+{{- /* range then if, not where: where cannot call a partial, and its typed
+       compare dropped every page whose searchable was a string. */ -}}
+{{- range site.RegularPages -}}
+  {{- if or (not (isset .Params "searchable")) (partial "switch.html" .Params.searchable) -}}
+    {{- /* Empty rather than the zero time: search.js already renders the date
+           only when there is one. */ -}}
+    {{- $date := "" -}}
+    {{- if not .Date.IsZero -}}{{- $date = .Date.Format "2006-01-02" -}}{{- end -}}
+    {{- $index = $index | append (dict
+        "title"   (partial "title.html" .)
+        "url"     .RelPermalink
+        "date"    $date
+        "tags"    (.Params.tags | default slice)
+        "summary" (.Summary | plainify | htmlUnescape | chomp)
+        "content" (.Plain | htmlUnescape | chomp | truncate $limit "" | htmlUnescape)
+    ) -}}
+  {{- end -}}
 {{- end -}}
 {{- $index | jsonify -}}
