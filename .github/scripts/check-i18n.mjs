@@ -96,28 +96,42 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
 }
 
 // The other direction: a template naming a key no file defines.
+//
+// Everything under layouts/ is a template, not only the .html ones — llms.txt,
+// the .md outputs and the feeds look keys up too, and scanning by extension
+// left eight of those calls unguarded.
 const templates = [];
 const walk = (path) => {
   for (const entry of readdirSync(path, { withFileTypes: true })) {
     const full = join(path, entry.name);
     if (entry.isDirectory()) walk(full);
-    else if (entry.name.endsWith('.html')) templates.push(full);
+    else templates.push(full);
   }
 };
 walk(join(root, 'layouts'));
 
+// pagination.newerPosts names a subkey, so a dot is part of the key and the
+// halves are resolved separately.
+const defined = (key) => {
+  const [section, subkey] = key.split('.');
+  if (!en.has(section)) return false;
+  return subkey === undefined || en.get(section).has(subkey);
+};
+
 for (const path of templates) {
   // Comments stripped, or i18n.html's own doc examples count as calls.
-  const html = readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const template = readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 
   // The partial has to be named: "key" alone is an ordinary dict field, as in
-  // font-fallback.html. Every caller keeps the key on that same line.
+  // font-fallback.html. Every caller keeps the key on that same line. A
+  // computed key — printf "taxonomyDescription%s" — has no string here to
+  // match, and is left alone rather than guessed at.
   const calls = [
-    ...html.matchAll(/partial\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_-]+)"/g),
-    ...html.matchAll(/\bi18n\s+"([A-Za-z0-9_-]+)"/g),
+    ...template.matchAll(/partial\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_.-]+)"/g),
+    ...template.matchAll(/\bi18n\s+"([A-Za-z0-9_.-]+)"/g),
   ];
   for (const m of calls) {
-    if (!en.has(m[1])) problems.push(`${path}: asks for [${m[1]}], which en.toml does not define`);
+    if (!defined(m[1])) problems.push(`${path}: asks for [${m[1]}], which en.toml does not define`);
   }
 }
 
