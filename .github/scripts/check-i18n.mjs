@@ -104,10 +104,13 @@ const walk = (path) => {
 };
 walk(join(root, 'layouts'));
 
+// A plural category is not an id of its own: Hugo folds one/other into plural
+// forms of the parent, so readingTime.one resolves to nothing.
 const defined = (key) => {
   const [section, subkey] = key.split('.');
   if (!en.has(section)) return false;
-  return subkey === undefined || en.get(section).has(subkey);
+  if (subkey === undefined) return true;
+  return !PLURAL.has(subkey) && en.get(section).has(subkey);
 };
 
 for (const path of templates) {
