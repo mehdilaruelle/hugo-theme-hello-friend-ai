@@ -48,13 +48,16 @@ const parse = (file) => {
   return sections;
 };
 
-const placeholders = (section) => {
+const placeholders = (value) => {
   const found = new Set();
-  for (const value of section.values()) {
-    for (const m of value.matchAll(/{{-?\s*\.([A-Za-z0-9_.]+)/g)) found.add(m[1]);
-  }
+  for (const m of value.matchAll(/{{-?\s*\.([A-Za-z0-9_.]+)/g)) found.add(m[1]);
   return found;
 };
+
+// zero, one and two name one cardinality, so a language may spell the number
+// out: French says "Une minute", Arabic "دقيقتان". The categories that cover a
+// range have to carry it.
+const SPELLABLE = new Set(['zero', 'one', 'two']);
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -84,9 +87,29 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       problems.push(`i18n/${file}: [${key}] carries no plural form at all`);
     }
 
-    const have = placeholders(translated);
-    for (const p of placeholders(reference)) {
-      if (!have.has(p)) problems.push(`i18n/${file}: [${key}] drops {{ .${p} }}`);
+    // Per form, not per section: one form that still carries the number would
+    // otherwise cover for the form that lost it, and the sentence renders
+    // without it for every count in that category.
+    const counted = new Set();
+    for (const [subkey, value] of reference) {
+      if (PLURAL.has(subkey)) {
+        for (const p of placeholders(value)) counted.add(p);
+        continue;
+      }
+      // A named subkey is the same string in every file, so it compares directly.
+      const mine = translated.get(subkey);
+      if (mine === undefined) continue; // already reported above
+      const have = placeholders(mine);
+      for (const p of placeholders(value)) {
+        if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
+      }
+    }
+    for (const [subkey, value] of translated) {
+      if (!PLURAL.has(subkey) || SPELLABLE.has(subkey)) continue;
+      const have = placeholders(value);
+      for (const p of counted) {
+        if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
+      }
     }
   }
 
