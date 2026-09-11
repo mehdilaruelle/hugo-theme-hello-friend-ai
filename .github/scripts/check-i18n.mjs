@@ -45,13 +45,17 @@ const parse = (file) => {
   return sections;
 };
 
-const placeholders = (section) => {
+const placeholders = (value) => {
   const found = new Set();
-  for (const value of section.values()) {
-    for (const m of value.matchAll(/{{-?\s*\.([A-Za-z0-9_.]+)/g)) found.add(m[1]);
-  }
+  for (const m of value.matchAll(/{{-?\s*\.([A-Za-z0-9_.]+)/g)) found.add(m[1]);
   return found;
 };
+
+// zero, one and two name one cardinality, so the number may be spelled out.
+// The number only: anything else a form interpolates is needed whatever the
+// cardinality.
+const SPELLABLE = new Set(['zero', 'one', 'two']);
+const COUNT = 'Count';
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -81,9 +85,28 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       problems.push(`i18n/${file}: [${key}] carries no plural form at all`);
     }
 
-    const have = placeholders(translated);
-    for (const p of placeholders(reference)) {
-      if (!have.has(p)) problems.push(`i18n/${file}: [${key}] drops {{ .${p} }}`);
+    // Per form, not per section: a form that kept the number would otherwise
+    // cover for the one that lost it.
+    const counted = new Set();
+    for (const [subkey, value] of reference) {
+      if (PLURAL.has(subkey)) {
+        for (const p of placeholders(value)) counted.add(p);
+        continue;
+      }
+      const mine = translated.get(subkey);
+      if (mine === undefined) continue; // already reported above
+      const have = placeholders(mine);
+      for (const p of placeholders(value)) {
+        if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
+      }
+    }
+    for (const [subkey, value] of translated) {
+      if (!PLURAL.has(subkey)) continue;
+      const have = placeholders(value);
+      for (const p of counted) {
+        if (p === COUNT && SPELLABLE.has(subkey)) continue;
+        if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
+      }
     }
   }
 
