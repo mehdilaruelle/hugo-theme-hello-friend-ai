@@ -1,17 +1,7 @@
-{{- /*
-  Whether a front-matter switch is on. Takes the value, returns a boolean.
-
-  A Go template reads any non-empty string as true, so `noindex: "false"` -- the
-  spelling a quoted TOML or YAML value produces -- turned the switch on. `with`
-  covers the falsey values; the two spellings a template reads as true are named
-  here, lowered so "False" counts. Anything else truthy, quoted or not, is on.
-
-  One place because four switches ask it: noindex, noai, and toc in the two
-  templates that render a table of contents. The rule living in each of them
-  separately is how noai and toc kept the bug noindex had already fixed --
-  noai the other way about, testing `eq .Params.noai true` and so ignoring the
-  quoted spelling rather than obeying it.
-*/ -}}
+{{- /* Whether a front-matter switch is on. Takes the value, returns a boolean.
+       A Go template reads any non-empty string as true, so `noindex: "false"`,
+       the spelling a quoted TOML or YAML value produces, turned the switch on.
+       Shared, because noindex, noai and toc all ask it. */ -}}
 {{- $on := false -}}
 {{- with . -}}
   {{- if not (in (slice "false" "0") (lower (printf "%v" .))) -}}{{- $on = true -}}{{- end -}}

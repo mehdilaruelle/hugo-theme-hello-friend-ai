@@ -8,8 +8,6 @@
   By layout rather than by path, because a page becomes a search page by asking
   for one.
 */ -}}
-{{- /* switch.html holds the reading of the value, because noai and toc ask the
-       same question and answered it differently. */ -}}
 {{- $noindex := partial "switch.html" .Params.noindex -}}
 {{- if eq .Layout "search" -}}{{- $noindex = true -}}{{- end -}}
 {{- return $noindex -}}

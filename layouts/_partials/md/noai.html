@@ -4,9 +4,6 @@
        not noindex, which is search engines: coupling either would put a second
        intention on a switch that already has one. A search page is out by
        layout — an empty results list has nothing to hand anybody. */ -}}
-{{- /* Through switch.html: `eq .Params.noai true` matched the boolean alone, so
-       noai: "true" was read as no answer at all and the page it asked to
-       withhold went out in every text output. */ -}}
 {{- $out := partial "switch.html" .Params.noai -}}
 {{- if eq .Layout "search" -}}{{- $out = true -}}{{- end -}}
 {{- return $out -}}
