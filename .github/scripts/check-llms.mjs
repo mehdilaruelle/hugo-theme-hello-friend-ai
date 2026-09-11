@@ -134,12 +134,10 @@ const mapSection = (s, accepted) => {
   let i = parts.length;
   let last = accepted.order.length;
   while (i > 1) {
-    // Named and shaped: a generated list is entries and nothing else, so a
-    // section carrying prose is the body however its heading reads.
+    // A generated list is entries and nothing else.
     if (!onlyEntries(parts[i - 1])) break;
     if (NAMES_KNOWN) {
-      // The templates emit the keys in one order, once each, so read from the
-      // end a heading's place in that order has to fall every time.
+      // Emitted in one order, once each, so read backwards it has to fall.
       const at = accepted.order.indexOf(accepted.of.get(parts[i - 1].split("\n")[0].slice(3).trim()));
       if (at < 0 || at >= last) break;
       last = at;
@@ -192,9 +190,7 @@ for (const [lang, prefix] of Object.entries(langs)) {
   if (found) fail(`${lang}: ${found.length} HTML entities, e.g. ${found[0]}`);
 
   const links = [...mapSection(s, accepts(lang, MAP_KEYS)).matchAll(LIST_LINK)].map((m) => destination(m[1]));
-  // Headings but no map means none of them is one this theme writes — a layout
-  // the site replaced, say. Worth saying, rather than "no links" over a file
-  // visibly full of them.
+  // Headings but no map: none of them is one this theme writes.
   if (!links.length) fail(/^## \S/m.test(s) ? `${lang}: no list under a heading this theme generates` : `${lang}: no links`);
   for (const url of links) {
     if (!url.startsWith(base)) { fail(`${lang}: ${url} is outside ${base}`); continue; }
