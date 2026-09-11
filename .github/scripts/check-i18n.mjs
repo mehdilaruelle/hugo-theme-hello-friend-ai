@@ -1,8 +1,5 @@
 // Every key en.toml defines has to exist in the other twenty translations.
-//
-// i18n.html falls back to English, so a key that never reached a translation
-// builds green and shows up only on the page of somebody who does not read
-// English — which is how relatedPosts shipped in en.toml alone.
+// i18n.html falls back to English, so a missing one builds green.
 //
 //   node check-i18n.mjs <theme-root>
 
@@ -12,7 +9,7 @@ import { join } from 'node:path';
 const root = process.argv[2] || '.';
 const dir = join(root, 'i18n');
 
-// CLDR categories: the only subkeys allowed to differ between files.
+// The only subkeys allowed to differ between files.
 const PLURAL = new Set(['zero', 'one', 'two', 'few', 'many', 'other']);
 
 const problems = [];
@@ -95,11 +92,8 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
   }
 }
 
-// The other direction: a template naming a key no file defines.
-//
-// Everything under layouts/ is a template, not only the .html ones — llms.txt,
-// the .md outputs and the feeds look keys up too, and scanning by extension
-// left eight of those calls unguarded.
+// The other direction: a template naming a key no file defines. Every file
+// under layouts/ is a template, .html or not.
 const templates = [];
 const walk = (path) => {
   for (const entry of readdirSync(path, { withFileTypes: true })) {
@@ -110,8 +104,6 @@ const walk = (path) => {
 };
 walk(join(root, 'layouts'));
 
-// pagination.newerPosts names a subkey, so a dot is part of the key and the
-// halves are resolved separately.
 const defined = (key) => {
   const [section, subkey] = key.split('.');
   if (!en.has(section)) return false;
@@ -123,9 +115,7 @@ for (const path of templates) {
   const template = readFileSync(path, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
 
   // The partial has to be named: "key" alone is an ordinary dict field, as in
-  // font-fallback.html. Every caller keeps the key on that same line. A
-  // computed key — printf "taxonomyDescription%s" — has no string here to
-  // match, and is left alone rather than guessed at.
+  // font-fallback.html.
   const calls = [
     ...template.matchAll(/partial\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_.-]+)"/g),
     ...template.matchAll(/\bi18n\s+"([A-Za-z0-9_.-]+)"/g),
