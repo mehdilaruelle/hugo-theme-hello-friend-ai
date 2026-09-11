@@ -55,8 +55,10 @@ const placeholders = (value) => {
 };
 
 // zero, one and two name one cardinality, so the number may be spelled out.
-// Only the categories covering a range have to carry it.
+// The number only: anything else a form interpolates is needed whatever the
+// cardinality.
 const SPELLABLE = new Set(['zero', 'one', 'two']);
+const COUNT = 'Count';
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -102,9 +104,10 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       }
     }
     for (const [subkey, value] of translated) {
-      if (!PLURAL.has(subkey) || SPELLABLE.has(subkey)) continue;
+      if (!PLURAL.has(subkey)) continue;
       const have = placeholders(value);
       for (const p of counted) {
+        if (p === COUNT && SPELLABLE.has(subkey)) continue;
         if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
       }
     }
