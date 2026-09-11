@@ -117,7 +117,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: |
           node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
-            --absent=https://example.com/subpath/showcase/kept-out/
+            --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
 
       # With neither the note nor the llms-full line between them, a body
       # heading over a link list has the generated lists shape exactly.

@@ -8,12 +8,8 @@
   By layout rather than by path, because a page becomes a search page by asking
   for one.
 */ -}}
-{{- $noindex := false -}}
-{{- /* with covers the falsey spellings; the slice covers the ones a template
-       reads as true because they are non-empty strings. Without it noindex:
-       "false" asked to be indexed and was hidden, here and in the sitemap. */ -}}
-{{- with .Params.noindex -}}
-  {{- if not (in (slice "false" "0") (lower (printf "%v" .))) -}}{{- $noindex = true -}}{{- end -}}
-{{- end -}}
+{{- /* switch.html holds the reading of the value, because noai and toc ask the
+       same question and answered it differently. */ -}}
+{{- $noindex := partial "switch.html" .Params.noindex -}}
 {{- if eq .Layout "search" -}}{{- $noindex = true -}}{{- end -}}
 {{- return $noindex -}}
