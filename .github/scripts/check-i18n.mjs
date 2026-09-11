@@ -54,9 +54,8 @@ const placeholders = (value) => {
   return found;
 };
 
-// zero, one and two name one cardinality, so a language may spell the number
-// out: French says "Une minute", Arabic "دقيقتان". The categories that cover a
-// range have to carry it.
+// zero, one and two name one cardinality, so the number may be spelled out.
+// Only the categories covering a range have to carry it.
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
@@ -87,16 +86,14 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       problems.push(`i18n/${file}: [${key}] carries no plural form at all`);
     }
 
-    // Per form, not per section: one form that still carries the number would
-    // otherwise cover for the form that lost it, and the sentence renders
-    // without it for every count in that category.
+    // Per form, not per section: a form that kept the number would otherwise
+    // cover for the one that lost it.
     const counted = new Set();
     for (const [subkey, value] of reference) {
       if (PLURAL.has(subkey)) {
         for (const p of placeholders(value)) counted.add(p);
         continue;
       }
-      // A named subkey is the same string in every file, so it compares directly.
       const mine = translated.get(subkey);
       if (mine === undefined) continue; // already reported above
       const have = placeholders(mine);
