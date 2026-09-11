@@ -38,7 +38,7 @@
                     </figure>
                 {{ end }}
                 
-                {{ if .Params.toc }}
+                {{ if partial "switch.html" .Params.toc }}
                     <hr />
                     <aside id="toc">
                     <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>

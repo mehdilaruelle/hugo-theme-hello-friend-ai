@@ -705,6 +705,12 @@ so do the quoted `"false"` and `"0"` — a template reads any non-empty string a
 true, so those two used to hide the page that had just asked to be indexed.
 Anything else truthy, quoted or not, means yes.
 
+The same reading applies to `noai` and to `toc`, which is one partial now rather
+than a rule written out three times: that is how they were left behind when
+`noindex` was fixed. `toc: "false"` used to render the table of contents it
+declined, and `noai: "true"` was read as no answer at all, so the page it asked
+to withhold went out in every text output.
+
 The search page is kept out the same way, without being asked. A page with
 `layout: search` is thin by construction — an empty results list and a form —
 and Google's guidance is to keep internal search results out of the index, since
