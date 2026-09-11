@@ -118,12 +118,12 @@ const MAP_KEYS = ["posts", "pages"];
 const MIRROR_KEYS = ["contents"];
 const accepts = (lang, keys) => {
   const named = BY_LANG.get(lang) || new Map();
-  const out = new Map();
+  const of = new Map();
   for (const k of keys) {
-    out.set(FALLBACK[k], k); // what the template prints when the key is missing
-    if (named.has(k)) out.set(named.get(k), k);
+    of.set(FALLBACK[k], k); // what the template prints when the key is missing
+    if (named.has(k)) of.set(named.get(k), k);
   }
-  return out;
+  return { of, order: keys };
 };
 // With no i18n to read only English is known, and a half-known set would cut
 // the map short, so the fallback is whole: a section of nothing but list items.
@@ -132,16 +132,15 @@ const onlyEntries = (part) => part.split("\n").slice(1).every((l) => !l.trim() |
 const mapSection = (s, accepted) => {
   const parts = s.split("\r\n").join("\n").replace(CANONICAL, "\n").split(/^(?=## )/m);
   let i = parts.length;
-  const seen = new Set();
+  let last = accepted.order.length;
   while (i > 1) {
-    // Named and shaped: a generated list is entries and nothing else, so a
-    // section carrying prose is the body however its heading reads.
+    // A generated list is entries and nothing else.
     if (!onlyEntries(parts[i - 1])) break;
     if (NAMES_KNOWN) {
-      // Each key is emitted once, so a heading repeating one belongs to the body.
-      const key = accepted.get(parts[i - 1].split("\n")[0].slice(3).trim());
-      if (!key || seen.has(key)) break;
-      seen.add(key);
+      // Emitted in one order, once each, so read backwards it has to fall.
+      const at = accepted.order.indexOf(accepted.of.get(parts[i - 1].split("\n")[0].slice(3).trim()));
+      if (at < 0 || at >= last) break;
+      last = at;
     }
     i--;
   }
@@ -191,7 +190,8 @@ for (const [lang, prefix] of Object.entries(langs)) {
   if (found) fail(`${lang}: ${found.length} HTML entities, e.g. ${found[0]}`);
 
   const links = [...mapSection(s, accepts(lang, MAP_KEYS)).matchAll(LIST_LINK)].map((m) => destination(m[1]));
-  if (!links.length) fail(`${lang}: no links`);
+  // Headings but no map: none of them is one this theme writes.
+  if (!links.length) fail(/^## \S/m.test(s) ? `${lang}: no list under a heading this theme generates` : `${lang}: no links`);
   for (const url of links) {
     if (!url.startsWith(base)) { fail(`${lang}: ${url} is outside ${base}`); continue; }
     if (!resolves(url)) fail(`${lang}: ${url} resolves to nothing`);
