@@ -1,7 +1,7 @@
-{{- /* Whether a front-matter switch is on. Takes the value, returns a boolean.
-       A Go template reads any non-empty string as true, so `noindex: "false"`,
-       the spelling a quoted TOML or YAML value produces, turned the switch on.
-       Shared, because noindex, noai and toc all ask it. */ -}}
+{{- /* Whether a switch is on. Takes the value -- front matter or site param --
+       and returns a boolean. A Go template reads any non-empty string as true,
+       so `noindex: "false"`, the spelling a quoted TOML or YAML value produces,
+       turned the switch on. */ -}}
 {{- $on := false -}}
 {{- with . -}}
   {{- if not (in (slice "false" "0") (lower (printf "%v" .))) -}}{{- $on = true -}}{{- end -}}
