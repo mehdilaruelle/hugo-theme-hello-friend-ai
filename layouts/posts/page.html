@@ -148,7 +148,7 @@
       {{ partial "related.html" . }}
 
       {{ if .Site.Config.Services.Disqus.Shortname }}
-        {{ if or (not (isset .Params "comments")) (partial "switch.html" .Params.Comments) }}
+        {{ if partial "comments-on.html" . }}
           {{- /* Hugo's embedded partial builds the embed URL in JavaScript, so
                  the preload scanner never sees it. Protocol-relative and no
                  crossorigin, matching the script element it appends. */ -}}
@@ -159,7 +159,7 @@
         {{ end }}
       {{ end }}
 
-      {{ if .Site.Params.Commento.Url }}
+      {{ if and .Site.Params.Commento.Url (partial "comments-on.html" .) }}
         {{- /* A Commento instance is wherever the site put it, so the origin
                comes out of the configured URL -- keeping its scheme, or none
                at all, for the reason is-remote.html gives. */ -}}
@@ -173,7 +173,7 @@
         <div id="commento"></div>
       {{ end }}
 
-      {{ if .Site.Params.Utterances.Repository }}
+      {{ if and .Site.Params.Utterances.Repository (partial "comments-on.html" .) }}
       {{- /* The scanner does see the script below, so this buys only the
              handshake the fetch would pay on leaving the queue. crossorigin,
              matching it. */ -}}
