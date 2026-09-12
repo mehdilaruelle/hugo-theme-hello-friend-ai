@@ -47,6 +47,11 @@ jobs:
       - name: Check the translations against en.toml
         run: node .github/scripts/check-i18n.mjs .
 
+      # No build needed: this reads the templates. The quoted-value step in
+      # links.yml proves the switches it lists; this finds the ones it does not.
+      - name: Check every switch is read through switch.html
+        run: node .github/scripts/check-switches.mjs .
+
   build:
     name: Build exampleSite
     runs-on: ubuntu-latest
