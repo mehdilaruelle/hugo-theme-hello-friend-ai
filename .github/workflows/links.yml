@@ -129,9 +129,7 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
-      # A quoted "false" is a non-empty string, so a template reads it as true
-      # and every one of these switches used to mean the opposite of what it
-      # says. Nothing else here would notice: the markup is valid either way.
+      # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite
         run: |
@@ -150,8 +148,7 @@ jobs:
           off sharing-buttons   "$post"                        "enableSharingButtons"
           off theme-init        public-quoted/index.html       "enableThemeToggle"
           off language-switcher public-quoted/index.html       "enableGlobalLanguageMenu"
-          # The one that reads the other way: "false" asks for it not to be
-          # disabled, so the pager has to still be there.
+          # A disable, so a quoted false has to leave the pager in place.
           n=$(grep -co pagination__buttons "$post" || true)
           [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"

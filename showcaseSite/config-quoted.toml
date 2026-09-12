@@ -1,6 +1,4 @@
-# Every site switch written as a quoted string, the spelling a TOML or YAML
-# value picks up when it is quoted. A template reads any non-empty string as
-# true, so each of these used to mean the opposite of what it says.
+# Every site switch as a quoted string, which a template reads as true.
 [params]
   enableThumbnails         = "false"
   enableListExcerpts       = "false"
