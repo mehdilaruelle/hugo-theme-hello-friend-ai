@@ -209,3 +209,19 @@ jobs:
           hugo --themesDir ../.. --gc --destination public-ai \
             --config config.toml,../.github/fixtures/ai-custom-crawlers.toml
           node ../.github/scripts/check-robots.mjs .. public-ai --custom-groups
+
+      # check-robots.mjs asserts the two halves agree, and a quoted "false" read
+      # as yes makes them agree on the wrong answer.
+      - name: Check robots.txt honours a quoted AI policy
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-ai-quoted \
+            --config config.toml,../.github/fixtures/ai-quoted.toml
+          node ../.github/scripts/check-robots.mjs .. public-ai-quoted
+          want='Content-Signal: search=no, ai-input=no, ai-train=no'
+          tr -d '\r' < public-ai-quoted/robots.txt | grep -qx "$want" || {
+            echo "  BAD  a quoted false was read as yes; wanted: $want"
+            grep '^Content-Signal' public-ai-quoted/robots.txt
+            exit 1
+          }
+          echo "  the quoted AI policy is declined, as written"
