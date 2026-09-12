@@ -138,18 +138,27 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-quoted
           post=public-quoted/posts/2026/01/everything-an-article-is-made-of/index.html
           bad=0
+          # The pager assertion below wants to hear a count of zero, which is
+          # also what a file that was never built reads as. Named, not counted.
+          for f in public-quoted/index.html public-quoted/posts/index.html "$post"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
+          done
+          # -c counts matching lines, and minified markup puts several on one.
+          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
           off() {
-            n=$(grep -co "$1" "$2" || true)
+            n=$(count "$1" "$2")
             [ "$n" = 0 ] || { echo "  BAD  $3 is still on: $1 appears $n time(s) in $2"; bad=1; }
           }
           off thumbnail         public-quoted/posts/index.html "enableThumbnails"
           off excerpt           public-quoted/posts/index.html "enableListExcerpts"
           off feather-clock     "$post"                        "enableReadingTime"
           off sharing-buttons   "$post"                        "enableSharingButtons"
+          # Both call sites: head.html writes theme-init, header.html the button.
           off theme-init        public-quoted/index.html       "enableThemeToggle"
+          off theme-toggle      public-quoted/index.html       "enableThemeToggle"
           off language-switcher public-quoted/index.html       "enableGlobalLanguageMenu"
           # A disable, so a quoted false has to leave the pager in place.
-          n=$(grep -co pagination__buttons "$post" || true)
+          n=$(count pagination__buttons "$post")
           [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
           exit "$bad"
