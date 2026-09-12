@@ -95,8 +95,6 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
         problems.push(`i18n/${file}: [${key}] has a ${subkey} en.toml does not — nothing looks it up`);
       }
     }
-    // `other` and not merely some plural form: every language has to define it,
-    // and it is the one Hugo falls back through.
     if ([...reference.keys()].some((k) => PLURAL.has(k)) && !translated.has('other')) {
       problems.push(`i18n/${file}: [${key}] has no other form, so this language renders the English string`);
     }
