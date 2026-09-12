@@ -25,7 +25,8 @@
 {{- /* Measuring and resizing are separate questions: an SVG answers neither and
        asking aborts the build, HEIC carries dimensions but cannot be resized,
        and Hugo returns 0 where the file will not say -- width="0" collapses. */ -}}
-{{- $maxWidth := .maxWidth | default site.Params.imageMaxWidth | default 1400 -}}
+{{- $maxWidth := int (.maxWidth | default site.Params.imageMaxWidth | default 0) -}}
+{{- if le $maxWidth 0 }}{{ $maxWidth = 1400 }}{{ end -}}
 {{- $rendered := $img -}}
 {{- $measurable := false -}}
 {{- if $img -}}{{- if reflect.IsImageResourceWithMeta $img -}}

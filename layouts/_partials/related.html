@@ -11,8 +11,8 @@
 {{- $on := true -}}
 {{- with site.Params.related }}{{ if isset . "enable" }}{{ $on = partial "switch.html" .enable }}{{ end }}{{ end -}}
 {{- if $on -}}
-  {{- $limit := 5 -}}
-  {{- with site.Params.related.limit }}{{ $limit = . }}{{ end -}}
+  {{- $limit := int (site.Params.related.limit | default 0) -}}
+  {{- if le $limit 0 }}{{ $limit = 5 }}{{ end -}}
 
   {{- $pages := slice -}}
   {{- range (where site.RegularPages "Section" .Section).Related . -}}
