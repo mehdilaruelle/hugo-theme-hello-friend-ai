@@ -51,11 +51,20 @@ const placeholders = (value) => {
   return found;
 };
 
-// zero, one and two name one cardinality, so the number may be spelled out.
-// The number only: anything else a form interpolates is needed whatever the
-// cardinality.
+// A form naming one cardinality may spell the number out, the number only.
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
+
+// Slavic `one` is 1, 21, 31 … and must carry it; Arabic's is exactly 1 and
+// declares `two`, which the Slavic languages do not.
+const spellsOutOne = (sections) => {
+  let ranged = false;
+  for (const forms of sections.values()) {
+    if (forms.has('two')) return true;
+    if (forms.has('few') || forms.has('many')) ranged = true;
+  }
+  return !ranged;
+};
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -67,6 +76,7 @@ const en = parse('en.toml');
 
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
+  const spellable = spellsOutOne(lang) ? SPELLABLE : new Set(['zero', 'two']);
 
   for (const [key, reference] of en) {
     const translated = lang.get(key);
@@ -78,6 +88,11 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
     for (const subkey of reference.keys()) {
       if (!PLURAL.has(subkey) && !translated.has(subkey)) {
         problems.push(`i18n/${file}: [${key}] has no ${subkey}`);
+      }
+    }
+    for (const subkey of translated.keys()) {
+      if (!PLURAL.has(subkey) && !reference.has(subkey)) {
+        problems.push(`i18n/${file}: [${key}] has a ${subkey} en.toml does not — nothing looks it up`);
       }
     }
     if ([...reference.keys()].some((k) => PLURAL.has(k)) &&
@@ -104,7 +119,7 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       if (!PLURAL.has(subkey)) continue;
       const have = placeholders(value);
       for (const p of counted) {
-        if (p === COUNT && SPELLABLE.has(subkey)) continue;
+        if (p === COUNT && spellable.has(subkey)) continue;
         if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
       }
     }
