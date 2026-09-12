@@ -85,6 +85,11 @@ if (logo) {
     const path = window.location.pathname;
     const rest = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\//, "");
     // The home page has no section to name, and adds nothing.
-    logo.textContent += rest.split("/").filter(Boolean)[0] || "";
+    const section = rest.split("/").filter(Boolean)[0] || "";
+    // pathname is percent-encoded, so a non-ASCII section read as
+    // "d%C3%A9veloppement". decodeURIComponent throws on a stray "%".
+    let text = section;
+    try { text = decodeURIComponent(section); } catch { /* leave it encoded */ }
+    logo.textContent += text;
   });
 }
