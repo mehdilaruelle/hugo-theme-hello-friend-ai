@@ -74,6 +74,13 @@ if (!files.includes('en.toml')) {
 
 const en = parse('en.toml');
 
+// The reference file is a translation too, and nothing below checks it.
+for (const [key, forms] of en) {
+  if ([...forms.keys()].some((k) => PLURAL.has(k)) && !forms.has('other')) {
+    problems.push(`i18n/en.toml: [${key}] has no other form, so a count the named forms do not cover resolves to nothing`);
+  }
+}
+
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
   const spellable = spellsOutOne(lang) ? SPELLABLE : new Set(['zero', 'two']);
