@@ -79,6 +79,13 @@ if (!files.includes('en.toml')) {
 
 const en = parse('en.toml');
 
+// The reference file is a translation too, and nothing below checks it.
+for (const [key, forms] of en) {
+  if ([...forms.keys()].some((k) => PLURAL.has(k)) && !forms.has('other')) {
+    problems.push(`i18n/en.toml: [${key}] has no other form, so a count the named forms do not cover resolves to nothing`);
+  }
+}
+
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
   const spellable = spellsOutOne(lang) ? SPELLABLE : new Set(['zero', 'two']);
@@ -100,9 +107,8 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
         problems.push(`i18n/${file}: [${key}] has a ${subkey} en.toml does not — nothing looks it up`);
       }
     }
-    if ([...reference.keys()].some((k) => PLURAL.has(k)) &&
-        ![...translated.keys()].some((k) => PLURAL.has(k))) {
-      problems.push(`i18n/${file}: [${key}] carries no plural form at all`);
+    if ([...reference.keys()].some((k) => PLURAL.has(k)) && !translated.has('other')) {
+      problems.push(`i18n/${file}: [${key}] has no other form, so this language renders the English string`);
     }
 
     // Per form, not per section: a form that kept the number would otherwise
