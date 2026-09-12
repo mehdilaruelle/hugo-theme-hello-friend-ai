@@ -170,6 +170,31 @@ jobs:
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
           exit "$bad"
 
+      # No demo configures a comment provider, so nothing else builds the branch
+      # comments-on.html decides.
+      - name: Check the comments switch across all three providers
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-comments
+          p=public-comments/posts/2026/01
+          on=$p/a-video-where-a-gif-used-to-be/index.html
+          off_bool=$p/long-title-no-cover/index.html
+          off_quoted=$p/questions-the-theme-is-asked/index.html
+          bad=0
+          for f in "$on" "$off_bool" "$off_quoted"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
+          done
+          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
+          for m in hello-friend-ai-ci.disqus.com commento.example.com example/hello-friend-ai-ci; do
+            [ "$(count "$m" "$on")" != 0 ] || { echo "  BAD  $m is missing with comments unset, so its absence below proves nothing"; bad=1; }
+            [ "$(count "$m" "$off_bool")" = 0 ] || { echo "  BAD  $m is on under comments: false"; bad=1; }
+            [ "$(count "$m" "$off_quoted")" = 0 ] || { echo "  BAD  $m is on under comments: \"false\""; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
+          exit "$bad"
+
       # A failed template prints the failure and the build stays green:
       # %!q(bool=true) went out in a heading, past every checker above.
       - name: Check no template failed silently (showcase)
