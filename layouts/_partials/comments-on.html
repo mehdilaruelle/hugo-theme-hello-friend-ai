@@ -1,0 +1,4 @@
+{{- /* Whether this page wants comments. Unset means yes: a flag nobody wrote
+       cannot be an opt-out, and three providers each read it differently
+       before this was one answer. */ -}}
+{{- return or (not (isset .Params "comments")) (partial "switch.html" .Params.Comments) -}}

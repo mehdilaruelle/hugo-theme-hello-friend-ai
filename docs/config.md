@@ -210,7 +210,9 @@ own for a visitor who asks for reduced motion.
 ## Comments
 
 Three providers, each independent, each off until configured. A page opts out of
-Disqus with `comments` in its front matter — see [Front matter](#front-matter).
+all three with `comments` in its front matter — see [Front matter](#front-matter).
+Its `preconnect` hints go with them, so a page with no comments pays for no
+handshake.
 
 ```toml
 [services.disqus]
@@ -675,7 +677,7 @@ icons, and the build warns when it sees one.
 | `toc` | table of contents above the article, over the heading levels `markup.tableOfContents` selects — `h2` and `h3` until a site changes them |
 | `audio` | an audio player above the article. **A list**, see below |
 | `noindex` | `<meta name="robots" content="noindex">`, and the page is left out of `sitemap.xml` — see [Keeping a page out of things](#keeping-a-page-out-of-things). A page with `layout: search` is already treated this way and does not need it |
-| `comments` | set to `false` to hide Disqus on that page. The string `"false"` is accepted too, which is what older versions required |
+| `comments` | set to `false` to hide the comments on that page — Disqus, Commento and utterances alike. Quoted values count, so `"false"` and `"0"` read the same way |
 | `description` | overrides the summary in `<meta name="description">` and Open Graph |
 | `author` | overrides the site author for that page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |

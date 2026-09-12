@@ -190,6 +190,8 @@
   // focus-within, so :focus-visible needs the same feedback.
   .dropdown-content a:hover,
   .dropdown-content a:focus-visible {
+    // (0,3,2), so it beats the text-decoration: none above it without !important.
+    text-decoration: underline;
     background: $dark-background-secondary;
 
     @media (prefers-color-scheme: light) {
