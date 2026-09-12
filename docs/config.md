@@ -245,8 +245,11 @@ where the comments should be. Set all three whenever you set `repository`.
 `params.footer.trademark` accepts either:
 
 - `true` — renders the current year, so it never goes stale
-- any value — rendered as given, for a fixed year or a range such as
+- any other value — rendered as given, for a fixed year or a range such as
   `"2019–2026"`
+
+`"true"` renders the year like the boolean, and `false`, `"false"` or `"0"` turn
+it off rather than printing the word.
 
 The rest of the block:
 
@@ -715,8 +718,10 @@ to withhold went out in every text output.
 
 The site switches read the same way — `enableThumbnails`, `enableListExcerpts`,
 `enableReadingTime`, `enableSharingButtons`, `enableThemeToggle`,
-`enableGlobalLanguageMenu` and `disableReadOtherPosts`. Each is a boolean, and
-each honours the quoted spelling of one.
+`enableGlobalLanguageMenu` and `disableReadOtherPosts`, the footer's `author`,
+`copyright`, `rss` and `trademark`, the logo's `logoCursorDisabled` and
+`logoCursorPathname`, and `related.enable`. Each is a boolean, and each honours
+the quoted spelling of one.
 
 The search page is kept out the same way, without being asked. A page with
 `layout: search` is thin by construction — an empty results list and a form —

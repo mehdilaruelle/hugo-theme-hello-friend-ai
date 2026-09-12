@@ -8,8 +8,12 @@
   enableGlobalLanguageMenu = "false"
   disableReadOtherPosts    = "false"
   [params.footer]
+    trademark = "false"
     author    = "false"
     copyright = "false"
     rss       = "false"
   [params.related]
     enable = "false"
+  [params.logo]
+    logoCursorDisabled = "false"
+    logoCursorPathname = "false"
