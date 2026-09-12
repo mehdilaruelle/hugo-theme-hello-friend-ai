@@ -1030,6 +1030,10 @@ link, `ai-input` (your `cite`) is being read to build an answer, `ai-train`
 (your `train`) is being learned from. Setting `search = false` therefore asks
 to be left out of the results, not out of the answers — that is `cite = false`.
 
+The three are booleans, and the quoted `"false"` a TOML or YAML value can pick
+up means false too. Read as a non-empty string, it used to publish `yes`
+for every one of them.
+
 ### Who is in each list
 
 `data/aiCrawlers.yaml`, kept current the way `data/langFlags.yaml` is, so a
