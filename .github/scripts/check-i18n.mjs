@@ -51,14 +51,12 @@ const placeholders = (value) => {
   return found;
 };
 
-// A form naming one cardinality may spell the number out. The number only:
-// anything else a form interpolates is needed whatever the cardinality.
+// A form naming one cardinality may spell the number out, the number only.
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
-// Except in Russian and Ukrainian, where `one` is 1, 21, 31 … and has to carry
-// the number. Arabic's `one` is exactly 1 and may not: the two shapes are told
-// apart by `two`, which Arabic declares and the Slavic languages do not.
+// Slavic `one` is 1, 21, 31 … and must carry it; Arabic's is exactly 1 and
+// declares `two`, which the Slavic languages do not.
 const spellsOutOne = (sections) => {
   let ranged = false;
   for (const forms of sections.values()) {
