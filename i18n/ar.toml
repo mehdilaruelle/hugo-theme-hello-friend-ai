@@ -3,9 +3,6 @@
 
 # Generic
 #
-[translations]
-other = "الترجمات"
-
 [postAvailable]
 other = "متوفر أيضًا بـ"
 
