@@ -168,6 +168,7 @@ jobs:
           off logo__pathname      public-quoted/index.html       "logoCursorPathname"
           # A disable, like the pager: the cursor is visible by default, so off() has
           # nothing to find there. A quoted false has to leave it visible.
+          [ "$(count logo__cursor public-quoted/index.html)" != 0 ] || { echo "  BAD  logoCursorDisabled: no cursor rendered, so nothing to hide"; bad=1; }
           n=$(count visibility:hidden public-quoted/index.html)
           [ "$n" = 0 ] || { echo "  BAD  logoCursorDisabled: a quoted false hid the cursor"; bad=1; }
           # A disable, so a quoted false has to leave the pager in place.
