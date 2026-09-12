@@ -7,3 +7,9 @@
   enableThemeToggle        = "false"
   enableGlobalLanguageMenu = "false"
   disableReadOtherPosts    = "false"
+  [params.footer]
+    author    = "false"
+    copyright = "false"
+    rss       = "false"
+  [params.related]
+    enable = "false"

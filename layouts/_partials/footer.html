@@ -1,11 +1,11 @@
 <footer class="footer">
-    {{if or (.Site.Params.footer.trademark) (.Site.Params.footer.author) (.Site.Params.footer.copyright) (.Site.Params.footer.rss) (.Site.Params.footer.topText) }}
+    {{if or (.Site.Params.footer.trademark) (partial "switch.html" .Site.Params.footer.author) (partial "switch.html" .Site.Params.footer.copyright) (partial "switch.html" .Site.Params.footer.rss) (.Site.Params.footer.topText) }}
     <div class="footer__inner">
         <div class="footer__content">
             {{ with .Site.Params.footer.trademark }}<span>&copy; {{ if eq . true }}{{ now.Year }}{{ else }}{{ . }}{{ end }}</span>{{ end }}
-            {{ if .Site.Params.footer.author }}<span><a href="{{ .Site.Home.RelPermalink }}">{{ (partial "site-author.html" .).name }}</a></span>{{ end }}
-            {{ if .Site.Params.footer.copyright }}<span>{{ .Site.Copyright| safeHTML }}</span>{{ end }}
-            {{ if .Site.Params.footer.rss }}<span><a href="{{ printf "%s/index.xml" (index (.Site.Params.mainSections | default (slice "posts")) 0) | absLangURL }}" target="_blank" rel="noopener" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>{{ end }}
+            {{ if partial "switch.html" .Site.Params.footer.author }}<span><a href="{{ .Site.Home.RelPermalink }}">{{ (partial "site-author.html" .).name }}</a></span>{{ end }}
+            {{ if partial "switch.html" .Site.Params.footer.copyright }}<span>{{ .Site.Copyright| safeHTML }}</span>{{ end }}
+            {{ if partial "switch.html" .Site.Params.footer.rss }}<span><a href="{{ printf "%s/index.xml" (index (.Site.Params.mainSections | default (slice "posts")) 0) | absLangURL }}" target="_blank" rel="noopener" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></span>{{ end }}
             {{ range .Site.Params.footer.topText }}<span>{{ . | safeHTML}}</span>{{ end }}
         </div>
     </div>
