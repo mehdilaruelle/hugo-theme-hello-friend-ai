@@ -42,7 +42,7 @@ const parse = (file) => {
     // i18n.html falls back on `not $t`, so an empty string renders the English
     // literal and a whitespace one renders itself. Neither is a translation.
     if (!entry[2].trim()) {
-      problems.push(`${where}: ${entry[1]} has no text — empty renders the English fallback, whitespace renders as nothing`);
+      problems.push(`${where}: [${current}] ${entry[1]} has no text — empty renders the English fallback, whitespace renders as nothing`);
     }
     sections.get(current).set(entry[1], entry[2]);
   });
