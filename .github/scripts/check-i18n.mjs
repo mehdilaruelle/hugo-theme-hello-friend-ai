@@ -60,9 +60,12 @@ const placeholders = (value) => {
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
-// CLDR `one` is 1, 21, 31 … in these, so it carries the number. Not Polish,
-// Czech or Slovak, whose `one` is exactly 1.
-const RANGED_ONE = new Set(['be', 'bs', 'hr', 'lt', 'ru', 'sr', 'uk']);
+// CLDR 48: `one` covers a count of 2 or more in these (21, 101, …), so it
+// carries the number. Not fr, pt or hi, whose `one` adds only 0.
+const RANGED_ONE = new Set([
+  'be', 'br', 'bs', 'ceb', 'dsb', 'fil', 'gd', 'gv', 'hr', 'hsb', 'is',
+  'lt', 'lv', 'mk', 'prg', 'ru', 'sgs', 'sl', 'sr', 'tl', 'tzm', 'uk',
+]);
 const spellsOutOne = (file) => !RANGED_ONE.has(file.replace(/\.toml$/, '').split('-')[0]);
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();

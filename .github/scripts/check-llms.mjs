@@ -42,9 +42,26 @@ const prose = (s) => s
 // else — a &rsquo; in a block is the noise it is in prose.
 const MARKUP = /&(?:lt|gt|amp|quot|#0*(?:34|38|60|62)|#x0*(?:22|26|3[ce]));/gi;
 const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
+// A fence is <pre> in Markdown: the author's text verbatim, which the
+// typographer never touches, so it is excused whole as prose() excuses <pre>.
+const FENCE_OPEN = /^ {0,3}(`{3,}|~{3,})/;
+const FENCE_CLOSE = /^ {0,3}(`{3,}|~{3,})\s*$/;
+const unfenced = (s) => {
+  let fence = "";
+  return s.split("\n").map((line) => {
+    if (fence) {
+      const c = FENCE_CLOSE.exec(line);
+      if (c && c[1][0] === fence[0] && c[1].length >= fence.length) fence = "";
+      return "";
+    }
+    const o = FENCE_OPEN.exec(line);
+    if (o) { fence = o[1]; return ""; }
+    return line;
+  }).join("\n");
+};
 const entities = (s) => {
   let open = false;
-  const text = s.split("\n").map((line) => {
+  const text = unfenced(s).split("\n").map((line) => {
     if (open && !line.trim()) open = false;
     const tag = open ? null : TAG.exec(line);
     // Closed on its own line, so it carries no further: "<span>x</span>" must

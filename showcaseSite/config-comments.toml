@@ -1,0 +1,23 @@
+# All three comment providers at once, and the comments switch on three posts:
+# unset, a boolean false and a quoted one. No demo turns comments on, so without
+# this nothing builds the branch comments-on.html decides.
+[services.disqus]
+  shortname = "hello-friend-ai-ci"
+
+[params.commento]
+  url = "https://commento.example.com/js/commento.js"
+
+[params.utterances]
+  repository = "example/hello-friend-ai-ci"
+  issueTerm  = "pathname"
+  theme      = "github-light"
+
+[[cascade]]
+  comments = false
+  [cascade.target]
+    path = "/posts/long-title-no-cover"
+
+[[cascade]]
+  comments = "false"
+  [cascade.target]
+    path = "/posts/faq"

@@ -43,6 +43,7 @@ public/
 public-ai/
 public-plain/
 public-quoted/
+public-comments/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json
