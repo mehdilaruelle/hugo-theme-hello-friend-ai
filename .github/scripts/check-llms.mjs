@@ -120,8 +120,9 @@ const accepts = (lang, keys) => {
   const named = BY_LANG.get(lang) || new Map();
   const of = new Map();
   for (const k of keys) {
-    of.set(FALLBACK[k], k); // what the template prints when the key is missing
-    if (named.has(k)) of.set(named.get(k), k);
+    // Empty counts as missing: i18n.html falls back on `not $t`, so a blank
+    // translation is a heading the template never prints.
+    of.set(named.get(k) || FALLBACK[k], k);
   }
   return { of, order: keys };
 };
