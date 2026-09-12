@@ -42,6 +42,7 @@ public/
 # The CI build of the params.ai.crawlers override.
 public-ai/
 public-plain/
+public-quoted/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json

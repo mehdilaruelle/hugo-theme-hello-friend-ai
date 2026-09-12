@@ -713,6 +713,11 @@ than a rule written out three times: that is how they were left behind when
 declined, and `noai: "true"` was read as no answer at all, so the page it asked
 to withhold went out in every text output.
 
+The site switches read the same way — `enableThumbnails`, `enableListExcerpts`,
+`enableReadingTime`, `enableSharingButtons`, `enableThemeToggle`,
+`enableGlobalLanguageMenu` and `disableReadOtherPosts`. Each is a boolean, and
+each honours the quoted spelling of one.
+
 The search page is kept out the same way, without being asked. A page with
 `layout: search` is thin by construction — an empty results list and a form —
 and Google's guidance is to keep internal search results out of the index, since

@@ -35,10 +35,10 @@
 
                         <ul class="posts-list">
                             {{ range .Pages }}
-                                {{- $thumbnail := and .Site.Params.enableThumbnails .Params.cover }}
+                                {{- $thumbnail := and (partial "switch.html" .Site.Params.enableThumbnails) .Params.cover }}
                                 {{- /* Description first, .Summary as a fallback, cut short. */ -}}
                                 {{- $excerpt := "" }}
-                                {{- if .Site.Params.enableListExcerpts }}
+                                {{- if partial "switch.html" .Site.Params.enableListExcerpts }}
                                     {{- $excerpt = .Description | default (.Summary | plainify | replaceRE "\\s+" " " | strings.TrimSpace | truncate 200) }}
                                 {{- end }}
                                 <li class="post-item">

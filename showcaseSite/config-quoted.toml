@@ -1,0 +1,9 @@
+# Every site switch as a quoted string, which a template reads as true.
+[params]
+  enableThumbnails         = "false"
+  enableListExcerpts       = "false"
+  enableReadingTime        = "false"
+  enableSharingButtons     = "false"
+  enableThemeToggle        = "false"
+  enableGlobalLanguageMenu = "false"
+  disableReadOtherPosts    = "false"
