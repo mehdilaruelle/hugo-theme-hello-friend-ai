@@ -169,7 +169,7 @@
           {{- with $commento.Scheme }}{{ $origin = printf "%s:%s" . $origin }}{{ end -}}
         <link rel="preconnect" href="{{ $origin }}">
         {{- end }}
-        <script defer src={{ .Site.Params.Commento.Url }}></script>
+        <script defer src="{{ .Site.Params.Commento.Url }}"></script>
         <div id="commento"></div>
       {{ end }}
 
