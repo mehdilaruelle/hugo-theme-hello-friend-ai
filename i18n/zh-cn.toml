@@ -3,9 +3,6 @@
 
 # Generic
 #
-[translations]
-other = "译文"
-
 [postAvailable]
 other = "其他语言"
 
