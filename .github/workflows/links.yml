@@ -164,6 +164,12 @@ jobs:
           off 'CC BY-NC'          public-quoted/index.html       "footer.copyright"
           off feather-rss         public-quoted/index.html       "footer.rss"
           off 'class=related'     "$post"                        "related.enable"
+          off '&copy;'            public-quoted/index.html       "footer.trademark"
+          off logo__pathname      public-quoted/index.html       "logoCursorPathname"
+          # A disable, like the pager: the cursor is visible by default, so off() has
+          # nothing to find there. A quoted false has to leave it visible.
+          n=$(count visibility:hidden public-quoted/index.html)
+          [ "$n" = 0 ] || { echo "  BAD  logoCursorDisabled: a quoted false hid the cursor"; bad=1; }
           # A disable, so a quoted false has to leave the pager in place.
           n=$(count pagination__buttons "$post")
           [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
