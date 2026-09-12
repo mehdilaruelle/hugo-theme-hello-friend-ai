@@ -7,6 +7,8 @@
   enableThemeToggle        = "false"
   enableGlobalLanguageMenu = "false"
   disableReadOtherPosts    = "false"
+  imageMaxWidth            = "0"
+  searchContentLimit       = "0"
   [params.footer]
     author    = "false"
     copyright = "false"

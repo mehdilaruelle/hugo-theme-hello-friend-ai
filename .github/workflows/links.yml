@@ -167,6 +167,9 @@ jobs:
           # A disable, so a quoted false has to leave the pager in place.
           n=$(count pagination__buttons "$post")
           [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
+          # A quoted 0 means the default, as 0 does.
+          grep -q '"content":"[^"]' public-quoted/index.json \
+            || { echo "  BAD  searchContentLimit: a quoted 0 emptied the search index"; bad=1; }
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
           exit "$bad"
 
