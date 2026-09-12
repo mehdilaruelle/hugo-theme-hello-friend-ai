@@ -4,7 +4,7 @@
   A details/summary, so it opens with no JavaScript; menu.js only adds Escape
   and click-outside.
 */ -}}
-{{- if and .Site.Params.EnableGlobalLanguageMenu hugo.IsMultilingual -}}
+{{- if and (partial "switch.html" .Site.Params.EnableGlobalLanguageMenu) hugo.IsMultilingual -}}
 {{- $page := . -}}
 {{- $label := partial "i18n.html" (dict "key" "language" "fallback" "Language") -}}
 <details class="language-switcher">

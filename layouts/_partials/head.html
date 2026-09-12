@@ -11,7 +11,7 @@
 {{- /* Blocking and before the stylesheet: it has to run before first paint.
        Only where the toggle exists, or a stored choice would restore a scheme
        the site no longer offers. */ -}}
-{{- if .Site.Params.EnableThemeToggle }}
+{{- if partial "switch.html" .Site.Params.EnableThemeToggle }}
 {{- with resources.Get "js/theme-init.js" }}
 {{- $init := . | resources.Minify | resources.Fingerprint "sha512" }}
 <script src="{{ $init.RelPermalink }}" integrity="{{ $init.Data.Integrity }}"></script>
