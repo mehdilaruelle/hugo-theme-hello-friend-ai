@@ -60,16 +60,10 @@ const placeholders = (value) => {
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
-// Slavic `one` is 1, 21, 31 … and must carry it; Arabic's is exactly 1 and
-// declares `two`, which the Slavic languages do not.
-const spellsOutOne = (sections) => {
-  let ranged = false;
-  for (const forms of sections.values()) {
-    if (forms.has('two')) return true;
-    if (forms.has('few') || forms.has('many')) ranged = true;
-  }
-  return !ranged;
-};
+// CLDR `one` is 1, 21, 31 … in these, so it carries the number. Not Polish,
+// Czech or Slovak, whose `one` is exactly 1.
+const RANGED_ONE = new Set(['be', 'bs', 'hr', 'lt', 'ru', 'sr', 'uk']);
+const spellsOutOne = (file) => !RANGED_ONE.has(file.replace(/\.toml$/, '').split('-')[0]);
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -88,7 +82,7 @@ for (const [key, forms] of en) {
 
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
-  const spellable = spellsOutOne(lang) ? SPELLABLE : new Set(['zero', 'two']);
+  const spellable = spellsOutOne(file) ? SPELLABLE : new Set(['zero', 'two']);
 
   for (const [key, reference] of en) {
     const translated = lang.get(key);
