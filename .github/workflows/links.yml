@@ -145,7 +145,9 @@ jobs:
           done
           # -c counts matching lines, and minified markup puts several on one.
           count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
+          # Absent here proves nothing unless it is present in the default build.
           off() {
+            [ "$(count "$1" "${2/public-quoted/public}")" != 0 ] || { echo "  BAD  $1 is not in the default build either"; bad=1; }
             n=$(count "$1" "$2")
             [ "$n" = 0 ] || { echo "  BAD  $3 is still on: $1 appears $n time(s) in $2"; bad=1; }
           }
@@ -157,6 +159,11 @@ jobs:
           off theme-init        public-quoted/index.html       "enableThemeToggle"
           off theme-toggle      public-quoted/index.html       "enableThemeToggle"
           off language-switcher public-quoted/index.html       "enableGlobalLanguageMenu"
+          # The author's name is also in the meta tags, so the footer link it is.
+          off '>Jane Doe</a></span>' public-quoted/index.html  "footer.author"
+          off 'CC BY-NC'          public-quoted/index.html       "footer.copyright"
+          off feather-rss         public-quoted/index.html       "footer.rss"
+          off 'class=related'     "$post"                        "related.enable"
           # A disable, so a quoted false has to leave the pager in place.
           n=$(count pagination__buttons "$post")
           [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }

@@ -8,7 +8,9 @@
   noindex goes before the limit, or a hidden page costs a slot; where cannot
   call a partial, so the loop does it, as in sitemap.xml.
 */ -}}
-{{- if ne site.Params.related.enable false -}}
+{{- $on := true -}}
+{{- with site.Params.related }}{{ if isset . "enable" }}{{ $on = partial "switch.html" .enable }}{{ end }}{{ end -}}
+{{- if $on -}}
   {{- $limit := 5 -}}
   {{- with site.Params.related.limit }}{{ $limit = . }}{{ end -}}
 
