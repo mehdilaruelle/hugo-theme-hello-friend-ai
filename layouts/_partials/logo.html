@@ -20,12 +20,12 @@
                    out of location.pathname alone and so named the deployment
                    prefix under one. Home.RelPermalink carries the prefix and
                    the language directory together. */ -}}
-            {{- $cursorPath := .Site.Params.Logo.logoCursorPathname -}}
+            {{- $cursorPath := partial "switch.html" .Site.Params.Logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>
                 {{ with .Site.Params.Logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
             <span class="logo__cursor" style=
-                  "{{ with.Site.Params.Logo.logoCursorDisabled }}visibility:hidden;{{ end }}
+                  "{{ if partial "switch.html" .Site.Params.Logo.logoCursorDisabled }}visibility:hidden;{{ end }}
                    {{ with.Site.Params.Logo.logoCursorColor    }}background-color:{{ . }};{{ end }}
                    {{ with.Site.Params.Logo.logoCursorAnimate  }}animation-duration:{{ . }};{{ end }}">
             </span>

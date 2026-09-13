@@ -8,8 +8,14 @@
   enableGlobalLanguageMenu = "false"
   disableReadOtherPosts    = "false"
   [params.footer]
+    trademark = "false"
     author    = "false"
     copyright = "false"
     rss       = "false"
+    # Keeps the row, so each item is judged by its own switch, not the row's.
+    topText   = ["top row kept"]
   [params.related]
     enable = "false"
+  [params.logo]
+    logoCursorDisabled = "false"
+    logoCursorPathname = "false"
