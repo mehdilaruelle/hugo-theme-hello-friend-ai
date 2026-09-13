@@ -44,7 +44,7 @@ const MARKUP = /&(?:lt|gt|amp|quot|#0*(?:34|38|60|62)|#x0*(?:22|26|3[ce]));/gi;
 const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
 // A fence is <pre> in Markdown: the author's text verbatim, which the
 // typographer never touches, so it is excused whole as prose() excuses <pre>.
-const FENCE_OPEN = /^ {0,3}(`{3,}|~{3,})/;
+const FENCE_OPEN = /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})/;
 const FENCE_CLOSE = /^ {0,3}(`{3,}|~{3,})\s*$/;
 const unfenced = (s) => {
   let fence = "";

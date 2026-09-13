@@ -60,13 +60,19 @@ const placeholders = (value) => {
 const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
-// CLDR 48: `one` covers a count of 2 or more in these (21, 101, …), so it
+// CLDR 48: in these the form covers more than one count (21, 102, 10 …), so it
 // carries the number. Not fr, pt or hi, whose `one` adds only 0.
-const RANGED_ONE = new Set([
-  'be', 'br', 'bs', 'ceb', 'dsb', 'fil', 'gd', 'gv', 'hr', 'hsb', 'is',
-  'lt', 'lv', 'mk', 'prg', 'ru', 'sgs', 'sl', 'sr', 'tl', 'tzm', 'uk',
-]);
-const spellsOutOne = (file) => !RANGED_ONE.has(file.replace(/\.toml$/, '').split('-')[0]);
+const RANGED = {
+  be: ['one'], br: ['one', 'two'], bs: ['one'], ceb: ['one'], dsb: ['one', 'two'],
+  fil: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hr: ['one'], hsb: ['one', 'two'],
+  is: ['one'], kw: ['two'], lt: ['one'], lv: ['zero', 'one'], mk: ['one'],
+  prg: ['zero', 'one'], ru: ['one'], sgs: ['one'], sl: ['one', 'two'], sr: ['one'],
+  tl: ['one'], tzm: ['one'], uk: ['one'],
+};
+const spellableIn = (file) => {
+  const ranged = RANGED[file.replace(/\.toml$/, '').split('-')[0]] ?? [];
+  return new Set([...SPELLABLE].filter((form) => !ranged.includes(form)));
+};
 
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
@@ -85,7 +91,7 @@ for (const [key, forms] of en) {
 
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
-  const spellable = spellsOutOne(file) ? SPELLABLE : new Set(['zero', 'two']);
+  const spellable = spellableIn(file);
 
   for (const [key, reference] of en) {
     const translated = lang.get(key);
