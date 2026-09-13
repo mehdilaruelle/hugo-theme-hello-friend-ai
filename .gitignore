@@ -41,6 +41,7 @@ layouts/_partials/extra-head.html
 public/
 # The CI build of the params.ai.crawlers override.
 public-ai/
+public-ai-quoted/
 public-plain/
 public-quoted/
 **/resources/_gen/

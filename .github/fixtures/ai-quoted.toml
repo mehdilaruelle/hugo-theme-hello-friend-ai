@@ -1,0 +1,5 @@
+# The AI policy as quoted strings, which a template reads as true.
+[params.ai]
+  train  = "false"
+  cite   = "false"
+  search = "false"
