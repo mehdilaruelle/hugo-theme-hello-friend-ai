@@ -45,6 +45,7 @@ public-ai-quoted/
 public-plain/
 public-quoted/
 public-comments/
+public-quoted-zero/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json
