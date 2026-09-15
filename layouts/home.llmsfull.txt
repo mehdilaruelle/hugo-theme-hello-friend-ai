@@ -10,7 +10,7 @@
 {{- range $posts -}}{{- $ordered = $ordered | append . -}}{{- end -}}
 {{- range $other -}}{{- $ordered = $ordered | append . -}}{{- end -}}
 {{- $total := len $ordered -}}
-{{- $limit := int (site.Params.llmsFullLimit | default 0) -}}
+{{- $limit := int (float (site.Params.llmsFullLimit | default 0)) -}}
 {{- if and (gt $limit 0) (lt $limit $total) -}}
   {{- $ordered = first $limit $ordered -}}
 {{- end -}}

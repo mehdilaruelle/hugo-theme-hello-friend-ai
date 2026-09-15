@@ -46,7 +46,7 @@
                 {{- with site.Params.portrait.maxWidth -}}
                   {{- $style = printf "max-width:%s" . -}}
                   {{- if findRE "^[0-9]+px$" . -}}
-                    {{- $cap = mul (int (replaceRE "px$" "" .)) 2 -}}
+                    {{- $cap = mul (int (float (replaceRE "px$" "" .))) 2 -}}
                   {{- end -}}
                 {{- end -}}
                 {{- with .Site.Params.Portrait.Path }}
