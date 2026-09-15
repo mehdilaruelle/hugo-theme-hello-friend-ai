@@ -445,7 +445,7 @@ not an empty heading.
 [params]
   [params.related]
     enable = false   # removes the section everywhere
-    limit  = 3       # how many entries at most. Defaults to 5
+    limit  = 3       # how many entries at most. Defaults to 5, as 0 does
 ```
 
 A page kept out of the index never appears in the list — see
@@ -530,7 +530,7 @@ templates.
 | `llmsFullLimit` | how many pages `llms-full.txt` carries. Unset or `0` publishes every one |
 | `ai` | which AI crawlers `robots.txt` turns away. **A table**, see [AI crawlers](#ai-crawlers) |
 | `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px` |
-| `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400` |
+| `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400`, as `0` does |
 
 ```toml
 [params]
@@ -814,8 +814,8 @@ not at all on any other page. The script is only loaded on the page using the
 
 The index carries each page's title, URL, date, tags, summary and the first
 4000 characters of its text. Raise or lower that with
-`params.searchContentLimit`. The showcase's four languages come to 10–17 KB
-each.
+`params.searchContentLimit`; `0` keeps 4000. The showcase's four languages come
+to 10–17 KB each.
 
 There is no library and no third-party service. Matching is done in the
 browser over that array.
