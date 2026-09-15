@@ -7,7 +7,8 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const root = process.argv[2] || '.';
-const BOOL = String.raw`(?:true|false|"(?:true|false|0)"|'(?:true|false|0)')`;
+// Not "0": a quoted 0 is how a number is set too, imageMaxWidth = "0".
+const BOOL = String.raw`(?:true|false|"(?:true|false)"|'(?:true|false)')`;
 
 function* walk(dir, exts) {
   if (!existsSync(dir)) return;
@@ -47,8 +48,16 @@ for (const dir of ['exampleSite/content', 'showcaseSite/content', 'archetypes'])
 // so -- related.enable was only ever that.
 const PATH = String.raw`\(?\s*(?:\$\.Site\.Params|\.Site\.Params|site\.Params)\.([A-Za-z0-9_.]+)\s*\)?`;
 const COMPARED = new RegExp(String.raw`\b(?:eq|ne)\s+(?:${PATH}\s+(?:true|false)|(?:true|false)\s+${PATH})`, 'g');
+// And one already read through switch.html, set by a demo or not: site.Params.math.
+const PAGE = String.raw`(?<![A-Za-z])(?:\$?\.Page)?`;
+const VIA = new RegExp(String.raw`partial\s+"switch\.html"\s*\(?\s*(?:(?:\$\.Site|\.Site|site)\.Params\.([A-Za-z0-9_.]+)|${PAGE}\.Params\.([A-Za-z0-9_]+)|${PAGE}\.Param\s+"([A-Za-z0-9_]+)")`, 'g');
 for (const file of walk(join(root, 'layouts'), ['.html', '.xml', '.json'])) {
-  for (const m of readFileSync(file, 'utf8').matchAll(COMPARED)) siteSwitches.add((m[1] || m[2]).toLowerCase());
+  const text = readFileSync(file, 'utf8');
+  for (const m of text.matchAll(COMPARED)) siteSwitches.add((m[1] || m[2]).toLowerCase());
+  for (const m of text.matchAll(VIA)) {
+    if (m[1]) siteSwitches.add(m[1].toLowerCase());
+    else pageSwitches.add((m[2] || m[3]).toLowerCase());
+  }
 }
 
 // Reading the value is not a truth test: footer.trademark is also its text.
@@ -70,9 +79,14 @@ for (const file of walk(join(root, 'layouts'), ['.html', '.xml', '.json'])) {
     for (const m of line.matchAll(/(?:\.Site\.Params|site\.Params|\$\.Site\.Params)\.([A-Za-z0-9_.]+)/g)) {
       if (siteSwitches.has(m[1].toLowerCase())) check(m, `site.Params.${m[1]}`);
     }
-    for (const m of line.matchAll(/(?<![A-Za-z])\.Params\.([A-Za-z0-9_]+)\b/g)) {
+    for (const m of line.matchAll(new RegExp(String.raw`${PAGE}\.Params\.([A-Za-z0-9_]+)\b`, 'g'))) {
       if (/Site$|site$/.test(line.slice(Math.max(0, m.index - 5), m.index))) continue;
       if (pageSwitches.has(m[1].toLowerCase())) check(m, `.Params.${m[1]}`);
+    }
+    // .Param looks in the page, then the site.
+    for (const m of line.matchAll(new RegExp(String.raw`${PAGE}\.Param\s+"([A-Za-z0-9_]+)"`, 'g'))) {
+      const key = m[1].toLowerCase();
+      if (pageSwitches.has(key) || siteSwitches.has(key)) check(m, `.Param "${m[1]}"`);
     }
   });
 }
