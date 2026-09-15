@@ -51,6 +51,19 @@ jobs:
       - name: Check every switch is read through switch.html
         run: node .github/scripts/check-switches.mjs .
 
+      # robots.txt before #237 passed the check above, so it has to fail it now.
+      - name: The switch check fails on a switch read through an alias
+        run: |
+          root=$(mktemp -d)
+          cp -r layouts exampleSite showcaseSite archetypes "$root"
+          cp .github/fixtures/switch-through-alias.txt "$root/layouts/alias-fixture.txt"
+          if out=$(node .github/scripts/check-switches.mjs "$root" 2>&1); then
+            echo "$out"; echo "  BAD  the fixture passed"; exit 1
+          fi
+          want='layouts/alias-fixture.txt:4  site.Params.ai.train (through $ai)  read without switch.html'
+          echo "$out" | grep -qF "$want" || { echo "$out"; echo "  BAD  wanted: $want"; exit 1; }
+          echo "  the alias is followed, into a .txt template"
+
   build:
     name: Build exampleSite
     runs-on: ubuntu-latest
