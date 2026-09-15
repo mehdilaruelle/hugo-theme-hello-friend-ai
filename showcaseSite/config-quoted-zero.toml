@@ -1,0 +1,4 @@
+# A quoted 0 where 0 means the default, with the feature it limits left on.
+# config-quoted.toml switches related off, so its limit is never read there.
+[params.related]
+  limit = "0"
