@@ -11,7 +11,7 @@
 {{- $on := true -}}
 {{- with site.Params.related }}{{ if isset . "enable" }}{{ $on = partial "switch.html" .enable }}{{ end }}{{ end -}}
 {{- if $on -}}
-  {{- $limit := int (site.Params.related.limit | default 0) -}}
+  {{- $limit := int (float (site.Params.related.limit | default 0)) -}}
   {{- if le $limit 0 }}{{ $limit = 5 }}{{ end -}}
 
   {{- $pages := slice -}}

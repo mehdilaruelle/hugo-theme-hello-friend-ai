@@ -18,7 +18,7 @@
   either, a search for a word next to a quote or an angle bracket finds
   nothing.
 */ -}}
-{{- $limit := int (site.Params.searchContentLimit | default 0) -}}
+{{- $limit := int (float (site.Params.searchContentLimit | default 0)) -}}
 {{- if le $limit 0 }}{{ $limit = 4000 }}{{ end -}}
 {{- $index := slice -}}
 {{- /* range then if, not where: where cannot call a partial, and its typed
