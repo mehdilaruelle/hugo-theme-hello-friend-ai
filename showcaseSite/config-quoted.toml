@@ -9,6 +9,9 @@
   disableReadOtherPosts    = "false"
   imageMaxWidth            = "0"
   searchContentLimit       = "0"
+  llmsFullLimit            = "010"
+  [params.portrait]
+    maxWidth = "090px"
   [params.footer]
     trademark = "false"
     author    = "false"
