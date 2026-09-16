@@ -44,8 +44,9 @@ for (const dir of ['exampleSite/content', 'showcaseSite/content', 'archetypes'])
   }
 }
 
-// Every output format is a template: robots.txt read its AI policy raw.
-const TEMPLATES = ['.html', '.xml', '.json', '.txt', '.md'];
+// Every file under layouts/ is a template, whatever its format: robots.txt read
+// its AI policy raw, and a list of extensions is how it was missed.
+const TEMPLATES = [''];
 
 // `$ai := site.Params.ai` then `$ai.train` is a read of ai.train. Rewritten to
 // the full path so both passes below see it; `via` keeps the name for the report.
