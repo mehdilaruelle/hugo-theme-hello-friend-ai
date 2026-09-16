@@ -1,0 +1,5 @@
+{{- /* robots.txt before #237: a switch read raw, through an alias, in a .txt template. */ -}}
+{{- $ai := site.Params.ai -}}
+{{- $train := true -}}
+{{- if isset $ai "train" }}{{ $train = $ai.train }}{{ end -}}
+{{- if not $train }}Disallow: /{{ end }}

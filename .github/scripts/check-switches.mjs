@@ -44,15 +44,40 @@ for (const dir of ['exampleSite/content', 'showcaseSite/content', 'archetypes'])
   }
 }
 
+// Every file under layouts/ is a template, whatever its format: robots.txt read
+// its AI policy raw, and a list of extensions is how it was missed.
+const TEMPLATES = [''];
+
+// `$ai := site.Params.ai` then `$ai.train` is a read of ai.train. Rewritten to
+// the full path so both passes below see it; `via` keeps the name for the report.
+const PARAMS = String.raw`(?:\$\.Site\.Params|\.Site\.Params|site\.Params)`;
+const resolveAliases = (text) => {
+  const alias = new Map();
+  const via = [];
+  const lines = text.split('\n').map((line, i) => {
+    const use = (l) => l.replace(/\$([A-Za-z_]\w*)((?:\.[A-Za-z0-9_]+)+)/g, (all, name, rest) => {
+      if (!alias.has(name)) return all;
+      (via[i] ||= new Set()).add('$' + name);
+      return 'site.Params' + (alias.get(name) ? '.' + alias.get(name) : '') + rest;
+    });
+    let out = use(line);
+    for (const m of out.matchAll(new RegExp(String.raw`\$([A-Za-z_]\w*)\s*:?=\s*\(?\s*${PARAMS}((?:\.[A-Za-z0-9_]+)*)`, 'g'))) {
+      alias.set(m[1], m[2].slice(1));
+    }
+    return use(out);
+  });
+  return { text: lines.join('\n'), via };
+};
+
 // A param compared with true or false is a switch even if no config or doc says
 // so -- related.enable was only ever that.
-const PATH = String.raw`\(?\s*(?:\$\.Site\.Params|\.Site\.Params|site\.Params)\.([A-Za-z0-9_.]+)\s*\)?`;
+const PATH = String.raw`\(?\s*${PARAMS}\.([A-Za-z0-9_.]+)\s*\)?`;
 const COMPARED = new RegExp(String.raw`\b(?:eq|ne)\s+(?:${PATH}\s+(?:true|false)|(?:true|false)\s+${PATH})`, 'g');
 // And one already read through switch.html, set by a demo or not: site.Params.math.
 const PAGE = String.raw`(?<![A-Za-z])(?:\$?\.Page)?`;
 const VIA = new RegExp(String.raw`partial\s+"switch\.html"\s*\(?\s*(?:(?:\$\.Site|\.Site|site)\.Params\.([A-Za-z0-9_.]+)|${PAGE}\.Params\.([A-Za-z0-9_]+)|${PAGE}\.Param\s+"([A-Za-z0-9_]+)")`, 'g');
-for (const file of walk(join(root, 'layouts'), ['.html', '.xml', '.json'])) {
-  const text = readFileSync(file, 'utf8');
+for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
+  const { text } = resolveAliases(readFileSync(file, 'utf8'));
   for (const m of text.matchAll(COMPARED)) siteSwitches.add((m[1] || m[2]).toLowerCase());
   for (const m of text.matchAll(VIA)) {
     if (m[1]) siteSwitches.add(m[1].toLowerCase());
@@ -68,13 +93,15 @@ const ok = (before, after) =>
 
 const problems = [];
 let reads = 0;
-for (const file of walk(join(root, 'layouts'), ['.html', '.xml', '.json'])) {
+for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
   const rel = relative(root, file).split(sep).join('/');
-  const text = readFileSync(file, 'utf8').replace(/\{\{-?\s*\/\*[\s\S]*?\*\/\s*-?\}\}/g, (c) => c.replace(/[^\n]/g, ' '));
-  text.split(/\r?\n/).forEach((line, i) => {
+  const stripped = readFileSync(file, 'utf8').replace(/\r\n/g, '\n').replace(/\{\{-?\s*\/\*[\s\S]*?\*\/\s*-?\}\}/g, (c) => c.replace(/[^\n]/g, ' '));
+  const { text, via } = resolveAliases(stripped);
+  text.split('\n').forEach((line, i) => {
     const check = (m, label) => {
       reads++;
-      if (!ok(line.slice(0, m.index), line.slice(m.index + m[0].length))) problems.push(`${rel}:${i + 1}  ${label}  read without switch.html`);
+      const through = via[i] ? ` (through ${[...via[i]].join(', ')})` : '';
+      if (!ok(line.slice(0, m.index), line.slice(m.index + m[0].length))) problems.push(`${rel}:${i + 1}  ${label}${through}  read without switch.html`);
     };
     for (const m of line.matchAll(/(?:\.Site\.Params|site\.Params|\$\.Site\.Params)\.([A-Za-z0-9_.]+)/g)) {
       if (siteSwitches.has(m[1].toLowerCase())) check(m, `site.Params.${m[1]}`);
