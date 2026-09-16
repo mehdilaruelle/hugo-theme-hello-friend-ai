@@ -47,7 +47,8 @@
                   {{- $width = printf "%v" . | strings.TrimSpace -}}
                   {{- /* A bare number, quoted or not, is pixels, and 0 is unset. */ -}}
                   {{- if findRE `^[0-9]+(\.[0-9]+)?$` $width -}}
-                    {{- $width = cond (gt (float $width) 0) (printf "%spx" $width) "" -}}
+                    {{- $px := float $width -}}
+                    {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
                   {{- end -}}
                 {{- end -}}
                 {{- $style := "" -}}
