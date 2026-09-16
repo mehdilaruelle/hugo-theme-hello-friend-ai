@@ -218,7 +218,9 @@ jobs:
           items() { echo $(( $(grep -oP 'class=related__list>.*?</ul>' "$1" 2>/dev/null | grep -o '<li>' | wc -l) )); }
           want=$(items "public/$post")
           got=$(items "public-quoted-zero/$post")
-          [ "$want" -gt 0 ] || { echo "  BAD  the default build lists no related posts, so the comparison proves nothing"; exit 1; }
+          # Unset reads as 0 too, so the default build cannot vouch for the 5 on its own.
+          # The showcase has more candidates than that, so 5 is the cap biting.
+          [ "$want" = 5 ] || { echo "  BAD  the default build lists $want related posts, not the documented 5"; exit 1; }
           [ "$got" = "$want" ] || { echo "  BAD  related.limit = \"0\" lists $got, the default lists $want"; exit 1; }
           echo "  a quoted 0 keeps the default related limit"
 
