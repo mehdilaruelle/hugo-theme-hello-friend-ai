@@ -177,6 +177,8 @@ jobs:
           # A quoted 0 means the default, as 0 does.
           grep -q '"content":"[^"]' public-quoted/index.json \
             || { echo "  BAD  searchContentLimit: a quoted 0 emptied the search index"; bad=1; }
+          grep -q '^10 of ' public-quoted/llms-full.txt \
+            || { echo "  BAD  llmsFullLimit: \"010\" did not keep 10 pages"; bad=1; }
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
           exit "$bad"
 
@@ -204,6 +206,25 @@ jobs:
           done
           [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
           exit "$bad"
+
+      - name: Check a quoted 0 keeps the default related limit
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-quoted-zero.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-quoted-zero
+          post=posts/2026/01/everything-an-article-is-made-of/index.html
+          for f in "public/$post" "public-quoted-zero/$post"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the count below asserts nothing"; exit 1; }
+          done
+          items() { echo $(( $(grep -oP 'class=related__list>.*?</ul>' "$1" 2>/dev/null | grep -o '<li>' | wc -l) )); }
+          want=$(items "public/$post")
+          got=$(items "public-quoted-zero/$post")
+          # Unset reads as 0 too, so the default build cannot vouch for the 5 on its own.
+          # The showcase has more candidates than that, so 5 is the cap biting.
+          [ "$want" = 5 ] || { echo "  BAD  the default build lists $want related posts, not the documented 5"; exit 1; }
+          [ "$got" = "$want" ] || { echo "  BAD  related.limit = \"0\" lists $got, the default lists $want"; exit 1; }
+          echo "  a quoted 0 keeps the default related limit"
 
       # A failed template prints the failure and the build stays green:
       # %!q(bool=true) went out in a heading, past every checker above.
