@@ -54,8 +54,8 @@
                 {{- $style := "" -}}
                 {{- with $width -}}
                   {{- $style = printf "max-width:%s" . -}}
-                  {{- if findRE "^[0-9]+px$" . -}}
-                    {{- $cap = mul (int (float (replaceRE "px$" "" .))) 2 -}}
+                  {{- if findRE `^[0-9]+(\.[0-9]+)?px$` . -}}
+                    {{- $cap = int (mul (float (replaceRE "px$" "" .)) 2) -}}
                   {{- end -}}
                 {{- end -}}
                 {{- with .Site.Params.Portrait.Path }}
