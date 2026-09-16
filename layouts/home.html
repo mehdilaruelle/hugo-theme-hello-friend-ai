@@ -42,8 +42,16 @@
                        an unset maxWidth put style="max-width:%!s(<nil>)" in the
                        page. image.html omits the attribute for an empty value. */ -}}
                 {{- $cap := 512 -}}
-                {{- $style := "" -}}
+                {{- $width := "" -}}
                 {{- with site.Params.portrait.maxWidth -}}
+                  {{- $width = printf "%v" . | strings.TrimSpace -}}
+                  {{- /* A bare number, quoted or not, is pixels, and 0 is unset. */ -}}
+                  {{- if findRE `^[0-9]+(\.[0-9]+)?$` $width -}}
+                    {{- $width = cond (gt (float $width) 0) (printf "%spx" $width) "" -}}
+                  {{- end -}}
+                {{- end -}}
+                {{- $style := "" -}}
+                {{- with $width -}}
                   {{- $style = printf "max-width:%s" . -}}
                   {{- if findRE "^[0-9]+px$" . -}}
                     {{- $cap = mul (int (replaceRE "px$" "" .)) 2 -}}
@@ -58,7 +66,7 @@
                   "loading" "eager"
                   "fetchpriority" "high"
                   "maxWidth" $cap
-                  "sizes" $.Site.Params.Portrait.MaxWidth
+                  "sizes" $width
                   "page" $) }}
                 {{- end }}
 
