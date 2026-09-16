@@ -644,7 +644,8 @@ you leave it in `static/`: the portrait is simply emitted unprocessed, as it
 was before.
 
 The cap is twice `params.portrait.maxWidth` when that is given in pixels, and
-512 otherwise.
+512 otherwise. A bare number means pixels, quoted or not — `120` is `"120px"` —
+and `0` leaves the width unset.
 
 ### Front page content
 

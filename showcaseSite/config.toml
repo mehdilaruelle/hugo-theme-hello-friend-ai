@@ -95,6 +95,11 @@
     logoCursorAnimate  = "1.4s"
     logoCursorPathname = true
 
+  # A bare number where the exampleSite writes "120px". It means the same, and
+  # printing it with %s once put max-width:%!s(int64=120) in the page.
+  [params.portrait]
+    maxWidth = 120
+
   # gitUrl and enableGitInfo are deliberately left off. They would tie every
   # build to the full commit history, and the commit they link to belongs to the
   # theme rather than to anything a visitor is reading.
