@@ -149,7 +149,7 @@
 
 {{- /* Joined to the base URL: as written, the path is relative to whatever page
        is being served and 404s off the home page. */ -}}
-{{ range $val := $.Site.Params.customCSS }}
+{{ range $val := slice | append ($.Site.Params.customCSS | default slice) }}
     {{- with $val }}
         {{- $href := . }}
         {{- if not (partial "is-remote.html" $href) }}{{ $href = urls.JoinPath site.BaseURL $href }}{{ end }}

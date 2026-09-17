@@ -10,6 +10,8 @@
   imageMaxWidth            = "0"
   searchContentLimit       = "0"
   llmsFullLimit            = "010"
+  customCSS                = "css/custom.css"
+  customJS                 = "js/custom.js"
   [params.portrait]
     maxWidth = "090px"
   [params.footer]
