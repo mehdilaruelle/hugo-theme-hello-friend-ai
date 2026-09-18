@@ -24,7 +24,7 @@
 
 {{- /* Same as customCSS in head.html: a path under static/ has to carry the
        site's base URL, or it resolves against the page being served. */ -}}
-{{ range $val := $.Site.Params.customJS }}
+{{ range $val := slice | append ($.Site.Params.customJS | default slice) }}
     {{- with $val }}
         {{- $src := . }}
         {{- if not (partial "is-remote.html" $src) }}{{ $src = urls.JoinPath site.BaseURL $src }}{{ end }}

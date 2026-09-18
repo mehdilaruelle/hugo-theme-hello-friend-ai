@@ -179,6 +179,10 @@ jobs:
             || { echo "  BAD  searchContentLimit: a quoted 0 emptied the search index"; bad=1; }
           grep -q '^10 of ' public-quoted/llms-full.txt \
             || { echo "  BAD  llmsFullLimit: \"010\" did not keep 10 pages"; bad=1; }
+          for one in css/custom.css js/custom.js; do
+            [ "$(count "$one" public-quoted/index.html)" != 0 ] \
+              || { echo "  BAD  a lone $one given as a string was not loaded"; bad=1; }
+          done
           [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
           exit "$bad"
 
