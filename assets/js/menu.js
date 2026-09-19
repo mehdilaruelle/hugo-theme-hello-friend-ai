@@ -53,6 +53,36 @@
 
   window.addEventListener("resize", isMobileMenu);
 
+  // A panel that opens over the page has to be dismissible without using it.
+  // The language switcher below gets Escape and click-outside from being a
+  // <details>; the menu is a plain div opening into the same corner on the same
+  // breakpoint, and had neither -- once open, the only way out was the trigger.
+  const closeMenu = () => {
+    if (!menu || menu.classList.contains("hidden")) return;
+    menu.classList.add("hidden");
+    // Or the trigger goes on claiming a menu that is no longer open.
+    setExpanded();
+  };
+
+  document.addEventListener("click", (event) => {
+    // Desktop is the permanent navigation, not a panel: nothing to dismiss.
+    if (!isMobile()) return;
+    // The trigger's own click has already toggled the menu open by the time
+    // this runs, and closing here would undo it on every press.
+    if (menuTrigger && menuTrigger.contains(event.target)) return;
+    if (menu && menu.contains(event.target)) return;
+    closeMenu();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !isMobile()) return;
+    if (!menu || menu.classList.contains("hidden")) return;
+    closeMenu();
+    // Focus would otherwise be left inside a hidden panel. Back to the control
+    // that opened it, the way the switcher returns focus to its summary.
+    menuTrigger && menuTrigger.focus();
+  });
+
   // The switcher is a details element and opens on its own. Only what a details
   // cannot do for itself is added here.
   if (languageSwitcher) {
