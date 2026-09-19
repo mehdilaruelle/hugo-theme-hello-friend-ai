@@ -78,6 +78,14 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-sharing.mjs public
 
+      # The icons carry no text and most of the svgs carry no <title>, so the
+      # anchor's own label is the whole accessible name. It used to be
+      # humanize, which named GitHub "Github" -- a wrong name is still a name,
+      # so nothing failed.
+      - name: Check every social link is named, and its icon is not
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-social.mjs public
+
       # The build succeeds whether or not the passthrough delimiters survive
       # Goldmark, so only an assertion on the built HTML catches a formula that
       # quietly became prose.

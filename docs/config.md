@@ -655,6 +655,24 @@ entry per network:
 | `url` | where the link goes |
 | `newTab` | open the link in a new tab. **Default `false`**: the link replaces the page, and the visitor's back button still works. Quoted values count — `"false"` is off, like the boolean |
 | `rel` | extra `rel` tokens, added after the `me noopener` the theme always writes |
+| `label` | what the link is called, for a screen reader and for the tooltip. Defaults to the network's own spelling — see below |
+
+The link's accessible name is its `label`, because the icons carry no text. Left
+unset, it comes from `data/socialNames.yaml`, which spells the networks whose
+own capitalisation is not just a leading capital: `github` is named "GitHub",
+`stackoverflow` "Stack Overflow", `ycombinator` "Hacker News". A network absent
+from that file is named by `humanize`, so an unlisted one is still named
+something. Set `label` to override both:
+
+```toml
+[[params.social]]
+  name  = "github"
+  url   = "https://github.com/janedoe"
+  label = "My code"
+```
+
+The icon itself is `aria-hidden`: the anchor is already named, and announcing
+the glyph as well would say everything twice.
 
 A `name` the theme has no icon for draws a generic link glyph and warns during
 the build, naming the value. It used to render an anchor with nothing inside it:
