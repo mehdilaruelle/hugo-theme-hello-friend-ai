@@ -74,8 +74,17 @@
       margin: 0.8em 0;
     }
 
+    // The only hover affordance on the tags, the categories, the translation
+    // links and the git hash. It was hard-coded white, which is the light
+    // theme's own page colour, so on that theme it drew nothing at all --
+    // five branches here, the same shape as -excerpt above.
     a:hover {
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid $light-color-secondary;
+
+      @media (prefers-color-scheme: dark) { border-bottom-color: $dark-color-secondary; }
+      @media (prefers-color-scheme: light) { border-bottom-color: $light-color-secondary; }
+      [data-theme=dark] & { border-bottom-color: $dark-color-secondary; }
+      [data-theme=light] & { border-bottom-color: $light-color-secondary; }
     }
 
     svg {
