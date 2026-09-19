@@ -57,9 +57,14 @@ from your content:
 
 | param | where it shows |
 | --- | --- |
-| `subtitle` | appended to every `<title>`, after the site title |
+| `subtitle` | appended to the home page's `<title>`, after the site title |
 | `description` | search results and social cards, via `<meta>` and `og:description` |
 | `homeSubtitle` | the line under the heading on the front page |
+
+`subtitle` stops at the home page on purpose. A search result gives the title
+about 70 characters, and the subtitle describes the site rather than the page:
+on every other page it spent 37 of them before the page's own words. The
+reasoning is written out above the `title` block in `layouts/_partials/head.html`.
 
 `params.portrait.alt` belongs with them — it is read aloud, so it is text like
 any other. `path` and `maxWidth` stay at the root, and a language that sets only
