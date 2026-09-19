@@ -521,7 +521,7 @@ templates.
 | `backgroundImageLight` | the same for light mode. Without it light mode shows no image, rather than putting dark text over a dark picture |
 | `themeColor` | `<meta name="theme-color">`, the browser UI tint on mobile |
 | `ogImage` | the picture a social card falls back to when a page has no `cover`. Use PNG or JPEG — no platform renders an SVG card |
-| `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/` |
+| `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` for warns at build time — see [How to start](../README.md#how-to-start); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
 | `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL |
 | `gitUrl` | prefix for the commit link under an article. Needs `enableGitInfo = true` at the root |
 | `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics; both are required |

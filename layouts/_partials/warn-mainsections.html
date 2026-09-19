@@ -1,0 +1,26 @@
+{{- /* Warns when params.mainSections names a section the theme has no article
+       template for.
+
+       The article template is layouts/posts/page.html and the rich feed is
+       layouts/posts/section.rss.xml -- both bound to a section literally named
+       `posts`. That is documented (README.md, docs/config.md: "articles belong
+       in content/posts/"), but mainSections is read by four other templates
+       (404.html, footer.html, home.llms.txt, home.llmsfull.txt), which makes
+       the setting look more general than it is. Point it at content/blog/ and
+       the articles still build -- they just quietly come out with no reading
+       time, word count, dates, sharing buttons, prev/next, related posts,
+       comments or audio, and the section feed loses its full-text
+       content:encoded.
+
+       This only warns. Changing template resolution here would silently change
+       the output of every site that already works, which is a far worse trade
+       than a line on the console.
+
+       partialCached with no variant key evaluates once per build; warnidf
+       carries a per-section id so Hugo prints each section once and --ignoreLogs
+       can silence it by name. */ -}}
+{{- range site.Params.mainSections -}}
+  {{- if not (templates.Exists (printf "%s/page.html" .)) -}}
+    {{- warnidf (printf "mainsections-no-article-template-%s" .) "params.mainSections names %q, but the theme's article template is layouts/posts/page.html. Articles in content/%s/ render without reading time, word count, dates, sharing buttons, prev/next, related posts or comments, and %s/index.xml loses its full-text content:encoded. Either move them to content/posts/ or add layouts/%s/page.html to your site. See docs/config.md." . . . . -}}
+  {{- end -}}
+{{- end -}}

@@ -428,7 +428,7 @@ The section name matters too: articles go in `content/posts/`. Hugo resolves an
 article's template by section name, and the theme's article layouts are
 `layouts/posts/page.html` and `layouts/posts/section.rss.xml`. A section named
 anything else falls back to the generic page template and to Hugo's built-in
-feed — silently, with no error and no warning. What that costs:
+feed. What that costs:
 
 - on the page: reading time, date, word count, last-modified, sharing buttons,
   previous/next links, Disqus, Commento, Utterances, the description
@@ -438,7 +438,26 @@ feed — silently, with no error and no warning. What that costs:
 
 `params.mainSections` does not move this. It points the footer's RSS icon and
 the 404 page at a section; it does not change which template renders an
-article.
+article. It does, however, say which section you *meant* to hold articles, so
+the build warns when it names one the theme has no article template for:
+
+```
+WARN  params.mainSections names "blog", but the theme's article template is
+      layouts/posts/page.html. Articles in content/blog/ render without reading
+      time, word count, dates, sharing buttons, prev/next, related posts or
+      comments, and blog/index.xml loses its full-text content:encoded.
+```
+
+Add `layouts/blog/page.html` to your own site and the warning stops — a site
+that supplies the template is not doing anything wrong. To keep the fallback
+and silence the line, name it in `ignoreLogs`:
+
+```toml
+ignoreLogs = ['mainsections-no-article-template-blog']
+```
+
+A section that is not in `mainSections` is not checked, so a `content/about/`
+page is never warned about.
 
 For the original, unforked theme, use
 [rhazdon/hugo-theme-hello-friend-ng](https://github.com/rhazdon/hugo-theme-hello-friend-ng) instead.
