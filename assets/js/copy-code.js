@@ -17,6 +17,19 @@
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
+      // The wrapper render-codeblock.html puts around every fenced block.
+      // closest, not parentElement: Hugo puts a div.highlight in between
+      // whenever it highlights the block. An indented block never reaches that
+      // hook at all, so make a wrapper here rather than leave its button
+      // anchored to the scrolling pre.
+      var wrap = pre.closest('.code-block');
+      if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.className = 'code-block';
+        pre.parentNode.insertBefore(wrap, pre);
+        wrap.appendChild(pre);
+      }
+
       var button = document.createElement('button');
       button.type = 'button';
       button.className = 'copy-code';
@@ -36,8 +49,9 @@
       }
 
       button.addEventListener('click', function () {
-        // The button lives inside the pre, so its own label would otherwise be
-        // copied along with the code.
+        // The code is read from the code element, not the pre: the button is a
+        // sibling of the pre now, but reading the block itself would still pick
+        // up a line-number gutter on a site that turns one on.
         //
         // textContent, not innerText. Chroma wraps each line of a highlighted
         // block in a span it styles display: flex, which makes every line a
@@ -66,7 +80,9 @@
         );
       });
 
-      pre.appendChild(button);
+      // On the wrapper, not the pre: inside the scroller the button scrolled
+      // away with the code.
+      wrap.appendChild(button);
     });
   });
 })();
