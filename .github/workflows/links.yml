@@ -78,14 +78,6 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-sharing.mjs public
 
-      # pre is the scroll container, and it used to be the positioned box too,
-      # so the copy button and the language label travelled with the scrolled
-      # code and ended up on top of it. Deleting the wrapper would build green
-      # and quietly bring that back.
-      - name: Check every code block has something to anchor its controls to
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-code-blocks.mjs public
-
       # The build succeeds whether or not the passthrough delimiters survive
       # Goldmark, so only an assertion on the built HTML catches a formula that
       # quietly became prose.
@@ -99,6 +91,14 @@ jobs:
       - name: Check images keep their aspect ratio
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-image-sizing.mjs public
+
+      # pre is the scroll container, and it used to be the positioned box too,
+      # so the copy button and the language label travelled with the scrolled
+      # code and ended up on top of it. Deleting the wrapper would build green
+      # and quietly bring that back.
+      - name: Check every code block has something to anchor its controls to
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-code-blocks.mjs public
 
       # Open Graph and Twitter tags are written by two partials. They used to
       # take their picture from two different sources, so a site setting
