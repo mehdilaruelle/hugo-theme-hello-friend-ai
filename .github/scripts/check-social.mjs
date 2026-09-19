@@ -41,6 +41,20 @@ const ARIA_LABEL = attr("aria-label");
 // links without depending on a class the stylesheet does not set.
 const ANCHOR = /<a\b[^>]*>[\s\S]*?<\/a>/gi;
 
+// Scoped to the icon, not to the anchor. Testing the whole <a>...</a> for any
+// aria-hidden passed an exposed svg whenever some unrelated element inside the
+// link happened to carry one -- and passed aria-hidden on the anchor itself,
+// which hides the named link rather than the icon.
+const HIDDEN = `aria-hidden\\s*=\\s*(?:"true"|'true'|true)`;
+const HIDDEN_ATTR = new RegExp(HIDDEN, "i");
+// The svg carries it, or the element that immediately wraps the svg does --
+// which is what social-icons.html emits: <span aria-hidden="true"><svg …>.
+const ICON_HIDDEN = new RegExp(
+  `<svg\\b[^>]*${HIDDEN}` +
+    `|<(?:span|div|i)\\b[^>]*${HIDDEN}[^>]*>\\s*<svg\\b`,
+  "i"
+);
+
 const value = (tag, re) => {
   const m = tag.match(re);
   return m ? (m[1] ?? m[2] ?? m[3] ?? "") : null;
@@ -89,11 +103,19 @@ for (const file of walk(root)) {
 
     if (label === null || text(label) === "") {
       report("a social link with no aria-label: the icon carries no text, so it has no accessible name");
-    } else if (title !== null && text(title) !== text(label)) {
+    } else if (title === null) {
+      // The template writes both, and the point of the pair is that they agree.
+      // Absent, there is nothing to disagree with and the tooltip is gone.
+      report("a social link with an aria-label but no title");
+    } else if (text(title) !== text(label)) {
       report(`title ${JSON.stringify(text(title))} and aria-label ${JSON.stringify(text(label))} disagree`);
     }
 
-    if (/<svg\b/i.test(tag) && !/aria-hidden\s*=\s*(?:"true"|'true'|true)/i.test(tag)) {
+    // On the anchor itself this hides the link that was just named, rather than
+    // the icon inside it.
+    if (HIDDEN_ATTR.test(open)) {
+      report("aria-hidden on the social link itself, which hides the named link");
+    } else if (/<svg\b/i.test(tag) && !ICON_HIDDEN.test(tag)) {
       report("a social icon that is not aria-hidden: the link is announced twice");
     }
   }

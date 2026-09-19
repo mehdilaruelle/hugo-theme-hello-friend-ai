@@ -13,7 +13,10 @@
 {{- range $k, $v := . -}}
   {{- if eq (lower $k) "newtab" -}}{{- $newTab = not (in (slice false "false" 0 "0" "") $v) -}}{{- end -}}
   {{- if and (eq (lower $k) "nonewpage") (in (slice 0 "0" false "false") $v) -}}{{- $legacy = true -}}{{- end -}}
-  {{- if eq (lower $k) "label" -}}{{- $label = printf "%v" $v -}}{{- end -}}
+  {{- /* Trimmed like .name below: a label of spaces is non-empty, so it would
+         win over the fallback and leave the link named with whitespace -- an
+         accessible name of nothing, which is the bug this partial fixes. */ -}}
+  {{- if eq (lower $k) "label" -}}{{- $label = trim (printf "%v" $v) " \t\r\n" -}}{{- end -}}
 {{- end -}}
 {{- if $legacy -}}
   {{- warnidf "social-nonewpage-deprecated" "params.social: nonewpage = 0 is deprecated, write newTab = true instead. See docs/config.md." -}}
