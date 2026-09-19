@@ -21,7 +21,8 @@
     font-weight: 600;
   }
 
+  // Logical, so the answer is indented from the side the language starts on.
   > :not(summary) {
-    margin-left: 1.2em;
+    margin-inline-start: 1.2em;
   }
 }
