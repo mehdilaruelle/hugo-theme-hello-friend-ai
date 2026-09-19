@@ -9,14 +9,30 @@
        written in, and a quoted value is a string eq will not match. */ -}}
 {{- $newTab := false -}}
 {{- $legacy := false -}}
+{{- $label := "" -}}
 {{- range $k, $v := . -}}
   {{- if eq (lower $k) "newtab" -}}{{- $newTab = not (in (slice false "false" 0 "0" "") $v) -}}{{- end -}}
   {{- if and (eq (lower $k) "nonewpage") (in (slice 0 "0" false "false") $v) -}}{{- $legacy = true -}}{{- end -}}
+  {{- /* Trimmed like .name below: a label of spaces is non-empty, so it would
+         win over the fallback and leave the link named with whitespace -- an
+         accessible name of nothing, which is the bug this partial fixes. */ -}}
+  {{- if eq (lower $k) "label" -}}{{- $label = trim (printf "%v" $v) " \t\r\n" -}}{{- end -}}
 {{- end -}}
 {{- if $legacy -}}
   {{- warnidf "social-nonewpage-deprecated" "params.social: nonewpage = 0 is deprecated, write newTab = true instead. See docs/config.md." -}}
   {{- $newTab = true -}}
 {{- end -}}
-    &nbsp; <a href="{{ .url }}"{{ if $newTab }} target="_blank"{{ end }} rel="me noopener{{ with .rel }} {{ . }}{{ end }}" title="{{ .name | humanize }}">{{ partial "svg.html" . }}</a> &nbsp;
+{{- /* The link's accessible name. humanize only capitalises the first letter,
+       so it named GitHub "Github" and Stack Overflow "Stackoverflow", and most
+       of the icons carry no <title> of their own -- that title was the whole
+       name a screen reader had. data/socialNames.yaml spells the ones humanize
+       gets wrong; an entry's own `label` wins over both, and humanize stays the
+       fallback so an unlisted network is still named. */ -}}
+{{- $name := lower (trim (.name | default "") " \t\r\n") -}}
+{{- with $label }}{{ else }}{{- $label = or (index hugo.Data.socialNames $name) (humanize .name) -}}{{- end -}}
+    &nbsp; <a href="{{ .url }}"{{ if $newTab }} target="_blank"{{ end }} rel="me noopener{{ with .rel }} {{ . }}{{ end }}" title="{{ $label }}" aria-label="{{ $label }}">{{- /* The icon is decoration: the anchor is already named above, and
+       announcing the glyph as well would say everything twice. Hidden on a
+       wrapper, the way sharing-buttons.html does it, rather than on 102 svgs. */ -}}
+<span aria-hidden="true">{{ partial "svg.html" . }}</span></a> &nbsp;
 {{- end -}}
 {{- end -}}
