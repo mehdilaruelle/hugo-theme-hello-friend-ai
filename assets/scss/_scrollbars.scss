@@ -1,0 +1,83 @@
+@use "variables" as *;
+
+// The scrollbar, following the theme.
+//
+// These rules used to sit in _normalize.scss, which is vendored normalize.css
+// and carries no @use, so they could not reach the palette and were written as
+// literals: a #212020 rail in both themes. Every other themed rule in this
+// theme carries five branches; these carried none, and the dark rail showed on
+// the light theme's page scrollbar, on every .table-wrap and on an
+// unhighlighted pre.
+//
+// The track is transparent rather than a colour of its own. Declaring
+// ::-webkit-scrollbar applies to every scrolling box on the page at once, and
+// those boxes do not share a background: the page is #fff, an unhighlighted
+// pre is #eaeaea, and a highlighted one carries the highlighter's own dark
+// colour whatever the theme. A transparent track lets each of them show
+// through, so no single colour has to be wrong somewhere.
+//
+// The thumb is the theme's secondary colour, which is the one part that has to
+// be seen. $light-border-color, the obvious guess, is #dcdcdc and lands at
+// 1.1:1 on the light track -- invisible, which is the bug again.
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: $light-color-secondary;
+
+  @media (prefers-color-scheme: dark) { background: $dark-color-secondary; }
+  @media (prefers-color-scheme: light) { background: $light-color-secondary; }
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $light-color;
+
+  @media (prefers-color-scheme: dark) { background: $dark-color-variant; }
+  @media (prefers-color-scheme: light) { background: $light-color; }
+}
+
+// Two selectors per theme, not the usual "[data-theme=dark] &". data-theme
+// sits on the html element, and the page's own scrollbar belongs to that same
+// element -- a descendant selector reaches every pre and table but misses the
+// one scrollbar that is always on screen.
+[data-theme=dark] ::-webkit-scrollbar-thumb,
+[data-theme=dark]::-webkit-scrollbar-thumb {
+  background: $dark-color-secondary;
+}
+
+[data-theme=light] ::-webkit-scrollbar-thumb,
+[data-theme=light]::-webkit-scrollbar-thumb {
+  background: $light-color-secondary;
+}
+
+[data-theme=dark] ::-webkit-scrollbar-thumb:hover,
+[data-theme=dark]::-webkit-scrollbar-thumb:hover {
+  background: $dark-color-variant;
+}
+
+[data-theme=light] ::-webkit-scrollbar-thumb:hover,
+[data-theme=light]::-webkit-scrollbar-thumb:hover {
+  background: $light-color;
+}
+
+// Firefox implements neither pseudo-element. scrollbar-color is inherited, so
+// naming it once on the root reaches the page, the tables and the code blocks
+// alike. Same two colours, same transparent track.
+//
+// Only the colour. scrollbar-width is deliberately left alone: the bug is that
+// the scrollbar ignored the theme, and Firefox's default width is not part of
+// it. Setting `thin` would narrow every scrollbar in the browser's own default
+// rendering, which is a visual change no one asked for and a smaller hit area.
+html {
+  scrollbar-color: $light-color-secondary transparent;
+
+  @media (prefers-color-scheme: dark) { scrollbar-color: $dark-color-secondary transparent; }
+  @media (prefers-color-scheme: light) { scrollbar-color: $light-color-secondary transparent; }
+
+  &[data-theme=dark] { scrollbar-color: $dark-color-secondary transparent; }
+  &[data-theme=light] { scrollbar-color: $light-color-secondary transparent; }
+}
