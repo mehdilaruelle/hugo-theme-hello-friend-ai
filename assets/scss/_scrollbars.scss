@@ -67,8 +67,12 @@
 // Firefox implements neither pseudo-element. scrollbar-color is inherited, so
 // naming it once on the root reaches the page, the tables and the code blocks
 // alike. Same two colours, same transparent track.
+//
+// Only the colour. scrollbar-width is deliberately left alone: the bug is that
+// the scrollbar ignored the theme, and Firefox's default width is not part of
+// it. Setting `thin` would narrow every scrollbar in the browser's own default
+// rendering, which is a visual change no one asked for and a smaller hit area.
 html {
-  scrollbar-width: thin;
   scrollbar-color: $light-color-secondary transparent;
 
   @media (prefers-color-scheme: dark) { scrollbar-color: $dark-color-secondary transparent; }
