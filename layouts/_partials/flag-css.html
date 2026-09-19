@@ -1,0 +1,53 @@
+{{- /*
+  The background-image rules for the flags this site can actually draw.
+
+  Returns CSS, or nothing. head.html concatenates it onto the stylesheet, the
+  same way it concatenates the font fallback -- a second <link> would be a
+  second request, and a <style> element would force style-src 'unsafe-inline'
+  on a site with a strict policy.
+
+  Why this is generated rather than vendored. flag-icons ships ~530 .fi-*
+  rules and 534 SVGs. The theme draws a flag in exactly one place,
+  translation-link.html, for a language that is BOTH configured on the site and
+  mapped in data/langFlags.yaml -- at most one flag per language. Shipping the
+  other ~526 cost 25 744 bytes of every stylesheet (45%) and 5.8 MB of every
+  build, monolingual sites included, because static/ is copied wholesale.
+  assets/ is published on demand, so naming a file here is what publishes it.
+
+  Scoped to the site's own languages (hugo.Sites -- .Site.Languages was
+  deprecated in Hugo 0.156 and panics under --panicOnWarning), not to every
+  entry in langFlags.yaml: a flag can only be drawn for a translation, and a
+  translation can only exist in a language the site configures. A site that adds its own language and its own
+  data/langFlags.yaml entry gets its flag from the same loop, with no change
+  here.
+
+  Both ratios are emitted. The theme only ever writes `fi fi-xx`, but `.fis`
+  (1x1) is part of the vendored class API and a site may use it in its own
+  markup; one extra rule and one extra 4 KB file per language is a cheap way
+  not to break that.
+
+  Nothing at all on a monolingual site: .IsTranslated is false on every page, so
+  no flag can be reached.
+*/ -}}
+{{- if hugo.IsMultilingual -}}
+  {{- $css := slice -}}
+  {{- range hugo.Sites -}}
+    {{- $lang := .Language.Lang -}}
+    {{- with index hugo.Data.langFlags $lang -}}
+      {{- $flag := . -}}
+      {{- range $class, $dir := dict "" "4x3" ".fis" "1x1" -}}
+        {{- $path := printf "flags/%s/%s.svg" $dir $flag -}}
+        {{- with resources.Get $path -}}
+          {{- $css = $css | append (printf ".fi-%s%s{background-image:url(%s)}" $flag $class .RelPermalink) -}}
+        {{- else -}}
+          {{- /* A mapping naming a file the theme does not carry would render an
+                 empty square rather than falling back to the language code, and
+                 translation-link.html only falls back when the entry is
+                 missing. Loud, not silent. */ -}}
+          {{- errorf "data/langFlags.yaml maps %q to %q, but assets/%s does not exist. See .github/scripts/check-flags.mjs." $lang $flag $path -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- delimit $css "" -}}
+{{- end -}}
