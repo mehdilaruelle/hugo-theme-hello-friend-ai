@@ -177,6 +177,23 @@ as the theme does. What the theme contributes is the part it controls:
 - **`imageSizes` and `imageMaxWidth`**, which decide how many bytes a phone
   downloads for a picture. Set them if your content column is not the measure of
   an article. See [Responsive images](docs/config.md#responsive-images).
+- **Only the flags your site can draw.** The theme draws a flag in one place,
+  the "Also available in" line, for a language mapped in `data/langFlags.yaml`.
+  It used to carry all 534 of `flag-icons`' SVGs and all ~530 of its CSS rules
+  regardless: 5.8 MB copied into every build and 25 744 of the stylesheet's
+  57 612 bytes, on monolingual sites too. Now the rules are generated per site
+  and the files are published on demand. The four-language showcase ships 8
+  SVGs; the monolingual demo ships none and no flag CSS at all.
+
+  | | demo (1 language) | showcase (4 languages) |
+  | --- | --- | --- |
+  | flag files | 534 → **0** | 534 → **8** |
+  | stylesheet | 57 612 → **31 868 B** | 57 612 → **32 260 B** |
+  | gzipped | 9 149 → **6 447 B** | 9 149 → **6 520 B** |
+  | whole build | 9 MB → **3 MB** | 12 MB → **6 MB** |
+
+  Nothing to configure, and adding a language to `data/langFlags.yaml` in your
+  own site is enough to get its flag.
 
 ## SEO
 

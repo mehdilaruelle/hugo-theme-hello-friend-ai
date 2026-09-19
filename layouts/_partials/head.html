@@ -131,12 +131,17 @@
     {{- $css := $scss | toCSS $opts -}}
     {{- /* Concatenated rather than inlined: a style element forces style-src
            'unsafe-inline' on a site with a strict policy. */ -}}
-    {{- with partial "font-fallback.html" . }}
-      {{- /* The target path is Concat's cache key, so it carries a digest of the
-             face: two languages with different metrics would otherwise share
-             whichever bundle was built first. */ -}}
+    {{- /* Appended rather than @use'd: the rules name published asset paths,
+           which only a template can resolve, and a monolingual site gets none
+           of them at all. See flag-css.html. */ -}}
+    {{- $extra := printf "%s%s" (partial "font-fallback.html" .) (partial "flag-css.html" .) -}}
+    {{- with $extra }}
+      {{- /* The target path is Concat's cache key, so it carries a digest of
+             what was appended: two languages with different font metrics, or
+             different flags, would otherwise share whichever bundle was built
+             first. */ -}}
       {{- $key := printf "main-%s.css" (substr (sha256 .) 0 8) -}}
-      {{- $css = slice $css (resources.FromString "css/font-fallback.css" .) | resources.Concat $key -}}
+      {{- $css = slice $css (resources.FromString "css/main-extra.css" .) | resources.Concat $key -}}
     {{- end -}}
     {{- with $css | minify | fingerprint }}
     <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
