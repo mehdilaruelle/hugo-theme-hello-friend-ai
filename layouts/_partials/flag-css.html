@@ -1,0 +1,33 @@
+{{- /*
+  The background-image rules for the flags this site can draw, concatenated onto
+  the stylesheet by head.html. Returns nothing on a monolingual site.
+
+  hugo.Sites, not site.Languages: the latter was deprecated in Hugo 0.156 and
+  panics under --panicOnWarning. Scoped to the site's own languages because a
+  flag is only ever drawn for a translation, so a site that adds a language and
+  a data/langFlags.yaml entry gets its flag from the same loop.
+
+  Both ratios are emitted: the theme only writes `fi fi-xx`, but `.fis` (1x1) is
+  part of the vendored class API and a site may use it.
+*/ -}}
+{{- if hugo.IsMultilingual -}}
+  {{- $css := slice -}}
+  {{- range hugo.Sites -}}
+    {{- $lang := .Language.Lang -}}
+    {{- with index hugo.Data.langFlags $lang -}}
+      {{- $flag := . -}}
+      {{- range $class, $dir := dict "" "4x3" ".fis" "1x1" -}}
+        {{- $path := printf "flags/%s/%s.svg" $dir $flag -}}
+        {{- with resources.Get $path -}}
+          {{- $css = $css | append (printf ".fi-%s%s{background-image:url(%s)}" $flag $class .RelPermalink) -}}
+        {{- else -}}
+          {{- /* Loud, not silent: translation-link.html only falls back to the
+                 language code when the entry is missing, so a bad mapping
+                 would render an empty square. */ -}}
+          {{- errorf "data/langFlags.yaml maps %q to %q, but assets/%s does not exist. See .github/scripts/check-flags.mjs." $lang $flag $path -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- delimit $css "" -}}
+{{- end -}}

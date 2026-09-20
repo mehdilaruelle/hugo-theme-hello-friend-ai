@@ -72,6 +72,19 @@ jobs:
         working-directory: hello-friend-ai
         run: node .github/scripts/check-flags.mjs .
 
+      # The .fi-* rules are generated per site now, not vendored. A mapping,
+      # rule or file that goes astray renders an empty square with nothing else
+      # failing. The demo is the monolingual half of this: it must draw no flag
+      # AND ship no rule — that is the 5.8 MB and the 46% of the stylesheet this
+      # replaced.
+      - name: Check every flag box has a rule and a file (showcase)
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-flag-css.mjs public https://example.com/subpath/showcase/
+
+      - name: Check a monolingual site ships no flag CSS (demo)
+        working-directory: hello-friend-ai/exampleSite
+        run: node ../.github/scripts/check-flag-css.mjs public https://example.com/subpath/
+
       # A ";" between query parameters is not a separator any more: it absorbs
       # everything after it into the preceding value, and the build is silent.
       - name: Check the sharing links parse
