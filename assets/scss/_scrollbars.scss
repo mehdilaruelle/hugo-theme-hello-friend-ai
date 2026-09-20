@@ -1,0 +1,68 @@
+@use "variables" as *;
+
+// The scrollbar, following the theme. These rules used to sit in
+// _normalize.scss, which is vendored and carries no @use, so they could not
+// reach the palette and were written as literals -- a #212020 rail on the light
+// theme too.
+//
+// The track is transparent because ::-webkit-scrollbar applies to every
+// scrolling box at once and they do not share a background: the page is #fff,
+// an unhighlighted pre is #eaeaea, a highlighted one is dark whatever the
+// theme. The thumb uses the secondary colour, not $light-border-color, which
+// lands at 1.1:1 on the light track.
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: $light-color-secondary;
+
+  @media (prefers-color-scheme: dark) { background: $dark-color-secondary; }
+  @media (prefers-color-scheme: light) { background: $light-color-secondary; }
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $light-color;
+
+  @media (prefers-color-scheme: dark) { background: $dark-color-variant; }
+  @media (prefers-color-scheme: light) { background: $light-color; }
+}
+
+// Two selectors per theme: data-theme sits on html, and so does the page's own
+// scrollbar, which the usual descendant form would miss.
+[data-theme=dark] ::-webkit-scrollbar-thumb,
+[data-theme=dark]::-webkit-scrollbar-thumb {
+  background: $dark-color-secondary;
+}
+
+[data-theme=light] ::-webkit-scrollbar-thumb,
+[data-theme=light]::-webkit-scrollbar-thumb {
+  background: $light-color-secondary;
+}
+
+[data-theme=dark] ::-webkit-scrollbar-thumb:hover,
+[data-theme=dark]::-webkit-scrollbar-thumb:hover {
+  background: $dark-color-variant;
+}
+
+[data-theme=light] ::-webkit-scrollbar-thumb:hover,
+[data-theme=light]::-webkit-scrollbar-thumb:hover {
+  background: $light-color;
+}
+
+// Firefox implements neither pseudo-element; scrollbar-color is inherited, so
+// the root reaches everything. Colour only -- scrollbar-width is left alone on
+// purpose: the bug was the theme, not the browser's default width.
+html {
+  scrollbar-color: $light-color-secondary transparent;
+
+  @media (prefers-color-scheme: dark) { scrollbar-color: $dark-color-secondary transparent; }
+  @media (prefers-color-scheme: light) { scrollbar-color: $light-color-secondary transparent; }
+
+  &[data-theme=dark] { scrollbar-color: $dark-color-secondary transparent; }
+  &[data-theme=light] { scrollbar-color: $light-color-secondary transparent; }
+}
