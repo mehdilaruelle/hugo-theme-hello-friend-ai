@@ -5,6 +5,7 @@
   font-weight: bold;
   font-display: auto;
   font-family: monospace, monospace;
+
   // menu.js appends the current section to __text, so this box has no upper
   // bound. Without min-width it keeps its full intrinsic width and pushes
   // .header__right past the viewport instead of shrinking.
@@ -22,6 +23,7 @@
   &__text {
     font-size: 1.125rem;
     white-space: nowrap;
+
     // The prompt is decoration; the controls beside it are not. A section name
     // long enough to fill the header is clipped here rather than allowed to
     // carry the theme toggle, the language switcher and the menu trigger off
