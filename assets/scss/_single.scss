@@ -74,10 +74,8 @@
       margin: 0.8em 0;
     }
 
-    // The only hover affordance on the tags, the categories, the translation
-    // links and the git hash. It was hard-coded white, which is the light
-    // theme's own page colour, so on that theme it drew nothing at all --
-    // five branches here, the same shape as -excerpt above.
+    // Was hard-coded white, which is the light theme's own page colour, so it
+    // drew nothing there. Five branches, the same shape as -excerpt above.
     a:hover {
       border-bottom: 1px solid $light-color-secondary;
 
