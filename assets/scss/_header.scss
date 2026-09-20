@@ -29,6 +29,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-shrink: 0;
 
     @media #{$media-size-phone} {
       flex-direction: row-reverse;
@@ -42,6 +43,11 @@
     margin: 0 auto;
     width: 760px;
     max-width: 100%;
+
+    // logo.html wraps the logo in a bare <a>, so the anchor is the flex item.
+    > a {
+      min-width: 0;
+    }
   }
 }
 

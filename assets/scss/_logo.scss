@@ -6,21 +6,30 @@
   font-display: auto;
   font-family: monospace, monospace;
 
+  // menu.js appends the current section here, so the logo has no upper bound
+  // and would push .header__right off a phone screen instead of shrinking.
+  min-width: 0;
+
   img {
     height: 44px;
   }
 
   &__mark {
     margin-inline-end: 5px;
+    flex-shrink: 0;
   }
 
   &__text {
     font-size: 1.125rem;
     white-space: nowrap;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__cursor {
     display: inline-block;
+    flex-shrink: 0;
     width: 10px;
     height: 1rem;
     background: #fe5186;
