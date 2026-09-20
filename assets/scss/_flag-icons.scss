@@ -1,19 +1,9 @@
-// The layout half of flag-icons (https://github.com/lipis/flag-icons, MIT).
+// The layout half of flag-icons (https://github.com/lipis/flag-icons, MIT):
+// only the four rules that size and position a flag box.
 //
-// Only the four rules that size and position a flag box. The ~530 `.fi-xx`
-// background-image rules that used to follow them are gone: they were 25 744 of
-// the stylesheet's 57 612 bytes (45%, 30% gzipped) on every site, including
-// every monolingual one, and they named 534 SVGs in static/flags/ -- 5.8 MB
-// that Hugo copied into every build whether or not a single flag was drawn.
-//
-// The theme draws a flag in exactly one place, translation-link.html, for a
-// language in data/langFlags.yaml. layouts/_partials/flag-css.html emits a
-// background-image rule per language the SITE actually configures, pointing at
-// assets/flags/, which Hugo publishes on demand rather than wholesale.
-//
-// These four stay here rather than moving into that partial because they are
-// the vendored library's own CSS and do not depend on the data. They cost about
-// 120 bytes minified and are the only part a monolingual site still pays for.
+// The ~530 .fi-* background-image rules are not vendored. flag-css.html emits
+// one per language the site configures, because static/ is copied into every
+// build wholesale while assets/ is published on demand.
 
 .fib {
     background-size: contain;

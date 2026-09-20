@@ -1,33 +1,14 @@
 {{- /*
-  The background-image rules for the flags this site can actually draw.
+  The background-image rules for the flags this site can draw, concatenated onto
+  the stylesheet by head.html. Returns nothing on a monolingual site.
 
-  Returns CSS, or nothing. head.html concatenates it onto the stylesheet, the
-  same way it concatenates the font fallback -- a second <link> would be a
-  second request, and a <style> element would force style-src 'unsafe-inline'
-  on a site with a strict policy.
+  hugo.Sites, not site.Languages: the latter was deprecated in Hugo 0.156 and
+  panics under --panicOnWarning. Scoped to the site's own languages because a
+  flag is only ever drawn for a translation, so a site that adds a language and
+  a data/langFlags.yaml entry gets its flag from the same loop.
 
-  Why this is generated rather than vendored. flag-icons ships ~530 .fi-*
-  rules and 534 SVGs. The theme draws a flag in exactly one place,
-  translation-link.html, for a language that is BOTH configured on the site and
-  mapped in data/langFlags.yaml -- at most one flag per language. Shipping the
-  other ~526 cost 25 744 bytes of every stylesheet (45%) and 5.8 MB of every
-  build, monolingual sites included, because static/ is copied wholesale.
-  assets/ is published on demand, so naming a file here is what publishes it.
-
-  Scoped to the site's own languages (hugo.Sites -- .Site.Languages was
-  deprecated in Hugo 0.156 and panics under --panicOnWarning), not to every
-  entry in langFlags.yaml: a flag can only be drawn for a translation, and a
-  translation can only exist in a language the site configures. A site that adds its own language and its own
-  data/langFlags.yaml entry gets its flag from the same loop, with no change
-  here.
-
-  Both ratios are emitted. The theme only ever writes `fi fi-xx`, but `.fis`
-  (1x1) is part of the vendored class API and a site may use it in its own
-  markup; one extra rule and one extra 4 KB file per language is a cheap way
-  not to break that.
-
-  Nothing at all on a monolingual site: .IsTranslated is false on every page, so
-  no flag can be reached.
+  Both ratios are emitted: the theme only writes `fi fi-xx`, but `.fis` (1x1) is
+  part of the vendored class API and a site may use it.
 */ -}}
 {{- if hugo.IsMultilingual -}}
   {{- $css := slice -}}
@@ -40,10 +21,9 @@
         {{- with resources.Get $path -}}
           {{- $css = $css | append (printf ".fi-%s%s{background-image:url(%s)}" $flag $class .RelPermalink) -}}
         {{- else -}}
-          {{- /* A mapping naming a file the theme does not carry would render an
-                 empty square rather than falling back to the language code, and
-                 translation-link.html only falls back when the entry is
-                 missing. Loud, not silent. */ -}}
+          {{- /* Loud, not silent: translation-link.html only falls back to the
+                 language code when the entry is missing, so a bad mapping
+                 would render an empty square. */ -}}
           {{- errorf "data/langFlags.yaml maps %q to %q, but assets/%s does not exist. See .github/scripts/check-flags.mjs." $lang $flag $path -}}
         {{- end -}}
       {{- end -}}

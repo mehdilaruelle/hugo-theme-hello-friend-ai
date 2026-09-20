@@ -132,20 +132,13 @@
     {{- /* Concatenated rather than inlined: a style element forces style-src
            'unsafe-inline' on a site with a strict policy. */ -}}
     {{- /* Appended rather than @use'd: the rules name published asset paths,
-           which only a template can resolve, and a monolingual site gets none
-           of them at all. See flag-css.html. */ -}}
+           which only a template can resolve. See flag-css.html. */ -}}
     {{- $extra := printf "%s%s" (partial "font-fallback.html" .) (partial "flag-css.html" .) -}}
     {{- with $extra }}
-      {{- /* One digest, on BOTH paths. Concat caches by its target path, and so
-             does FromString -- and this is a multilingual build, where every
-             language calls both with content of its own: site.Params.fontFallback
-             can be overridden per language. Sharing either path across languages
-             is asking for whichever was built first.
-             Measured on Hugo 0.164 the two do not in fact collide -- give en and
-             fr different size-adjust values and each gets its own -- so this is
-             the documented contract ("caching the result using the target path
-             as its cache key"), not a bug being fixed. Relying on the cache
-             being per-language is relying on something nobody promised. */ -}}
+      {{- /* One digest, on BOTH paths: FromString and Concat both cache by
+             target path, and each language passes content of its own since
+             site.Params.fontFallback is overridable per language. Hugo 0.164
+             happens to keep the cache per-language, but that is not promised. */ -}}
       {{- $digest := substr (sha256 .) 0 8 -}}
       {{- $css = slice $css (resources.FromString (printf "css/main-extra-%s.css" $digest) .) | resources.Concat (printf "main-%s.css" $digest) -}}
     {{- end -}}

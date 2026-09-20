@@ -1,29 +1,16 @@
 // Every flag box the built site draws must have a rule, and that rule's file
-// must be published.
+// must be published -- and a site that draws no flag must ship no rule.
 //
-// The .fi-* background rules used to be vendored: ~530 of them, naming 534 SVGs
-// that Hugo copied out of static/ into every build. flag-css.html now emits one
-// rule per language the site configures, pointing at assets/flags/, which Hugo
-// publishes only when a template names the file.
-//
-// That trade moves the failure. Before, a flag box could not miss its rule --
-// every flag in the world was in the stylesheet. Now a language whose mapping,
-// rule or file goes astray renders an EMPTY SQUARE: the span is still there,
-// still 1.33em wide, just blank. Nothing else fails. translation-link.html only
-// falls back to the language code when data/langFlags.yaml has no entry at all,
-// so a broken entry is silent. Hence this.
-//
-// The other direction matters too, and is the whole point of the change: a site
-// that draws no flag must ship no rule. On a monolingual build that is the
-// 25 744 bytes of stylesheet and 5.8 MB of SVG this replaced, so an empty build
-// with rules in it is a failure, not a pass.
+// Both directions matter because the failure is silent. flag-css.html emits a
+// rule per configured language instead of vendoring all ~530, so a mapping,
+// rule or file that goes astray renders an empty square: the span is still
+// there, just blank, and translation-link.html only falls back to the language
+// code when data/langFlags.yaml has no entry at all.
 //
 //   node .github/scripts/check-flag-css.mjs <public-dir> [baseURL]
 //
-// baseURL is needed for a build under a subpath, exactly as check-links.mjs
-// needs it: the url() is what the browser asks for, so it carries the subpath,
-// and the file on disk does not.
-
+// baseURL is needed under a subpath, as check-links.mjs needs it: the url()
+// carries the subpath, the file on disk does not.
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join, dirname, relative, posix } from "node:path";
 

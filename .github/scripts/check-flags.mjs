@@ -5,12 +5,9 @@
 // language code, because translation-link.html only falls back when the entry
 // is missing.
 //
-// The .fi-* background rules are no longer vendored: flag-css.html generates one
-// per language the site configures, and the files live in assets/flags/, which
-// Hugo publishes on demand. So this checks the files exist, and that the ~530
-// vendored rules have not come back into the stylesheet — 25 744 bytes on every
-// site, monolingual ones included, is what that cost. What the BUILT site draws
-// is check-flag-css.mjs's job.
+// The .fi-* rules are no longer vendored, so this checks the files exist and
+// that the ~530 vendored rules have not come back. What the BUILT site draws is
+// check-flag-css.mjs's job.
 //
 //   node check-flags.mjs <theme-root>
 
@@ -51,16 +48,14 @@ for (const { lang, flag } of entries) {
   }
 }
 
-// The partial that replaced the vendored rules. Delete it and every flag box
-// goes blank, with nothing else failing: the page still builds and the span is
-// still there, just empty.
+// Delete the partial and every flag box goes blank with nothing else failing.
 if (!existsSync(join(root, 'layouts/_partials/flag-css.html'))) {
   problems.push('layouts/_partials/flag-css.html is missing: nothing would emit a .fi-* rule');
 }
 
-// Comments stripped first: the file explains itself in prose that names the
-// very rules it no longer carries. Not \b in the pattern either — it matches
-// before a hyphen, so .fi-es-ct would answer for .fi-es.
+// Comments stripped first: the file's prose names the rules it no longer
+// carries. Not \b either — it matches before a hyphen, so .fi-es-ct would
+// answer for .fi-es.
 const code = scss.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '$1');
 const vendored = [...code.matchAll(/\.fi-([a-z]{2}(?:-[a-z0-9]+)?)(?![a-z0-9-])/g)];
 if (vendored.length) {
