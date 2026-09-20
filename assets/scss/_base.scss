@@ -287,6 +287,9 @@ em, i, strong {
   margin: 0 2px;
   border-radius: 5px;
   font-size: 0.95rem;
+
+  // Unlike a pre, this has no scroll box, so a long path would widen the page.
+  overflow-wrap: break-word;
   // Default
   background: $light-background-secondary;
 
