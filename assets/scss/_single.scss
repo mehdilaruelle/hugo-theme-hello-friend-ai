@@ -74,8 +74,15 @@
       margin: 0.8em 0;
     }
 
+    // Was hard-coded white, which is the light theme's own page colour, so it
+    // drew nothing there. Five branches, the same shape as -excerpt above.
     a:hover {
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid $light-color-secondary;
+
+      @media (prefers-color-scheme: dark) { border-bottom-color: $dark-color-secondary; }
+      @media (prefers-color-scheme: light) { border-bottom-color: $light-color-secondary; }
+      [data-theme=dark] & { border-bottom-color: $dark-color-secondary; }
+      [data-theme=light] & { border-bottom-color: $light-color-secondary; }
     }
 
     svg {
