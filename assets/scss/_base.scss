@@ -287,6 +287,10 @@ em, i, strong {
   margin: 0 2px;
   border-radius: 5px;
   font-size: 0.95rem;
+  // A path or an identifier has no spaces to break at, and inline code has no
+  // scroll container of its own the way a pre does, so without this it sets
+  // the page's width and the whole document scrolls sideways.
+  overflow-wrap: break-word;
   // Default
   background: $light-background-secondary;
 
