@@ -1,23 +1,15 @@
 // Asserts that every social link is named, and that its icon is not.
 //
-// The icons carry no text, and most of the svgs carry no <title> either, so the
-// anchor's own label is the whole accessible name a screen reader has. It used
-// to be `humanize`, which only capitalises the first letter: "Github",
-// "Linkedin", "Stackoverflow". Nothing in the build failed, because a wrong
-// name is still a name.
+// Two assertions. One, every rel="me" anchor carries a non-empty aria-label and
+// a title that says the same thing -- a tooltip and a screen reader disagreeing
+// is its own bug. Two, the icon is hidden from assistive technology, so the
+// link is announced once: two of the svgs (x, buymeacoffee) carry an internal
+// <title>, which is exactly what reads twice without the wrapper.
 //
-// Two assertions, then:
-//
-// One, every rel="me" anchor carries a non-empty aria-label, and its title says
-// the same thing -- a tooltip and a screen reader disagreeing is its own bug.
-//
-// Two, the icon inside it is hidden from assistive technology, so the link is
-// announced once rather than twice. Two of the svgs (x, buymeacoffee) carry an
-// internal <title> of their own, which is exactly the case that reads twice
-// when the wrapper is missing.
+// See data/socialNames.yaml for why the names needed fixing at all. Nothing in
+// the build fails on a wrong name, because a wrong name is still a name.
 //
 //   node .github/scripts/check-social.mjs <public-dir>
-
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
