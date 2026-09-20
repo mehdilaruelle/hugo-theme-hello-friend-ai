@@ -1,22 +1,14 @@
 // Asserts that every highlighted code block sits inside a .code-block wrapper.
 //
-// pre is the scroll container. It used to be the positioned box as well, and an
-// absolutely positioned box whose containing block *is* the scroller travels
-// with the content: on a block wide enough to scroll, the copy button and the
-// language label slid left by exactly the scroll amount, ended up on top of the
-// code, and with a wide enough line left the block entirely. render-codeblock.html
-// puts a non-scrolling box around each block for them to be anchored to instead.
+// Delete render-codeblock.html and nothing else fails: the page still builds,
+// the CSS still applies, and the copy button and language label quietly start
+// scrolling with the code again. See that hook for why the wrapper exists.
 //
-// Nothing else fails if that hook is deleted -- the page still builds, the CSS
-// still applies, and the controls quietly start scrolling again. Hence this.
-//
-// Only blocks Hugo highlighted are required to be wrapped. An indented code
-// block never reaches a render hook at all; it carries no data-lang, so it has
-// no language label, and copy-code.js wraps it in the browser for its button.
-// ```mermaid has its own named hook and renders a bare pre on purpose.
+// Only highlighted blocks are required to be wrapped. An indented block never
+// reaches a render hook, carries no data-lang and so draws no label, and
+// copy-code.js wraps it in the browser. ```mermaid has its own hook.
 //
 //   node .github/scripts/check-code-blocks.mjs <public-dir>
-
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 

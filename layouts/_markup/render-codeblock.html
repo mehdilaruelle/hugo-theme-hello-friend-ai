@@ -1,20 +1,13 @@
 {{- /* Hugo's own highlighting, wrapped so the copy button and the language
-       label have something to be positioned against that does not scroll.
+       label have something to be positioned against that does not scroll: an
+       absolutely positioned box whose containing block *is* the scroller
+       travels with the content, so they used to slide onto the code. Same
+       pattern as .table-wrap in render-table.html, and pre keeps its own
+       overflow and tabindex.
 
-       pre is the scroll container. It used to be the positioned box as well,
-       and an absolutely positioned box whose containing block *is* the
-       scroller travels with the content: the button slid left by exactly the
-       scroll amount and ended up on top of the code, or outside the block
-       entirely. This is the .table-wrap pattern from render-table.html -- a
-       non-scrolling wrapper around the scrolling element -- and pre keeps its
-       own overflow and its tabindex, so the keyboard still reaches the scroll.
-
-       transform.Highlight is what Hugo calls with no hook in place, so the
-       markup inside the wrapper is unchanged, site markup.highlight settings
-       included. The trailing newline is put back because Goldmark strips it
-       from .Inner before a hook sees it, and the default path does not: without
-       it the last line of every block lost its newline, and so did the text the
-       copy button puts on the clipboard.
-
-       ```mermaid has its own named hook and never reaches this one. */ -}}
+       transform.Highlight is what Hugo calls with no hook, so the markup inside
+       the wrapper is unchanged. The trailing newline is put back because
+       Goldmark strips it from .Inner before a hook sees it and the default path
+       does not -- without it the last line of every block, and of the clipboard
+       text, lost its newline. */ -}}
 <div class="code-block">{{ transform.Highlight (printf "%s\n" .Inner) .Type .Options }}</div>

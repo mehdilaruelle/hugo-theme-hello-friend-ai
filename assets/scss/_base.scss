@@ -362,10 +362,8 @@ pre {
   font-size: 0.95rem;
   overflow: auto;
 
-  // Deliberately not positioned. This box scrolls, and an absolutely
-  // positioned box whose containing block *is* the scroller travels with the
-  // content -- which is what the copy button and the language label used to
-  // do. They are anchored to .code-block, just outside it, instead.
+  // Deliberately not positioned: this box scrolls, so anything positioned
+  // against it would scroll too. The controls anchor to .code-block instead.
 
   @media #{$media-size-phone} {
     white-space: pre-wrap;
@@ -589,13 +587,9 @@ hr {
   margin: 0;
 }
 
-// The box the copy button and the language label are positioned against.
-//
-// render-codeblock.html puts it around every fenced block, and copy-code.js
-// adds one for any other pre it finds, so an indented block gets a button that
-// stays put too. It must not scroll and must not clip: the controls sit inside
-// it, beside the pre rather than within it, so the pre's own overflow never
-// reaches them.
+// The box the controls are positioned against. render-codeblock.html puts it
+// around every fenced block, copy-code.js around any other pre. It must not
+// scroll and must not clip.
 .code-block {
   position: relative;
 }
@@ -717,9 +711,8 @@ pre > code[data-lang]:not([data-lang=""])::before {
   }
 }
 
-// A descendant combinator for the pre, not a child one: Hugo puts a
-// div.highlight between the wrapper and the pre whenever it highlights, so
-// ".code-block > pre" matched only the blocks it did not highlight.
+// Descendant, not child: Hugo puts a div.highlight between the wrapper and the
+// pre, so ".code-block > pre" matched only unhighlighted blocks.
 .code-block:hover pre > code[data-lang]::before,
 .code-block:focus-within pre > code[data-lang]::before {
   opacity: 1;
