@@ -69,10 +69,8 @@ a.button {
       border-color: $light-background-secondary;
     }
 
-    // &:hover, not :hover. Without the &, Sass compiles this to the descendant
-    // selector `button.outline :hover` -- it styled whatever was hovered INSIDE
-    // an outline button and never the button itself. `.primary` two rules below
-    // has always had the & and is what this should have looked like.
+    // &:hover, not :hover: without the &, Sass compiles this to the descendant
+    // `button.outline :hover`, which styles whatever is hovered inside.
     &:hover {
       transform: none;
       box-shadow: none;
