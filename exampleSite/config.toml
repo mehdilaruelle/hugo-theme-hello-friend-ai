@@ -93,7 +93,7 @@ disableHugoGeneratorInject = false
   #
   ogImage  = "img/example.png"
 
-  # subtitle is appended to every <title>, after the site title.
+  # subtitle is appended to the home page's <title>, after the site title.
   # description is what search results and social cards show.
   # homeSubtitle is the line under the heading on the front page.
   #
