@@ -104,9 +104,8 @@ h6 {
 // belonged to the heading, and plainify fed it back into the meta description
 // and the search index.
 .heading-anchor {
-  // Logical, not physical: the theme ships RTL languages, and margin-left put
-  // the gap on the far side of the glyph there -- the "#" touched the heading
-  // and the space went where nothing needed it.
+  // Logical, not physical: the theme ships RTL languages, where margin-left
+  // put the gap on the far side of the glyph.
   margin-inline-start: 0.3em;
   opacity: 0;
   font-weight: normal;
