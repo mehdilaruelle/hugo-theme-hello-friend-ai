@@ -53,10 +53,9 @@
 
   window.addEventListener("resize", isMobileMenu);
 
-  // A panel that opens over the page has to be dismissible without using it.
-  // The language switcher below gets Escape and click-outside from being a
-  // <details>; the menu is a plain div opening into the same corner on the same
-  // breakpoint, and had neither -- once open, the only way out was the trigger.
+  // The language switcher below gets Escape and click-outside for free from
+  // being a <details>. The menu is a plain div in the same corner on the same
+  // breakpoint, so it needs them spelled out.
   const closeMenu = () => {
     if (!menu || menu.classList.contains("hidden")) return;
     menu.classList.add("hidden");
