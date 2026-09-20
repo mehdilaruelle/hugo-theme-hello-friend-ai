@@ -29,10 +29,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    // Never give ground to the logo: these are the only controls in the
-    // header, and below the phone breakpoint the menu trigger is the only way
-    // to the navigation at all.
     flex-shrink: 0;
 
     @media #{$media-size-phone} {
@@ -48,9 +44,7 @@
     width: 760px;
     max-width: 100%;
 
-    // logo.html wraps the logo in a bare <a>, so the anchor is the flex item
-    // here, and it is the one that has to be allowed to shrink -- min-width
-    // defaults to auto, which is the logo's full intrinsic width.
+    // logo.html wraps the logo in a bare <a>, so the anchor is the flex item.
     > a {
       min-width: 0;
     }
