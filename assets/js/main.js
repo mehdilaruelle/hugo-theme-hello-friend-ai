@@ -4,12 +4,10 @@
  * Supports the preferred color scheme of the operating system as well as
  * the theme choice of the user.
  *
- * Wrapped, like every other script in the bundle. The files are concatenated
- * into one classic script, so a top-level const here lands in the global
- * lexical environment the page shares with params.customJS. A site declaring
- * the same name -- "menu" and "logo" are the theme's own class names -- made
- * the whole bundle a SyntaxError, and took the theme switch, the mobile menu
- * and the copy buttons down with it.
+ * Wrapped, like every other script in the bundle. The files concatenate into
+ * one classic script, so a top-level const lands in the global lexical
+ * environment the page shares with params.customJS: a site declaring the same
+ * name made the whole bundle a SyntaxError.
  */
 
 (function () {
