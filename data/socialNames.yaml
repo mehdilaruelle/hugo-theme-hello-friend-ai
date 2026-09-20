@@ -1,0 +1,54 @@
+# How a social network spells its own name.
+#
+# social-icons.html titled every link with `humanize`, which only capitalises
+# the first letter: "Github", "Linkedin", "Stackoverflow". Most of the icons
+# carry no <title>, so that title was the whole accessible name a screen reader
+# had, and it read the misspelling aloud.
+#
+# Keyed by the lowercased params.social name; only the ones humanize gets wrong
+# are listed. An entry's own `label` wins over this file.
+anilist: AniList
+buymeacoffee: Buy Me a Coffee
+codechef: CodeChef
+codepen: CodePen
+codesandbox: CodeSandbox
+csgo: "CS:GO"
+cyberdefenders: CyberDefenders
+dev: DEV Community
+deviantart: DeviantArt
+gitbook: GitBook
+github: GitHub
+gitlab: GitLab
+googleplay: Google Play
+googlescholar: Google Scholar
+gpg: GPG
+hackerone: HackerOne
+hackerrank: HackerRank
+hackthebox: Hack The Box
+imdb: IMDb
+itchio: itch.io
+kofi: Ko-fi
+lastfm: Last.fm
+leetcode: LeetCode
+librepay: Liberapay
+linkedin: LinkedIn
+npm: npm
+opencollective: Open Collective
+orcid: ORCID
+paypal: PayPal
+peertube: PeerTube
+repec: RePEc
+researchgate: ResearchGate
+rss: RSS
+soundcloud: SoundCloud
+sourcehut: SourceHut
+stackoverflow: Stack Overflow
+tiktok: TikTok
+tryhackme: TryHackMe
+whatsapp: WhatsApp
+xampp: XAMPP
+xda: XDA
+xing: XING
+xmpp: XMPP
+ycombinator: Hacker News
+youtube: YouTube
