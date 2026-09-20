@@ -85,7 +85,6 @@ disableHugoGeneratorInject = false
     weight = 10
 
 [params]
-  dateform        = "Jan 2, 2006"
   dateformShort   = "Jan 2"
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
