@@ -12,9 +12,7 @@ const ATTR = /(?<![-\w])(?:href|src|poster)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]
 const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]+))\s*\)/gi;
 
 // og:audio and og:video carry their URL in content, where the attribute net
-// above does not reach. absURL sent them off the subpath, and only a resolver
-// like this one would notice. The fixture writes a rooted path; a relative one
-// absURL got right.
+// above does not reach.
 const META_URL =
   /<meta\b[^>]*?(?<![-\w])property\s*=\s*(?:"(og:(?:audio|video))"|'(og:(?:audio|video))'|(og:(?:audio|video)))[^>]*>/gi;
 const CONTENT = /(?<![-\w])content\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;

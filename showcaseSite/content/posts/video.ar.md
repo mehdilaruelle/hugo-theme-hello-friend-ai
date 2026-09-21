@@ -3,9 +3,7 @@ title = "مقطع مرئي مكان صورة متحركة"
 description = "الاختصار video: تسجيل شاشة لا يزن ميغابايتات"
 date = "2026-01-24"
 type = ["posts","post"]
-# Rooted on purpose: absURL resolved a leading slash against the domain root,
-# so og:audio and og:video named a file outside the tree on a subpath site. A
-# relative path never showed it. videos is here for the same reason.
+# Rooted on purpose: a relative path never showed the subpath bug.
 audio = ["/video/demo.mp4"]
 videos = ["/video/demo.mp4"]
 tags = ["hugo"]
