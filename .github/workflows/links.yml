@@ -311,7 +311,7 @@ jobs:
             echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
           fi
           # And the fixture has to still be a site, not an empty build.
-          grep -rq 'class="?header' public-menu \
+          grep -rEq 'class="?header' public-menu \
             || { echo "  BAD  no header was rendered at all"; exit 1; }
           echo "  a site whose only menu is a footer menu gets no navigation"
 
