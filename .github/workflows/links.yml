@@ -158,6 +158,24 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
+      # .content is the page layout class -- display:flex with
+      # align-items:center -- not a prose wrapper. list.html reused it for the
+      # section's own _index.md body, which centred every top-level block of
+      # the introduction while the heading above it and the article list below
+      # stayed at full width. The showcase's long intro filled the column and
+      # hid it; tags/hugo/_index.md is short so the shape is exercised.
+      - name: Check no prose is wrapped in the page layout class
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          # --minify drops the quotes it can, so both shapes are matched.
+          if grep -rEoh '<main[^>]*>.*<div class="?content["> ]' public | head -3 | grep -q .; then
+            echo "  BAD  .content nested inside <main>: it is the page frame, not a prose wrapper"
+            exit 1
+          fi
+          grep -rEq 'class="?list-content["> ]' public \
+            || { echo "  BAD  no section introduction was rendered at all"; exit 1; }
+          echo "  the section introduction has a prose class of its own"
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite

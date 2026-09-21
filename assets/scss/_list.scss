@@ -1,6 +1,20 @@
 @use "variables" as *;
 @use "mixins" as *;
 
+// The section's own _index.md body, between the <h1> and the article list.
+// It carried .content until now -- the page layout class, display:flex with
+// align-items:center -- so every top-level block of the introduction became a
+// shrink-to-fit item centred in the column while the heading above it and the
+// list below it stayed at full width. A short lead-in, a bullet list, a note,
+// an image or a code block all landed in the middle of the page.
+//
+// .posts already sets the measure, the padding and the alignment, the way
+// .home-content does for the front page. This only has to be an ordinary block
+// that fills it.
+.list-content {
+  width: 100%;
+}
+
 .posts {
   width: 100%;
   max-width: 800px;
