@@ -125,8 +125,7 @@ jobs:
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a
       # cover — and nothing failed.
-      # The base URL resolves the picture against the files on disk: images as
-      # a string made both halves agree on a URL that was never published.
+      # The base URL resolves the picture against the files on disk.
       - name: Check both halves of a social card name one published picture
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-cards.mjs public https://example.com/subpath/showcase/

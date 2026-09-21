@@ -1,8 +1,7 @@
-// Asserts the two halves of a social card name the same picture, and that the
-// picture is one the build wrote. Agreeing is not enough on its own: `images`
-// as a string indexed the string, so both halves named .../105 and 404 twice.
-// A same-origin card URL is resolved against the files on disk when a base URL
-// is passed.
+// Asserts both halves of a social card name the same picture, and that the
+// picture is one the build wrote -- agreeing is not enough when both name the
+// same broken URL. Same-origin cards resolve against disk when a base URL is
+// given.
 //
 //   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
@@ -54,8 +53,7 @@ const exists = (p) => {
 };
 
 // Path under the public root, or null when the URL is somebody else's. One
-// that escapes the baseURL path returns "" and is reported: that is the shape
-// absURL leaves on a subpath site.
+// that escapes the baseURL path returns "" and is reported.
 function local(url) {
   if (!siteOrigin) return null;
   let u;
@@ -108,9 +106,8 @@ for (const file of walk(root)) {
     const path = local(og);
     if (path !== null) {
       resolved++;
-      // Resolved, not joined: %2e%2e%2fx.png survives URL normalisation, passes
-      // the prefix test, then decodes to ../x.png. A plain ../ the parser
-      // already folds away; the encoded form has to be caught here.
+      // Resolved, not joined: %2e%2e%2f survives normalisation and the prefix
+      // test, then decodes to ../ . A plain ../ the parser already folds away.
       const target = path === "" ? "" : resolve(rootPath, decodeURIComponent(path).replace(/^\/+/, ""));
       const outside = target === "" ? ".." : relative(rootPath, target);
       if (outside === ".." || outside.startsWith(`..${sep}`)) {
