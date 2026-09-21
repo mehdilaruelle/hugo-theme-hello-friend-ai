@@ -1,0 +1,18 @@
+# A site whose only menu is a non-main one, layered over the exampleSite.
+#
+# header.html used to test `len .Site.Menus`, the map of *every* menu, so this
+# shape -- an ordinary Hugo one -- rendered an empty <nav> and a fully working
+# hamburger beside it. menu.js removes `disabled`, so below the 684px
+# breakpoint the visitor got a labelled, focusable control that opened nothing.
+# No demo config defined a non-main menu, so CI never built the markup.
+#
+# `main = []` because Hugo merges the menu table across config files rather
+# than replacing it: declaring only [[menu.footer]] leaves the exampleSite's
+# main menu in place, and the fixture then proves nothing. Emptying main
+# explicitly is what leaves the footer menu as the only one.
+[menu]
+main = []
+  [[menu.footer]]
+    name   = "Imprint"
+    url    = "/imprint/"
+    weight = 10
