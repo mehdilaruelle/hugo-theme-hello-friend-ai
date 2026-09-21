@@ -299,8 +299,7 @@ jobs:
             --config config.toml,../.github/fixtures/menu-footer-only.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
-          # The empty nav is the signature; the hamburger is what a keyboard
-          # and a screen reader still reach.
+          # The empty nav is the signature; the hamburger is what is reachable.
           if grep -rEoh '<ul class="?menu__inner"?>[[:space:]]*</ul>' public-menu | head -3 | grep -q .; then
             echo "  BAD  an empty menu__inner was rendered"; exit 1
           fi
@@ -308,8 +307,7 @@ jobs:
           if grep -rq --include='*.html' 'menu-trigger' public-menu; then
             echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
           fi
-          # And it has to still be a site, not an empty build. The <header>
-          # element, not a class prefix: header__inner would match on its own.
+          # The <header> element, not a class prefix: header__inner would match.
           grep -rEq --include='*.html' '<header[[:space:]][^>]*class="?header"?[[:space:]>]' public-menu \
             || { echo "  BAD  no header was rendered at all"; exit 1; }
           echo "  a site whose only menu is a footer menu gets no navigation"
