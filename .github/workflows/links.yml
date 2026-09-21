@@ -314,3 +314,20 @@ jobs:
             exit 1
           }
           echo "  the quoted AI policy is declined, as written"
+
+      # Nothing here renders CSS, so the compiled rule is what gets asserted,
+      # against the Arabic page that makes `start` rather than `left`
+      # load-bearing. Minified: the phone block is one run of declarations.
+      - name: Check a submenu label starts where its siblings do on a phone
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          grep -Eq '<html[^>]+dir="?rtl"?' public/ar/index.html || {
+            echo "  BAD  the Arabic page is not marked rtl"; exit 1
+          }
+          grep -Eqs '\.menu__inner\{[^}]*flex-direction:column[^}]*text-align:start[^}]*\}' public/*.css || {
+            echo "  BAD  the phone menu block does not set text-align:start"
+            grep -o '\.menu__inner{[^}]*}' public/*.css || true
+            exit 1
+          }
+          echo "  a submenu label follows the writing direction on a phone"
+
