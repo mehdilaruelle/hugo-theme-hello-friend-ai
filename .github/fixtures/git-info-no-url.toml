@@ -1,0 +1,10 @@
+# enableGitInfo on with params.gitUrl deliberately unset, layered over the
+# exampleSite configuration.
+#
+# gitUrl is a prefix the hash is appended to, and it is the one optional param
+# in these two templates that used to be concatenated raw rather than guarded:
+# with nothing in front of it, every article shipped
+# href="16cc120fbb865772bcd54d25b43adbed9df80bdb" -- a relative link to a
+# sibling page that does not exist, opened in a new tab. No demo config enabled
+# enableGitInfo, so check-links.mjs never saw the markup.
+enableGitInfo = true

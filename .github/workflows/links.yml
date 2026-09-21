@@ -291,6 +291,25 @@ jobs:
           node .github/scripts/check-robots.mjs . exampleSite/public
           node .github/scripts/check-robots.mjs . showcaseSite/public
 
+      # No demo config enables enableGitInfo, so the commit line under an
+      # article was markup CI never built. Without params.gitUrl the hash used
+      # to be concatenated onto nothing and shipped as a relative href.
+      - name: Check the commit line survives enableGitInfo with no gitUrl
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-git \
+            --config config.toml,../.github/fixtures/git-info-no-url.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-git https://example.com/subpath/
+          # The link is the bug's signature: a bare 40-character hash as an href.
+          if grep -rEoh 'href="[0-9a-f]{40}"' public-git | head -3 | grep -q .; then
+            echo "  BAD  a commit hash shipped as a relative href"; exit 1
+          fi
+          # And the hash is still shown, as text, rather than the line vanishing.
+          grep -rq 'feather-git-commit' public-git \
+            || { echo "  BAD  no commit line was rendered at all"; exit 1; }
+          echo "  the hash is plain text when there is no gitUrl to link it to"
+
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
         working-directory: hello-friend-ai/exampleSite
