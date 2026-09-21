@@ -74,6 +74,40 @@ const spellableIn = (file) => {
   return new Set([...SPELLABLE].filter((form) => !ranged.includes(form)));
 };
 
+// The plural categories a language actually needs, read from ICU rather than
+// from a table kept by hand. Only the counts this theme renders matter -- a
+// reading time in minutes and a word count -- so the sweep is over integers,
+// which is also what keeps `many` out of es, fr, it and pt: theirs applies at
+// 1000000 and nothing here counts that high. `other` is dropped because it is
+// required of every language separately: ru and uk never select it for an
+// integer, and Hugo still needs it as the form an uncovered count falls back to.
+//
+// ro shipped one and other only, so 2 to 19 fell through and rendered
+// "6 de minute" where Romanian wants "6 minute".
+const localeOf = (file) =>
+  file.replace(/\.toml$/, '').replace(/^(pt|zh)-(\w+)$/, (m, a, b) => `${a}-${b.toUpperCase()}`);
+
+const CATEGORY_SWEEP = 1000;
+
+// Returns null for a language ICU does not know -- lmo, say -- rather than
+// asserting some other language's rules against it.
+const categoriesFor = (file) => {
+  const tag = localeOf(file);
+  if (Intl.PluralRules.supportedLocalesOf([tag]).length === 0) return null;
+  const rules = new Intl.PluralRules(tag);
+  const needed = new Map();
+  for (let n = 0; n <= CATEGORY_SWEEP; n++) {
+    const form = rules.select(n);
+    if (form === 'other') continue;
+    const seen = needed.get(form) ?? [];
+    // A couple of examples, because one can mislead on its own: Romanian
+    // selects few for 0 as well as for 2, which reads like a bug in this
+    // check until the second number lands beside it.
+    if (seen.length < 2) needed.set(form, [...seen, n]);
+  }
+  return needed;
+};
+
 const files = readdirSync(dir).filter((f) => f.endsWith('.toml')).sort();
 if (!files.includes('en.toml')) {
   console.error(`  no ${join(dir, 'en.toml')}: is ${root} the theme root?`);
@@ -92,6 +126,7 @@ for (const [key, forms] of en) {
 for (const file of files.filter((f) => f !== 'en.toml')) {
   const lang = parse(file);
   const spellable = spellableIn(file);
+  const needed = categoriesFor(file);
 
   for (const [key, reference] of en) {
     const translated = lang.get(key);
@@ -114,12 +149,27 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       problems.push(`i18n/${file}: [${key}] has no other form, so this language renders the English string`);
     }
 
+    // A section en.toml gives more than one form to is a counted one, and a
+    // language that skips a category its own rules name renders the wrong
+    // string for every count in that category -- silently, since `other`
+    // catches them.
+    const counted = [...reference.keys()].some((k) => PLURAL.has(k) && k !== 'other');
+    if (counted && needed) {
+      for (const [form, examples] of needed) {
+        if (!translated.has(form)) {
+          problems.push(
+            `i18n/${file}: [${key}] has no ${form} form, which ${localeOf(file)} selects for ${examples.join(' and ')} — those counts fall through to other`,
+          );
+        }
+      }
+    }
+
     // Per form, not per section: a form that kept the number would otherwise
     // cover for the one that lost it.
-    const counted = new Set();
+    const countPlaceholders = new Set();
     for (const [subkey, value] of reference) {
       if (PLURAL.has(subkey)) {
-        for (const p of placeholders(value)) counted.add(p);
+        for (const p of placeholders(value)) countPlaceholders.add(p);
         continue;
       }
       const mine = translated.get(subkey);
@@ -132,7 +182,7 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
     for (const [subkey, value] of translated) {
       if (!PLURAL.has(subkey)) continue;
       const have = placeholders(value);
-      for (const p of counted) {
+      for (const p of countPlaceholders) {
         if (p === COUNT && spellable.has(subkey)) continue;
         if (!have.has(p)) problems.push(`i18n/${file}: [${key}] ${subkey} drops {{ .${p} }}`);
       }

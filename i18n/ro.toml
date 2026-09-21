@@ -21,8 +21,12 @@ other = "Ups, pagina nu a fost găsită…"
 
 # posts/single.html
 #
+# Romanian has three CLDR plural categories: one, few (2-19) and other
+# (0 and 20+, the "de" form). Without few, 2 to 19 fell through to other and
+# rendered "6 de minute" where Romanian wants "6 minute".
 [readingTime]
 one   = "Un minut"
+few   = "{{ .Count }} minute"
 other = "{{ .Count }} de minute"
 
 [tableOfContents]
@@ -30,6 +34,7 @@ other = "Cuprins"
 
 [wordCount]
 one   = "Un cuvânt"
+few   = "{{ .Count }} cuvinte"
 other = "{{ .Count }} de cuvinte"
 
 [lastModified]
