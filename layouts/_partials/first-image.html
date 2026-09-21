@@ -12,21 +12,28 @@
   Warned rather than silently corrected for any other shape, the way
   social-icons.html warns on a misshapen params.social: a number or a map here
   is a config mistake, and a card is easier to fix when the build says so.
+
+  Called through `isset` rather than `with`, because `with` is false for 0 and
+  for an empty table and those would have reached no check at all. Which is why
+  the empty shapes are named here instead: a nil, an empty string, an empty
+  list and `images = [""]` -- the README's own sample -- all mean "no picture",
+  not "wrong picture", and stay silent.
 */ -}}
 {{- $first := "" -}}
-{{- with . -}}
-  {{- if reflect.IsSlice . -}}
-    {{- with index . 0 -}}
-      {{- if eq (printf "%T" .) "string" -}}
-        {{- $first = . -}}
-      {{- else -}}
-        {{- warnidf "images-shape" "images: expected a list of paths, got a list of %T. This page has no social card picture." . -}}
-      {{- end -}}
+{{- $type := printf "%T" . -}}
+{{- if eq $type "<nil>" -}}
+  {{- /* `images:` with nothing after it. The same as not writing the key. */ -}}
+{{- else if reflect.IsSlice . -}}
+  {{- with index . 0 -}}
+    {{- if eq (printf "%T" .) "string" -}}
+      {{- $first = . -}}
+    {{- else -}}
+      {{- warnidf "images-shape" "images: expected a list of paths, got a list of %T. This page has no social card picture." . -}}
     {{- end -}}
-  {{- else if eq (printf "%T" .) "string" -}}
-    {{- $first = . -}}
-  {{- else -}}
-    {{- warnidf "images-shape" "images: expected a path or a list of paths, got %T. This page has no social card picture." . -}}
   {{- end -}}
+{{- else if eq $type "string" -}}
+  {{- $first = . -}}
+{{- else -}}
+  {{- warnidf "images-shape" "images: expected a path or a list of paths, got %T. This page has no social card picture." . -}}
 {{- end -}}
 {{- return $first -}}

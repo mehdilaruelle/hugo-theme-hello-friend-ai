@@ -13,7 +13,7 @@
 //   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, resolve, sep } from "node:path";
 
 // Quoted, single-quoted or bare, because --minify drops the quotes it can. The
 // lookbehind is the name test \b is not; check-sharing.mjs says why.
@@ -39,6 +39,7 @@ function* walk(dir) {
 }
 
 const root = process.argv[2] || "public";
+const rootPath = resolve(root);
 const baseUrl = process.argv[3];
 
 // Only a URL under the site's own base URL names a file this build wrote; a
@@ -115,11 +116,18 @@ for (const file of walk(root)) {
     const path = local(og);
     if (path !== null) {
       resolved++;
-      if (path === "") {
+      // Resolved, not joined: a percent-encoded separator survives URL
+      // normalisation -- %2e%2e%2fx.png stays whole in pathname and passes the
+      // prefix test above -- and only becomes ../x.png once decoded. Joined
+      // blindly that reads a file outside the build and calls the card
+      // published. A plain ../ is normalised by the URL parser and caught by
+      // the prefix test; the encoded form has to be caught here.
+      const target = path === "" ? "" : resolve(rootPath, decodeURIComponent(path).replace(/^\/+/, ""));
+      const outside = target === "" ? ".." : relative(rootPath, target);
+      if (outside === ".." || outside.startsWith(`..${sep}`)) {
         failures.push([file, `og:image ${og}`, "escapes the site root"]);
-      } else {
-        const target = join(root, decodeURIComponent(path).replace(/^\/+/, ""));
-        if (!exists(target)) failures.push([file, `og:image ${og}`, "names a file this build did not write"]);
+      } else if (!exists(target)) {
+        failures.push([file, `og:image ${og}`, "names a file this build did not write"]);
       }
     }
   } else if (og || tw) {

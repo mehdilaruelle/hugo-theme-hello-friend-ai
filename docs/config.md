@@ -619,7 +619,10 @@ them whichever way the image was configured.
 `images` is a list, and a bare string is read as a list of one, so
 `images = "img/card.png"` and `images = ["img/card.png"]` name the same picture.
 Anything else — a number, a table — is a config mistake, and the build says so
-rather than putting a URL nobody can fetch on every card.
+rather than putting a URL nobody can fetch on every card. The empty forms are
+not mistakes and stay quiet: no value, `""`, `[]` and `[""]` all mean "no
+picture here", and the chain simply carries on to `cover`, then to the site's
+own `images` and `ogImage`.
 
 An SVG is passed over wherever it appears in that chain — `images` and `cover`,
 at page or site level, alike — since no platform renders one on a card. The
