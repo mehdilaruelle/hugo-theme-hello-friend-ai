@@ -1,3 +1,34 @@
-@mixin dimmed {
-  opacity: .6;
+@use "variables" as *;
+
+// The secondary text colour, in all four ways a theme can be chosen: the
+// stylesheet default, the OS preference, and the [data-theme] attribute the
+// toggle writes. Five branches because the attribute has to outrank the media
+// query in both directions.
+//
+// This replaced `@mixin dimmed { opacity: .6 }`. Opacity composites the text
+// towards whatever is painted behind it, which cost roughly a third of the
+// contrast: .post-info and .post-day measured 3.34:1 on the dark ground and
+// 4.27:1 on the light one, against the 4.5:1 WCAG AA asks for text below 24px.
+// The palette work had already been done -- $light-color-secondary is 5.02:1
+// and $dark-color-secondary 7.48:1, which is what .post-excerpt and the footer
+// were already using -- the three @include dimmed sites were just never
+// brought along.
+@mixin secondary-colour {
+  color: $light-color-secondary;
+
+  @media (prefers-color-scheme: dark) {
+    color: $dark-color-secondary;
+  }
+
+  @media (prefers-color-scheme: light) {
+    color: $light-color-secondary;
+  }
+
+  [data-theme=dark] & {
+    color: $dark-color-secondary;
+  }
+
+  [data-theme=light] & {
+    color: $light-color-secondary;
+  }
 }
