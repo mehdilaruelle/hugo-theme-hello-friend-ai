@@ -1,10 +1,8 @@
 @use "variables" as *;
 @use "mixins" as *;
 
-// The section's own _index.md body. It carried .content -- the page layout
-// class, display:flex with align-items:center -- so every top-level block of
-// the introduction was centred while the heading and list around it were not.
-// .posts already sets the measure and alignment, so this just fills it.
+// The section's own _index.md body. An ordinary block: .posts around it
+// already sets the measure and alignment, so this only has to fill them.
 .list-content {
   width: 100%;
 }

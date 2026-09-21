@@ -158,8 +158,7 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
-      # .content is the page layout class, not a prose wrapper. The showcase's
-      # long intro filled the column and hid this; tags/hugo/_index.md is short.
+      # .content is the page layout class, not a prose wrapper.
       - name: Check no prose is wrapped in the page layout class
         working-directory: hello-friend-ai/showcaseSite
         run: |
