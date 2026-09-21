@@ -6,6 +6,16 @@
   font-display: auto;
   font-family: monospace, monospace;
 
+  // A shell prompt is not language content. Left to inherit the page's
+  // direction, dir="rtl" laid the three spans out right-to-left and
+  // bidi-mirrored the > in .logo__mark to <, so the Arabic showcase rendered
+  // "|cd /home/posts $ <" where LTR renders "> $ cd /home/posts |": the mark
+  // last and reversed, the caret leading the text instead of trailing it.
+  // isolate so that pinning the direction here does not reorder the header
+  // around it -- the same pair :not(pre) > code already uses in _base.scss.
+  direction: ltr;
+  unicode-bidi: isolate;
+
   // menu.js appends the current section here, so the logo has no upper bound
   // and would push .header__right off a phone screen instead of shrinking.
   min-width: 0;

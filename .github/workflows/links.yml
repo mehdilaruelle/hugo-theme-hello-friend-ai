@@ -158,6 +158,21 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
+      # A brand mark is not language content. .logo is display:flex, so left to
+      # inherit the page direction it laid its three spans out right-to-left on
+      # an RTL page and bidi-mirrored the > in .logo__mark to <. Nothing here
+      # renders CSS, so the rule itself is what gets asserted -- the showcase
+      # ships an Arabic site, which is what makes the rule load-bearing.
+      - name: Check the logo keeps its direction on an RTL page
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          grep -rq 'dir=\"\?rtl' public/ar/index.html \
+            || { echo "  BAD  the Arabic showcase is not marked dir=rtl"; exit 1; }
+          # --minify drops the quotes and collapses the rule onto one line.
+          grep -rEq '\.logo\{[^}]*direction:ltr[^}]*unicode-bidi:isolate' public/*.css \
+            || { echo "  BAD  .logo does not pin its direction; an RTL page will mirror the mark"; exit 1; }
+          echo "  the logo reads left-to-right on an RTL page"
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite
