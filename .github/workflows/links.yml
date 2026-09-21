@@ -171,7 +171,7 @@ jobs:
             echo "  BAD  an empty table of contents was rendered"; exit 1
           fi
           # And a page that does have headings still gets one.
-          grep -rq --include='*.html' 'id="?TableOfContents' public \
+          grep -rEq --include='*.html' 'id="?TableOfContents' public \
             || { echo "  BAD  no table of contents was rendered anywhere"; exit 1; }
           echo "  a table of contents is rendered only where there is something to list"
 
