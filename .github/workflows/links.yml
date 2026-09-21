@@ -315,11 +315,9 @@ jobs:
           }
           echo "  the quoted AI policy is declined, as written"
 
-      # --minify drops an empty attribute, so this builds unminified: that is
-      # what `hugo server` and any site that does not minify actually ship.
-      # With no logoCursor* set -- the default -- the attribute should not be
-      # built at all, and the second half keeps the fix from being "never
-      # emit a style".
+      # Unminified on purpose: --minify drops an empty attribute, so a
+      # minified build cannot observe this at all. The second half keeps the
+      # fix from becoming "never emit a style".
       - name: Check the logo cursor ships no empty style attribute
         working-directory: hello-friend-ai/exampleSite
         run: |
