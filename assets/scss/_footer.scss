@@ -1,8 +1,7 @@
 @use "variables" as *;
 @use "mixins" as *;
 
-// The footer never switched colour with the theme: #999 served both, at 2.85:1
-// on the light ground. Its copy of the five-branch shape lives in mixins now.
+// The theme-aware secondary colour lives in mixins; #999 served both themes.
 
 .footer {
   padding: 40px 20px;

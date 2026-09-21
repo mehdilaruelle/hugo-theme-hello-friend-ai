@@ -2,11 +2,6 @@
 
 // The secondary text colour. Five branches because [data-theme] has to outrank
 // the media query in both directions.
-//
-// Replaces `@mixin dimmed { opacity: .6 }`, which composited text towards the
-// background and cost a third of the contrast: .post-info and .post-day
-// measured 3.34:1 dark and 4.27:1 light, against AA's 4.5:1 below 24px. The
-// palette already had 5.02/7.48; the three dimmed sites never got it.
 @mixin secondary-colour {
   color: $light-color-secondary;
 
