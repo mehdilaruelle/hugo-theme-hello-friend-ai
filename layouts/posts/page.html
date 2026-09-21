@@ -41,7 +41,12 @@
           </figure>
         {{ end }}
 
-        {{- if partial "switch.html" .Params.toc }}
+        {{- /* The headings, not .TableOfContents: with none, that still returns
+               <nav id="TableOfContents"></nav>, which is a non-empty string and
+               passes `with`. toc: true on a page with no ## then framed an
+               empty titled box between two rules. related.html puts it best --
+               a heading over an empty list is worse than no section. */ -}}
+        {{- if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
           <hr />
           <aside id="toc">
             <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>

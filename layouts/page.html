@@ -38,7 +38,9 @@
                     </figure>
                 {{ end }}
                 
-                {{ if partial "switch.html" .Params.toc }}
+                {{/* posts/page.html says why the headings are tested rather
+                     than .TableOfContents. */}}
+                {{ if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
                     <hr />
                     <aside id="toc">
                     <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>

@@ -158,6 +158,23 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
+      # toc: true on a page with no headings framed an empty titled box
+      # between two rules. .TableOfContents is a non-empty string even then,
+      # so the emptiness has to be read off the rendered nav.
+      - name: Check no empty table of contents is rendered
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          # HTML only, and --minify drops the quotes it can. The Markdown
+          # copies and llms-full.txt carry page prose, where a page that
+          # discusses the markup would trip an unscoped grep.
+          if grep -rEoh --include='*.html' '<nav id="?TableOfContents"?>[[:space:]]*</nav>' public | head -3 | grep -q .; then
+            echo "  BAD  an empty table of contents was rendered"; exit 1
+          fi
+          # And a page that does have headings still gets one.
+          grep -rq --include='*.html' 'id="?TableOfContents' public \
+            || { echo "  BAD  no table of contents was rendered anywhere"; exit 1; }
+          echo "  a table of contents is rendered only where there is something to list"
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite
