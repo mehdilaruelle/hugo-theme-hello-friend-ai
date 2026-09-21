@@ -303,9 +303,7 @@ jobs:
           if grep -rEoh 'href="[0-9a-f]{40}"' public-git | head -3 | grep -q .; then
             echo "  BAD  a commit hash shipped as a relative href"; exit 1
           fi
-          # The icon alone is not enough: keeping the svg and dropping the hash
-          # passes everything above, and is the other way to lose the link.
-          # The hash follows </svg> on the same line in both templates.
+          # The icon alone is not enough: the svg without the hash also loses it.
           grep -rq 'feather-git-commit' public-git \
             || { echo "  BAD  no commit line was rendered at all"; exit 1; }
           grep -rEq '</svg>[[:space:]]*[0-9a-f]{7,40}' public-git \

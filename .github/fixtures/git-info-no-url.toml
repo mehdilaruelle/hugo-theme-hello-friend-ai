@@ -1,6 +1,2 @@
 # enableGitInfo on with params.gitUrl deliberately unset, over the exampleSite.
-#
-# gitUrl is a prefix the hash is appended to. Concatenated raw, every article
-# shipped href="16cc120..." -- a relative link to nowhere. No demo config
-# enabled enableGitInfo, so CI never built the markup.
 enableGitInfo = true
