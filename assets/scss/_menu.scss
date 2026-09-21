@@ -48,9 +48,8 @@
       flex-direction: column;
       align-items: flex-start;
       padding: 0;
-      // .container centres its text; a submenu li is as wide as its
-      // .dropdown-content, so the parent label was centred in the wider box.
-      // `start`, not `left`, so it follows the writing direction on RTL.
+      // .container centres its text, and a submenu li is as wide as its
+      // .dropdown-content. `start`, not `left`: RTL follows the writing order.
       text-align: start;
 
       li {

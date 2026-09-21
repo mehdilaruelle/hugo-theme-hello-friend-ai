@@ -315,12 +315,9 @@ jobs:
           }
           echo "  the quoted AI policy is declined, as written"
 
-      # Nothing here renders CSS, so the compiled rule is what gets asserted,
-      # against the Arabic page that makes `start` rather than `left`
-      # load-bearing. Minified: the phone block is one run of declarations, and
-      # --minify leaves the attributes unquoted, hence both forms. The value
-      # boundaries matter: without them column-reverse, startfoo and data-dir
-      # all satisfy the check.
+      # Nothing here renders CSS, so the compiled rule is what gets asserted.
+      # Both quote forms because --minify leaves attributes unquoted, and the
+      # value boundaries because column-reverse and startfoo otherwise pass.
       - name: Check a submenu label starts where its siblings do on a phone
         working-directory: hello-friend-ai/showcaseSite
         run: |
