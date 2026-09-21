@@ -158,12 +158,8 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
-      # .content is the page layout class -- display:flex with
-      # align-items:center -- not a prose wrapper. list.html reused it for the
-      # section's own _index.md body, which centred every top-level block of
-      # the introduction while the heading above it and the article list below
-      # stayed at full width. The showcase's long intro filled the column and
-      # hid it; tags/hugo/_index.md is short so the shape is exercised.
+      # .content is the page layout class, not a prose wrapper. The showcase's
+      # long intro filled the column and hid this; tags/hugo/_index.md is short.
       - name: Check no prose is wrapped in the page layout class
         working-directory: hello-friend-ai/showcaseSite
         run: |
