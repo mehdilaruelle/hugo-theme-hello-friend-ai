@@ -306,8 +306,14 @@ jobs:
             echo "  BAD  a commit hash shipped as a relative href"; exit 1
           fi
           # And the hash is still shown, as text, rather than the line vanishing.
+          # The icon alone is not enough to assert: a template that kept the
+          # svg and dropped AbbreviatedHash passes every check above, and
+          # dropping the hash is the other way to get rid of the broken link.
+          # The hash follows </svg> on the same line on both templates.
           grep -rq 'feather-git-commit' public-git \
             || { echo "  BAD  no commit line was rendered at all"; exit 1; }
+          grep -rEq '</svg>[[:space:]]*[0-9a-f]{7,40}' public-git \
+            || { echo "  BAD  the commit line carries no plain-text hash"; exit 1; }
           echo "  the hash is plain text when there is no gitUrl to link it to"
 
       # The documented escape hatch, built here so CI has walked it.
