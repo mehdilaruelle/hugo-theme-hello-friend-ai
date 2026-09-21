@@ -21,8 +21,7 @@ other = "Ups, pagina nu a fost găsită…"
 
 # posts/single.html
 #
-# Three CLDR categories. Without few, those counts fell through to other and
-# rendered "6 de minute" where Romanian wants "6 minute".
+# Three CLDR categories: without few, those counts take the "de" form.
 [readingTime]
 one   = "Un minut"
 few   = "{{ .Count }} minute"

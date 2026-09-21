@@ -75,17 +75,14 @@ const spellableIn = (file) => {
 };
 
 // The plural categories a language needs, read from ICU rather than a table
-// kept by hand. The sweep is over integers, which is all this theme counts and
-// is what keeps `many` out of es/fr/it/pt (theirs applies at 1000000). `other`
-// is dropped: ru and uk never select it for an integer, and it is required of
-// every language separately anyway.
+// kept by hand. Integers only -- all this theme counts, and what keeps `many`
+// out of es/fr/it/pt. `other` is checked separately, for every language.
 const localeOf = (file) =>
   file.replace(/\.toml$/, '').replace(/^(pt|zh)-(\w+)$/, (m, a, b) => `${a}-${b.toUpperCase()}`);
 
 const CATEGORY_SWEEP = 1000;
 
-// null for a language ICU does not know (lmo), rather than asserting en-US's
-// rules against it.
+// null for a language ICU does not know (lmo), which would fall back to en-US.
 const categoriesFor = (file) => {
   const tag = localeOf(file);
   if (Intl.PluralRules.supportedLocalesOf([tag]).length === 0) return null;
@@ -94,8 +91,7 @@ const categoriesFor = (file) => {
   for (let n = 0; n <= CATEGORY_SWEEP; n++) {
     const form = rules.select(n);
     if (form === 'other') continue;
-    // Two examples: ro selects few for 0 as well as 2, and 0 alone reads like
-    // a bug in this check.
+    // Two examples: ro selects few for 0 as well as 2, and 0 alone reads odd.
     const seen = needed.get(form) ?? [];
     if (seen.length < 2) needed.set(form, [...seen, n]);
   }
@@ -143,8 +139,7 @@ for (const file of files.filter((f) => f !== 'en.toml')) {
       problems.push(`i18n/${file}: [${key}] has no other form, so this language renders the English string`);
     }
 
-    // A section en.toml gives more than one form to is a counted one. Skipping
-    // a category its rules name is silent: `other` catches those counts.
+    // A section en.toml gives more than one form to is a counted one.
     const counted = [...reference.keys()].some((k) => PLURAL.has(k) && k !== 'other');
     if (counted && needed) {
       for (const [form, examples] of needed) {
