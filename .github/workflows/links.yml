@@ -171,7 +171,7 @@ jobs:
             echo "  BAD  an empty post-info was rendered"; exit 1
           fi
           # And the pages that have something to put in one still get one.
-          grep -rq --include='*.html' 'class="?post-info' public \
+          grep -rEq --include='*.html' 'class="?post-info' public \
             || { echo "  BAD  no post-info was rendered anywhere"; exit 1; }
           echo "  a post-info is rendered only where there is something to put in it"
 
