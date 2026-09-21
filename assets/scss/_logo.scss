@@ -6,10 +6,9 @@
   font-display: auto;
   font-family: monospace, monospace;
 
-  // A brand mark is not language content. Inheriting dir="rtl" laid the three
-  // spans out right-to-left and mirrored the > to <: the Arabic showcase read
-  // "|cd /home/posts $ <" against LTR's "> $ cd /home/posts |". isolate so
-  // this does not reorder the header, as :not(pre) > code does in _base.scss.
+  // A brand mark is not language content, so the direction is pinned rather
+  // than inherited. isolate so pinning it does not reorder the header around
+  // it -- the pair :not(pre) > code already uses in _base.scss.
   direction: ltr;
   unicode-bidi: isolate;
 
