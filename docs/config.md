@@ -714,9 +714,13 @@ icons, and the build warns when it sees one.
 audio: ["audio/episode-01.mp3"]
 ```
 
-The Open Graph partial ranges over this key, so a bare string stops the build —
-and it absolutises what it finds with `absURL`, which is why there is no leading
-slash above. See
+The Open Graph partial ranges over this key, so a bare string stops the build.
+`videos` is read the same way, for `og:video`.
+
+A leading slash is fine on either. Both are resolved against the site's base
+URL, the same way the `<audio>` player resolves the file it plays, so a rooted
+path keeps the subpath on a site that is served from one. A URL with a scheme,
+or a protocol-relative one, is left alone. See
 [Everything else the theme reads](#everything-else-the-theme-reads).
 
 ### Keeping a page out of things

@@ -93,15 +93,24 @@
 	{{- end }}
 {{- end }}
 
+{{- /* absURL resolves a rooted path against the domain root, so /media/one.mp3
+       came out at https://example.com/media/one.mp3 on a site served from
+       https://example.com/blog/ -- a 404 in the card, while the <audio> player
+       two templates away played the file. json-ld.html carries the same note.
+       is-remote.html leaves a URL that is somebody else's alone. */ -}}
 {{- with .Params.audio }}
 	{{- range . | first 6 }}
-		<meta property="og:audio" content="{{ . | absURL }}">
+		{{- $url := . }}
+		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		<meta property="og:audio" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 
 {{- with .Params.videos }}
 	{{- range . | first 6 }}
-		<meta property="og:video" content="{{ . | absURL }}">
+		{{- $url := . }}
+		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		<meta property="og:video" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 

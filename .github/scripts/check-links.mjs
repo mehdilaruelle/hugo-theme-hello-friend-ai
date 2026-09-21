@@ -10,6 +10,16 @@ import { join, dirname, resolve, relative, posix } from "node:path";
 // lookbehind is the name test \b is not; check-sharing.mjs says why.
 const ATTR = /(?<![-\w])(?:href|src|poster)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
 const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]+))\s*\)/gi;
+
+// og:audio and og:video carry a URL in content, where no attribute net reaches
+// them. They went out through absURL, which resolves a rooted path against the
+// domain root: on a site served from a subpath the file was named outside the
+// tree, and the only thing that would have noticed was a resolver like this
+// one. The showcase writes a relative path, which absURL got right, so the
+// fixture that exercises this writes a rooted one.
+const META_URL =
+  /<meta\b[^>]*?(?<![-\w])property\s*=\s*(?:"(og:(?:audio|video))"|'(og:(?:audio|video))'|(og:(?:audio|video)))[^>]*>/gi;
+const CONTENT = /(?<![-\w])content\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
 const SKIP = /^(?:https?:|mailto:|tel:|data:|javascript:|\/\/|#)/i;
 
 const decode = (s) =>
@@ -70,10 +80,18 @@ for (const file of walk(root)) {
 
   const page = "/" + relative(root, file).split(/[\\/]/).join("/");
   const text = readFileSync(file, "utf8");
-  const pattern = file.endsWith(".css") ? CSS_URL : ATTR;
+  const isCss = file.endsWith(".css");
+  const raws = [];
+  for (const m of text.matchAll(isCss ? CSS_URL : ATTR)) raws.push(m[1] ?? m[2] ?? m[3] ?? "");
+  if (!isCss) {
+    for (const m of text.matchAll(META_URL)) {
+      const c = m[0].match(CONTENT);
+      if (c) raws.push(c[1] ?? c[2] ?? c[3] ?? "");
+    }
+  }
 
-  for (const m of text.matchAll(pattern)) {
-    const raw = decode((m[1] ?? m[2] ?? m[3] ?? "").trim());
+  for (const rawMatch of raws) {
+    const raw = decode(rawMatch.trim());
     // Escaped markup inside content (RSS descriptions, code samples) can look
     // like an attribute to a regex; a real URL carries none of these.
     if (!raw || /["<>]/.test(raw)) continue;

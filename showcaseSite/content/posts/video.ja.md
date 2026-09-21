@@ -3,7 +3,11 @@ title = "GIF のあった場所に動画を"
 description = "video ショートコード。数メガバイトにならない画面録画"
 date = "2026-01-24"
 type = ["posts","post"]
-audio = ["video/demo.mp4"]
+# Rooted on purpose: absURL resolved a leading slash against the domain root,
+# so og:audio and og:video named a file outside the tree on a subpath site. A
+# relative path never showed it. videos is here for the same reason.
+audio = ["/video/demo.mp4"]
+videos = ["/video/demo.mp4"]
 tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
