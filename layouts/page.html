@@ -52,10 +52,8 @@
                 </div>
             </article>
 
-            {{- /* Same shape as the container above. tags.html and
-                   categories.html render nothing without terms, and GitInfo is
-                   nil unless enableGitInfo is on, so a plain page with no
-                   taxonomy shipped an <hr /> and an empty post-info. */ -}}
+            {{- /* tags.html and categories.html render nothing without terms,
+                   and GitInfo is nil unless enableGitInfo is on. */ -}}
             {{- $hasTerms := or (.GetTerms "tags") (.GetTerms "categories") -}}
             {{- if or $hasTerms .GitInfo }}
             <hr />

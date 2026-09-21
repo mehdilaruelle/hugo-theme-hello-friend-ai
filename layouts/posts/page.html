@@ -2,10 +2,7 @@
   <div class="content">
     <main id="main" class="post">
 
-      {{- /* The condition on the container, as page.html already does.
-             enableReadingTime is off by default, so a single-language site
-             shipped <div class="post-info"><p></p></div> on every article.
-             Markup only: 0 high, margin collapses, nothing moved. */ -}}
+      {{- /* The condition on the container, as page.html already does. */ -}}
       {{- if or (partial "switch.html" .Site.Params.EnableReadingTime) .IsTranslated }}
       <div class="post-info">
         <p>
