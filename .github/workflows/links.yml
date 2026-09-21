@@ -78,7 +78,7 @@ jobs:
           for prop in og:audio og:video; do
             grep -Eq "<meta property=\"?$prop\"? content=\"?$want\"?" "$page" || {
               echo "  BAD  $prop is missing or does not name $want"
-              grep -o "<meta property=\"\?$prop[^>]*>" "$page" || true
+              grep -o "<meta property=\"\?${prop}[^>]*>" "$page" || true
               exit 1
             }
           done
