@@ -308,8 +308,9 @@ jobs:
           if grep -rq --include='*.html' 'menu-trigger' public-menu; then
             echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
           fi
-          # And it has to still be a site, not an empty build.
-          grep -rEq 'class="?header' public-menu \
+          # And it has to still be a site, not an empty build. The <header>
+          # element, not a class prefix: header__inner would match on its own.
+          grep -rEq --include='*.html' '<header[[:space:]][^>]*class="?header"?[[:space:]>]' public-menu \
             || { echo "  BAD  no header was rendered at all"; exit 1; }
           echo "  a site whose only menu is a footer menu gets no navigation"
 
