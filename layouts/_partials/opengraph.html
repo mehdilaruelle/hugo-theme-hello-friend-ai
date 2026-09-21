@@ -94,13 +94,13 @@
 {{- end }}
 
 {{- with .Params.audio }}
-	{{- range . | first 6 }}
+	{{- range (partial "as-list.html" .) | first 6 }}
 		<meta property="og:audio" content="{{ . | absURL }}">
 	{{- end }}
 {{- end }}
 
 {{- with .Params.videos }}
-	{{- range . | first 6 }}
+	{{- range (partial "as-list.html" .) | first 6 }}
 		<meta property="og:video" content="{{ . | absURL }}">
 	{{- end }}
 {{- end }}

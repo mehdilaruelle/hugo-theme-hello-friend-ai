@@ -708,15 +708,15 @@ icons, and the build warns when it sees one.
 | `author` | overrides the site author for that page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 
-`audio` has to be a list, even for one file:
+`audio` takes a list, or a single file written on its own:
 
 ```yaml
 audio: ["audio/episode-01.mp3"]
 ```
 
-The Open Graph partial ranges over this key, so a bare string stops the build —
-and it absolutises what it finds with `absURL`, which is why there is no leading
-slash above. See
+A bare string is read as a list of one. `videos` is read the same way, for
+`og:video`. Both are absolutised with `absURL`, which is why there is no
+leading slash above. See
 [Everything else the theme reads](#everything-else-the-theme-reads).
 
 ### Keeping a page out of things

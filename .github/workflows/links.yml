@@ -64,6 +64,29 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-links.mjs public https://example.com/subpath/showcase/
 
+      # A bare string aborted the build here: `first 6` on a string yields six
+      # characters, which `range` cannot iterate. The showcase carries one page
+      # per shape, so the build above is itself the regression guard; these
+      # assertions keep the fix from becoming "stop emitting the tags".
+      # Quote-tolerant: --minify drops the quotes.
+      - name: Check a single media file written on its own
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          page=$(find public -path '*single-media-file*' -name index.html | head -1)
+          [ -n "$page" ] || { echo "  BAD  the fixture page was not built"; exit 1; }
+          want=https://example.com/subpath/showcase/video/demo.mp4
+          for prop in og:audio og:video; do
+            grep -Eq "<meta property=\"?$prop\"? content=\"?$want\"?" "$page" || {
+              echo "  BAD  $prop is missing or does not name $want"
+              grep -o "<meta property=\"\?$prop[^>]*>" "$page" || true
+              exit 1
+            }
+          done
+          grep -Eq "<source src=\"?$want\"?" "$page" || {
+            echo "  BAD  the player does not name $want"; exit 1
+          }
+          echo "  one file written on its own is read as a list of one"
+
       # A language code is not a country code — Ukrainian is uk, Ukraine is ua —
       # and naming the wrong one renders an empty square rather than falling
       # back to the language code, because the fallback only fires on a missing
