@@ -2,6 +2,13 @@
   <div class="content">
     <main id="main" class="post">
 
+      {{- /* The condition on the container, not just on what goes in it, the
+             way page.html already does. enableReadingTime is off by default,
+             so a single-language site shipped <div class="post-info"><p></p>
+             </div> on every article. Markup only -- the div measures 0 high
+             and its 30px margin-top collapses, so nothing moved -- but it is
+             an empty block with a class other things hang styles off. */ -}}
+      {{- if or (partial "switch.html" .Site.Params.EnableReadingTime) .IsTranslated }}
       <div class="post-info">
         <p>
           {{- if partial "switch.html" .Site.Params.EnableReadingTime }}
@@ -19,6 +26,7 @@
           {{ end }}
         </p>
       </div>
+      {{- end }}
 
       <article>
         {{- /* Not a link: it pointed at the page it was already on, which takes
