@@ -64,11 +64,8 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-links.mjs public https://example.com/subpath/showcase/
 
-      # A bare string aborted the build here: `first 6` on a string yields six
-      # characters, which `range` cannot iterate. The showcase carries one page
-      # per shape, so the build above is itself the regression guard; these
-      # assertions keep the fix from becoming "stop emitting the tags".
-      # Quote-tolerant: --minify drops the quotes.
+      # The build above is the regression guard -- a bare string aborted it.
+      # These keep the fix from becoming "stop emitting the tags".
       - name: Check a single media file written on its own
         working-directory: hello-friend-ai/showcaseSite
         run: |
