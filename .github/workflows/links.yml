@@ -158,19 +158,17 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
-      # The markup is valid either way, so nothing else here would notice: an
-      # empty post-info measures 0 high and its margin collapses. It is still
-      # an empty block carrying a class other rules hang off.
+      # Valid markup either way, so nothing else notices: 0 high, margin
+      # collapses. Still an empty block carrying a class rules hang off.
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # --minify drops the quotes it can, and collapses the whitespace
-          # between the div and the p that used to be the only thing in it.
+          # --minify drops the quotes and collapses the gap before the <p>.
           if grep -rEoh --include='*.html' '<div class="?post-info"?>[[:space:]]*(<p>[[:space:]]*</p>[[:space:]]*)?</div>' public \
                | head -3 | grep -q .; then
             echo "  BAD  an empty post-info was rendered"; exit 1
           fi
-          # And the pages that have something to put in one still get one.
+          # And pages with something to put in one still get one.
           grep -rEq --include='*.html' 'class="?post-info' public \
             || { echo "  BAD  no post-info was rendered anywhere"; exit 1; }
           echo "  a post-info is rendered only where there is something to put in it"
