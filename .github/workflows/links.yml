@@ -291,9 +291,7 @@ jobs:
           node .github/scripts/check-robots.mjs . exampleSite/public
           node .github/scripts/check-robots.mjs . showcaseSite/public
 
-      # No demo config enables enableGitInfo, so the commit line under an
-      # article was markup CI never built. Without params.gitUrl the hash used
-      # to be concatenated onto nothing and shipped as a relative href.
+      # No demo config enables enableGitInfo, so this markup was never built.
       - name: Check the commit line survives enableGitInfo with no gitUrl
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -305,11 +303,9 @@ jobs:
           if grep -rEoh 'href="[0-9a-f]{40}"' public-git | head -3 | grep -q .; then
             echo "  BAD  a commit hash shipped as a relative href"; exit 1
           fi
-          # And the hash is still shown, as text, rather than the line vanishing.
-          # The icon alone is not enough to assert: a template that kept the
-          # svg and dropped AbbreviatedHash passes every check above, and
-          # dropping the hash is the other way to get rid of the broken link.
-          # The hash follows </svg> on the same line on both templates.
+          # The icon alone is not enough: keeping the svg and dropping the hash
+          # passes everything above, and is the other way to lose the link.
+          # The hash follows </svg> on the same line in both templates.
           grep -rq 'feather-git-commit' public-git \
             || { echo "  BAD  no commit line was rendered at all"; exit 1; }
           grep -rEq '</svg>[[:space:]]*[0-9a-f]{7,40}' public-git \

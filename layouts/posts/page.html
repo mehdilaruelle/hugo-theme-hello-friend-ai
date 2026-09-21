@@ -130,11 +130,9 @@
               <line x1="17.01" y1="12" x2="22.96" y2="12"></line>
             </svg>
 
-            {{- /* gitUrl is a prefix the hash is appended to, and it is optional.
-                   Concatenated raw it produced href="16cc120..." -- a relative
-                   link to a sibling page that does not exist, on every article,
-                   opened in a new tab. The hash is worth showing either way, so
-                   it stays as text when there is nothing to link it to. */ -}}
+            {{- /* gitUrl is optional. Concatenated raw it produced
+                   href="16cc120..." -- a relative link to nowhere, on every
+                   article. The hash stays as text when there is no prefix. */ -}}
             {{- with .Site.Params.gitUrl }}<a href="{{ . }}{{ $.GitInfo.Hash }}" target="_blank" rel="noopener">{{ $.GitInfo.AbbreviatedHash }}</a>{{ else }}{{ $.GitInfo.AbbreviatedHash }}{{ end }}
             @ {{ if .Site.Params.dateformNum }}{{ dateFormat .Site.Params.dateformNum .GitInfo.AuthorDate.Local }}{{ else }}{{ dateFormat "2006-01-02" .GitInfo.AuthorDate.Local }}{{ end }}
           </p>
