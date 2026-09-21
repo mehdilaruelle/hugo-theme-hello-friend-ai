@@ -94,10 +94,8 @@
 {{- end }}
 
 {{- /* absURL resolves a rooted path against the domain root, so /media/one.mp3
-       came out at https://example.com/media/one.mp3 on a site served from
-       https://example.com/blog/ -- a 404 in the card, while the <audio> player
-       two templates away played the file. json-ld.html carries the same note.
-       is-remote.html leaves a URL that is somebody else's alone. */ -}}
+       came out off the subpath -- a 404 in the card while the <audio> player
+       played the file. json-ld.html carries the same note. */ -}}
 {{- with .Params.audio }}
 	{{- range . | first 6 }}
 		{{- $url := . }}

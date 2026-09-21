@@ -11,12 +11,10 @@ import { join, dirname, resolve, relative, posix } from "node:path";
 const ATTR = /(?<![-\w])(?:href|src|poster)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
 const CSS_URL = /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)\s]+))\s*\)/gi;
 
-// og:audio and og:video carry a URL in content, where no attribute net reaches
-// them. They went out through absURL, which resolves a rooted path against the
-// domain root: on a site served from a subpath the file was named outside the
-// tree, and the only thing that would have noticed was a resolver like this
-// one. The showcase writes a relative path, which absURL got right, so the
-// fixture that exercises this writes a rooted one.
+// og:audio and og:video carry their URL in content, where the attribute net
+// above does not reach. absURL sent them off the subpath, and only a resolver
+// like this one would notice. The fixture writes a rooted path; a relative one
+// absURL got right.
 const META_URL =
   /<meta\b[^>]*?(?<![-\w])property\s*=\s*(?:"(og:(?:audio|video))"|'(og:(?:audio|video))'|(og:(?:audio|video)))[^>]*>/gi;
 const CONTENT = /(?<![-\w])content\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
