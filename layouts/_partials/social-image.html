@@ -18,7 +18,8 @@
 {{- $alt := "" -}}
 {{- $owned := false -}}
 {{- with .Params.images -}}
-  {{- if not (partial "is-svg.html" (index . 0)) -}}{{- $img = index . 0 -}}{{- end -}}
+  {{- $first := partial "first-image.html" . -}}
+  {{- if and $first (not (partial "is-svg.html" $first)) -}}{{- $img = $first -}}{{- end -}}
 {{- end -}}
 {{- with $img -}}
   {{- $alt = partial "title.html" $ -}}
@@ -35,7 +36,8 @@
 {{- end -}}
 {{- if not $img -}}
   {{- with site.Params.images -}}
-    {{- if not (partial "is-svg.html" (index . 0)) -}}{{- $img = index . 0 -}}{{- end -}}
+    {{- $first := partial "first-image.html" . -}}
+    {{- if and $first (not (partial "is-svg.html" $first)) -}}{{- $img = $first -}}{{- end -}}
   {{- end -}}
 {{- end -}}
 {{- if not $img -}}

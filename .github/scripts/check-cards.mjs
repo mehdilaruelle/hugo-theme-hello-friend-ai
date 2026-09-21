@@ -1,11 +1,18 @@
-// Asserts that the two halves of a social card name the same picture. They are
-// written by two partials, and used to read two different sources: a site
-// setting params.images showed one image and named another on every page with
-// a cover, and nothing failed.
+// Asserts that the two halves of a social card name the same picture, and that
+// the picture is one the build actually wrote. They are written by two
+// partials, and used to read two different sources: a site setting
+// params.images showed one image and named another on every page with a cover,
+// and nothing failed.
 //
-//   node .github/scripts/check-cards.mjs <public-dir>
+// Agreeing is not enough on its own: `images` written as a string indexed the
+// string, so both halves named https://example.com/105 -- one picture, named
+// twice, and 404 both times. A card URL under the site's own base URL is
+// therefore resolved against the files on disk, the way check-links.mjs does
+// for href and src. Pass the base URL to turn that half on.
+//
+//   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 // Quoted, single-quoted or bare, because --minify drops the quotes it can. The
@@ -32,9 +39,46 @@ function* walk(dir) {
 }
 
 const root = process.argv[2] || "public";
+const baseUrl = process.argv[3];
+
+// Only a URL under the site's own base URL names a file this build wrote; a
+// remote card is somebody else's to serve, and is left alone.
+let siteOrigin = null;
+let prefix = "/";
+if (baseUrl) {
+  siteOrigin = new URL(baseUrl).origin;
+  prefix = new URL(baseUrl).pathname || "/";
+  if (!prefix.endsWith("/")) prefix += "/";
+}
+
+const exists = (p) => {
+  try {
+    return statSync(p).isFile();
+  } catch {
+    return false;
+  }
+};
+
+// The path under the public root a same-origin card URL names, or null when
+// the URL belongs to somebody else. A URL that escapes the baseURL path
+// resolves to null-the-other-way -- "" -- and is reported, because that is
+// exactly the shape absURL leaves behind on a site served from a subpath.
+function local(url) {
+  if (!siteOrigin) return null;
+  let u;
+  try {
+    u = new URL(url, baseUrl);
+  } catch {
+    return null;
+  }
+  if (u.origin !== siteOrigin) return null;
+  return u.pathname.startsWith(prefix) ? u.pathname.slice(prefix.length - 1) : "";
+}
+
 const failures = [];
 let pages = 0;
 let withImage = 0;
+let resolved = 0;
 let files = 0;
 
 for (const file of walk(root)) {
@@ -67,6 +111,17 @@ for (const file of walk(root)) {
   if (og && tw) {
     withImage++;
     if (og !== tw) failures.push([file, `og:image ${og}\n    twitter:image ${tw}`, "the two halves name different pictures"]);
+
+    const path = local(og);
+    if (path !== null) {
+      resolved++;
+      if (path === "") {
+        failures.push([file, `og:image ${og}`, "escapes the site root"]);
+      } else {
+        const target = join(root, decodeURIComponent(path).replace(/^\/+/, ""));
+        if (!exists(target)) failures.push([file, `og:image ${og}`, "names a file this build did not write"]);
+      }
+    }
   } else if (og || tw) {
     failures.push([file, og ? "og:image with no twitter:image" : "twitter:image with no og:image",
       "both tag sets carry the picture, or neither does"]);
@@ -85,10 +140,17 @@ if (files === 0) {
   process.exit(1);
 }
 
-console.log(`checked ${pages} pages carrying card tags, ${withImage} of them with a picture`);
+console.log(
+  `checked ${pages} pages carrying card tags, ${withImage} of them with a picture` +
+    (baseUrl ? `, ${resolved} pointing at a file this build wrote` : ""),
+);
 if (failures.length) {
   console.error(`\n${failures.length} broken:\n`);
   for (const [file, what, why] of failures) console.error(`  ${file}\n    ${what}  (${why})`);
   process.exit(1);
 }
-console.log("every card names one picture, and both halves agree on it");
+console.log(
+  baseUrl
+    ? "every card names one picture, both halves agree on it, and it was published"
+    : "every card names one picture, and both halves agree on it",
+);

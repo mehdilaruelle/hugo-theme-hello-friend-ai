@@ -1,0 +1,32 @@
+{{- /*
+  The first picture out of an `images` front-matter or params key, whatever
+  shape it was written in. Returns the empty string when there is none.
+
+  `images` is documented as a list, and `index` on a Go string returns the byte
+  at that offset rather than the first element: `images = "img/card.png"` came
+  out as 105, the byte value of `i`, and was then joined onto the baseURL as a
+  social card every platform 404s on. A string is one picture, so it is read as
+  a list of one -- the same normalisation posts/page.html already does for
+  `audio`.
+
+  Warned rather than silently corrected for any other shape, the way
+  social-icons.html warns on a misshapen params.social: a number or a map here
+  is a config mistake, and a card is easier to fix when the build says so.
+*/ -}}
+{{- $first := "" -}}
+{{- with . -}}
+  {{- if reflect.IsSlice . -}}
+    {{- with index . 0 -}}
+      {{- if eq (printf "%T" .) "string" -}}
+        {{- $first = . -}}
+      {{- else -}}
+        {{- warnidf "images-shape" "images: expected a list of paths, got a list of %T. This page has no social card picture." . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else if eq (printf "%T" .) "string" -}}
+    {{- $first = . -}}
+  {{- else -}}
+    {{- warnidf "images-shape" "images: expected a path or a list of paths, got %T. This page has no social card picture." . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $first -}}

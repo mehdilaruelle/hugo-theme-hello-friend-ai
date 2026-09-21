@@ -616,6 +616,11 @@ owns that partial now and writes exactly one `og:image`, from the same source
 `twitter:image` uses, so the dimensions always belong to the picture beside
 them whichever way the image was configured.
 
+`images` is a list, and a bare string is read as a list of one, so
+`images = "img/card.png"` and `images = ["img/card.png"]` name the same picture.
+Anything else — a number, a table — is a config mistake, and the build says so
+rather than putting a URL nobody can fetch on every card.
+
 An SVG is passed over wherever it appears in that chain — `images` and `cover`,
 at page or site level, alike — since no platform renders one on a card. The
 chain simply continues to the next candidate. Give the site an `ogImage` in PNG

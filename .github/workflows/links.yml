@@ -125,9 +125,12 @@ jobs:
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a
       # cover — and nothing failed.
-      - name: Check both halves of a social card name one picture
+      # The base URL is passed so the picture is resolved against the files on
+      # disk, not just compared between the two halves: images written as a
+      # string made both halves agree on a URL that was never published.
+      - name: Check both halves of a social card name one published picture
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-cards.mjs public
+        run: node ../.github/scripts/check-cards.mjs public https://example.com/subpath/showcase/
 
       # Nothing else parses the XML the build writes, so a feed could stop
       # being XML and still ship — which is what an unescaped "]]>" in an
