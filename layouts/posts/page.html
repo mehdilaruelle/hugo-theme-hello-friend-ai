@@ -41,9 +41,8 @@
           </figure>
         {{ end }}
 
-        {{- /* The headings, not .TableOfContents: with none that still returns
-               an empty nav, a non-empty string that passes `with`. A heading
-               over an empty list is worse than no section -- related.html. */ -}}
+        {{- /* The headings, not .TableOfContents: with none it still returns
+               an empty nav, a non-empty string that passes `with`. */ -}}
         {{- if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
           <hr />
           <aside id="toc">

@@ -158,13 +158,11 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
-      # .TableOfContents is a non-empty string even with no headings, so the
-      # emptiness has to be read off the rendered nav.
+      # .TableOfContents is a non-empty string even with no headings.
       - name: Check no empty table of contents is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # HTML only: the Markdown copies and llms-full.txt carry page prose,
-          # and the fixture discusses this markup. --minify drops the quotes.
+          # HTML only: the fixture's own prose discusses this markup.
           if grep -rEoh --include='*.html' '<nav id="?TableOfContents"?>[[:space:]]*</nav>' public | head -3 | grep -q .; then
             echo "  BAD  an empty table of contents was rendered"; exit 1
           fi
