@@ -291,8 +291,7 @@ jobs:
           node .github/scripts/check-robots.mjs . exampleSite/public
           node .github/scripts/check-robots.mjs . showcaseSite/public
 
-      # No demo config defined a non-main menu, so the one shape that broke
-      # here was never built: an empty nav plus a working hamburger beside it.
+      # No demo config defined a non-main menu, so this shape was never built.
       - name: Check a non-main menu alone renders no navigation
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -300,17 +299,16 @@ jobs:
             --config config.toml,../.github/fixtures/menu-footer-only.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
-          # The empty nav is the bug's signature, and the hamburger beside it
-          # is the part a keyboard and a screen reader still reach.
+          # The empty nav is the signature; the hamburger is what a keyboard
+          # and a screen reader still reach.
           if grep -rEoh '<ul class="?menu__inner"?>[[:space:]]*</ul>' public-menu | head -3 | grep -q .; then
             echo "  BAD  an empty menu__inner was rendered"; exit 1
           fi
-          # HTML only: the class name also lives in the stylesheet and in
-          # menu.js, which are published whether or not a hamburger exists.
+          # HTML only: the class name also lives in the stylesheet and menu.js.
           if grep -rq --include='*.html' 'menu-trigger' public-menu; then
             echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
           fi
-          # And the fixture has to still be a site, not an empty build.
+          # And it has to still be a site, not an empty build.
           grep -rEq 'class="?header' public-menu \
             || { echo "  BAD  no header was rendered at all"; exit 1; }
           echo "  a site whose only menu is a footer menu gets no navigation"

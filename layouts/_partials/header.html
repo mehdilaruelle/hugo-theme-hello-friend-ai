@@ -3,12 +3,9 @@
         {{ partial "logo.html" . }}
 
         <span class="header__right">
-            {{- /* .Site.Menus.main, not .Site.Menus: the latter is the map of
-                   every menu, so a site defining only [[menu.footer]] -- an
-                   ordinary Hugo shape -- rendered an empty nav and a working
-                   hamburger beside it. menu.js removes disabled, so below the
-                   phone breakpoint that left a labelled, focusable control
-                   that opened nothing. menu.html ranges over .main anyway. */ -}}
+            {{- /* .main, not .Site.Menus: that is the map of every menu, so a
+                   site with only [[menu.footer]] got an empty nav and a working
+                   hamburger. menu.html ranges over .main anyway. */ -}}
             {{- if .Site.Menus.main }}
                 {{ partial "menu.html" . }}
                 {{- /* A button, not a span. Below the phone breakpoint the menu
