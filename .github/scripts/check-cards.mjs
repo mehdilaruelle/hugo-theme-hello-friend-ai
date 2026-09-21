@@ -1,14 +1,8 @@
-// Asserts that the two halves of a social card name the same picture, and that
-// the picture is one the build actually wrote. They are written by two
-// partials, and used to read two different sources: a site setting
-// params.images showed one image and named another on every page with a cover,
-// and nothing failed.
-//
-// Agreeing is not enough on its own: `images` written as a string indexed the
-// string, so both halves named https://example.com/105 -- one picture, named
-// twice, and 404 both times. A card URL under the site's own base URL is
-// therefore resolved against the files on disk, the way check-links.mjs does
-// for href and src. Pass the base URL to turn that half on.
+// Asserts the two halves of a social card name the same picture, and that the
+// picture is one the build wrote. Agreeing is not enough on its own: `images`
+// as a string indexed the string, so both halves named .../105 and 404 twice.
+// A same-origin card URL is resolved against the files on disk when a base URL
+// is passed.
 //
 //   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
@@ -42,8 +36,7 @@ const root = process.argv[2] || "public";
 const rootPath = resolve(root);
 const baseUrl = process.argv[3];
 
-// Only a URL under the site's own base URL names a file this build wrote; a
-// remote card is somebody else's to serve, and is left alone.
+// A remote card is somebody else's to serve, and is left alone.
 let siteOrigin = null;
 let prefix = "/";
 if (baseUrl) {
@@ -60,10 +53,9 @@ const exists = (p) => {
   }
 };
 
-// The path under the public root a same-origin card URL names, or null when
-// the URL belongs to somebody else. A URL that escapes the baseURL path
-// resolves to null-the-other-way -- "" -- and is reported, because that is
-// exactly the shape absURL leaves behind on a site served from a subpath.
+// Path under the public root, or null when the URL is somebody else's. One
+// that escapes the baseURL path returns "" and is reported: that is the shape
+// absURL leaves on a subpath site.
 function local(url) {
   if (!siteOrigin) return null;
   let u;
@@ -116,12 +108,9 @@ for (const file of walk(root)) {
     const path = local(og);
     if (path !== null) {
       resolved++;
-      // Resolved, not joined: a percent-encoded separator survives URL
-      // normalisation -- %2e%2e%2fx.png stays whole in pathname and passes the
-      // prefix test above -- and only becomes ../x.png once decoded. Joined
-      // blindly that reads a file outside the build and calls the card
-      // published. A plain ../ is normalised by the URL parser and caught by
-      // the prefix test; the encoded form has to be caught here.
+      // Resolved, not joined: %2e%2e%2fx.png survives URL normalisation, passes
+      // the prefix test, then decodes to ../x.png. A plain ../ the parser
+      // already folds away; the encoded form has to be caught here.
       const target = path === "" ? "" : resolve(rootPath, decodeURIComponent(path).replace(/^\/+/, ""));
       const outside = target === "" ? ".." : relative(rootPath, target);
       if (outside === ".." || outside.startsWith(`..${sep}`)) {

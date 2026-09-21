@@ -1,28 +1,18 @@
 {{- /*
-  The first picture out of an `images` front-matter or params key, whatever
-  shape it was written in. Returns the empty string when there is none.
+  First picture out of an `images` key, whatever shape it was written in.
+  Empty string when there is none.
 
-  `images` is documented as a list, and `index` on a Go string returns the byte
-  at that offset rather than the first element: `images = "img/card.png"` came
-  out as 105, the byte value of `i`, and was then joined onto the baseURL as a
-  social card every platform 404s on. A string is one picture, so it is read as
-  a list of one -- the same normalisation posts/page.html already does for
-  `audio`.
+  `index` on a Go string returns the byte at that offset, so
+  images = "img/card.png" came out as 105. A string is read as a list of one.
+  Any other shape warns rather than being indexed, like social-icons.html.
 
-  Warned rather than silently corrected for any other shape, the way
-  social-icons.html warns on a misshapen params.social: a number or a map here
-  is a config mistake, and a card is easier to fix when the build says so.
-
-  Called through `isset` rather than `with`, because `with` is false for 0 and
-  for an empty table and those would have reached no check at all. Which is why
-  the empty shapes are named here instead: a nil, an empty string, an empty
-  list and `images = [""]` -- the README's own sample -- all mean "no picture",
-  not "wrong picture", and stay silent.
+  Reached through `isset`, not `with`: `with` is false for 0 and for an empty
+  table, which would skip the check. Hence the empty shapes are named here --
+  nil, "", [] and [""] (the README's sample) mean "no picture", and stay quiet.
 */ -}}
 {{- $first := "" -}}
 {{- $type := printf "%T" . -}}
 {{- if eq $type "<nil>" -}}
-  {{- /* `images:` with nothing after it. The same as not writing the key. */ -}}
 {{- else if reflect.IsSlice . -}}
   {{- with index . 0 -}}
     {{- if eq (printf "%T" .) "string" -}}
