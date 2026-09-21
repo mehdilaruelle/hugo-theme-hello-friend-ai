@@ -38,8 +38,7 @@
                     </figure>
                 {{ end }}
                 
-                {{/* posts/page.html says why the headings are tested rather
-                     than .TableOfContents. */}}
+                {{/* posts/page.html says why the headings, not the TOC. */}}
                 {{ if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
                     <hr />
                     <aside id="toc">
