@@ -1,1 +1,0 @@
-try{var stored=window.localStorage.getItem("theme");(stored==="dark"||stored==="light")&&document.documentElement.setAttribute("data-theme",stored)}catch{}
