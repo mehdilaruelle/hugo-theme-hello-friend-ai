@@ -1,0 +1,5 @@
+# The logo cursor with something to say, so the style attribute is built.
+# The demo config leaves all three commented out, which is the default.
+[params.logo]
+  logoCursorColor   = "#67a2c9"
+  logoCursorAnimate = "2s"

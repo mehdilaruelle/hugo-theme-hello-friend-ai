@@ -24,10 +24,17 @@
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>
                 {{ with .Site.Params.Logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
-            <span class="logo__cursor" style=
-                  "{{ if partial "switch.html" .Site.Params.Logo.logoCursorDisabled }}visibility:hidden;{{ end }}
-                   {{ with.Site.Params.Logo.logoCursorColor    }}background-color:{{ . }};{{ end }}
-                   {{ with.Site.Params.Logo.logoCursorAnimate  }}animation-duration:{{ . }};{{ end }}">
+            {{- $style := "" -}}
+            {{- if partial "switch.html" .Site.Params.Logo.logoCursorDisabled -}}
+              {{- $style = "visibility:hidden;" -}}
+            {{- end -}}
+            {{- with .Site.Params.Logo.logoCursorColor -}}
+              {{- $style = printf "%sbackground-color:%v;" $style . -}}
+            {{- end -}}
+            {{- with .Site.Params.Logo.logoCursorAnimate -}}
+              {{- $style = printf "%sanimation-duration:%v;" $style . -}}
+            {{- end -}}
+            <span class="logo__cursor"{{ with $style }} style="{{ . | safeCSS }}"{{ end }}>
             </span>
         {{ end }}
     </div>
