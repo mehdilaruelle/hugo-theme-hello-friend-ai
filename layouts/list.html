@@ -12,7 +12,7 @@
                    introduces the list, not each screenful of it, and repeated
                    it was the longest thing every pager had in common. */ -}}
             {{ if and .Content (eq $paginator.PageNumber 1) }}
-                <div class="content">{{ .Content }}</div>
+                <div class="list-content">{{ .Content }}</div>
             {{ end }}
 
             {{ if eq .Kind "taxonomy" }}
