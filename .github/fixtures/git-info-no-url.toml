@@ -1,0 +1,2 @@
+# enableGitInfo on with params.gitUrl deliberately unset, over the exampleSite.
+enableGitInfo = true
