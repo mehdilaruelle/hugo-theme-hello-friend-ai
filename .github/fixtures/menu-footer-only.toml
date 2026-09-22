@@ -1,0 +1,9 @@
+# A site whose only menu is a non-main one, over the exampleSite.
+# `main = []` is load-bearing: Hugo merges the menu table across config files
+# rather than replacing it, so the exampleSite's main menu would survive.
+[menu]
+main = []
+  [[menu.footer]]
+    name   = "Imprint"
+    url    = "/imprint/"
+    weight = 10
