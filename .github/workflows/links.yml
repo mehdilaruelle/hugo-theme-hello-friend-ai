@@ -159,6 +159,19 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-plain
           node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
 
+      # .content is the page layout class, not a prose wrapper.
+      - name: Check no prose is wrapped in the page layout class
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          # --minify drops the quotes it can, so both shapes are matched.
+          if grep -rEoh '<main[^>]*>.*<div class="?content["> ]' public | head -3 | grep -q .; then
+            echo "  BAD  .content nested inside <main>: it is the page frame, not a prose wrapper"
+            exit 1
+          fi
+          grep -rEq 'class="?list-content["> ]' public \
+            || { echo "  BAD  no section introduction was rendered at all"; exit 1; }
+          echo "  the section introduction has a prose class of its own"
+
       # Valid markup either way, so nothing else notices it.
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
@@ -305,6 +318,25 @@ jobs:
         run: |
           node .github/scripts/check-robots.mjs . exampleSite/public
           node .github/scripts/check-robots.mjs . showcaseSite/public
+
+      # No demo config enables enableGitInfo, so this markup was never built.
+      - name: Check the commit line survives enableGitInfo with no gitUrl
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-git \
+            --config config.toml,../.github/fixtures/git-info-no-url.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-git https://example.com/subpath/
+          # The link is the bug's signature: a bare 40-character hash as an href.
+          if grep -rEoh 'href="[0-9a-f]{40}"' public-git | head -3 | grep -q .; then
+            echo "  BAD  a commit hash shipped as a relative href"; exit 1
+          fi
+          # The icon alone is not enough: the svg without the hash also loses it.
+          grep -rq 'feather-git-commit' public-git \
+            || { echo "  BAD  no commit line was rendered at all"; exit 1; }
+          grep -rEq '</svg>[[:space:]]*[0-9a-f]{7,40}' public-git \
+            || { echo "  BAD  the commit line carries no plain-text hash"; exit 1; }
+          echo "  the hash is plain text when there is no gitUrl to link it to"
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
