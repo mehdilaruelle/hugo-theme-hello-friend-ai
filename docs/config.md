@@ -716,14 +716,14 @@ icons, and the build warns when it sees one.
 | `author` | overrides the site author for that page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 
-`audio` has to be a list, even for one file:
+`audio` takes a list, or a single file written on its own:
 
 ```yaml
 audio: ["audio/episode-01.mp3"]
 ```
 
-The Open Graph partial ranges over this key, so a bare string stops the build.
-`videos` is read the same way, for `og:video`.
+A bare string is read as a list of one. `videos` is read the same way, for
+`og:video`.
 
 A leading slash is fine on either. Both are resolved against the site's base
 URL, the same way the `<audio>` player resolves the file it plays, so a rooted

@@ -55,12 +55,8 @@
           <hr />
         {{- end }}
 
-        {{/* audio is a list. Hugo's own opengraph partial ranges over the same
-             front matter key, so a bare string aborts the build there before
-             this is ever reached. One file is written as a list of one. */}}
         {{ with .Params.Audio }}
-          {{- $files := . }}
-          {{- if not (reflect.IsSlice $files) }}{{ $files = slice $files }}{{ end }}
+          {{- $files := partial "as-list.html" . }}
           <div class="post-audio">
             <audio controls>
               {{- range $files }}
