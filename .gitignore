@@ -50,6 +50,9 @@ public-quoted-zero/
 public-git/
 # The fixture build of a site whose only menu is a non-main one.
 public-menu/
+# The unminified builds of the logo cursor, default and configured.
+public-cursor/
+public-cursor-set/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json

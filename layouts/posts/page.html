@@ -44,9 +44,10 @@
           </figure>
         {{ end }}
 
-        {{- /* The headings, not .TableOfContents: with none it still returns
-               an empty nav, a non-empty string that passes `with`. */ -}}
-        {{- if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
+        {{- /* The rendered entries: .TableOfContents is a non-empty string
+               even when empty, and .Fragments.Headings counts levels the
+               table leaves out -- h1 and h4 by Hugo's default 2..3. */ -}}
+        {{- if and (partial "switch.html" .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
           <hr />
           <aside id="toc">
             <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>

@@ -207,9 +207,12 @@ jobs:
       - name: Check no empty table of contents is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # HTML only: the fixture's own prose discusses this markup.
-          if grep -rEoh --include='*.html' '<nav id="?TableOfContents"?>[[:space:]]*</nav>' public | head -3 | grep -q .; then
-            echo "  BAD  an empty table of contents was rendered"; exit 1
+          # HTML only: the fixture's own prose discusses this markup. Tags and
+          # whitespace only, so a table of empty <li> counts as empty too.
+          if grep -rlzE --include='*.html' '<nav id="?TableOfContents"?>([[:space:]]|<[^>]*>)*</nav>' public | head -3 | grep -q .; then
+            echo "  BAD  a table of contents with nothing in it was rendered"
+            grep -rlzE --include='*.html' '<nav id="?TableOfContents"?>([[:space:]]|<[^>]*>)*</nav>' public | head -3
+            exit 1
           fi
           # And a page that does have headings still gets one.
           grep -rEq --include='*.html' 'id="?TableOfContents' public \
