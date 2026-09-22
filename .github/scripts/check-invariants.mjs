@@ -1,8 +1,6 @@
 // Asserts the invariants the bug fixes established, one named check per fix.
-// Each was a `grep` in links.yml; matching text is what made them loose --
-// `dir="rtl"` also matched `data-dir="rtl"`, `post-info` matched
-// `post-infobar`, `direction:ltr` matched `direction:ltrfoo`. Class tokens,
-// CSS declarations and URLs are compared whole here, so a near miss is a miss.
+// Class tokens, CSS declarations and URLs are compared whole: as greps these
+// were loose, `dir="rtl"` also matching `data-dir="rtl"`.
 //
 //   node .github/scripts/check-invariants.mjs <dir> <check> [args...]
 
@@ -34,15 +32,13 @@ function* walk(dir, ext) {
 const pages = (dir) => [...walk(dir, ".html")];
 const text = (html) => html.replace(/<[^>]*>/g, "").trim();
 
-// The element a tag opens, up to its matching close. Nesting of the same tag
-// is rare in what these check and would only widen the slice, never hide it.
+// Up to the matching close. Nesting would widen the slice, never hide it.
 function element(html, from, tag) {
   const end = html.indexOf(`</${tag}`, from);
   return end === -1 ? html.slice(from) : html.slice(from, end);
 }
 
-// Minified or not, a rule is `selectors{declarations}`. Selectors are compared
-// whole so `.logo` is not `.logopanel`.
+// Selectors compared whole, so `.logo` is not `.logopanel`.
 function rules(css, selector) {
   const out = [];
   for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
@@ -78,7 +74,7 @@ const read = (p) => {
 const css = () => [...walk(dir, ".css")].map((f) => readFileSync(f, "utf8")).join("\n");
 
 const checks = {
-  // #270: the container renders only when something goes in it.
+  // #270
   "post-info"() {
     const empty = [], seen = [];
     for (const p of pages(dir)) {
@@ -131,7 +127,7 @@ const checks = {
     ok("the section introduction has a prose class of its own");
   },
 
-  // #267: a site whose only menu is a non-main one gets no navigation.
+  // #267
   menu() {
     const emptyNav = [], burger = [];
     let header = false;
@@ -171,7 +167,7 @@ const checks = {
     ok("the hash is plain text when there is no gitUrl to link it to");
   },
 
-  // #266: a brand mark is not language content, so its direction is pinned.
+  // #266
   "logo-rtl"(page) {
     const html = read(page);
     const tag = html.match(/<html\b[^>]*>/i)?.[0] ?? "";
@@ -183,7 +179,7 @@ const checks = {
     ok("the logo reads left-to-right on an RTL page");
   },
 
-  // #272: `start`, not `left` -- RTL follows the writing order.
+  // #272
   submenu(page) {
     const html = read(page);
     const tag = html.match(/<html\b[^>]*>/i)?.[0] ?? "";
@@ -195,7 +191,7 @@ const checks = {
     ok("a submenu label follows the writing direction on a phone");
   },
 
-  // #273: every logoCursor param is optional, so the attribute is too.
+  // #273: the params are optional, so the attribute is too.
   "cursor-default"() {
     const styled = [];
     for (const p of pages(dir)) {
