@@ -443,3 +443,25 @@ jobs:
           }
           echo "  a submenu label follows the writing direction on a phone"
 
+      # Unminified on purpose: --minify drops an empty attribute, so a
+      # minified build cannot observe this at all. The second half keeps the
+      # fix from becoming "never emit a style".
+      - name: Check the logo cursor ships no empty style attribute
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-cursor
+          if grep -rl 'logo__cursor" style' public-cursor --include='*.html' | head -1 | grep -q .; then
+            echo "  BAD  the default build ships a style attribute on the logo cursor"
+            grep -rl 'logo__cursor" style' public-cursor --include='*.html' | head -3
+            exit 1
+          fi
+          hugo --themesDir ../.. --gc --destination public-cursor-set \
+            --config config.toml,../.github/fixtures/logo-cursor.toml
+          want='logo__cursor" style="background-color:#67a2c9;animation-duration:2s;"'
+          grep -q "$want" public-cursor-set/index.html || {
+            echo "  BAD  a configured cursor lost its style"
+            grep -o 'logo__cursor[^>]*>' public-cursor-set/index.html | head -2
+            exit 1
+          }
+          echo "  the logo cursor carries a style only when it has one"
+
