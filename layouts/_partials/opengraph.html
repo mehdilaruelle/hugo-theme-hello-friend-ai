@@ -96,7 +96,7 @@
 {{- /* absURL resolves a rooted path against the domain root, off the
        subpath. json-ld.html carries the same note. */ -}}
 {{- with .Params.audio }}
-	{{- range . | first 6 }}
+	{{- range (partial "as-list.html" .) | first 6 }}
 		{{- $url := . }}
 		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
 		<meta property="og:audio" content="{{ $url }}">
@@ -104,7 +104,7 @@
 {{- end }}
 
 {{- with .Params.videos }}
-	{{- range . | first 6 }}
+	{{- range (partial "as-list.html" .) | first 6 }}
 		{{- $url := . }}
 		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
 		<meta property="og:video" content="{{ $url }}">
