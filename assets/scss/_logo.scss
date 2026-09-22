@@ -6,6 +6,12 @@
   font-display: auto;
   font-family: monospace, monospace;
 
+  // A brand mark is not language content, so the direction is pinned rather
+  // than inherited. isolate so pinning it does not reorder the header around
+  // it -- the pair :not(pre) > code already uses in _base.scss.
+  direction: ltr;
+  unicode-bidi: isolate;
+
   // menu.js appends the current section here, so the logo has no upper bound
   // and would push .header__right off a phone screen instead of shrinking.
   min-width: 0;
