@@ -528,7 +528,7 @@ templates.
 | `ogImage` | the picture a social card falls back to when a page has no `cover`. Use PNG or JPEG — no platform renders an SVG card |
 | `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` for warns at build time — see [How to start](../README.md#how-to-start); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
 | `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL |
-| `gitUrl` | prefix for the commit link under an article. Needs `enableGitInfo = true` at the root |
+| `gitUrl` | prefix for the commit link under an article — the hash is appended to it, so it ends in `/commit/` or the like. Needs `enableGitInfo = true` at the root. Optional: with `enableGitInfo` on and no `gitUrl`, the hash is shown as plain text rather than linked |
 | `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics; both are required |
 | `llmsNote` | a line addressed to whatever reads `llms.txt`, printed under the summary. A page can set its own, see [Front matter](#front-matter) |
 | `license` / `creditText` | the terms of reuse, carried in every article's `BlogPosting`. A page can override either |
@@ -723,8 +723,12 @@ audio: ["audio/episode-01.mp3"]
 ```
 
 A bare string is read as a list of one. `videos` is read the same way, for
-`og:video`. Both are absolutised with `absURL`, which is why there is no
-leading slash above. See
+`og:video`.
+
+A leading slash is fine on either. Both are resolved against the site's base
+URL, the same way the `<audio>` player resolves the file it plays, so a rooted
+path keeps the subpath on a site that is served from one. A URL with a scheme,
+or a protocol-relative one, is left alone. See
 [Everything else the theme reads](#everything-else-the-theme-reads).
 
 ### Keeping a page out of things

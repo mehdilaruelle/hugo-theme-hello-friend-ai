@@ -93,15 +93,21 @@
 	{{- end }}
 {{- end }}
 
+{{- /* absURL resolves a rooted path against the domain root, off the
+       subpath. json-ld.html carries the same note. */ -}}
 {{- with .Params.audio }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		<meta property="og:audio" content="{{ . | absURL }}">
+		{{- $url := . }}
+		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		<meta property="og:audio" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 
 {{- with .Params.videos }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		<meta property="og:video" content="{{ . | absURL }}">
+		{{- $url := . }}
+		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		<meta property="og:video" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 
