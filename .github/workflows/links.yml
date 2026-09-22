@@ -427,6 +427,22 @@ jobs:
           }
           echo "  the quoted AI policy is declined, as written"
 
+      # Nothing here renders CSS, so the compiled rule is what gets asserted.
+      # Both quote forms because --minify leaves attributes unquoted, and the
+      # value boundaries because column-reverse and startfoo otherwise pass.
+      - name: Check a submenu label starts where its siblings do on a phone
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          grep -Eq '<html[^>]*[[:space:]]dir=("rtl"|rtl)([[:space:]]|>)' public/ar/index.html || {
+            echo "  BAD  the Arabic page is not marked rtl"; exit 1
+          }
+          grep -Eqs '\.menu__inner\{[^}]*flex-direction:column[;}][^}]*text-align:start[;}]' public/*.css || {
+            echo "  BAD  the phone menu block does not set text-align:start"
+            grep -o '\.menu__inner{[^}]*}' public/*.css || true
+            exit 1
+          }
+          echo "  a submenu label follows the writing direction on a phone"
+
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all. The second half keeps the
       # fix from becoming "never emit a style".
