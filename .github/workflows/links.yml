@@ -216,6 +216,20 @@ jobs:
             || { echo "  BAD  no table of contents was rendered anywhere"; exit 1; }
           echo "  a table of contents is rendered only where there is something to list"
 
+      # Valid markup either way, so nothing else notices it.
+      - name: Check no empty post-info is rendered
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          # --minify drops the quotes and collapses the gap before the <p>.
+          if grep -rEoh --include='*.html' '<div class="?post-info"?>[[:space:]]*(<p>[[:space:]]*</p>[[:space:]]*)?</div>' public \
+               | head -3 | grep -q .; then
+            echo "  BAD  an empty post-info was rendered"; exit 1
+          fi
+          # And pages with something to put in one still get one.
+          grep -rEq --include='*.html' 'class="?post-info' public \
+            || { echo "  BAD  no post-info was rendered anywhere"; exit 1; }
+          echo "  a post-info is rendered only where there is something to put in it"
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite

@@ -2,6 +2,8 @@
   <div class="content">
     <main id="main" class="post">
 
+      {{- /* The condition on the container, as page.html already does. */ -}}
+      {{- if or (partial "switch.html" .Site.Params.EnableReadingTime) .IsTranslated }}
       <div class="post-info">
         <p>
           {{- if partial "switch.html" .Site.Params.EnableReadingTime }}
@@ -19,6 +21,7 @@
           {{ end }}
         </p>
       </div>
+      {{- end }}
 
       <article>
         {{- /* Not a link: it pointed at the page it was already on, which takes
