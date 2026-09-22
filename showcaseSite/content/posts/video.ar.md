@@ -3,7 +3,9 @@ title = "مقطع مرئي مكان صورة متحركة"
 description = "الاختصار video: تسجيل شاشة لا يزن ميغابايتات"
 date = "2026-01-24"
 type = ["posts","post"]
-audio = ["video/demo.mp4"]
+# Rooted on purpose: a relative path never showed the subpath bug.
+audio = ["/video/demo.mp4"]
+videos = ["/video/demo.mp4"]
 tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
