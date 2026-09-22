@@ -1,0 +1,5 @@
+{{- /* One value or a list, always as a list: `range` cannot iterate a
+       string, so a bare one aborts the build at the call site. */ -}}
+{{- $items := . -}}
+{{- if not (reflect.IsSlice $items) }}{{ $items = slice $items }}{{ end -}}
+{{- return $items -}}
