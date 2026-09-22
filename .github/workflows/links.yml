@@ -71,18 +71,8 @@ jobs:
         run: |
           page=$(find public -path '*single-media-file*' -name index.html | head -1)
           [ -n "$page" ] || { echo "  BAD  the fixture page was not built"; exit 1; }
-          want=https://example.com/subpath/showcase/video/demo.mp4
-          for prop in og:audio og:video; do
-            grep -Eq "<meta property=\"?$prop\"? content=\"?$want\"?" "$page" || {
-              echo "  BAD  $prop is missing or does not name $want"
-              grep -o "<meta property=\"\?${prop}[^>]*>" "$page" || true
-              exit 1
-            }
-          done
-          grep -Eq "<source src=\"?$want\"?" "$page" || {
-            echo "  BAD  the player does not name $want"; exit 1
-          }
-          echo "  one file written on its own is read as a list of one"
+          node ../.github/scripts/check-invariants.mjs public media "${page#public/}" \
+            https://example.com/subpath/showcase/video/demo.mp4
 
       # A language code is not a country code — Ukrainian is uk, Ukraine is ua —
       # and naming the wrong one renders an empty square rather than falling
@@ -183,55 +173,25 @@ jobs:
       - name: Check no prose is wrapped in the page layout class
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # --minify drops the quotes it can, so both shapes are matched.
-          if grep -rEoh '<main[^>]*>.*<div class="?content["> ]' public | head -3 | grep -q .; then
-            echo "  BAD  .content nested inside <main>: it is the page frame, not a prose wrapper"
-            exit 1
-          fi
-          grep -rEq 'class="?list-content["> ]' public \
-            || { echo "  BAD  no section introduction was rendered at all"; exit 1; }
-          echo "  the section introduction has a prose class of its own"
+          node ../.github/scripts/check-invariants.mjs public list-content
 
       # Nothing here renders CSS, so the rule itself is asserted.
       - name: Check the logo keeps its direction on an RTL page
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          grep -rq 'dir=\"\?rtl' public/ar/index.html \
-            || { echo "  BAD  the Arabic showcase is not marked dir=rtl"; exit 1; }
-          # --minify drops the quotes and collapses the rule onto one line.
-          grep -rEq '\.logo\{[^}]*direction:ltr[^}]*unicode-bidi:isolate' public/*.css \
-            || { echo "  BAD  .logo does not pin its direction; an RTL page will mirror the mark"; exit 1; }
-          echo "  the logo reads left-to-right on an RTL page"
+          node ../.github/scripts/check-invariants.mjs public logo-rtl ar/index.html
 
       # .TableOfContents is a non-empty string even with no headings.
       - name: Check no empty table of contents is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # HTML only: the fixture's own prose discusses this markup. Tags and
-          # whitespace only, so a table of empty <li> counts as empty too.
-          if grep -rlzE --include='*.html' '<nav id="?TableOfContents"?>([[:space:]]|<[^>]*>)*</nav>' public | head -3 | grep -q .; then
-            echo "  BAD  a table of contents with nothing in it was rendered"
-            grep -rlzE --include='*.html' '<nav id="?TableOfContents"?>([[:space:]]|<[^>]*>)*</nav>' public | head -3
-            exit 1
-          fi
-          # And a page that does have headings still gets one.
-          grep -rEq --include='*.html' 'id="?TableOfContents' public \
-            || { echo "  BAD  no table of contents was rendered anywhere"; exit 1; }
-          echo "  a table of contents is rendered only where there is something to list"
+          node ../.github/scripts/check-invariants.mjs public toc
 
       # Valid markup either way, so nothing else notices it.
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          # --minify drops the quotes and collapses the gap before the <p>.
-          if grep -rEoh --include='*.html' '<div class="?post-info"?>[[:space:]]*(<p>[[:space:]]*</p>[[:space:]]*)?</div>' public \
-               | head -3 | grep -q .; then
-            echo "  BAD  an empty post-info was rendered"; exit 1
-          fi
-          # And pages with something to put in one still get one.
-          grep -rEq --include='*.html' 'class="?post-info' public \
-            || { echo "  BAD  no post-info was rendered anywhere"; exit 1; }
-          echo "  a post-info is rendered only where there is something to put in it"
+          node ../.github/scripts/check-invariants.mjs public post-info
 
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
@@ -374,16 +334,7 @@ jobs:
             --config config.toml,../.github/fixtures/git-info-no-url.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-git https://example.com/subpath/
-          # The link is the bug's signature: a bare 40-character hash as an href.
-          if grep -rEoh 'href="[0-9a-f]{40}"' public-git | head -3 | grep -q .; then
-            echo "  BAD  a commit hash shipped as a relative href"; exit 1
-          fi
-          # The icon alone is not enough: the svg without the hash also loses it.
-          grep -rq 'feather-git-commit' public-git \
-            || { echo "  BAD  no commit line was rendered at all"; exit 1; }
-          grep -rEq '</svg>[[:space:]]*[0-9a-f]{7,40}' public-git \
-            || { echo "  BAD  the commit line carries no plain-text hash"; exit 1; }
-          echo "  the hash is plain text when there is no gitUrl to link it to"
+          node ../.github/scripts/check-invariants.mjs public-git git-line
 
       # No demo config defined a non-main menu, so this shape was never built.
       - name: Check a non-main menu alone renders no navigation
@@ -393,18 +344,7 @@ jobs:
             --config config.toml,../.github/fixtures/menu-footer-only.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
-          # The empty nav is the signature; the hamburger is what is reachable.
-          if grep -rEoh '<ul class="?menu__inner"?>[[:space:]]*</ul>' public-menu | head -3 | grep -q .; then
-            echo "  BAD  an empty menu__inner was rendered"; exit 1
-          fi
-          # HTML only: the class name also lives in the stylesheet and menu.js.
-          if grep -rq --include='*.html' 'menu-trigger' public-menu; then
-            echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
-          fi
-          # The <header> element, not a class prefix: header__inner would match.
-          grep -rEq --include='*.html' '<header[[:space:]][^>]*class="?header"?[[:space:]>]' public-menu \
-            || { echo "  BAD  no header was rendered at all"; exit 1; }
-          echo "  a site whose only menu is a footer menu gets no navigation"
+          node ../.github/scripts/check-invariants.mjs public-menu menu
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
@@ -436,15 +376,7 @@ jobs:
       - name: Check a submenu label starts where its siblings do on a phone
         working-directory: hello-friend-ai/showcaseSite
         run: |
-          grep -Eq '<html[^>]*[[:space:]]dir=("rtl"|rtl)([[:space:]]|>)' public/ar/index.html || {
-            echo "  BAD  the Arabic page is not marked rtl"; exit 1
-          }
-          grep -Eqs '\.menu__inner\{[^}]*flex-direction:column[;}][^}]*text-align:start[;}]' public/*.css || {
-            echo "  BAD  the phone menu block does not set text-align:start"
-            grep -o '\.menu__inner{[^}]*}' public/*.css || true
-            exit 1
-          }
-          echo "  a submenu label follows the writing direction on a phone"
+          node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
 
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all. The second half keeps the
@@ -453,18 +385,9 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: |
           hugo --themesDir ../.. --gc --destination public-cursor
-          if grep -rl 'logo__cursor" style' public-cursor --include='*.html' | head -1 | grep -q .; then
-            echo "  BAD  the default build ships a style attribute on the logo cursor"
-            grep -rl 'logo__cursor" style' public-cursor --include='*.html' | head -3
-            exit 1
-          fi
+          node ../.github/scripts/check-invariants.mjs public-cursor cursor-default
           hugo --themesDir ../.. --gc --destination public-cursor-set \
             --config config.toml,../.github/fixtures/logo-cursor.toml
-          want='logo__cursor" style="background-color:#67a2c9;animation-duration:2s;"'
-          grep -q "$want" public-cursor-set/index.html || {
-            echo "  BAD  a configured cursor lost its style"
-            grep -o 'logo__cursor[^>]*>' public-cursor-set/index.html | head -2
-            exit 1
-          }
-          echo "  the logo cursor carries a style only when it has one"
+          node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-styled \
+            background-color=#67a2c9 animation-duration=2s
 
