@@ -38,8 +38,8 @@
                     </figure>
                 {{ end }}
                 
-                {{/* posts/page.html says why the headings, not the TOC. */}}
-                {{ if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
+                {{/* posts/page.html says why the rendered entries. */}}
+                {{ if and (partial "switch.html" .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
                     <hr />
                     <aside id="toc">
                     <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
