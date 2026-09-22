@@ -1,6 +1,12 @@
 @use "variables" as *;
 @use "mixins" as *;
 
+// The section's own _index.md body. An ordinary block: .posts around it
+// already sets the measure and alignment, so this only has to fill them.
+.list-content {
+  width: 100%;
+}
+
 .posts {
   width: 100%;
   max-width: 800px;
