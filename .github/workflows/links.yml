@@ -203,6 +203,19 @@ jobs:
             || { echo "  BAD  .logo does not pin its direction; an RTL page will mirror the mark"; exit 1; }
           echo "  the logo reads left-to-right on an RTL page"
 
+      # .TableOfContents is a non-empty string even with no headings.
+      - name: Check no empty table of contents is rendered
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          # HTML only: the fixture's own prose discusses this markup.
+          if grep -rEoh --include='*.html' '<nav id="?TableOfContents"?>[[:space:]]*</nav>' public | head -3 | grep -q .; then
+            echo "  BAD  an empty table of contents was rendered"; exit 1
+          fi
+          # And a page that does have headings still gets one.
+          grep -rEq --include='*.html' 'id="?TableOfContents' public \
+            || { echo "  BAD  no table of contents was rendered anywhere"; exit 1; }
+          echo "  a table of contents is rendered only where there is something to list"
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite

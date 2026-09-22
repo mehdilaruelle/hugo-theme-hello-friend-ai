@@ -41,7 +41,9 @@
           </figure>
         {{ end }}
 
-        {{- if partial "switch.html" .Params.toc }}
+        {{- /* The headings, not .TableOfContents: with none it still returns
+               an empty nav, a non-empty string that passes `with`. */ -}}
+        {{- if and (partial "switch.html" .Params.toc) .Fragments.Headings }}
           <hr />
           <aside id="toc">
             <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
