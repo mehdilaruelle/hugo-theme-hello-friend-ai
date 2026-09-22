@@ -21,8 +21,10 @@ other = "Ups, pagina nu a fost găsită…"
 
 # posts/single.html
 #
+# Three CLDR categories: without few, those counts take the "de" form.
 [readingTime]
 one   = "Un minut"
+few   = "{{ .Count }} minute"
 other = "{{ .Count }} de minute"
 
 [tableOfContents]
@@ -30,6 +32,7 @@ other = "Cuprins"
 
 [wordCount]
 one   = "Un cuvânt"
+few   = "{{ .Count }} cuvinte"
 other = "{{ .Count }} de cuvinte"
 
 [lastModified]
