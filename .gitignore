@@ -48,6 +48,8 @@ public-comments/
 public-quoted-zero/
 # The fixture build of enableGitInfo with no gitUrl.
 public-git/
+# The fixture build of a site whose only menu is a non-main one.
+public-menu/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json
