@@ -1,12 +1,12 @@
-// Asserts that the two halves of a social card name the same picture. They are
-// written by two partials, and used to read two different sources: a site
-// setting params.images showed one image and named another on every page with
-// a cover, and nothing failed.
+// Asserts both halves of a social card name the same picture, and that the
+// picture is one the build wrote -- agreeing is not enough when both name the
+// same broken URL. Same-origin cards resolve against disk when a base URL is
+// given.
 //
-//   node .github/scripts/check-cards.mjs <public-dir>
+//   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join, relative, resolve, sep } from "node:path";
 
 // Quoted, single-quoted or bare, because --minify drops the quotes it can. The
 // lookbehind is the name test \b is not; check-sharing.mjs says why.
@@ -32,9 +32,44 @@ function* walk(dir) {
 }
 
 const root = process.argv[2] || "public";
+const rootPath = resolve(root);
+const baseUrl = process.argv[3];
+
+// A remote card is somebody else's to serve, and is left alone.
+let siteOrigin = null;
+let prefix = "/";
+if (baseUrl) {
+  siteOrigin = new URL(baseUrl).origin;
+  prefix = new URL(baseUrl).pathname || "/";
+  if (!prefix.endsWith("/")) prefix += "/";
+}
+
+const exists = (p) => {
+  try {
+    return statSync(p).isFile();
+  } catch {
+    return false;
+  }
+};
+
+// Path under the public root, or null when the URL is somebody else's. One
+// that escapes the baseURL path returns "" and is reported.
+function local(url) {
+  if (!siteOrigin) return null;
+  let u;
+  try {
+    u = new URL(url, baseUrl);
+  } catch {
+    return null;
+  }
+  if (u.origin !== siteOrigin) return null;
+  return u.pathname.startsWith(prefix) ? u.pathname.slice(prefix.length - 1) : "";
+}
+
 const failures = [];
 let pages = 0;
 let withImage = 0;
+let resolved = 0;
 let files = 0;
 
 for (const file of walk(root)) {
@@ -67,6 +102,20 @@ for (const file of walk(root)) {
   if (og && tw) {
     withImage++;
     if (og !== tw) failures.push([file, `og:image ${og}\n    twitter:image ${tw}`, "the two halves name different pictures"]);
+
+    const path = local(og);
+    if (path !== null) {
+      resolved++;
+      // Resolved, not joined: %2e%2e%2f survives normalisation and the prefix
+      // test, then decodes to ../ . A plain ../ the parser already folds away.
+      const target = path === "" ? "" : resolve(rootPath, decodeURIComponent(path).replace(/^\/+/, ""));
+      const outside = target === "" ? ".." : relative(rootPath, target);
+      if (outside === ".." || outside.startsWith(`..${sep}`)) {
+        failures.push([file, `og:image ${og}`, "escapes the site root"]);
+      } else if (!exists(target)) {
+        failures.push([file, `og:image ${og}`, "names a file this build did not write"]);
+      }
+    }
   } else if (og || tw) {
     failures.push([file, og ? "og:image with no twitter:image" : "twitter:image with no og:image",
       "both tag sets carry the picture, or neither does"]);
@@ -85,10 +134,17 @@ if (files === 0) {
   process.exit(1);
 }
 
-console.log(`checked ${pages} pages carrying card tags, ${withImage} of them with a picture`);
+console.log(
+  `checked ${pages} pages carrying card tags, ${withImage} of them with a picture` +
+    (baseUrl ? `, ${resolved} pointing at a file this build wrote` : ""),
+);
 if (failures.length) {
   console.error(`\n${failures.length} broken:\n`);
   for (const [file, what, why] of failures) console.error(`  ${file}\n    ${what}  (${why})`);
   process.exit(1);
 }
-console.log("every card names one picture, and both halves agree on it");
+console.log(
+  baseUrl
+    ? "every card names one picture, both halves agree on it, and it was published"
+    : "every card names one picture, and both halves agree on it",
+);
