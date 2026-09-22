@@ -3,7 +3,8 @@
         {{ partial "logo.html" . }}
 
         <span class="header__right">
-            {{- if len .Site.Menus }}
+            {{- /* .main, not .Site.Menus: that is the map of every menu. */ -}}
+            {{- if .Site.Menus.main }}
                 {{ partial "menu.html" . }}
                 {{- /* A button, not a span. Below the phone breakpoint the menu
                        is display: none and this is the only way to it, so a

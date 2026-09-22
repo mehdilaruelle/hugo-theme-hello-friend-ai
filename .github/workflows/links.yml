@@ -348,6 +348,27 @@ jobs:
             || { echo "  BAD  the commit line carries no plain-text hash"; exit 1; }
           echo "  the hash is plain text when there is no gitUrl to link it to"
 
+      # No demo config defined a non-main menu, so this shape was never built.
+      - name: Check a non-main menu alone renders no navigation
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-menu \
+            --config config.toml,../.github/fixtures/menu-footer-only.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
+          # The empty nav is the signature; the hamburger is what is reachable.
+          if grep -rEoh '<ul class="?menu__inner"?>[[:space:]]*</ul>' public-menu | head -3 | grep -q .; then
+            echo "  BAD  an empty menu__inner was rendered"; exit 1
+          fi
+          # HTML only: the class name also lives in the stylesheet and menu.js.
+          if grep -rq --include='*.html' 'menu-trigger' public-menu; then
+            echo "  BAD  a hamburger was rendered for a site with no main menu"; exit 1
+          fi
+          # The <header> element, not a class prefix: header__inner would match.
+          grep -rEq --include='*.html' '<header[[:space:]][^>]*class="?header"?[[:space:]>]' public-menu \
+            || { echo "  BAD  no header was rendered at all"; exit 1; }
+          echo "  a site whose only menu is a footer menu gets no navigation"
+
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
         working-directory: hello-friend-ai/exampleSite
