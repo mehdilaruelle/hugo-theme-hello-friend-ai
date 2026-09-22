@@ -17,8 +17,9 @@
 {{- $img := "" -}}
 {{- $alt := "" -}}
 {{- $owned := false -}}
-{{- with .Params.images -}}
-  {{- if not (partial "is-svg.html" (index . 0)) -}}{{- $img = index . 0 -}}{{- end -}}
+{{- if isset .Params "images" -}}
+  {{- $first := partial "first-image.html" .Params.images -}}
+  {{- if and $first (not (partial "is-svg.html" $first)) -}}{{- $img = $first -}}{{- end -}}
 {{- end -}}
 {{- with $img -}}
   {{- $alt = partial "title.html" $ -}}
@@ -34,8 +35,9 @@
   {{- end -}}
 {{- end -}}
 {{- if not $img -}}
-  {{- with site.Params.images -}}
-    {{- if not (partial "is-svg.html" (index . 0)) -}}{{- $img = index . 0 -}}{{- end -}}
+  {{- if isset site.Params "images" -}}
+    {{- $first := partial "first-image.html" site.Params.images -}}
+    {{- if and $first (not (partial "is-svg.html" $first)) -}}{{- $img = $first -}}{{- end -}}
   {{- end -}}
 {{- end -}}
 {{- if not $img -}}
