@@ -39,7 +39,7 @@
       padding-top: 6px;
       margin-inline-end: 1.8em;
       font-size: 1.6em;
-      @include dimmed;
+      @include secondary-colour;
 
       @media #{$media-size-tablet} {
         margin: -6px 0 4px;
@@ -61,7 +61,7 @@
     &-day {
       flex-shrink: 0;
       margin-inline-start: 1em;
-      @include dimmed;
+      @include secondary-colour;
     }
   }
 
