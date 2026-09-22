@@ -1,0 +1,22 @@
+{{- /*
+  First picture out of an `images` key, whatever shape it was written in;
+  empty string when there is none. A bare string is a list of one -- `index`
+  on a string returns a byte. Any other shape warns rather than being indexed.
+*/ -}}
+{{- $first := "" -}}
+{{- $type := printf "%T" . -}}
+{{- if eq $type "<nil>" -}}
+{{- else if reflect.IsSlice . -}}
+  {{- with index . 0 -}}
+    {{- if eq (printf "%T" .) "string" -}}
+      {{- $first = . -}}
+    {{- else -}}
+      {{- warnidf "images-shape" "images: expected a list of paths, got a list of %T. This page has no social card picture." . -}}
+    {{- end -}}
+  {{- end -}}
+{{- else if eq $type "string" -}}
+  {{- $first = . -}}
+{{- else -}}
+  {{- warnidf "images-shape" "images: expected a path or a list of paths, got %T. This page has no social card picture." . -}}
+{{- end -}}
+{{- return $first -}}
