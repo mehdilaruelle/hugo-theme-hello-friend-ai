@@ -172,6 +172,17 @@ jobs:
             || { echo "  BAD  no section introduction was rendered at all"; exit 1; }
           echo "  the section introduction has a prose class of its own"
 
+      # Nothing here renders CSS, so the rule itself is asserted.
+      - name: Check the logo keeps its direction on an RTL page
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          grep -rq 'dir=\"\?rtl' public/ar/index.html \
+            || { echo "  BAD  the Arabic showcase is not marked dir=rtl"; exit 1; }
+          # --minify drops the quotes and collapses the rule onto one line.
+          grep -rEq '\.logo\{[^}]*direction:ltr[^}]*unicode-bidi:isolate' public/*.css \
+            || { echo "  BAD  .logo does not pin its direction; an RTL page will mirror the mark"; exit 1; }
+          echo "  the logo reads left-to-right on an RTL page"
+
       # Valid markup either way, so nothing else notices it.
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
