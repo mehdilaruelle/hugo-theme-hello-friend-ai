@@ -1,31 +1,12 @@
 @use "variables" as *;
+@use "mixins" as *;
 
-// The footer never switched colour with the theme: #999 served both, at 2.85:1
-// on the light ground. Same shape as every other component here.
-@mixin footer-colour {
-  color: $light-color-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    color: $dark-color-secondary;
-  }
-
-  @media (prefers-color-scheme: light) {
-    color: $light-color-secondary;
-  }
-
-  [data-theme=dark] & {
-    color: $dark-color-secondary;
-  }
-
-  [data-theme=light] & {
-    color: $light-color-secondary;
-  }
-}
+// The theme-aware secondary colour lives in mixins; #999 served both themes.
 
 .footer {
   padding: 40px 20px;
   flex-grow: 0;
-  @include footer-colour;
+  @include secondary-colour;
 
   &__inner {
     display: flex;
@@ -45,7 +26,7 @@
     flex-direction: row;
     align-items: center;
     font-size: 1rem;
-    @include footer-colour;
+    @include secondary-colour;
 
     @media #{$media-size-tablet} {
       flex-direction: column;
