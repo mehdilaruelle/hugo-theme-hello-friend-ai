@@ -39,7 +39,7 @@
                                 {{- /* Description first, .Summary as a fallback, cut short. */ -}}
                                 {{- $excerpt := "" }}
                                 {{- if partial "switch.html" .Site.Params.enableListExcerpts }}
-                                    {{- $excerpt = .Description | default (.Summary | plainify | replaceRE "\\s+" " " | strings.TrimSpace | truncate 200) }}
+                                    {{- $excerpt = .Description | default (partial "flatten.html" .Summary | truncate 200) }}
                                 {{- end }}
                                 <li class="post-item">
                                     <a href="{{.Permalink}}" class="post-item-inner{{ if $thumbnail }} post-item-inner--thumbnail{{ end }}{{ if $excerpt }} post-item-inner--excerpt{{ end }}">

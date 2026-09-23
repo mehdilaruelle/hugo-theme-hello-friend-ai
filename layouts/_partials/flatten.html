@@ -1,0 +1,8 @@
+{{- /* Markup or Markdown-rendered HTML as one line of plain text. plainify
+       strips the tags but leaves the entities Goldmark's typographer made
+       (&rsquo;, &ldquo;, &ndash;), so they are unescaped here, and the text is
+       escaped once, by whatever prints it. Whitespace runs, newlines included,
+       become one space. What a caller does after this -- cutting, marking safe
+       -- differs by caller on purpose and stays with the caller. The
+       parentheses are required: return must end its pipeline. */ -}}
+{{- return (. | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace) -}}

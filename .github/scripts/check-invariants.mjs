@@ -216,6 +216,40 @@ const checks = {
     ok("the logo cursor carries a style only when it has one");
   },
 
+  // plainify leaves the typographer's entities in, and printing the text
+  // escapes them again: the list read "Hugo&rsquo;s", as did the JSON-LD.
+  // Parsed, not grepped: an entity is only wrong once it survives decoding.
+  entities() {
+    const entity = /&(?:[a-z][a-z0-9]*|#\d+|#x[0-9a-f]+);/i;
+    const decode = (s) => s.replace(/&(amp|lt|gt|quot|#39);/g,
+      (_, e) => ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'" })[e]);
+    const bad = [];
+    let curly = false, described = false;
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      for (const m of html.matchAll(/<span\b[^>]*>/gi)) {
+        if (!hasClass(m[0], "post-excerpt")) continue;
+        const shown = decode(text(element(html, m.index + m[0].length, "span")));
+        if (entity.test(shown)) bad.push(`${rel(p)}: excerpt reads ${shown.match(entity)[0]}`);
+        if (/[’“”]/.test(shown)) curly = true;
+      }
+      for (const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
+        if (attr(m[0], "type") !== "application/ld+json") continue;
+        let data;
+        try { data = JSON.parse(m[1]); } catch { continue; }
+        const d = data.description;
+        if (typeof d !== "string") continue;
+        described = true;
+        if (entity.test(d)) bad.push(`${rel(p)}: JSON-LD description reads ${d.match(entity)[0]}`);
+      }
+    }
+    if (bad.length) fail("an HTML entity reached the reader as text", bad.slice(0, 5).join("\n"));
+    // Absent proves nothing unless the typographer's output was rendered.
+    if (!curly) fail("no excerpt carries a curly quote, so nothing was tested");
+    if (!described) fail("no JSON-LD description was rendered");
+    ok("list excerpts and JSON-LD descriptions carry characters, not entities");
+  },
+
   // #263 and #271: the card and the player name the same file, subpath kept.
   media(page, want) {
     const html = read(page);
