@@ -5,31 +5,16 @@
 //
 //   node .github/scripts/check-cards.mjs <public-dir> [base-url]
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, relative, resolve, sep } from "node:path";
+import { readFileSync, statSync } from "node:fs";
+import { relative, resolve, sep } from "node:path";
+import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
-// Quoted, single-quoted or bare, because --minify drops the quotes it can. The
-// lookbehind is the name test \b is not; check-sharing.mjs says why.
 const META = /<meta\b[^>]*>/gi;
-const ATTR = (name) =>
-  new RegExp(`(?<![-\\w])${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
+const PROPERTY = attrRe("property");
+const NAME = attrRe("name");
+const CONTENT = attrRe("content");
 
-const PROPERTY = ATTR("property");
-const NAME = ATTR("name");
-const CONTENT = ATTR("content");
-
-function attr(tag, re) {
-  const m = tag.match(re);
-  return m ? (m[1] ?? m[2] ?? m[3] ?? "") : null;
-}
-
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".html")) yield full;
-  }
-}
+const attr = (tag, re) => attrValue(tag.match(re));
 
 const root = process.argv[2] || "public";
 const rootPath = resolve(root);
@@ -72,7 +57,7 @@ let withImage = 0;
 let resolved = 0;
 let files = 0;
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".html")) {
   const html = readFileSync(file, "utf8");
   files++;
   const tags = { "og:image": [], "og:image:alt": [], "twitter:image": [], "twitter:image:alt": [] };

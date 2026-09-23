@@ -3,8 +3,9 @@
 // how several bugs reached production here -- then resolves outside the tree.
 // External URLs are never requested: fast, offline, nobody else's rate limit.
 
-import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
+import { readFileSync, statSync, existsSync } from "node:fs";
 import { join, dirname, resolve, relative, posix } from "node:path";
+import { walk } from "./_lib.mjs";
 
 // poster carries a URL like src does, so it belongs in the same net. The
 // lookbehind is the name test \b is not; check-sharing.mjs says why.
@@ -25,14 +26,6 @@ const decode = (s) =>
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#(\d+);/g, (_, d) => String.fromCharCode(d));
-
-function* walk(dir) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) yield* walk(full);
-    else yield full;
-  }
-}
 
 const exists = (p) => {
   try {

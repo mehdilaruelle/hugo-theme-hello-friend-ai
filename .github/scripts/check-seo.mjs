@@ -8,13 +8,12 @@
 //
 //   node .github/scripts/check-seo.mjs <public-dir>
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { walk, attrSource, value } from "./_lib.mjs";
 
-// Quoted, single-quoted or bare, because --minify drops the quotes it can. The
-// lookbehind is the name test \b is not; check-sharing.mjs says why.
-const attr = (name) => String.raw`(?<![-\w])${name}\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))`;
-const pick = (m) => (m ? (m[1] ?? m[2] ?? m[3] ?? "") : null);
+const attr = attrSource;
+const pick = value;
 
 // Every occurrence, not the last one: Open Graph allows a property to repeat,
 // and a map keyed by property hid an SVG followed by a usable picture. The
@@ -59,19 +58,11 @@ const LD = /<script[^>]*type\s*=\s*["']?application\/ld\+json["']?[^>]*>([\s\S]*
 // template to render stands in for it.
 const SEARCH_FORM = /<form\b[^>]*\bclass\s*=\s*(?:"[^"]*search-form[^"]*"|'[^']*search-form[^']*'|[^\s>]*search-form[^\s>]*)/i;
 
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".html")) yield full;
-  }
-}
-
 const root = process.argv[2] || "public";
 const failures = [];
 let checked = 0;
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".html")) {
   const html = readFileSync(file, "utf8");
   if (ALIAS.test(html)) continue;
 
