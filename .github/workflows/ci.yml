@@ -47,8 +47,6 @@ jobs:
       - name: Check the translations against en.toml
         run: node .github/scripts/check-i18n.mjs .
 
-      # svg.html draws whatever file assets/svg/social/ holds, so the document
-      # listing the names is only right if something compares the two.
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
 

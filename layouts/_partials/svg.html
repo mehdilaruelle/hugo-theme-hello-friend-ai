@@ -1,22 +1,14 @@
 {{- $name := lower (trim (.name | default "") " \t\r\n") -}}
-{{- /* Named by the caller, since the build stops on this warning and
-       params.social is only where today's one caller gets its names. */ -}}
 {{- $source := .source | default "params.social" -}}
-{{- /* One file per network under assets/svg/social/, named after what
-       params.social writes. The pattern is not decoration: $name comes from a
-       site's own config, and it is what stops "../../data/x" becoming a path.
-       A site can add or replace a glyph with a file of its own at the same
-       path. */ -}}
+{{- /* The pattern stops a name from site config becoming a path. */ -}}
 {{- $icon := "" -}}
 {{- if findRE `^[a-z0-9][a-z0-9-]*$` $name -}}
   {{- with resources.Get (printf "svg/social/%s.svg" $name) -}}{{- $icon = . -}}{{- end -}}
 {{- end -}}
-{{- /* chomp: the file's trailing newline would otherwise reach the page, and
-       the minifier then drops the space before the caller's &nbsp;. */ -}}
+{{- /* chomp: the file's trailing newline would reach the page. */ -}}
 {{- with $icon -}}
   {{- .Content | chomp | safeHTML -}}
 {{- else -}}
-  {{- /* Without this the <a> around it has no content, and no size. */ -}}
   {{- warnidf "svg-icon-unknown" "%s: no icon for %q, showing a generic link glyph. Ask for \"link\" to draw it on purpose, or see docs/svgs.md for the names the theme draws." $source $name -}}
   {{- with resources.Get "svg/social/link.svg" -}}{{- .Content | chomp | safeHTML -}}{{- end -}}
 {{- end -}}

@@ -1,10 +1,4 @@
-// docs/svgs.md must list exactly the social icons the theme draws.
-//
-// svg.html draws whatever assets/svg/social/<name>.svg exists, so the files are
-// the list. A glyph added without its line in the document is one no reader
-// finds, and a line whose file is gone warns only on the site that asks for it.
-// Each file must also be one <svg> element: svg.html inlines it verbatim.
-//
+// docs/svgs.md must list exactly the files in assets/svg/social/, each a single <svg>.
 //   node check-svgs.mjs <theme-root>
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
@@ -26,7 +20,6 @@ const problems = [];
 const files = readdirSync(dir).filter((f) => !f.startsWith('.'));
 const drawn = new Set();
 for (const f of files) {
-  // svg.html only asks for names matching this, so any other file is dead.
   const m = f.match(/^([a-z0-9][a-z0-9-]*)\.svg$/);
   if (!m) {
     problems.push(`assets/svg/social/${f}: svg.html can never ask for this name`);
@@ -34,8 +27,6 @@ for (const f of files) {
   }
   drawn.add(m[1]);
   const body = readFileSync(join(dir, f), 'utf8').trim();
-  // One </svg>, and it is the last thing: "<svg></svg><p>x</p><svg></svg>"
-  // opens and closes like one element and is not.
   const single = /^<svg[\s>][\s\S]*<\/svg>$/.test(body)
     && body.indexOf('</svg>') === body.lastIndexOf('</svg>');
   if (!single || body.includes('{{')) {
@@ -43,9 +34,7 @@ for (const f of files) {
   }
 }
 
-// A list item's first word is the name, written as a link or bare:
-//   - [github](https://…)      - bluesky      - link - the generic glyph…
-// Lowercased, since svg.html lowercases what params.social writes.
+// A list item's first word, linked or bare, is the name.
 const listed = new Set();
 readFileSync(docPath, 'utf8').split(/\r?\n/).forEach((line) => {
   const m = line.match(/^- \[?([A-Za-z0-9][A-Za-z0-9-]*)\]?(?:\(|\s|$)/);
@@ -58,7 +47,6 @@ for (const name of drawn) {
 for (const name of listed) {
   if (!drawn.has(name)) problems.push(`${name}: docs/svgs.md lists it, but assets/svg/social/${name}.svg does not exist`);
 }
-// svg.html falls back to it, so without it an unknown name draws nothing.
 if (!drawn.has('link')) problems.push('assets/svg/social/link.svg is missing: the fallback glyph');
 
 for (const p of problems) console.error('  ' + p);
