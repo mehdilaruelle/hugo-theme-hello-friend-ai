@@ -8,10 +8,7 @@
 
 {{- $author := partial "author.html" . -}}
 
-{{- /* The site's own author, page-independent. $person carries the site
-       owner's job title, portrait and profiles under one @id, so reading its
-       name from a page that names its own author would put two names on one
-       entity. */ -}}
+{{- /* Site-level: $person is the site owner, whatever the page's author. */ -}}
 {{- $siteAuthor := (partial "site-author.html" .).name -}}
 
 {{- /* From the partial that already answers this for the card: worked out here
@@ -20,98 +17,7 @@
 {{- $social := partial "social-image.html" . -}}
 {{- $image := cond $social.owned $social.url "" -}}
 
-{{- /*
-  The Person behind the site, for the home page.
-
-  What makes a name an entity rather than a string is the evidence tying it to
-  the same person elsewhere, which is what sameAs carries -- the claim rel="me"
-  already makes on the links. mailto: is an address, not a profile.
-
-  jobTitle, description, knowsAbout and hasCredential come from params.author
-  when it is written as a map.
-*/ -}}
-{{- $jobTitle := "" -}}
-{{- $personDescription := "" -}}
-{{- $knowsAbout := slice -}}
-{{- $credentials := slice -}}
-{{- with site.Params.author -}}
-  {{- if reflect.IsMap . -}}
-    {{- $jobTitle = .jobTitle -}}
-    {{- $personDescription = .description -}}
-    {{- with .knowsAbout -}}
-      {{- $knowsAbout = . -}}
-    {{- end -}}
-    {{- /* url is the credential itself -- the badge, the certificate -- since
-           that is what url means on any Thing; the body that awarded it goes in
-           recognizedBy. An entry with no name is dropped. */ -}}
-    {{- range .credentials -}}
-      {{- $name := .name -}}
-      {{- $category := .category -}}
-      {{- $url := .url -}}
-      {{- $issuer := .issuer -}}
-      {{- with $name -}}
-        {{- $credential := dict "@type" "EducationalOccupationalCredential" "name" $name -}}
-        {{- with $category -}}
-          {{- $credential = merge $credential (dict "credentialCategory" .) -}}
-        {{- end -}}
-        {{- /* absURL drops the base URL path, so a rooted path came out at the
-               domain root on a site served from a subpath. */ -}}
-        {{- with $url -}}
-          {{- $credential = merge $credential (dict "url" (partial "abs-url.html" .)) -}}
-        {{- end -}}
-        {{- with $issuer -}}
-          {{- $credential = merge $credential (dict "recognizedBy" (dict "@type" "Organization" "name" .)) -}}
-        {{- end -}}
-        {{- $credentials = $credentials | append $credential -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-
-{{- /* Hugo's embedded partials read params.social as a map, where this theme
-       documents a list of tables. Ranging over a map yields strings, and .url
-       on a string ended the build instead of finding no links. */ -}}
-{{- $sameAs := slice -}}
-{{- range site.Params.social -}}
-  {{- if reflect.IsMap . -}}
-    {{- with .url -}}
-      {{- if not (strings.HasPrefix (lower .) "mailto:") -}}
-        {{- $sameAs = $sameAs | append . -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
-
-{{- $person := dict "@type" "Person" -}}
-{{- with $siteAuthor -}}
-  {{- $person = merge $person (dict "@id" (printf "%s#person" site.Home.Permalink) "name" . "url" site.Home.Permalink) -}}
-{{- end -}}
-{{- with $jobTitle -}}
-  {{- $person = merge $person (dict "jobTitle" .) -}}
-{{- end -}}
-{{- with $personDescription -}}
-  {{- $person = merge $person (dict "description" .) -}}
-{{- end -}}
-{{- with $knowsAbout -}}
-  {{- $person = merge $person (dict "knowsAbout" .) -}}
-{{- end -}}
-{{- with $credentials -}}
-  {{- $person = merge $person (dict "hasCredential" .) -}}
-{{- end -}}
-{{- /* Resolving the portrait as a resource is what publishes it: home.html
-       renders a resized copy, and the original is emitted only if something
-       asks. Taking the path as a string would name a file Hugo never wrote. One
-       outside assets/ is a static file, so the path stands. */ -}}
-{{- with site.Params.portrait.path -}}
-  {{- $portrait := . | absURL -}}
-  {{- with resources.Get . -}}
-    {{- $portrait = .Permalink -}}
-  {{- end -}}
-  {{- $person = merge $person (dict "image" $portrait) -}}
-{{- end -}}
-{{- with $sameAs -}}
-  {{- $person = merge $person (dict "sameAs" .) -}}
-{{- end -}}
+{{- $person := partial "json-ld/person.html" . -}}
 
 {{- /* A page naming its own author is a different person from whoever owns the
        site: a name and nothing else, since the site's profiles are not theirs
@@ -285,59 +191,5 @@
 <script type="application/ld+json">{{ . | jsonify | safeJS }}</script>
 {{- end -}}
 
-{{- /*
-  The trail to the page. A search result shows it in place of the bare URL, so
-  posts/2025/04/aws-sso-with-auth0-for-free reads as Home › Blog › AWS SSO.
-
-  Only single pages in a section get one: the home page is the root of the trail
-  rather than a step on it. The section is named by its linkTitle, since a title
-  that works in a search result is too long for one step. The last item carries
-  no url -- Google asks for the current page to be named and not linked.
-*/ -}}
-{{- $section := "" -}}
-{{- if .IsPage -}}
-  {{- with .Parent -}}{{- if not .IsHome -}}{{- $section = . -}}{{- end -}}{{- end -}}
-{{- end -}}
-{{- with $section -}}
-  {{- /* Every ancestor, not just the parent: a fixed three-item trail dropped
-         the levels between on a nested page. Positions are counted, not
-         assumed. */ -}}
-  {{- $items := slice -}}
-  {{- $i := 0 -}}
-  {{- range $.Ancestors.Reverse -}}
-    {{- $i = add $i 1 -}}
-    {{- $name := "" -}}
-    {{- if .IsHome -}}
-      {{- $name = partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
-    {{- else -}}
-      {{- $name = .LinkTitle | plainify -}}
-    {{- end -}}
-    {{- $items = $items | append (dict "@type" "ListItem" "position" $i "name" $name "item" .Permalink) -}}
-  {{- end -}}
-
-  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title.html" $ | plainify)) -}}
-  {{- $trail := dict
-    "@context" "https://schema.org"
-    "@type" "BreadcrumbList"
-    "itemListElement" $items -}}
-<script type="application/ld+json">{{ $trail | jsonify | safeJS }}</script>
-{{- end -}}
-
-{{- /* The faq shortcode fills .Store while the content renders; the head is
-       earlier. Reading .Content forces that render, so this does not depend on
-       a neighbour having touched .Summary first. */ -}}
-{{- $noop := .Content -}}
-{{- with .Store.Get "faq" -}}
-  {{- $questions := slice -}}
-  {{- range . -}}
-    {{- $questions = $questions | append (dict
-      "@type" "Question"
-      "name" .q
-      "acceptedAnswer" (dict "@type" "Answer" "text" .a)) -}}
-  {{- end -}}
-  {{- $faq := dict
-    "@context" "https://schema.org"
-    "@type" "FAQPage"
-    "mainEntity" $questions -}}
-<script type="application/ld+json">{{ $faq | jsonify | safeJS }}</script>
-{{- end -}}
+{{- partial "json-ld/breadcrumb.html" . -}}
+{{- partial "json-ld/faq.html" . -}}

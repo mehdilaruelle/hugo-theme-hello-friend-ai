@@ -1,0 +1,8 @@
+{{- /* (dict "heading" h "pages" p): a "## h" section of Markdown links. */ -}}
+{{- with .pages }}
+## {{ $.heading | safeHTML }}
+
+{{ range . -}}
+- [{{ partial "md/label.html" . | safeHTML }}]({{ partial "md/url.html" . | safeHTML }}){{ with (partial "md/note.html" .) }}: {{ . | safeHTML }}{{ end }}
+{{ end }}
+{{- end -}}

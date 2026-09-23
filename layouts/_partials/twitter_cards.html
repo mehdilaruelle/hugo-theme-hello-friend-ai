@@ -31,17 +31,14 @@
   {{- if reflect.IsMap . -}}
     {{- with .twitter -}}{{- $handle = . -}}{{- end -}}
   {{- else -}}
-    {{- range . -}}
-      {{- if reflect.IsMap . -}}
-        {{- $name := lower (.name | default "") -}}
-        {{- $url := .url | default "" -}}
-        {{- if and $url (in (slice "twitter" "x") $name) -}}
-          {{- /* The last segment is the handle; a URL without one leaves the
-                 host, and a host has a dot where a handle never does. */ -}}
-          {{- $candidate := path.Base (strings.TrimSuffix "/" $url) -}}
-          {{- if not (strings.Contains $candidate ".") -}}
-            {{- $handle = $candidate -}}
-          {{- end -}}
+    {{- range partial "social-list.html" . -}}
+      {{- $name := lower (.name | default "") -}}
+      {{- $url := .url | default "" -}}
+      {{- if and $url (in (slice "twitter" "x") $name) -}}
+        {{- /* The last segment is the handle; a host has a dot, a handle never. */ -}}
+        {{- $candidate := path.Base (strings.TrimSuffix "/" $url) -}}
+        {{- if not (strings.Contains $candidate ".") -}}
+          {{- $handle = $candidate -}}
         {{- end -}}
       {{- end -}}
     {{- end -}}

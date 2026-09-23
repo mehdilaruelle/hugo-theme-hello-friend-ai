@@ -1,0 +1,2 @@
+{{- /* (dict "date" t "format" site.Params.x "fallback" "2006-01-02"), in local time. */ -}}
+{{- return dateFormat (.format | default .fallback) .date.Local -}}

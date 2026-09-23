@@ -1,0 +1,11 @@
+{{- /* (dict "page" . "title" t "desc" d "note" bool). safeHTML: a partial is an HTML template. */ -}}
+# {{ .title | safeHTML }}
+{{ with .desc }}
+> {{ partial "flatten.html" . | safeHTML }}
+{{ end }}
+{{- with partial "md/body.html" .page | strings.TrimSpace }}
+{{ . | safeHTML }}
+{{ end }}
+{{- if .note }}{{ with site.Params.llmsNote }}
+{{ partial "flatten.html" . | safeHTML }}
+{{ end }}{{ end -}}

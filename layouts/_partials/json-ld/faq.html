@@ -1,0 +1,16 @@
+{{- /* Reading .Content renders the faq shortcode, which fills .Store. */ -}}
+{{- $noop := .Content -}}
+{{- with .Store.Get "faq" -}}
+  {{- $questions := slice -}}
+  {{- range . -}}
+    {{- $questions = $questions | append (dict
+      "@type" "Question"
+      "name" .q
+      "acceptedAnswer" (dict "@type" "Answer" "text" .a)) -}}
+  {{- end -}}
+  {{- $faq := dict
+    "@context" "https://schema.org"
+    "@type" "FAQPage"
+    "mainEntity" $questions -}}
+<script type="application/ld+json">{{ $faq | jsonify | safeJS }}</script>
+{{- end -}}

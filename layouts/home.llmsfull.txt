@@ -3,27 +3,16 @@
        itself as the whole site is the thing to avoid. */ -}}
 {{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
 {{- /* llms.txt order, not date order, which is why the notice claims none. */ -}}
-{{- $all := partial "md/pages.html" site.RegularPages -}}
-{{- $posts := where $all "Section" "in" (site.Params.mainSections | default (slice "posts")) -}}
-{{- $other := $all | complement $posts -}}
+{{- $s := partial "md/sections.html" . -}}
 {{- $ordered := slice -}}
-{{- range $posts -}}{{- $ordered = $ordered | append . -}}{{- end -}}
-{{- range $other -}}{{- $ordered = $ordered | append . -}}{{- end -}}
+{{- range $s.posts -}}{{- $ordered = $ordered | append . -}}{{- end -}}
+{{- range $s.other -}}{{- $ordered = $ordered | append . -}}{{- end -}}
 {{- $total := len $ordered -}}
 {{- $limit := int (float (site.Params.llmsFullLimit | default 0)) -}}
 {{- if and (gt $limit 0) (lt $limit $total) -}}
   {{- $ordered = first $limit $ordered -}}
 {{- end -}}
-# {{ site.Title }}
-{{ with $desc }}
-> {{ partial "flatten.html" . }}
-{{ end }}
-{{- with partial "md/body.html" . | strings.TrimSpace }}
-{{ . }}
-{{ end }}
-{{- with site.Params.llmsNote }}
-{{ partial "flatten.html" . }}
-{{ end }}
+{{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
 {{- if lt (len $ordered) $total }}
 {{- /* Kept, not Count: a Count key sends i18n looking for a plural form. */ -}}
 {{ partial "i18n.html" (dict "key" "llmsFullTruncated" "args" (dict "Kept" (len $ordered) "Total" $total) "fallback" (printf "%d of %d pages, in the order llms.txt lists them." (len $ordered) $total)) }}

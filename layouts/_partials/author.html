@@ -1,24 +1,7 @@
-{{- /*
-  The author's name, as a string, from wherever it was written.
-
-  It is a string in some configurations and a map with a name key in others, at
-  the page level and at the site level alike. Two templates needed the same
-  answer and only one of them knew how to get it, so head.html printed the map
-  itself:
-
-    <meta name="author" content="map[name:Jane Doe]">
-
-  and its site-level branch ranged over the map's values and joined them, which
-  put the job title in front of the name.
-
-  Returns the empty string when there is no author to name, so a caller can
-  drop the tag rather than ship an empty one.
-
-  This cannot use cond, which evaluates both branches: .name would fail on a
-  string.
-*/ -}}
-{{- $author := "" -}}
-{{- with .Params.author | default site.Params.author -}}
+{{- /* The page's author name, else the site's; "" when there is none. A string
+       or a map with a name key. Not cond: .name fails on a string. */ -}}
+{{- $author := (partial "site-author.html" .).name -}}
+{{- with .Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $author = .name -}}
   {{- else -}}

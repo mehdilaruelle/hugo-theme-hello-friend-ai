@@ -1,0 +1,26 @@
+{{- /* BreadcrumbList for a single page in a section; the last item has no url. */ -}}
+{{- $section := "" -}}
+{{- if .IsPage -}}
+  {{- with .Parent -}}{{- if not .IsHome -}}{{- $section = . -}}{{- end -}}{{- end -}}
+{{- end -}}
+{{- with $section -}}
+  {{- $items := slice -}}
+  {{- $i := 0 -}}
+  {{- range $.Ancestors.Reverse -}}
+    {{- $i = add $i 1 -}}
+    {{- $name := "" -}}
+    {{- if .IsHome -}}
+      {{- $name = partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
+    {{- else -}}
+      {{- $name = .LinkTitle | plainify -}}
+    {{- end -}}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" $i "name" $name "item" .Permalink) -}}
+  {{- end -}}
+
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title.html" $ | plainify)) -}}
+  {{- $trail := dict
+    "@context" "https://schema.org"
+    "@type" "BreadcrumbList"
+    "itemListElement" $items -}}
+<script type="application/ld+json">{{ $trail | jsonify | safeJS }}</script>
+{{- end -}}

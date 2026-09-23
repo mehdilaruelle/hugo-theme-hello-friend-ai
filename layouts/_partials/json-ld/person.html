@@ -1,0 +1,73 @@
+{{- /* The site owner as a schema.org Person, under one @id (#person). */ -}}
+{{- $siteAuthor := (partial "site-author.html" .).name -}}
+{{- $jobTitle := "" -}}
+{{- $personDescription := "" -}}
+{{- $knowsAbout := slice -}}
+{{- $credentials := slice -}}
+{{- with site.Params.author -}}
+  {{- if reflect.IsMap . -}}
+    {{- $jobTitle = .jobTitle -}}
+    {{- $personDescription = .description -}}
+    {{- with .knowsAbout -}}
+      {{- $knowsAbout = . -}}
+    {{- end -}}
+    {{- /* url is the credential itself; the issuer goes in recognizedBy. */ -}}
+    {{- range .credentials -}}
+      {{- $name := .name -}}
+      {{- $category := .category -}}
+      {{- $url := .url -}}
+      {{- $issuer := .issuer -}}
+      {{- with $name -}}
+        {{- $credential := dict "@type" "EducationalOccupationalCredential" "name" $name -}}
+        {{- with $category -}}
+          {{- $credential = merge $credential (dict "credentialCategory" .) -}}
+        {{- end -}}
+        {{- with $url -}}
+          {{- $credential = merge $credential (dict "url" (partial "abs-url.html" .)) -}}
+        {{- end -}}
+        {{- with $issuer -}}
+          {{- $credential = merge $credential (dict "recognizedBy" (dict "@type" "Organization" "name" .)) -}}
+        {{- end -}}
+        {{- $credentials = $credentials | append $credential -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $sameAs := slice -}}
+{{- range partial "social-list.html" site.Params.social -}}
+  {{- with .url -}}
+    {{- if not (strings.HasPrefix (lower .) "mailto:") -}}
+      {{- $sameAs = $sameAs | append . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $person := dict "@type" "Person" -}}
+{{- with $siteAuthor -}}
+  {{- $person = merge $person (dict "@id" (printf "%s#person" site.Home.Permalink) "name" . "url" site.Home.Permalink) -}}
+{{- end -}}
+{{- with $jobTitle -}}
+  {{- $person = merge $person (dict "jobTitle" .) -}}
+{{- end -}}
+{{- with $personDescription -}}
+  {{- $person = merge $person (dict "description" .) -}}
+{{- end -}}
+{{- with $knowsAbout -}}
+  {{- $person = merge $person (dict "knowsAbout" .) -}}
+{{- end -}}
+{{- with $credentials -}}
+  {{- $person = merge $person (dict "hasCredential" .) -}}
+{{- end -}}
+{{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
+{{- with site.Params.portrait.path -}}
+  {{- $portrait := . | absURL -}}
+  {{- with resources.Get . -}}
+    {{- $portrait = .Permalink -}}
+  {{- end -}}
+  {{- $person = merge $person (dict "image" $portrait) -}}
+{{- end -}}
+{{- with $sameAs -}}
+  {{- $person = merge $person (dict "sameAs" .) -}}
+{{- end -}}
+{{- return $person -}}

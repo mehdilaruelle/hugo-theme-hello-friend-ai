@@ -1,0 +1,4 @@
+{{- /* site.RegularPages kept in the text outputs, as (dict "posts" "other"). */ -}}
+{{- $all := partial "md/pages.html" site.RegularPages -}}
+{{- $posts := where $all "Section" "in" (site.Params.mainSections | default (slice "posts")) -}}
+{{- return dict "posts" $posts "other" ($all | complement $posts) -}}
