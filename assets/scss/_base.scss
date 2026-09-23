@@ -250,10 +250,7 @@ em, i, strong {
   background: var(--background-secondary);
 }
 
-// A notice keeps its light ground in both themes. The chip inside took the
-// page's instead, so dark mode put dark text on a dark chip, at 1.12:1. The
-// light value itself, not a token: it must not follow the theme. .notice
-// outranks the rule above on specificity.
+// A notice stays light in both themes, so its code chip does too (not a token).
 .notice :not(pre) > code {
   background: $light-background-secondary;
 }
@@ -268,10 +265,6 @@ pre {
   direction: ltr;
   text-align: left;
 
-  // Prism's stylesheet used to paint every code block #141414, whatever the
-  // theme. The theme's own colour was only applied through data-theme, so a
-  // site with no defaultTheme and no toggle never got one. The token answers
-  // the system preference too, as it does for inline code.
   background-color: var(--background-secondary);
 
   padding: 10px 10px 10px 20px;

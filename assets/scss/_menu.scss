@@ -42,8 +42,7 @@
     }
   }
 
-  // A button now, so it needs the reset .theme-toggle already carries:
-  // _buttons.scss makes every bare button a pill on the header ground.
+  // Undo the bare `button` style from _buttons.scss.
   &-trigger {
     width: 24px;
     height: 24px;

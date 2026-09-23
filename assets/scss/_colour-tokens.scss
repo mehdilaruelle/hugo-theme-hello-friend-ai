@@ -1,20 +1,9 @@
 @use "sass:list";
 @use "variables" as *;
 
-/* The colours as the page uses them, one custom property per role. The Sass
-   variables in _variables.scss stay the values; everything else reads
-   var(--...). Declared once per theme here rather than four times in every
-   rule that paints something.
-
-   A file of its own, not part of _variables.scss: a site that keeps its own
-   copy of that file to change the palette would otherwise lose every token,
-   and the theme would render without colours.
-
-   The theme rules come after the media query and match with :where(), so they
-   win by source order at the specificity of :root. [data-theme] still beats
-   the system preference, and a site's own :root { --color: ... } in customCSS,
-   loaded later, still beats both. data-theme only exists once theme-init.js
-   has run, which is why the media query answers too. */
+// One custom property per colour role, (light, dark). Kept out of _variables.scss
+// so a site's copy of that file keeps the tokens. :where() keeps [data-theme] at
+// :root specificity, so a site's own :root overrides still win.
 $colour-tokens: (
   "background":            ($light-background, $dark-background),
   "background-secondary":  ($light-background-secondary, $dark-background-secondary),
@@ -24,13 +13,9 @@ $colour-tokens: (
   "color-secondary":       ($light-color-secondary, $dark-color-secondary),
   "border-color":          ($light-border-color, $dark-border-color),
   "table-color":           ($light-table-color, $dark-table-color),
-  // Text on a mid-tone ground, where the dark theme's body colour is not
-  // enough: the table header band ($dark-color on $dark-table-color is 3.53:1,
-  // the variant, white, 8.23:1) and the hovered scrollbar thumb.
+  // Text on mid-tone grounds (table header, scrollbar thumb).
   "color-strong":          ($light-color, $dark-color-variant),
-  // The frame of a control drawn on the header ground (the copy button, the
-  // code-language label, the search field): the border colour in light, the
-  // secondary background in dark, where the border colour disappears.
+  // Frame of controls on the header ground.
   "control-border-color":  ($light-border-color, $dark-background-secondary),
 );
 

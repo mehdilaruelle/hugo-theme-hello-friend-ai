@@ -56,8 +56,7 @@
   color: inherit;
   font: inherit;
 
-  // _buttons.scss paints every bare button with the header ground. Its rule is
-  // a bare `button`, so this class outranks it in every theme.
+  // Undo the bare `button` style from _buttons.scss.
   //
   // background-color and not the background shorthand: compressed output writes
   // `background: none` as `background: 0 0`, which sets the position and leaves

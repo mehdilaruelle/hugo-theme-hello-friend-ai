@@ -69,8 +69,6 @@
       margin: 0.8em 0;
     }
 
-    // Was hard-coded white, which is the light theme's own page colour, so it
-    // drew nothing there.
     a:hover {
       border-bottom: 1px solid var(--color-secondary);
     }

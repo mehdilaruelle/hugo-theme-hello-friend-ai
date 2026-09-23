@@ -1,7 +1,5 @@
 @use "variables" as *;
 
-// The secondary text colour. A mixin still, so the rules that use it read the
-// same as before; the theme is the token's business now.
 @mixin secondary-colour {
   color: var(--color-secondary);
 }
