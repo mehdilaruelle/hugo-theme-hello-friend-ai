@@ -1,20 +1,16 @@
-{{- if fileExists "static/apple-touch-icon.png" }}
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ "apple-touch-icon.png" | relURL }}">
+{{- /* A link is written only for a file present in static/. */ -}}
+{{- $icons := slice
+  (dict "file" "apple-touch-icon.png" "rel" "apple-touch-icon" "sizes" "180x180")
+  (dict "file" "favicon-32x32.png" "rel" "icon" "type" "image/png" "sizes" "32x32")
+  (dict "file" "favicon-16x16.png" "rel" "icon" "type" "image/png" "sizes" "16x16")
+  (dict "file" "site.webmanifest" "rel" "manifest")
+  (dict "file" "safari-pinned-tab.svg" "rel" "mask-icon" "color" .Site.Params.favicon.mask)
+  (dict "file" "favicon.ico" "rel" "shortcut icon")
+-}}
+{{- range $icons }}
+{{- if fileExists (printf "static/%s" .file) }}
+    <link rel="{{ .rel }}"{{ with .type }} type="{{ . }}"{{ end }}{{ with .sizes }} sizes="{{ . }}"{{ end }} href="{{ .file | relURL }}"{{ with .color }} color="{{ . }}"{{ end }}>
 {{- end }}
-{{- if fileExists "static/favicon-32x32.png" }}
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ "favicon-32x32.png" | relURL }}">
-{{- end }}
-{{- if fileExists "static/favicon-16x16.png" }}
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ "favicon-16x16.png" | relURL }}">
-{{- end }}
-{{- if fileExists "static/site.webmanifest" }}
-    <link rel="manifest" href="{{ "site.webmanifest" | relURL }}">
-{{- end }}
-{{- if fileExists "static/safari-pinned-tab.svg" }}
-    <link rel="mask-icon" href="{{ "safari-pinned-tab.svg" | relURL }}"{{ with .Site.Params.favicon.mask }} color="{{ . }}"{{ end }}>
-{{- end }}
-{{- if fileExists "static/favicon.ico" }}
-    <link rel="shortcut icon" href="{{ "favicon.ico" | relURL }}">
 {{- end }}
 {{- /* Only when set: an empty content asserts the colour is blank. */ -}}
 {{- with .Site.Params.favicon.msapplication }}
