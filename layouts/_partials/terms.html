@@ -1,0 +1,15 @@
+{{- /* One taxonomy's terms, with its glyph: (dict "page" . "taxonomy" "tags"
+       "icon" "tag"). The term page decides its own URL and name. Urlizing the
+       raw string guessed both, and filed a tag written "CI/CD" under
+       /tags/ci/cd/. An unconfigured taxonomy returns nothing rather than
+       failing. */ -}}
+{{- $page := .page -}}
+{{ with $page.GetTerms .taxonomy }}
+    <p>
+        {{ partial "icon.html" (dict "name" $.icon) }}
+
+        {{ range . -}}
+            <span class="tag"><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></span>
+        {{ end }}
+    </p>
+{{ end -}}
