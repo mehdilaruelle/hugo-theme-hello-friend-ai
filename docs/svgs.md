@@ -7,6 +7,11 @@ nothing inside it, which no visitor could see or click. Under
 `--panicOnWarning` that warning stops the build, so a typo is caught rather
 than shipped. Write `link` to draw that glyph on purpose and no warning.
 
+Each name is one file, `assets/svg/social/<name>.svg`, inlined as it is. To add
+a network or redraw one on your own site, put an `<svg>` of your own at that
+path in your site's `assets/` directory: Hugo takes a site's file over the
+theme's. CI checks this list against the theme's files.
+
 - [amazon](https://simpleicons.org/?q=amazon)
 - [anilist](https://simpleicons.org/?q=anilist)
 - [behance](https://simpleicons.org/?q=behance)
