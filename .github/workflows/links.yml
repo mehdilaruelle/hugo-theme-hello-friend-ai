@@ -198,6 +198,12 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public entities
 
+      - name: Check a tag in a title reaches the reader as text
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public title-html \
+            posts/2025/12/using-details-in-a-title-with-quotes/index.html '<details>'
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite

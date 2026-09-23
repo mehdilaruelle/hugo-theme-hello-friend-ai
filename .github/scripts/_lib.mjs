@@ -22,3 +22,6 @@ export const attrSource = (name) =>
 export const attrRe = (name, flags = "i") => new RegExp(attrSource(name), flags);
 
 export const value = (m) => (m ? (m[1] ?? m[2] ?? m[3] ?? "") : null);
+
+// A whole start tag: a quoted value may hold ">" (the minifier leaves "<x>" raw there).
+export const tagRe = (name) => new RegExp(`<${name}\\b(?:[^>"']|"[^"]*"|'[^']*')*>`, "gi");

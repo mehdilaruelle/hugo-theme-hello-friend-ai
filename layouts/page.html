@@ -26,7 +26,7 @@
                        which takes a visitor nowhere and puts one more edge in
                        every page's link graph. The anchor carried no styling of
                        its own, so this changes the markup and not a pixel. */ -}}
-                <h1 class="post-title">{{ partial "title.html" . | markdownify }}</h1>
+                <h1 class="post-title">{{ partial "title.html" . | replaceRE "<" "&lt;" | markdownify }}</h1>
 
                 {{ partial "post-cover.html" . }}
 

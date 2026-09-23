@@ -17,7 +17,7 @@
 {{- else }}
 <meta name="twitter:card" content="summary">
 {{- end }}
-{{- with partial "title.html" . | plainify }}
+{{- with partial "title.html" . }}
 <meta name="twitter:title" content="{{ partial "pager-suffix.html" (dict "text" . "pager" $canonical.pager) }}">
 {{- end }}
 {{- $description := partial "description-meta.html" . -}}
