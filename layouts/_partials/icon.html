@@ -1,0 +1,11 @@
+{{- /* Inlines assets/svg/ui/<name>.svg; a missing glyph is a theme bug and stops the build. */ -}}
+{{- $name := lower (trim (printf "%v" (.name | default "")) " \t\r\n") -}}
+{{- if findRE `^[a-z0-9][a-z0-9-]*$` $name -}}
+  {{- with resources.Get (printf "svg/ui/%s.svg" $name) -}}
+    {{- .Content | chomp | safeHTML -}}
+  {{- else -}}
+    {{- errorf "icon.html: assets/svg/ui/%s.svg does not exist" $name -}}
+  {{- end -}}
+{{- else -}}
+  {{- errorf "icon.html: %q is not an icon name" $name -}}
+{{- end -}}
