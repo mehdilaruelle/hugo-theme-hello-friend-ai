@@ -34,7 +34,11 @@ for (const f of files) {
   }
   drawn.add(m[1]);
   const body = readFileSync(join(dir, f), 'utf8').trim();
-  if (!/^<svg[\s>][\s\S]*<\/svg>$/.test(body) || body.includes('{{')) {
+  // One </svg>, and it is the last thing: "<svg></svg><p>x</p><svg></svg>"
+  // opens and closes like one element and is not.
+  const single = /^<svg[\s>][\s\S]*<\/svg>$/.test(body)
+    && body.indexOf('</svg>') === body.lastIndexOf('</svg>');
+  if (!single || body.includes('{{')) {
     problems.push(`assets/svg/social/${f}: not a single <svg> element`);
   }
 }
