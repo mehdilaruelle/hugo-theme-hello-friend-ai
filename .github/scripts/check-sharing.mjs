@@ -9,33 +9,19 @@
 //
 //   node .github/scripts/check-sharing.mjs <public-dir>
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import { walk, NAME, attrRe } from "./_lib.mjs";
 
 const PROVIDERS = /facebook|twitter|tumblr|pinterest|linkedin|reddit|xing|telegram|vk\.com|whatsapp|hacker/i;
 
-// An attribute name starts where no name character precedes it. \b is not that
-// test: there is a word boundary between "-" and "r" too, so \brel matched the
-// rel inside data-rel, and a link whose attribute had been renamed would have
-// been read as carrying the real one and passed.
-const NAME = "(?<![-\\w])";
-
-// Quoted, single-quoted or bare: --minify drops the quotes it can, and a
-// pattern requiring them checked 128 of the showcase's 136 links in silence.
-const HREF = new RegExp(`${NAME}href\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "gi");
+// NAME and the quoting rules are _lib.mjs's, where the data-rel bug that
+// \brel let through is recorded.
+const HREF = attrRe("href", "gi");
 
 // The opening tag whole, so rel can be read beside href. Matched on the class
 // the stylesheet also hangs the button off, so the two cannot drift apart.
 const ANCHOR = new RegExp(`<a\\b[^>]*${NAME}class\\s*=\\s*(?:"[^"]*resp-sharing-button__link[^"]*"|'[^']*resp-sharing-button__link[^']*'|[^\\s>]*resp-sharing-button__link[^\\s>]*)[^>]*>`, "gi");
-const REL = new RegExp(`${NAME}rel\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
-
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".html")) yield full;
-  }
-}
+const REL = attrRe("rel");
 
 const root = process.argv[2] || "public";
 const failures = [];
@@ -45,7 +31,7 @@ let files = 0;
 const seen = new Set();
 const seenFollowed = new Set();
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".html")) {
   const html = readFileSync(file, "utf8").replace(/\n/g, " ");
   files++;
   for (const tag of html.matchAll(ANCHOR)) {

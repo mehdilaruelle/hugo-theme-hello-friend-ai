@@ -4,30 +4,16 @@
 //
 //   node .github/scripts/check-invariants.mjs <dir> <check> [args...]
 
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
+import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
-// Quoted, single-quoted or bare, because --minify drops the quotes it can. The
-// lookbehind is the name test \b is not; check-cards.mjs says why.
-const ATTR = (name) =>
-  new RegExp(`(?<![-\\w])${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
-
-const attr = (tag, name) => {
-  const m = tag.match(ATTR(name));
-  return m ? (m[1] ?? m[2] ?? m[3] ?? "") : null;
-};
+// Quoting and the name boundary are _lib.mjs's.
+const attr = (tag, name) => attrValue(tag.match(attrRe(name)));
 
 // Whole tokens: "post-info" is not "post-infobar".
 const hasClass = (tag, want) =>
   (attr(tag, "class") ?? "").split(/\s+/).includes(want);
-
-function* walk(dir, ext) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full, ext);
-    else if (full.endsWith(ext)) yield full;
-  }
-}
 
 const pages = (dir) => [...walk(dir, ".html")];
 const text = (html) => html.replace(/<[^>]*>/g, "").trim();
