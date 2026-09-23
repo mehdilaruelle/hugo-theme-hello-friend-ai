@@ -53,15 +53,15 @@
                 </div>
             </article>
 
-            {{- /* terms.html renders nothing without terms,
+            {{- /* tags.html and categories.html render nothing without terms,
                    and GitInfo is nil unless enableGitInfo is on. */ -}}
             {{- $hasTerms := or (.GetTerms "tags") (.GetTerms "categories") -}}
             {{- if or $hasTerms .GitInfo }}
             <hr />
 
             <div class="post-info">
-                {{ partial "terms.html" (dict "page" . "taxonomy" "tags" "icon" "tag") }}
-                {{ partial "terms.html" (dict "page" . "taxonomy" "categories" "icon" "folder") }}
+                {{ partial "tags.html" . }}
+                {{ partial "categories.html" . }}
 
                 {{- /* Plain text when gitUrl is unset; posts/page.html says why. */ -}}
                 {{- if .GitInfo }}

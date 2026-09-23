@@ -74,8 +74,8 @@
       <hr />
 
       <div class="post-info">
-        {{ partial "terms.html" (dict "page" . "taxonomy" "tags" "icon" "tag") }}
-        {{ partial "terms.html" (dict "page" . "taxonomy" "categories" "icon" "folder") }}
+        {{ partial "tags.html" . }}
+        {{ partial "categories.html" . }}
 
         <p>
           {{ partial "icon.html" (dict "name" "file-text") }}
