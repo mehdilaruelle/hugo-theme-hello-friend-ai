@@ -1,11 +1,18 @@
 # Available Social Icons:
 
 The `name` in a `[[params.social]]` entry is matched against this list, ignoring
-case and surrounding spaces. A name that is not here draws a generic link glyph,
-and the build warns and names the value — it used to render an anchor with
+case and surrounding spaces. A name that is neither here nor a file of your own
+(see below) draws a generic link glyph, and the build warns and names the value — it used to render an anchor with
 nothing inside it, which no visitor could see or click. Under
 `--panicOnWarning` that warning stops the build, so a typo is caught rather
 than shipped. Write `link` to draw that glyph on purpose and no warning.
+
+Each name is one file, `assets/svg/social/<name>.svg`, inlined as it is. To add
+a network or redraw one on your own site, put an `<svg>` of your own at that
+path in your site's `assets/` directory: Hugo takes a site's file over the
+theme's. The name must be lowercase letters, digits and hyphens, starting with
+a letter or digit (`^[a-z0-9][a-z0-9-]*$`): `my-network.svg` is found,
+`my_network.svg` never is. CI checks this list against the theme's files.
 
 - [amazon](https://simpleicons.org/?q=amazon)
 - [anilist](https://simpleicons.org/?q=anilist)
