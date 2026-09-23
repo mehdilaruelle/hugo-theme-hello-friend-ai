@@ -1,0 +1,12 @@
+{{- /* (dict "page" . "taxonomy" "tags" "icon" "tag"). GetTerms, not urlize:
+       the term page owns its URL ("CI/CD" is not /tags/ci/cd/). */ -}}
+{{- $page := .page -}}
+{{ with $page.GetTerms .taxonomy }}
+    <p>
+        {{ partial "icon.html" (dict "name" $.icon) }}
+
+        {{ range . -}}
+            <span class="tag"><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></span>
+        {{ end }}
+    </p>
+{{ end -}}

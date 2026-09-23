@@ -1,12 +1,2 @@
-{{- /* The term page decides its own URL and name. Urlizing the raw string
-       guessed both, and filed a tag written "CI/CD" under /tags/ci/cd/. An
-       unconfigured taxonomy returns nothing rather than failing. */ -}}
-{{ with .GetTerms "tags" }}
-    <p>
-        {{ partial "icon.html" (dict "name" "tag") }}
-
-        {{ range . -}}
-            <span class="tag"><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></span>
-        {{ end }}
-    </p>
-{{ end }}
+{{- /* Kept so a site's own tags.html still overrides. */ -}}
+{{- partial "terms.html" (dict "page" . "taxonomy" "tags" "icon" "tag") -}}

@@ -1,10 +1,2 @@
-{{- /* Terms are named and linked by their own pages. See tags.html. */ -}}
-{{ with .GetTerms "categories" }}
-    <p>
-        {{ partial "icon.html" (dict "name" "folder") }}
-
-        {{ range . -}}
-            <span class="tag"><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></span>
-        {{ end }}
-    </p>
-{{ end }}
+{{- /* Kept so a site's own categories.html still overrides. */ -}}
+{{- partial "terms.html" (dict "page" . "taxonomy" "categories" "icon" "folder") -}}
