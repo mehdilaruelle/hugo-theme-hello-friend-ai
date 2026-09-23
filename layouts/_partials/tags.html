@@ -1,3 +1,2 @@
-{{- /* Kept as an entry point so a site's own tags.html still wins; the markup
-       lives in terms.html. */ -}}
+{{- /* Kept so a site's own tags.html still overrides. */ -}}
 {{- partial "terms.html" (dict "page" . "taxonomy" "tags" "icon" "tag") -}}
