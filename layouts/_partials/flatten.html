@@ -1,0 +1,2 @@
+{{- /* HTML to one line of plain text, entities decoded (plainify keeps them). */ -}}
+{{- return (. | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace) -}}

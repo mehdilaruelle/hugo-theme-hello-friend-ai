@@ -193,6 +193,11 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public post-info
 
+      - name: Check no HTML entity reaches the reader as text
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public entities
+
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
         working-directory: hello-friend-ai/showcaseSite

@@ -209,9 +209,8 @@
   {{- if not .Lastmod.IsZero -}}
     {{- $data = merge $data (dict "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")) -}}
   {{- end -}}
-  {{- /* Without a description of its own, fall back to a trimmed summary rather
-         than the several hundred words .Summary can run to. */ -}}
-  {{- with .Description | default (.Summary | plainify | chomp | truncate 300 "") -}}
+  {{- /* htmlUnescape again: truncate escapes plain text; jsonify escapes. */ -}}
+  {{- with .Description | default (partial "flatten.html" .Summary | truncate 300 "" | htmlUnescape) -}}
     {{- $data = merge $data (dict "description" .) -}}
   {{- end -}}
   {{- with $author -}}
