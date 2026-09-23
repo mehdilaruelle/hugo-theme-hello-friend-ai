@@ -32,7 +32,7 @@
       tr {
         text-align: start;
         // Not --color: the dark body colour is too faint on this band. See
-        // --color-strong in _variables.scss.
+        // --color-strong in _colour-tokens.scss.
         background-color: var(--table-color);
         color: var(--color-strong);
       }
