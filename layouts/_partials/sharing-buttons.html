@@ -1,115 +1,48 @@
-{{- /* One title for the whole row: a page with none falls back to its file
-       name, and sharing it should not send an empty subject. */ -}}
 {{- $title := partial "title.html" . -}}
-{{- /* Pinterest wants a picture, and it is the one every other card shows, so
-       it comes from the partial the rest of the theme asks. An SVG never
-       arrives here: social-image.html skips one at every step. */ -}}
 {{- $media := (partial "social-image.html" .).url -}}
-{{- /* Every http(s) one of these is rel="noopener nofollow": generated links,
-       identical on every article and chosen by nobody, which is what nofollow
-       is for. mailto: and whatsapp: carry noopener alone -- there is no link
-       equity to withhold on a scheme no crawler follows. check-sharing.mjs
-       asserts both halves of that. */ -}}
 {{- define "partials/inline/share-label" -}}
   {{- partial "i18n.html" (dict "key" "shareOn" "args" (dict "Network" .) "fallback" (printf "Share on %s" .)) -}}
 {{- end -}}
-<!-- Sharingbutton Facebook -->
-{{ $label := partial "inline/share-label" "Facebook" }}
-<a class="resp-sharing-button__link" href="https://facebook.com/sharer/sharer.php?u={{ .Permalink }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "facebook") }}
+{{- /* name is the glyph and the CSS modifier. "follow": no nofollow on
+       mailto:/whatsapp: (check-sharing.mjs). */ -}}
+{{- $buttons := slice
+  (dict "name" "facebook" "network" "Facebook" "base" "https://facebook.com/sharer/sharer.php"
+        "query" (dict "u" .Permalink))
+  (dict "name" "twitter" "network" "Twitter" "base" "https://twitter.com/intent/tweet/"
+        "query" (dict "url" .Permalink))
+  (dict "name" "tumblr" "network" "Tumblr" "base" "https://www.tumblr.com/widgets/share/tool"
+        "query" (dict "posttype" "link" "title" $title "caption" $title "canonicalUrl" .Permalink))
+  (dict "name" "email" "base" "mailto:" "target" "_self" "follow" true
+        "label" (partial "i18n.html" (dict "key" "shareViaEmail" "fallback" "Share via email"))
+        "query" (dict "subject" $title "body" .Permalink))
+  (dict "name" "pinterest" "network" "Pinterest" "base" "https://pinterest.com/pin/create/button/"
+        "query" (dict "url" .Permalink "media" $media "description" $title))
+  (dict "name" "linkedin" "network" "LinkedIn" "base" "https://www.linkedin.com/shareArticle"
+        "query" (dict "mini" "true" "url" .Permalink "title" $title "summary" $title "source" .Permalink))
+  (dict "name" "reddit" "network" "Reddit" "base" "https://reddit.com/submit/"
+        "query" (dict "url" .Permalink "resubmit" "true" "title" $title))
+  (dict "name" "xing" "network" "XING" "base" "https://www.xing.com/app/user"
+        "query" (dict "op" "share" "url" .Permalink "title" $title))
+  (dict "name" "whatsapp" "network" "WhatsApp" "base" "whatsapp://send" "follow" true
+        "query" (dict "text" (printf "%s %s" $title .Permalink)))
+  (dict "name" "hackernews" "network" "Hacker News" "base" "https://news.ycombinator.com/submitlink"
+        "query" (dict "u" .Permalink "t" $title))
+  (dict "name" "telegram" "network" "Telegram" "base" "https://telegram.me/share/url"
+        "query" (dict "text" $title "url" .Permalink))
+-}}
+{{- range $buttons }}
+  {{- /* Empty values are dropped (no &media=). */ -}}
+  {{- $params := dict -}}
+  {{- range $k, $v := .query -}}
+    {{- with $v }}{{ $params = merge $params (dict $k (printf "%v" .)) }}{{ end -}}
+  {{- end -}}
+  {{- /* %20, not "+", for mailto: (RFC 6068). safeURL keeps whatsapp:. */ -}}
+  {{- $href := printf "%s?%s" .base (replace (querify $params) "+" "%20") -}}
+  {{- $label := .label | default (partial "inline/share-label" .network) }}
+<a class="resp-sharing-button__link" href="{{ $href | safeURL }}" target="{{ .target | default "_blank" }}" rel="noopener{{ if not .follow }} nofollow{{ end }}" aria-label="{{ $label }}" title="{{ $label }}">
+  <div class="resp-sharing-button resp-sharing-button--{{ .name }} resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+    {{ partial "icon.html" (dict "name" .name) }}
     </div>
   </div>
 </a>
-
-<!-- Sharingbutton Twitter -->
-{{ $label := partial "inline/share-label" "Twitter" }}
-<a class="resp-sharing-button__link" href="https://twitter.com/intent/tweet/?url={{ .Permalink }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-      <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-        {{ partial "icon.html" (dict "name" "twitter") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton Tumblr -->
-{{ $label := partial "inline/share-label" "Tumblr" }}
-<a class="resp-sharing-button__link" href="https://www.tumblr.com/widgets/share/tool?posttype=link&amp;title={{ $title }}&amp;caption={{ $title }}&amp;canonicalUrl={{ .Permalink }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--tumblr resp-sharing-button--small">
-    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-      {{ partial "icon.html" (dict "name" "tumblr") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton E-Mail -->
-{{ $label := partial "i18n.html" (dict "key" "shareViaEmail" "fallback" "Share via email") }}
-<a class="resp-sharing-button__link" href="mailto:?subject={{ $title }}&amp;body={{ .Permalink }}" target="_self" rel="noopener" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--email resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "email") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton Pinterest -->
-{{ $label := partial "inline/share-label" "Pinterest" }}
-<a class="resp-sharing-button__link" href="https://pinterest.com/pin/create/button/?url={{ .Permalink }}{{ with $media }}&amp;media={{ . }}{{ end }}&amp;description={{ $title }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--pinterest resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "pinterest") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton LinkedIn -->
-{{ $label := partial "inline/share-label" "LinkedIn" }}
-<a class="resp-sharing-button__link" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ .Permalink }}&amp;title={{ $title }}&amp;summary={{ $title }}&amp;source={{ .Permalink }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--linkedin resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "linkedin") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton Reddit -->
-{{ $label := partial "inline/share-label" "Reddit" }}
-<a class="resp-sharing-button__link" href="https://reddit.com/submit/?url={{ .Permalink }}&amp;resubmit=true&amp;title={{ $title }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--reddit resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "reddit") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton XING -->
-{{ $label := partial "inline/share-label" "XING" }}
-<a class="resp-sharing-button__link" href="https://www.xing.com/app/user?op=share&amp;url={{ .Permalink }}&amp;title={{ $title }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--xing resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "xing") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton WhatsApp -->
-{{ $label := partial "inline/share-label" "WhatsApp" }}
-<a class="resp-sharing-button__link" href="whatsapp://send?text={{ $title }}%20{{ .Permalink }}" target="_blank" rel="noopener" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--whatsapp resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-    {{ partial "icon.html" (dict "name" "whatsapp") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton Hacker News -->
-{{ $label := partial "inline/share-label" "Hacker News" }}
-<a class="resp-sharing-button__link" href="https://news.ycombinator.com/submitlink?u={{ .Permalink }}&amp;t={{ $title }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--hackernews resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-			{{ partial "icon.html" (dict "name" "hackernews") }}
-    </div>
-  </div>
-</a>
-
-<!-- Sharingbutton Telegram -->
-{{ $label := partial "inline/share-label" "Telegram" }}
-<a class="resp-sharing-button__link" href="https://telegram.me/share/url?text={{ $title }}&amp;url={{ .Permalink }}" target="_blank" rel="noopener nofollow" aria-label="{{ $label }}" title="{{ $label }}">
-  <div class="resp-sharing-button resp-sharing-button--telegram resp-sharing-button--small"><div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-      {{ partial "icon.html" (dict "name" "telegram") }}
-    </div>
-  </div>
-</a>
+{{ end -}}
