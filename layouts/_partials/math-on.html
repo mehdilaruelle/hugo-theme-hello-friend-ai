@@ -1,4 +1,2 @@
-{{- /* Whether KaTeX loads on this page: math in its front matter or in the
-       site's params, each read through switch.html. head.html and
-       javascript.html ask, and have to agree. */ -}}
+{{- /* Whether KaTeX loads: page or site param math. */ -}}
 {{- return or (partial "switch.html" .Params.math) (partial "switch.html" site.Params.math) -}}

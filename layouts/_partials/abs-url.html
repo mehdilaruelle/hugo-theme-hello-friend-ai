@@ -1,7 +1,4 @@
-{{- /* A URL a site wrote in its config or front matter, made to work from any
-       page: a local path is joined to the base URL, keeping a subpath that
-       absURL would drop; a remote one, protocol-relative included, is left
-       alone. is-remote.html is where that is decided. */ -}}
+{{- /* Joins a local path to the base URL (keeping the subpath absURL drops). */ -}}
 {{- $url := printf "%v" . -}}
 {{- if not (partial "is-remote.html" $url) -}}
   {{- $url = urls.JoinPath site.BaseURL $url -}}
