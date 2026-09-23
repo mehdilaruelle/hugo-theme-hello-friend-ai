@@ -16,10 +16,7 @@
   // stored choice exists, and this is read only when none does.
   const defaultTheme = document.documentElement.getAttribute("data-theme");
 
-  // Storage throws rather than returning null in some privacy modes, and a
-  // colour scheme is not worth breaking the page over: a read gives null, a
-  // write is not persisted and the current page still switches. theme-init.js
-  // has its own copy on purpose -- it runs on its own, before first paint.
+  // localStorage can throw (privacy modes); treat that as no storage.
   function withStorage(use) {
     try {
       return use(window.localStorage);
