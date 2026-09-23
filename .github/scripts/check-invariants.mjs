@@ -4,7 +4,7 @@
 //
 //   node .github/scripts/check-invariants.mjs <dir> <check> [args...]
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
@@ -248,7 +248,10 @@ const checks = {
 
   // A link per favicon file the site ships, with its attributes.
   favicons() {
-    const html = read("index.html");
+    const page = read("index.html");
+    const start = page.search(/<head\b/i);
+    if (start === -1) fail("index.html has no <head>");
+    const html = element(page, start, "head");
     const links = [...html.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0]);
     const want = [
       ["apple-touch-icon", "apple-touch-icon.png", { sizes: "180x180" }],
@@ -260,12 +263,14 @@ const checks = {
     ];
     for (const [rel, file, attrs] of want) {
       const hit = links.find((l) => attr(l, "rel") === rel && (attr(l, "href") ?? "").endsWith("/" + file));
-      if (!hit) fail(`no <link rel="${rel}"> for ${file}`, links.join("\n"));
+      if (!hit) fail(`no <link rel="${rel}"> for ${file} in <head>`, links.join("\n"));
+      if (!existsSync(join(dir, file))) fail(`${file} is linked but was not published`);
       for (const [k, v] of Object.entries(attrs))
         if (attr(hit, k) !== v) fail(`${file}: ${k} is not ${v}`, hit);
     }
     const metas = [...html.matchAll(/<meta\b[^>]*>/gi)].map((m) => m[0]);
-    if (!metas.some((m) => attr(m, "name") === "msapplication-TileColor")) fail("no msapplication-TileColor meta");
+    const tile = metas.find((m) => attr(m, "name") === "msapplication-TileColor");
+    if (attr(tile ?? "", "content") !== "#1b1c1d") fail("msapplication-TileColor is not #1b1c1d", tile ?? "(none)");
     ok("every favicon the site ships is linked, with its attributes");
   },
 
