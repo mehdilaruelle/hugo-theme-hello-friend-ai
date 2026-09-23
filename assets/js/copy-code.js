@@ -7,13 +7,13 @@
 (function () {
   if (!navigator.clipboard) return;
 
-  var script = document.currentScript;
-  var label = (script && script.dataset.label) || 'Copy';
-  var done = (script && script.dataset.labelDone) || 'Copied';
-  var failed = (script && script.dataset.labelFailed) || 'Press Ctrl+C';
+  const script = document.currentScript;
+  const label = (script && script.dataset.label) || 'Copy';
+  const done = (script && script.dataset.labelDone) || 'Copied';
+  const failed = (script && script.dataset.labelFailed) || 'Press Ctrl+C';
 
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('pre').forEach(function (pre) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre').forEach((pre) => {
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
@@ -22,7 +22,7 @@
       // whenever it highlights the block. An indented block never reaches that
       // hook at all, so make a wrapper here rather than leave its button
       // anchored to the scrolling pre.
-      var wrap = pre.closest('.code-block');
+      let wrap = pre.closest('.code-block');
       if (!wrap) {
         wrap = document.createElement('div');
         wrap.className = 'code-block';
@@ -30,7 +30,7 @@
         wrap.appendChild(pre);
       }
 
-      var button = document.createElement('button');
+      const button = document.createElement('button');
       button.type = 'button';
       button.className = 'copy-code';
       button.textContent = label;
@@ -42,13 +42,13 @@
       function flash(text, className) {
         button.textContent = text;
         button.classList.add(className);
-        setTimeout(function () {
+        setTimeout(() => {
           button.textContent = label;
           button.classList.remove(className);
         }, 1600);
       }
 
-      button.addEventListener('click', function () {
+      button.addEventListener('click', () => {
         // The code is read from the code element, not the pre: the button is a
         // sibling of the pre now, but reading the block itself would still pick
         // up a line-number gutter on a site that turns one on.
@@ -60,20 +60,20 @@
         // blank line between every line of copied code. It only showed once
         // Prism was gone: Prism used to replace the block's markup with its
         // own, flex spans included. textContent reads the source as written.
-        var code = pre.querySelector('code').textContent;
+        const code = pre.querySelector('code').textContent;
 
         navigator.clipboard.writeText(code).then(
-          function () {
+          () => {
             flash(done, 'copy-code--done');
           },
-          function () {
+          () => {
             // No permission, or the document lost focus. Say so instead of
             // looking like it worked, and select the code so it can still be
             // copied by hand.
             flash(failed, 'copy-code--failed');
-            var range = document.createRange();
+            const range = document.createRange();
             range.selectNodeContents(pre.querySelector('code'));
-            var selection = window.getSelection();
+            const selection = window.getSelection();
             selection.removeAllRanges();
             selection.addRange(range);
           }

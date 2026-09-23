@@ -3,14 +3,14 @@
 // visitor without this script still has a pause button.
 
 (function () {
-  var query = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+  const query = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
   if (!query) return;
 
   function settle() {
     if (!query.matches) return;
-    var videos = document.querySelectorAll('video[autoplay]');
-    for (var i = 0; i < videos.length; i++) {
-      var v = videos[i];
+    const videos = document.querySelectorAll('video[autoplay]');
+    for (let i = 0; i < videos.length; i++) {
+      const v = videos[i];
       v.autoplay = false;
       v.loop = false;
       v.removeAttribute('autoplay');
@@ -18,7 +18,7 @@
       // load(), not currentTime = 0: once playback has begun only a reset
       // brings the poster back, and a rewind shows the first frame instead.
       if (!v.paused) v.pause();
-      try { v.load(); } catch (e) {}
+      try { v.load(); } catch {}
     }
   }
 

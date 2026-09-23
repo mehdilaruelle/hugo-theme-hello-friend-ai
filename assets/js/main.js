@@ -17,30 +17,20 @@
   const defaultTheme = document.documentElement.getAttribute("data-theme");
 
   // Storage throws rather than returning null in some privacy modes, and a
-  // colour scheme is not worth breaking the page over.
-  function readStoredTheme() {
+  // colour scheme is not worth breaking the page over: a read gives null, a
+  // write is not persisted and the current page still switches. theme-init.js
+  // has its own copy on purpose -- it runs on its own, before first paint.
+  function withStorage(use) {
     try {
-      return window.localStorage.getItem("theme");
+      return use(window.localStorage);
     } catch (e) {
       return null;
     }
   }
 
-  function storeTheme(theme) {
-    try {
-      window.localStorage.setItem("theme", theme);
-    } catch (e) {
-      // Not persisted; the current page still switches.
-    }
-  }
-
-  function forgetTheme() {
-    try {
-      window.localStorage.removeItem("theme");
-    } catch (e) {
-      // Nothing to forget.
-    }
-  }
+  const readStoredTheme = () => withStorage((s) => s.getItem("theme"));
+  const storeTheme = (theme) => withStorage((s) => s.setItem("theme", theme));
+  const forgetTheme = () => withStorage((s) => s.removeItem("theme"));
 
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);

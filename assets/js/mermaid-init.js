@@ -7,11 +7,11 @@
 // library should be too.
 
 (function () {
-  var script = document.currentScript;
-  var src = script && script.dataset.mermaidSrc;
+  const script = document.currentScript;
+  const src = script && script.dataset.mermaidSrc;
   if (!src) return;
 
-  var root = document.documentElement;
+  const root = document.documentElement;
 
   function isDark() {
     return root.dataset.theme === 'dark' ||
@@ -25,25 +25,25 @@
   // safeHTML, so a label may carry markup, and Mermaid reads innerHTML for
   // exactly that reason. Flattening it would redraw a different diagram,
   // turning one<br>two into onetwo on the first theme change.
-  var blocks = [].slice.call(document.querySelectorAll('.mermaid'));
-  var sources = blocks.map(function (el) { return el.innerHTML; });
+  const blocks = [].slice.call(document.querySelectorAll('.mermaid'));
+  const sources = blocks.map((el) => { return el.innerHTML; });
 
-  import(src).then(function (module) {
-    var mermaid = module.default;
+  import(src).then((module) => {
+    const mermaid = module.default;
 
     // What is on screen, as opposed to what the page now asks for. null until
     // the first draw, so the first sync always renders.
-    var rendered = null;
-    var running = false;
+    let rendered = null;
+    let running = false;
 
     function sync() {
       if (running) return;
-      var want = isDark();
+      const want = isDark();
       if (rendered === want) return;
       running = true;
 
       if (rendered !== null) {
-        blocks.forEach(function (el, i) {
+        blocks.forEach((el, i) => {
           el.removeAttribute('data-processed');
           el.innerHTML = sources[i];
         });
@@ -69,8 +69,8 @@
         // its own error into the block. Swallowing the rejection is what keeps
         // one bad diagram from freezing every other one at whichever theme the
         // page happened to load in.
-        .catch(function () {})
-        .then(function () {
+        .catch(() => {})
+        .then(() => {
           rendered = want;
           running = false;
           // The theme may have changed while that was in flight.
@@ -92,9 +92,9 @@
     });
 
     // And the system preference, for a page that never gets the attribute.
-    var query = window.matchMedia('(prefers-color-scheme: dark)');
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
     if (query.addEventListener) {
-      query.addEventListener('change', function () {
+      query.addEventListener('change', () => {
         if (!root.dataset.theme) sync();
       });
     }

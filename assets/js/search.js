@@ -8,21 +8,21 @@
 // JavaScript is told search is unavailable rather than handed a dead box.
 
 (function () {
-  var form = document.querySelector("[data-search]");
+  const form = document.querySelector("[data-search]");
   if (!form) return;
 
-  var input = form.querySelector("input[type=search]");
-  var status = document.querySelector("[data-search-status]");
-  var list = document.querySelector("[data-search-results]");
-  var url = form.getAttribute("data-index");
+  const input = form.querySelector("input[type=search]");
+  const status = document.querySelector("[data-search-status]");
+  const list = document.querySelector("[data-search-results]");
+  const url = form.getAttribute("data-index");
 
   form.hidden = false;
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
   });
 
-  var index = null;
-  var loading = null;
+  let index = null;
+  let loading = null;
 
   // Accents are a spelling detail, not a distinction the reader is making:
   // "resume" should find "résumé". NFD splits a letter from its accent, and
@@ -38,12 +38,12 @@
     if (index) return Promise.resolve(index);
     if (loading) return loading;
     loading = fetch(url)
-      .then(function (r) {
+      .then((r) => {
         if (!r.ok) throw new Error(r.status);
         return r.json();
       })
-      .then(function (data) {
-        index = data.map(function (p) {
+      .then((data) => {
+        index = data.map((p) => {
           return {
             page: p,
             haystack: fold(
@@ -55,7 +55,7 @@
         });
         return index;
       })
-      .catch(function (e) {
+      .catch((e) => {
         // Forget the failure, or every later keystroke would be handed this
         // same rejected promise and search would stay broken until reload.
         loading = null;
@@ -67,7 +67,7 @@
   // Every word has to appear somewhere, in any order — the way a reader
   // expects two words typed together to narrow the result rather than widen it.
   function match(entry, terms) {
-    for (var i = 0; i < terms.length; i++) {
+    for (let i = 0; i < terms.length; i++) {
       if (entry.haystack.indexOf(terms[i]) === -1) return false;
     }
     return true;
@@ -75,8 +75,8 @@
 
   // A hit in the title says more about the page than a hit in the body.
   function score(entry, terms) {
-    var n = 0;
-    for (var i = 0; i < terms.length; i++) {
+    let n = 0;
+    for (let i = 0; i < terms.length; i++) {
       if (entry.title.indexOf(terms[i]) !== -1) n += 10;
       if (entry.tags.indexOf(terms[i]) !== -1) n += 4;
     }
@@ -84,18 +84,18 @@
   }
 
   function say(key, count) {
-    var t = form.getAttribute("data-hits-" + key) || "";
+    const t = form.getAttribute("data-hits-" + key) || "";
     status.textContent = t.replace("%d", count);
   }
 
   // Every render takes a number, and only the newest one is allowed to write
   // to the page. Without it a slow query that resolves late overwrites the
   // results of a newer one, or refills a list the visitor has just cleared.
-  var generation = 0;
+  let generation = 0;
 
   function render(query) {
-    var mine = ++generation;
-    var terms = fold(query).split(/\s+/).filter(Boolean);
+    const mine = ++generation;
+    const terms = fold(query).split(/\s+/).filter(Boolean);
     list.innerHTML = "";
 
     if (!terms.length) {
@@ -108,35 +108,35 @@
     if (!index) say("loading", 0);
 
     load()
-      .then(function (entries) {
+      .then((entries) => {
         if (mine !== generation) return;
 
-        var hits = entries
-          .filter(function (e) {
+        const hits = entries
+          .filter((e) => {
             return match(e, terms);
           })
-          .sort(function (a, b) {
-            var d = score(b, terms) - score(a, terms);
+          .sort((a, b) => {
+            const d = score(b, terms) - score(a, terms);
             return d !== 0 ? d : (b.page.date || "").localeCompare(a.page.date || "");
           });
 
         say(hits.length === 1 ? "one" : "many", hits.length);
 
-        var frag = document.createDocumentFragment();
-        hits.forEach(function (h) {
-          var li = document.createElement("li");
-          var a = document.createElement("a");
+        const frag = document.createDocumentFragment();
+        hits.forEach((h) => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
           a.href = h.page.url;
           a.textContent = h.page.title;
           li.appendChild(a);
           if (h.page.date) {
-            var time = document.createElement("time");
+            const time = document.createElement("time");
             time.dateTime = h.page.date;
             time.textContent = h.page.date;
             li.appendChild(time);
           }
           if (h.page.summary) {
-            var p = document.createElement("p");
+            const p = document.createElement("p");
             // textContent, not innerHTML: the summary is content, and content
             // is not markup to be executed.
             p.textContent = h.page.summary;
@@ -146,27 +146,27 @@
         });
         list.appendChild(frag);
       })
-      .catch(function () {
+      .catch(() => {
         if (mine !== generation) return;
         say("failed", 0);
       });
   }
 
-  var timer;
-  input.addEventListener("input", function () {
+  let timer;
+  input.addEventListener("input", () => {
     clearTimeout(timer);
-    var q = input.value;
-    timer = setTimeout(function () {
+    const q = input.value;
+    timer = setTimeout(() => {
       render(q);
       // Keep the query in the URL so a result list can be shared or reloaded,
       // without adding an entry to the back button for every keystroke.
-      var next = q ? "?q=" + encodeURIComponent(q) : location.pathname;
+      const next = q ? "?q=" + encodeURIComponent(q) : location.pathname;
       history.replaceState(null, "", next);
     }, 120);
   });
 
   // Arriving with ?q= runs the search straight away.
-  var initial = new URLSearchParams(location.search).get("q");
+  const initial = new URLSearchParams(location.search).get("q");
   if (initial) {
     input.value = initial;
     render(initial);

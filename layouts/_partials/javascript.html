@@ -1,7 +1,8 @@
 {{ $main := resources.Get "js/main.js" }}
 {{ $menu := resources.Get "js/menu.js" }}
+{{ $logo := resources.Get "js/logo.js" }}
 {{ $copy := resources.Get "js/copy-code.js" }}{{ $video := resources.Get "js/video.js" }}
-{{ $secureJS := slice $main $menu $copy $video | resources.Concat "bundle.js" | resources.Minify | resources.Fingerprint "sha512" }}
+{{ $secureJS := slice $main $menu $logo $copy $video | resources.Concat "bundle.js" | resources.Minify | resources.Fingerprint "sha512" }}
 
 {{- /* The copy button reads its labels from this tag. The files are
        concatenated, so document.currentScript is this element for all of
