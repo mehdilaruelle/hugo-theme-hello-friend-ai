@@ -1,21 +1,10 @@
-{{- /* One title for the whole row: a page with none falls back to its file
-       name, and sharing it should not send an empty subject. */ -}}
 {{- $title := partial "title.html" . -}}
-{{- /* Pinterest wants a picture, and it is the one every other card shows, so
-       it comes from the partial the rest of the theme asks. An SVG never
-       arrives here: social-image.html skips one at every step. */ -}}
 {{- $media := (partial "social-image.html" .).url -}}
 {{- define "partials/inline/share-label" -}}
   {{- partial "i18n.html" (dict "key" "shareOn" "args" (dict "Network" .) "fallback" (printf "Share on %s" .)) -}}
 {{- end -}}
-{{- /* One entry per button, in the order they appear. name is both the glyph
-       in assets/svg/ui/ and the resp-sharing-button--<name> modifier.
-
-       Every http(s) one of these is rel="noopener nofollow": generated links,
-       identical on every article and chosen by nobody, which is what nofollow
-       is for. mailto: and whatsapp: carry noopener alone -- there is no link
-       equity to withhold on a scheme no crawler follows. check-sharing.mjs
-       asserts both halves of that. */ -}}
+{{- /* name is the glyph and the CSS modifier. "follow": no nofollow on
+       mailto:/whatsapp: (check-sharing.mjs). */ -}}
 {{- $buttons := slice
   (dict "name" "facebook" "network" "Facebook" "base" "https://facebook.com/sharer/sharer.php"
         "query" (dict "u" .Permalink))
@@ -42,18 +31,12 @@
         "query" (dict "text" $title "url" .Permalink))
 -}}
 {{- range $buttons }}
-  {{- /* An empty value is left out: &media= would assert the picture is the
-         empty string. */ -}}
+  {{- /* Empty values are dropped (no &media=). */ -}}
   {{- $params := dict -}}
   {{- range $k, $v := .query -}}
     {{- with $v }}{{ $params = merge $params (dict $k (printf "%v" .)) }}{{ end -}}
   {{- end -}}
-  {{- /* Built whole rather than interpolated into the attribute, so the
-         escaping is querify's. It writes a space as "+", which is form
-         encoding: right for an http query, wrong for mailto: and whatsapp:,
-         where a "+" arrives in the subject as a literal plus (RFC 6068 asks
-         for %20). A "+" the title itself carries is %2B by then. safeURL
-         because html/template would otherwise replace the whatsapp: scheme. */ -}}
+  {{- /* %20, not "+", for mailto: (RFC 6068). safeURL keeps whatsapp:. */ -}}
   {{- $href := printf "%s?%s" .base (replace (querify $params) "+" "%20") -}}
   {{- $label := .label | default (partial "inline/share-label" .network) }}
 <a class="resp-sharing-button__link" href="{{ $href | safeURL }}" target="{{ .target | default "_blank" }}" rel="noopener{{ if not .follow }} nofollow{{ end }}" aria-label="{{ $label }}" title="{{ $label }}">
