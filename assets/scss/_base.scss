@@ -31,32 +31,11 @@ body {
   min-height: 100vh;
   flex-direction: column;
 
-  // Default
-  background-color: $light-background;
-  color: $light-color;
+  background-color: var(--background);
+  color: var(--color);
 
   @media #{$media-size-phone} {
     font-size: 1rem;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: $dark-background;
-    color: $dark-color;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background-color: $light-background;
-    color: $light-color;
-  }
-
-  [data-theme=dark] & {
-    background-color: $dark-background;
-    color: $dark-color;
-  }
-
-  [data-theme=light] & {
-    background-color: $light-background;
-    color: $light-color;
   }
 }
 
@@ -110,12 +89,7 @@ h6 {
   opacity: 0;
   font-weight: normal;
   text-decoration: none;
-  color: $light-color-secondary;
-
-  @media (prefers-color-scheme: dark) { color: $dark-color-secondary; }
-  @media (prefers-color-scheme: light) { color: $light-color-secondary; }
-  [data-theme=dark] & { color: $dark-color-secondary; }
-  [data-theme=light] & { color: $light-color-secondary; }
+  color: var(--color-secondary);
 
   &::before {
     content: "#";
@@ -255,24 +229,7 @@ figure {
 }
 
 em, i, strong {
-  // Default
-  color: $light-color-variant;
-
-  @media (prefers-color-scheme: dark) {
-    color: $dark-color-variant;
-  }
-
-  @media (prefers-color-scheme: light) {
-    color: $light-color-variant;
-  }
-
-  [data-theme=dark] & {
-    color: white;
-  }
-
-  [data-theme=light] & {
-    color: black;
-  }
+  color: var(--color-variant);
 }
 
 :not(pre) > code {
@@ -290,43 +247,12 @@ em, i, strong {
 
   // Unlike a pre, this has no scroll box, so a long path would widen the page.
   overflow-wrap: break-word;
-  // Default
-  background: $light-background-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    background: $dark-background-secondary;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background: $light-background-secondary;
-  }
-
-  [data-theme=dark] & {
-    background: $dark-background-secondary;
-  }
-
-  [data-theme=light] & {
-    background: $light-background-secondary;
-  }
+  background: var(--background-secondary);
 }
 
-// A notice keeps its light ground in both themes. The chip inside took the
-// page's instead, so dark mode put dark text on a dark chip, at 1.12:1. Same
-// data-theme selectors as the rule above, to outrank it on specificity.
+// A notice stays light in both themes, so its code chip does too (not a token).
 .notice :not(pre) > code {
   background: $light-background-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    background: $light-background-secondary;
-  }
-
-  [data-theme=dark] & {
-    background: $light-background-secondary;
-  }
-
-  [data-theme=light] & {
-    background: $light-background-secondary;
-  }
 }
 
 pre {
@@ -339,28 +265,7 @@ pre {
   direction: ltr;
   text-align: left;
 
-  // Prism's stylesheet used to paint every code block #141414, whatever the
-  // theme. The theme's own colour was only applied through data-theme, so a
-  // site with no defaultTheme and no toggle never got one, and dropping Prism
-  // would have left those blocks with no background at all. The default and
-  // the two media queries cover that, the same way inline code does below.
-  background-color: $light-background-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: $dark-background-secondary;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background-color: $light-background-secondary;
-  }
-
-  [data-theme=dark] & {
-    background-color: $dark-background-secondary;
-  }
-
-  [data-theme=light] & {
-    background-color: $light-background-secondary;
-  }
+  background-color: var(--background-secondary);
 
   padding: 10px 10px 10px 20px;
   border-radius: 8px;
@@ -486,24 +391,7 @@ hr {
   width: 100%;
   border: none;
   height: 1px;
-  // Default
-  background: $light-border-color;
-
-  @media (prefers-color-scheme: dark) {
-    background: $dark-border-color;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background: $light-border-color;
-  }
-
-  [data-theme=dark] & {
-    background: $dark-border-color;
-  }
-
-  [data-theme=light] & {
-    background: $light-border-color;
-  }
+  background: var(--border-color);
 }
 
 .hidden {
@@ -617,27 +505,9 @@ hr {
   opacity: 0;
   transition: opacity 0.15s ease-in-out, color 0.15s ease-in-out;
 
-  background-color: $light-background-header;
-  border-color: $light-border-color;
-  color: $light-color;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: $dark-background-header;
-    border-color: $dark-background-secondary;
-    color: $dark-color;
-  }
-
-  [data-theme=dark] & {
-    background-color: $dark-background-header;
-    border-color: $dark-background-secondary;
-    color: $dark-color;
-  }
-
-  [data-theme=light] & {
-    background-color: $light-background-header;
-    border-color: $light-border-color;
-    color: $light-color;
-  }
+  background-color: var(--background-header);
+  border-color: var(--control-border-color);
+  color: var(--color);
 
   &:focus-visible {
     opacity: 1;
@@ -693,27 +563,9 @@ pre > code[data-lang]:not([data-lang=""])::before {
   opacity: 0;
   transition: opacity 0.15s ease-in-out;
 
-  background-color: $light-background-header;
-  border-color: $light-border-color;
-  color: $light-color;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: $dark-background-header;
-    border-color: $dark-background-secondary;
-    color: $dark-color;
-  }
-
-  [data-theme=dark] & {
-    background-color: $dark-background-header;
-    border-color: $dark-background-secondary;
-    color: $dark-color;
-  }
-
-  [data-theme=light] & {
-    background-color: $light-background-header;
-    border-color: $light-border-color;
-    color: $light-color;
-  }
+  background-color: var(--background-header);
+  border-color: var(--control-border-color);
+  color: var(--color);
 }
 
 // Descendant, not child: Hugo puts a div.highlight between the wrapper and the
@@ -745,22 +597,7 @@ pre > code[data-lang]:not([data-lang=""])::before {
   text-align: center;
   vertical-align: middle;
 
-  // data-theme is only present once the script has run, so the system
-  // preference has to be honoured on its own as well — the same shape every
-  // other themed rule in this file uses.
-  background-color: $light-background-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: $dark-background-secondary;
-  }
-
-  [data-theme=dark] & {
-    background-color: $dark-background-secondary;
-  }
-
-  [data-theme=light] & {
-    background-color: $light-background-secondary;
-  }
+  background-color: var(--background-secondary);
 }
 
 // Search
@@ -778,23 +615,8 @@ pre > code[data-lang]:not([data-lang=""])::before {
     font-size: 1rem;
     color: inherit;
 
-    background: $light-background-secondary;
-    border: 1px solid $light-border-color;
-
-    @media (prefers-color-scheme: dark) {
-      background: $dark-background-secondary;
-      border-color: $dark-background-secondary;
-    }
-
-    [data-theme=dark] & {
-      background: $dark-background-secondary;
-      border-color: $dark-background-secondary;
-    }
-
-    [data-theme=light] & {
-      background: $light-background-secondary;
-      border-color: $light-border-color;
-    }
+    background: var(--background-secondary);
+    border: 1px solid var(--control-border-color);
   }
 }
 

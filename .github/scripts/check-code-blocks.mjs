@@ -9,8 +9,8 @@
 // copy-code.js wraps it in the browser. ```mermaid has its own hook.
 //
 //   node .github/scripts/check-code-blocks.mjs <public-dir>
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import { walk } from "./_lib.mjs";
 
 // --minify drops the quotes it can, so match quoted, single-quoted and bare.
 const WRAPPER = /<div\s[^>]*class\s*=\s*(?:"[^"]*\bcode-block\b[^"]*"|'[^']*\bcode-block\b[^']*'|code-block)[^>]*>/gi;
@@ -18,14 +18,6 @@ const DIV_EDGE = /<div\b[^>]*>|<\/div\s*>/gi;
 // A pre whose code carries a language: what Hugo highlights, and the only kind
 // that draws a language label.
 const LABELLED_PRE = /<pre\b[^>]*>\s*(?:<code\b[^>]*\bdata-lang\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))/gi;
-
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".html")) yield full;
-  }
-}
 
 // The character range each wrapper covers, found by balancing divs from its
 // opening tag. Hugo puts a div.highlight inside it whenever it highlights, so
@@ -52,7 +44,7 @@ let files = 0;
 let wrapped = 0;
 let total = 0;
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".html")) {
   files++;
   const html = readFileSync(file, "utf8");
   const spans = wrapperSpans(html);

@@ -49,30 +49,8 @@
     font-size: 0.9rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
-    // data-theme is only on the element once the script has run, so the system
-    // preference is answered on its own as well.
-    background: $light-background-header;
-    border-color: $light-border-color;
-
-    @media (prefers-color-scheme: dark) {
-      background: $dark-background-header;
-      border-color: $dark-border-color;
-    }
-
-    @media (prefers-color-scheme: light) {
-      background: $light-background-header;
-      border-color: $light-border-color;
-    }
-
-    [data-theme=dark] & {
-      background: $dark-background-header;
-      border-color: $dark-border-color;
-    }
-
-    [data-theme=light] & {
-      background: $light-background-header;
-      border-color: $light-border-color;
-    }
+    background: var(--background-header);
+    border-color: var(--border-color);
   }
 
   &__item {
@@ -90,48 +68,12 @@
   }
 
   &__link {
-    color: $light-color;
+    color: var(--color);
 
     &:hover,
     &:focus-visible {
-      background: $light-background-secondary;
+      background: var(--background-secondary);
       text-decoration: none;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      color: $dark-color;
-
-      &:hover,
-      &:focus-visible {
-        background: $dark-background-secondary;
-      }
-    }
-
-    @media (prefers-color-scheme: light) {
-      color: $light-color;
-
-      &:hover,
-      &:focus-visible {
-        background: $light-background-secondary;
-      }
-    }
-
-    [data-theme=dark] & {
-      color: $dark-color;
-
-      &:hover,
-      &:focus-visible {
-        background: $dark-background-secondary;
-      }
-    }
-
-    [data-theme=light] & {
-      color: $light-color;
-
-      &:hover,
-      &:focus-visible {
-        background: $light-background-secondary;
-      }
     }
   }
 
@@ -141,22 +83,6 @@
     border-inline-start: 3px solid currentColor;
     padding-inline-start: 11px;
 
-    color: $light-color-secondary;
-
-    @media (prefers-color-scheme: dark) {
-      color: $dark-color-secondary;
-    }
-
-    @media (prefers-color-scheme: light) {
-      color: $light-color-secondary;
-    }
-
-    [data-theme=dark] & {
-      color: $dark-color-secondary;
-    }
-
-    [data-theme=light] & {
-      color: $light-color-secondary;
-    }
+    color: var(--color-secondary);
   }
 }

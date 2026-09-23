@@ -1,0 +1,48 @@
+@use "sass:list";
+@use "variables" as *;
+
+// One custom property per colour role, (light, dark). Kept out of _variables.scss
+// so a site's copy of that file keeps the tokens. :where() keeps [data-theme] at
+// :root specificity, so a site's own :root overrides still win.
+$colour-tokens: (
+  "background":            ($light-background, $dark-background),
+  "background-secondary":  ($light-background-secondary, $dark-background-secondary),
+  "background-header":     ($light-background-header, $dark-background-header),
+  "color":                 ($light-color, $dark-color),
+  "color-variant":         ($light-color-variant, $dark-color-variant),
+  "color-secondary":       ($light-color-secondary, $dark-color-secondary),
+  "border-color":          ($light-border-color, $dark-border-color),
+  "table-color":           ($light-table-color, $dark-table-color),
+  // Text on mid-tone grounds (table header, scrollbar thumb).
+  "color-strong":          ($light-color, $dark-color-variant),
+  // Frame of controls on the header ground.
+  "control-border-color":  ($light-border-color, $dark-background-secondary),
+);
+
+@mixin colour-tokens($theme) {
+  $i: 1;
+  @if $theme == dark {
+    $i: 2;
+  }
+  @each $name, $pair in $colour-tokens {
+    --#{$name}: #{list.nth($pair, $i)};
+  }
+}
+
+:root {
+  @include colour-tokens(light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include colour-tokens(dark);
+  }
+}
+
+:root:where([data-theme=dark]) {
+  @include colour-tokens(dark);
+}
+
+:root:where([data-theme=light]) {
+  @include colour-tokens(light);
+}

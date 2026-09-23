@@ -5,8 +5,8 @@
 //
 //   node .github/scripts/check-feeds.mjs <public-dir>
 
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import { walk } from "./_lib.mjs";
 
 const NAME = "[A-Za-z_:][-A-Za-z0-9_:.]*";
 // The five XML predefines. Anything else needs a DTD these documents lack, so
@@ -15,14 +15,6 @@ const ENTITY = /^&(?:#[0-9]+|#[xX][0-9a-fA-F]+|lt|gt|amp|quot|apos);/;
 
 const ATTRS = new RegExp(`^(?:\\s+${NAME}\\s*=\\s*("[^"<]*"|'[^'<]*'))*\\s*$`);
 const ONE_ATTR = new RegExp(`${NAME}\\s*=\\s*("[^"<]*"|'[^'<]*')`, "g");
-
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".xml")) yield full;
-  }
-}
 
 function scan(s) {
   const bad = [];
@@ -118,7 +110,7 @@ const root = process.argv[2] || "public";
 const failures = [];
 let files = 0;
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".xml")) {
   files++;
   const problems = scan(readFileSync(file, "utf8"));
   // One broken item breaks the document; a handful of lines is enough.

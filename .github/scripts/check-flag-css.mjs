@@ -11,8 +11,9 @@
 //
 // baseURL is needed under a subpath, as check-links.mjs needs it: the url()
 // carries the subpath, the file on disk does not.
-import { readFileSync, readdirSync, existsSync } from "node:fs";
-import { join, dirname, relative, posix } from "node:path";
+import { readFileSync, existsSync } from "node:fs";
+import { join, dirname, relative } from "node:path";
+import { walk } from "./_lib.mjs";
 
 const root = process.argv[2] || "public";
 const baseURL = process.argv[3] || "/";
@@ -25,14 +26,6 @@ try {
   process.exit(1);
 }
 if (!prefix.endsWith("/")) prefix += "/";
-
-function* walk(dir, ext) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full, ext);
-    else if (full.endsWith(ext)) yield full;
-  }
-}
 
 // --minify drops the quotes it can, so match quoted, single-quoted and bare.
 const CLASS_ATTR = /class\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;

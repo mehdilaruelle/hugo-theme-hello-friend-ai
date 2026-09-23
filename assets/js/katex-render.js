@@ -5,7 +5,7 @@
 // the whole XSS boundary. Deferred scripts run in document order, so KaTeX and
 // its auto-render extension are both defined by the time this executes.
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   if (typeof renderMathInElement !== 'function') return;
 
   renderMathInElement(document.body, {

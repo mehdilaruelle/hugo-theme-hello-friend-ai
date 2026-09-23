@@ -10,18 +10,10 @@
 // the build fails on a wrong name, because a wrong name is still a name.
 //
 //   node .github/scripts/check-social.mjs <public-dir>
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
+import { walk, attrRe } from "./_lib.mjs";
 
-// An attribute name starts where no name character precedes it. \b is not that
-// test: there is a word boundary between "-" and "l" too, so \blabel would
-// match the label inside aria-label.
-const NAME = "(?<![-\\w])";
-
-// Quoted, single-quoted or bare: --minify drops the quotes it can, and a
-// pattern requiring them passes most of the file in silence.
-const attr = (name) =>
-  new RegExp(`${NAME}${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i");
+const attr = (name) => attrRe(name);
 
 const HREF = attr("href");
 const REL = attr("rel");
@@ -56,21 +48,13 @@ const value = (tag, re) => {
 const text = (s) =>
   s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
 
-function* walk(dir) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, e.name);
-    if (e.isDirectory()) yield* walk(full);
-    else if (full.endsWith(".html")) yield full;
-  }
-}
-
 const root = process.argv[2] || "public";
 const failures = [];
 const seen = new Set();
 let files = 0;
 let anchors = 0;
 
-for (const file of walk(root)) {
+for (const file of walk(root, ".html")) {
   files++;
   const html = readFileSync(file, "utf8");
   for (const [tag] of html.matchAll(ANCHOR)) {

@@ -23,51 +23,22 @@ a.button {
   appearance: none;
   cursor: pointer;
   outline: none;
-  // Default
-  background: $light-background-header;
+  background: var(--background-header);
 
+  // Dark: inherit, since ButtonText is black on the dark header ground.
   @media (prefers-color-scheme: dark) {
-    background: $dark-background-header;
     color: inherit;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background: $light-background-header;
   }
 
   [data-theme=dark] & {
-    background: $dark-background-header;
     color: inherit;
-  }
-
-  [data-theme=light] & {
-    background: $light-background-header;
   }
 
   &.outline {
     background: transparent;
     box-shadow: none;
     padding: 8px 18px;
-    // Default
-    border-color: $light-background-secondary;
-
-    @media (prefers-color-scheme: dark) {
-      border-color: $dark-background-secondary;
-      color: inherit;
-    }
-  
-    @media (prefers-color-scheme: light) {
-      border-color: $light-background-secondary;
-    }
-  
-    [data-theme=dark] & {
-      border-color: $dark-background-secondary;
-      color: inherit;
-    }
-  
-    [data-theme=light] & {
-      border-color: $light-background-secondary;
-    }
+    border-color: var(--background-secondary);
 
     // &:hover, not :hover: without the &, Sass compiles this to the descendant
     // `button.outline :hover`, which styles whatever is hovered inside.
