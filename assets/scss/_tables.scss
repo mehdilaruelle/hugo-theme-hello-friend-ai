@@ -25,78 +25,21 @@
     th,
     td {
       padding: 12px 15px;
-      // Default
-      border: 1px solid $light-table-color;
-      
-      @media (prefers-color-scheme: dark) {
-        border: 1px solid $dark-table-color;
-      }
-    
-      @media (prefers-color-scheme: light) {
-        border: 1px solid $light-table-color;
-      }
-    
-      [data-theme=dark] & {
-        border: 1px solid $dark-table-color;
-      }
-    
-      [data-theme=light] & {
-        border: 1px solid $light-table-color;
-      }
+      border: 1px solid var(--table-color);
     }
 
     thead {
       tr {
         text-align: start;
-        // The header band is the one place the dark theme's body colour is not
-        // dark enough a ground to sit on: $dark-color on $dark-table-color is
-        // 3.53:1. The variant is white, which is 8.23:1 on the same band.
-        // Default
-        background-color: $light-table-color;
-        color: $light-color;
-
-        @media (prefers-color-scheme: dark) {
-          background-color: $dark-table-color;
-          color: $dark-color-variant;
-        }
-      
-        @media (prefers-color-scheme: light) {
-          background-color: $light-table-color;
-          color: $light-color;
-        }
-      
-        [data-theme=dark] & {
-          background-color: $dark-table-color;
-          color: $dark-color-variant;
-        }
-      
-        [data-theme=light] & {
-          background-color: $light-table-color;
-          color: $light-color;
-        }
+        // --color is too faint on this band in dark mode.
+        background-color: var(--table-color);
+        color: var(--color-strong);
       }
     }
 
     tbody {
       tr {
-        // Default
-        border: 1px solid $light-table-color;
-        
-        @media (prefers-color-scheme: dark) {
-          border: 1px solid $dark-table-color;
-        }
-      
-        @media (prefers-color-scheme: light) {
-          border: 1px solid $light-table-color;
-        }
-      
-        [data-theme=dark] & {
-          border: 1px solid $dark-table-color;
-        }
-      
-        [data-theme=light] & {
-          border: 1px solid $light-table-color;
-        }
+        border: 1px solid var(--table-color);
       }
     }
   }

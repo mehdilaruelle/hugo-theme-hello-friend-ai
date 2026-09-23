@@ -6,24 +6,7 @@
   justify-content: center;
   position: relative;
   padding: 20px;
-  // Default
-  background: $light-background-header;
-
-  @media (prefers-color-scheme: dark) {
-    background: $dark-background-header;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background: $light-background-header;
-  }
-
-  [data-theme=dark] & {
-    background: $dark-background-header;
-  }
-
-  [data-theme=light] & {
-    background: $light-background-header;
-  }
+  background: var(--background-header);
 
   &__right {
     display: flex;
@@ -73,32 +56,12 @@
   color: inherit;
   font: inherit;
 
-  // _buttons.scss styles every bare button as a pill, and states its themed
-  // colours as `[data-theme=dark] button`, which is one step above a class.
-  // Undoing it therefore takes the same shape the copy button already uses in
-  // _base.scss: the plain class for the default and the media queries, and the
-  // attribute selectors to outrank the attribute selectors.
+  // Undo the bare `button` style from _buttons.scss.
   //
   // background-color and not the background shorthand: compressed output writes
   // `background: none` as `background: 0 0`, which sets the position and leaves
   // the browser's own ButtonFace showing behind the icon.
   background-color: transparent;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: transparent;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background-color: transparent;
-  }
-
-  [data-theme=dark] & {
-    background-color: transparent;
-  }
-
-  [data-theme=light] & {
-    background-color: transparent;
-  }
 
   &:focus-visible {
     outline: 2px solid #67a2c9;
