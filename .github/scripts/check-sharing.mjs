@@ -14,8 +14,6 @@ import { walk, NAME, attrRe } from "./_lib.mjs";
 
 const PROVIDERS = /facebook|twitter|tumblr|pinterest|linkedin|reddit|xing|telegram|vk\.com|whatsapp|hacker/i;
 
-// NAME and the quoting rules are _lib.mjs's, where the data-rel bug that
-// \brel let through is recorded.
 const HREF = attrRe("href", "gi");
 
 // The opening tag whole, so rel can be read beside href. Matched on the class

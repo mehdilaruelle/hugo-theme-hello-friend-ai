@@ -12,7 +12,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { walk, attrSource, value } from "./_lib.mjs";
 
-// Quoting and the name boundary are _lib.mjs's.
 const attr = attrSource;
 const pick = value;
 

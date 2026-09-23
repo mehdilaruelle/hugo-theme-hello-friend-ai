@@ -8,7 +8,6 @@ import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
-// Quoting and the name boundary are _lib.mjs's.
 const attr = (tag, name) => attrValue(tag.match(attrRe(name)));
 
 // Whole tokens: "post-info" is not "post-infobar".

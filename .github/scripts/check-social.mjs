@@ -13,8 +13,6 @@
 import { readFileSync } from "node:fs";
 import { walk, attrRe } from "./_lib.mjs";
 
-// Quoting and the name boundary are _lib.mjs's: \blabel would match the
-// label inside aria-label.
 const attr = (name) => attrRe(name);
 
 const HREF = attr("href");

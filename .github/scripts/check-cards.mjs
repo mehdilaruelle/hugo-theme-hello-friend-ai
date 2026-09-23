@@ -9,7 +9,6 @@ import { readFileSync, statSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
 import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
-// Quoting and the name boundary are _lib.mjs's.
 const META = /<meta\b[^>]*>/gi;
 const PROPERTY = attrRe("property");
 const NAME = attrRe("name");
