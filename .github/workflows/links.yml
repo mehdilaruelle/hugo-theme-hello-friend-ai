@@ -193,8 +193,6 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public post-info
 
-      # The reader sees "Hugo&rsquo;s" and the build is green: the entity is
-      # valid text. no-description.md is the page that takes the summary path.
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
         run: |

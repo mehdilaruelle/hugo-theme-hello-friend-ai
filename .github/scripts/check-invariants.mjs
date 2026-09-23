@@ -216,9 +216,7 @@ const checks = {
     ok("the logo cursor carries a style only when it has one");
   },
 
-  // plainify leaves the typographer's entities in, and printing the text
-  // escapes them again: the list read "Hugo&rsquo;s", as did the JSON-LD.
-  // Parsed, not grepped: an entity is only wrong once it survives decoding.
+  // Excerpts and JSON-LD descriptions must show characters, not entities.
   entities() {
     const entity = /&(?:[a-z][a-z0-9]*|#\d+|#x[0-9a-f]+);/i;
     const decode = (s) => s.replace(/&(amp|lt|gt|quot|#39);/g,
@@ -244,7 +242,6 @@ const checks = {
       }
     }
     if (bad.length) fail("an HTML entity reached the reader as text", bad.slice(0, 5).join("\n"));
-    // Absent proves nothing unless the typographer's output was rendered.
     if (!curly) fail("no excerpt carries a curly quote, so nothing was tested");
     if (!described) fail("no JSON-LD description was rendered");
     ok("list excerpts and JSON-LD descriptions carry characters, not entities");

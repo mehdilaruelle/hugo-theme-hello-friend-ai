@@ -33,12 +33,7 @@
     {{- $description = partial "i18n.html" (dict "key" "termDescription" "args" (dict "Term" .Data.Term) "fallback" "") -}}
   {{- end -}}
 {{- else -}}
-  {{- /* Google shows about 155 characters, so the summary is flattened and cut.
-         One written by hand is left as written. htmlUnescape before truncate:
-         plainify leaves the entities Goldmark made, and a cut could land inside
-         one. TrimSpace, not chomp, which takes newlines and not the space the
-         flattening made. htmlUnescape again after the cut: truncate escapes
-         plain text, and json-ld.html printed the &#34; it made as text. */ -}}
+  {{- /* ~155 characters shown. htmlUnescape again: truncate escapes plain text. */ -}}
   {{- $description = partial "flatten.html" .Summary | truncate 160 "" | htmlUnescape -}}
 {{- end -}}
 {{- return $description -}}
