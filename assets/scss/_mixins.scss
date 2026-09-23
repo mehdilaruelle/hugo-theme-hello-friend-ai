@@ -1,23 +1,7 @@
 @use "variables" as *;
 
-// The secondary text colour. Five branches because [data-theme] has to outrank
-// the media query in both directions.
+// The secondary text colour. A mixin still, so the rules that use it read the
+// same as before; the theme is the token's business now.
 @mixin secondary-colour {
-  color: $light-color-secondary;
-
-  @media (prefers-color-scheme: dark) {
-    color: $dark-color-secondary;
-  }
-
-  @media (prefers-color-scheme: light) {
-    color: $light-color-secondary;
-  }
-
-  [data-theme=dark] & {
-    color: $dark-color-secondary;
-  }
-
-  [data-theme=light] & {
-    color: $light-color-secondary;
-  }
+  color: var(--color-secondary);
 }

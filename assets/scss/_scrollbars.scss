@@ -19,50 +19,16 @@
 
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: $light-color-secondary;
-
-  @media (prefers-color-scheme: dark) { background: $dark-color-secondary; }
-  @media (prefers-color-scheme: light) { background: $light-color-secondary; }
+  background: var(--color-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: $light-color;
-
-  @media (prefers-color-scheme: dark) { background: $dark-color-variant; }
-  @media (prefers-color-scheme: light) { background: $light-color; }
-}
-
-// Two selectors per theme: data-theme sits on html, and so does the page's own
-// scrollbar, which the usual descendant form would miss.
-[data-theme=dark] ::-webkit-scrollbar-thumb,
-[data-theme=dark]::-webkit-scrollbar-thumb {
-  background: $dark-color-secondary;
-}
-
-[data-theme=light] ::-webkit-scrollbar-thumb,
-[data-theme=light]::-webkit-scrollbar-thumb {
-  background: $light-color-secondary;
-}
-
-[data-theme=dark] ::-webkit-scrollbar-thumb:hover,
-[data-theme=dark]::-webkit-scrollbar-thumb:hover {
-  background: $dark-color-variant;
-}
-
-[data-theme=light] ::-webkit-scrollbar-thumb:hover,
-[data-theme=light]::-webkit-scrollbar-thumb:hover {
-  background: $light-color;
+  background: var(--color-strong);
 }
 
 // Firefox implements neither pseudo-element; scrollbar-color is inherited, so
 // the root reaches everything. Colour only -- scrollbar-width is left alone on
 // purpose: the bug was the theme, not the browser's default width.
 html {
-  scrollbar-color: $light-color-secondary transparent;
-
-  @media (prefers-color-scheme: dark) { scrollbar-color: $dark-color-secondary transparent; }
-  @media (prefers-color-scheme: light) { scrollbar-color: $light-color-secondary transparent; }
-
-  &[data-theme=dark] { scrollbar-color: $dark-color-secondary transparent; }
-  &[data-theme=light] { scrollbar-color: $light-color-secondary transparent; }
+  scrollbar-color: var(--color-secondary) transparent;
 }

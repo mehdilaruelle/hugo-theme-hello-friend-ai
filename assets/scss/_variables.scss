@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@use "sass:list";
 
 /* Light theme color */
 $light-background: #fff;
@@ -21,6 +22,61 @@ $dark-color-variant: white;
 $dark-color-secondary: #b3b3bd;
 $dark-border-color: #4e4e57;
 $dark-table-color: #4e4e57;
+
+/* The colours as the page uses them, one custom property per role. The Sass
+   variables above stay the values, so a site that overrides this file keeps
+   working; everything else reads var(--...). Declared once per theme here
+   rather than four times in every rule that paints something.
+
+   [data-theme] outranks the media query whatever the source order:
+   :root[data-theme=x] is the more specific selector. data-theme only exists
+   once theme-init.js has run, which is why the media query answers too. */
+$colour-tokens: (
+  "background":            ($light-background, $dark-background),
+  "background-secondary":  ($light-background-secondary, $dark-background-secondary),
+  "background-header":     ($light-background-header, $dark-background-header),
+  "color":                 ($light-color, $dark-color),
+  "color-variant":         ($light-color-variant, $dark-color-variant),
+  "color-secondary":       ($light-color-secondary, $dark-color-secondary),
+  "border-color":          ($light-border-color, $dark-border-color),
+  "table-color":           ($light-table-color, $dark-table-color),
+  // Text on a mid-tone ground, where the dark theme's body colour is not
+  // enough: the table header band ($dark-color on $dark-table-color is 3.53:1,
+  // the variant, white, 8.23:1) and the hovered scrollbar thumb.
+  "color-strong":          ($light-color, $dark-color-variant),
+  // The frame of a control drawn on the header ground (the copy button, the
+  // code-language label, the search field): the border colour in light, the
+  // secondary background in dark, where the border colour disappears.
+  "control-border-color":  ($light-border-color, $dark-background-secondary),
+);
+
+@mixin colour-tokens($theme) {
+  $i: 1;
+  @if $theme == dark {
+    $i: 2;
+  }
+  @each $name, $pair in $colour-tokens {
+    --#{$name}: #{list.nth($pair, $i)};
+  }
+}
+
+:root {
+  @include colour-tokens(light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include colour-tokens(dark);
+  }
+}
+
+:root[data-theme=dark] {
+  @include colour-tokens(dark);
+}
+
+:root[data-theme=light] {
+  @include colour-tokens(light);
+}
 
 $media-size-phone: "(max-width: 684px)";
 $media-size-tablet: "(max-width: 900px)";
