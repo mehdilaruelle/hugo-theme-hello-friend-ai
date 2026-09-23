@@ -1,9 +1,4 @@
-{{- /* One interface glyph, inlined from assets/svg/ui/<name>.svg as it is: the
-       stylesheet hangs off the classes and sizes each file carries (feather-*,
-       meta-icon, the 18px RSS one), so a file is stored exactly as it rendered
-       inline. A glyph is named by the theme itself, never by a site, so a
-       missing one is a bug in the theme and stops the build. chomp: the file's
-       trailing newline would otherwise reach the page. */ -}}
+{{- /* Inlines assets/svg/ui/<name>.svg; a missing glyph is a theme bug and stops the build. */ -}}
 {{- $name := lower (trim (printf "%v" (.name | default "")) " \t\r\n") -}}
 {{- if findRE `^[a-z0-9][a-z0-9-]*$` $name -}}
   {{- with resources.Get (printf "svg/ui/%s.svg" $name) -}}
