@@ -16,13 +16,13 @@
 {{- end -}}
 # {{ site.Title }}
 {{ with $desc }}
-> {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+> {{ partial "flatten.html" . }}
 {{ end }}
 {{- with partial "md/body.html" . | strings.TrimSpace }}
 {{ . }}
 {{ end }}
 {{- with site.Params.llmsNote }}
-{{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+{{ partial "flatten.html" . }}
 {{ end }}
 {{- if lt (len $ordered) $total }}
 {{- /* Kept, not Count: a Count key sends i18n looking for a plural form. */ -}}

@@ -1,0 +1,2 @@
+{{- /* Whether KaTeX loads: page or site param math. */ -}}
+{{- return or (partial "switch.html" .Params.math) (partial "switch.html" site.Params.math) -}}

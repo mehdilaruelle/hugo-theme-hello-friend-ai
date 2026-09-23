@@ -1,0 +1,6 @@
+{{- /* Joins a local path to the base URL (keeping the subpath absURL drops). */ -}}
+{{- $url := printf "%v" . -}}
+{{- if not (partial "is-remote.html" $url) -}}
+  {{- $url = urls.JoinPath site.BaseURL $url -}}
+{{- end -}}
+{{- return $url -}}

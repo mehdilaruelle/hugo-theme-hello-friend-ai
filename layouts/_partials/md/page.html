@@ -5,14 +5,14 @@
 {{- $note := .Description | default .Summary -}}
 # {{ partial "title.html" . | safeHTML }}
 {{ with $note }}
-> {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace | safeHTML }}
+> {{ partial "flatten.html" . | safeHTML }}
 {{ end }}
 {{- with .Date }}{{ if not .IsZero }}
 {{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit . ", " | safeHTML }}{{ end }}
 {{ end }}{{ end }}
 {{ $body | strings.TrimSpace | safeHTML }}
 {{ with .Params.llmsNote }}
-{{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace | safeHTML }}
+{{ partial "flatten.html" . | safeHTML }}
 {{ end }}
 ---
 

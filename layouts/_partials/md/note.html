@@ -2,6 +2,6 @@
        truncate counts characters not entities, then to undo its escaping. */ -}}
 {{- $note := "" -}}
 {{- with .Description | default .Summary -}}
-  {{- $note = . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace | truncate 200 "…" | htmlUnescape -}}
+  {{- $note = partial "flatten.html" . | truncate 200 "…" | htmlUnescape -}}
 {{- end -}}
 {{- return $note -}}

@@ -23,10 +23,8 @@
 
 {{- /* A site served from a subpath needs it kept; a remote URL must be left
        alone. */ -}}
-{{- $poster := .Get "poster" -}}
-{{- if and $poster (not (partial "is-remote.html" $poster)) -}}
-  {{- $poster = urls.JoinPath site.BaseURL $poster -}}
-{{- end -}}
+{{- $poster := "" -}}
+{{- with .Get "poster" }}{{ $poster = partial "abs-url.html" . }}{{ end -}}
 
 {{- if $src -}}
 <video
@@ -41,9 +39,7 @@
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>
   {{- range $formats }}
     {{- $ext := trim . " " }}
-    {{- $url := printf "%s.%s" $src $ext }}
-    {{- if not (partial "is-remote.html" $src) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
-    <source src="{{ $url | safeURL }}" type="video/{{ $ext }}">
+    <source src="{{ partial "abs-url.html" (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ $ext }}">
   {{- end }}
 </video>
 {{- end -}}

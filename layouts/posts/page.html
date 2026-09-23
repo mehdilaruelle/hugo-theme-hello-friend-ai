@@ -58,9 +58,7 @@
           <div class="post-audio">
             <audio controls>
               {{- range $files }}
-                {{- $url := . }}
-                {{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
-              <source src="{{ $url | safeURL }}">
+              <source src="{{ partial "abs-url.html" . | safeURL }}">
               {{- end }}
             </audio>
           </div>
