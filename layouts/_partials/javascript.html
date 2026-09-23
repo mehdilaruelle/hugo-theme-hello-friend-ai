@@ -26,9 +26,7 @@
        site's base URL, or it resolves against the page being served. */ -}}
 {{ range $val := slice | append ($.Site.Params.customJS | default slice) }}
     {{- with $val }}
-        {{- $src := . }}
-        {{- if not (partial "is-remote.html" $src) }}{{ $src = urls.JoinPath site.BaseURL $src }}{{ end }}
-        <script src="{{ $src | safeURL }}"></script>
+        <script src="{{ partial "abs-url.html" . | safeURL }}"></script>
     {{- end }}
 {{ end }}
 
@@ -37,7 +35,7 @@
        since the module URL sits in a data attribute the preload scanner never
        reads. Skipped when the math gate already emitted it -- one origin
        serves both. crossorigin because import() is always a CORS fetch. */ -}}
-{{- if not (or (partial "switch.html" .Params.math) (partial "switch.html" .Site.Params.math)) }}
+{{- if not (partial "math-on.html" .) }}
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 {{- end }}
 {{- /* The initialiser is a file, not an inline module, so a site with a strict
@@ -60,7 +58,7 @@
 {{- end }}
 {{ end }}
 
-{{ if or (partial "switch.html" .Params.math) (partial "switch.html" .Site.Params.math) }}
+{{ if partial "math-on.html" . }}
 {{- /* Pinned to an exact version with an integrity hash on each file. A range
        like katex@0.18 would let a new release change the JavaScript executed
        for visitors with no reviewed change here, and an integrity hash cannot

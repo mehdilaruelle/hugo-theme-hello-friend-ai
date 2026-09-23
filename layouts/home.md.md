@@ -7,13 +7,13 @@
 {{- $children = partial "md/pages.html" $children -}}
 # {{ site.Title }}
 {{ with $desc }}
-> {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+> {{ partial "flatten.html" . }}
 {{ end }}
 {{- with partial "md/body.html" . | strings.TrimSpace }}
 {{ . }}
 {{ end }}
 {{- with site.Params.llmsNote }}
-{{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+{{ partial "flatten.html" . }}
 {{ end }}
 {{- with $children }}
 ## {{ partial "i18n.html" (dict "key" "contents" "fallback" "Contents") }}

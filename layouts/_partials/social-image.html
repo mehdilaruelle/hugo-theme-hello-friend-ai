@@ -75,6 +75,6 @@
          plainify strips tags but leaves the entities markdownify made, so an
          apostrophe reached the reader as a literal "&rsquo;". TrimSpace because
          chomp takes newlines, and the flattening turns one into a space. */ -}}
-  {{- $alt = . | markdownify | plainify | htmlUnescape | replaceRE "\\s+" " " | strings.TrimSpace -}}
+  {{- $alt = partial "flatten.html" (. | markdownify) -}}
 {{- end -}}
 {{- return dict "url" $url "alt" $alt "owned" $owned "width" $width "height" $height -}}

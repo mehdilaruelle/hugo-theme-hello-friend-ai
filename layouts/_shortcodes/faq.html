@@ -10,7 +10,7 @@
 {{- $pairs := .Page.Store.Get "faq" | default slice -}}
 {{- .Page.Store.Set "faq" ($pairs | append (dict
       "q" $q
-      "a" ($html | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace))) -}}
+      "a" (partial "flatten.html" $html))) -}}
 <details class="faq">
   <summary>{{ $q }}</summary>
   {{ $html }}

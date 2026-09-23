@@ -3,13 +3,13 @@
 {{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
 # {{ site.Title }}
 {{ with $desc }}
-> {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+> {{ partial "flatten.html" . }}
 {{ end }}
 {{- with partial "md/body.html" . | strings.TrimSpace }}
 {{ . }}
 {{ end }}
 {{- with site.Params.llmsNote }}
-{{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+{{ partial "flatten.html" . }}
 {{ end }}
 {{- /* Not a list item: everything in a list here is a page. */ -}}
 {{- with .OutputFormats.Get "llmsfull" }}

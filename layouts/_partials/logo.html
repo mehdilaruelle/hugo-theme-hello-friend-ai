@@ -1,6 +1,7 @@
 {{- $home := .Site.Home.RelPermalink -}}
 {{- with .Site.Params.Logo.LogoHomeLink -}}
-  {{- if or (strings.HasPrefix . "http://") (strings.HasPrefix . "https://") -}}
+  {{- /* Local, it is joined to this language's home, not to the base URL. */ -}}
+  {{- if partial "is-remote.html" . -}}
     {{- $home = . -}}
   {{- else -}}
     {{- $home = urls.JoinPath $home . -}}
@@ -9,10 +10,7 @@
 <a href="{{ $home }}" style="text-decoration: none;">
     <div class="logo">
         {{ if .Site.Params.Logo.path }}
-            {{- $logo := .Site.Params.Logo.path -}}
-            {{- if not (partial "is-remote.html" $logo) -}}
-              {{- $logo = urls.JoinPath site.BaseURL $logo -}}
-            {{- end -}}
+            {{- $logo := partial "abs-url.html" .Site.Params.Logo.path -}}
             <img src="{{ $logo | safeURL }}" alt="{{ .Site.Params.Logo.alt }}" />
         {{ else }}
             <span class="logo__mark" aria-hidden="true">{{ with .Site.Params.Logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>

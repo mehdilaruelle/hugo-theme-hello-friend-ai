@@ -57,11 +57,7 @@
         {{- /* absURL drops the base URL path, so a rooted path came out at the
                domain root on a site served from a subpath. */ -}}
         {{- with $url -}}
-          {{- $resolved := . -}}
-          {{- if not (partial "is-remote.html" $resolved) -}}
-            {{- $resolved = urls.JoinPath site.BaseURL $resolved -}}
-          {{- end -}}
-          {{- $credential = merge $credential (dict "url" $resolved) -}}
+          {{- $credential = merge $credential (dict "url" (partial "abs-url.html" .)) -}}
         {{- end -}}
         {{- with $issuer -}}
           {{- $credential = merge $credential (dict "recognizedBy" (dict "@type" "Organization" "name" .)) -}}

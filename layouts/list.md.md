@@ -5,7 +5,7 @@
 {{- $children = partial "md/pages.html" $children -}}
 # {{ partial "title.html" . }}
 {{ with partial "description.html" . }}
-> {{ . | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace }}
+> {{ partial "flatten.html" . }}
 {{ end }}
 {{- with partial "md/body.html" . | strings.TrimSpace }}
 {{ . }}
