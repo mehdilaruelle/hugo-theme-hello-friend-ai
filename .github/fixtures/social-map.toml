@@ -1,0 +1,6 @@
+# params.social written as a table rather than the documented list, over the exampleSite.
+[params.social]
+twitter = "fixturehandle"
+  [params.social.github]
+  name = "github"
+  url  = "https://github.com/fixture-owner"

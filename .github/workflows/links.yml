@@ -402,3 +402,28 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-styled \
             background-color=#67a2c9 animation-duration=2s
 
+
+      # Neither demo ships favicons or overrides a theme file, so these paths
+      # were never built.
+      - name: Check a site's favicons and overridden theme files are used
+        working-directory: hello-friend-ai
+        run: |
+          rm -rf site-overrides && cp -r exampleSite site-overrides
+          cp -r .github/fixtures/site-overrides/. site-overrides/
+          mkdir -p site-overrides/assets/scss
+          sed 's/^\$light-background: .*/$light-background: #abcdef;/' \
+            assets/scss/_variables.scss > site-overrides/assets/scss/_variables.scss
+          cd site-overrides
+          hugo --themesDir ../.. --gc --minify --destination public-overrides \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-overrides https://example.com/subpath/
+          node ../.github/scripts/check-invariants.mjs public-overrides favicons
+          node ../.github/scripts/check-invariants.mjs public-overrides site-overrides '#abcdef'
+
+      - name: Check a table-shaped params.social
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-social-map \
+            --config config.toml,../.github/fixtures/social-map.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-invariants.mjs public-social-map social-map fixturehandle
