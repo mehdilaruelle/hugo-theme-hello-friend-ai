@@ -10,7 +10,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { walk, attrSource, value } from "./_lib.mjs";
+import { walk, attrSource, value, tagRe } from "./_lib.mjs";
 
 const attr = attrSource;
 const pick = value;
@@ -46,7 +46,7 @@ const decode = (v) =>
   });
 
 const TITLE = /<title[^>]*>([\s\S]*?)<\/title\s*>/i;
-const META = /<meta\b[^>]*>/gi;
+const META = tagRe("meta");
 const REL = new RegExp(attr("rel"), "i");
 const HREF = new RegExp(attr("href"), "i");
 const NAME = new RegExp(attr("name"), "i");

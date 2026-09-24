@@ -55,7 +55,7 @@
       "@type" "CollectionPage"
       "@id" .Permalink
       "url" .Permalink
-      "name" (partial "title.html" . | plainify)
+      "name" (partial "title.html" .)
       "inLanguage" .Language.Lang
     -}}
     {{- with partial "description.html" . -}}
@@ -69,7 +69,7 @@
     {{- with $listed -}}
       {{- $items := slice -}}
       {{- range $i, $p := first 20 . -}}
-        {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $p.Permalink "name" (partial "title.html" $p | plainify)) -}}
+        {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $p.Permalink "name" (partial "title.html" $p)) -}}
       {{- end -}}
       {{- $data = merge $data (dict "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $.Pages) "itemListElement" $items)) -}}
     {{- end -}}
@@ -84,7 +84,7 @@
     "@type" "ProfilePage"
     "@id" .Permalink
     "url" .Permalink
-    "name" (partial "title.html" . | plainify)
+    "name" (partial "title.html" .)
     "inLanguage" .Language.Lang
   -}}
   {{- with .Description -}}
@@ -103,7 +103,7 @@
     "@id" .Permalink
     "url" .Permalink
     "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
-    "headline" (partial "title.html" . | plainify | truncate 110 "")
+    "headline" (partial "title.html" . | truncate 110 "" | htmlUnescape)
     "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")
     "inLanguage" .Language.Lang
     "wordCount" .WordCount
@@ -173,7 +173,7 @@
     "@type" "WebPage"
     "@id" .Permalink
     "url" .Permalink
-    "name" (partial "title.html" . | plainify)
+    "name" (partial "title.html" .)
     "inLanguage" .Language.Lang
   -}}
   {{- /* The page's own words only, through the partial the rest of the theme

@@ -3,7 +3,7 @@
        body leaves full of entities. Shared with llms-full.txt. */ -}}
 {{- $body := partial "md/body.html" . -}}
 {{- $note := .Description | default .Summary -}}
-# {{ partial "title.html" . | safeHTML }}
+# {{ partial "title.html" . | replaceRE "<" `\<` | safeHTML }}
 {{ with $note }}
 > {{ partial "flatten.html" . | safeHTML }}
 {{ end }}

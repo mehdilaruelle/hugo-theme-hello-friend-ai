@@ -6,7 +6,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { walk, attrRe, value as attrValue } from "./_lib.mjs";
+import { walk, attrRe, tagRe, value as attrValue } from "./_lib.mjs";
 
 const attr = (tag, name) => attrValue(tag.match(attrRe(name)));
 
@@ -230,6 +230,23 @@ const checks = {
     if (!curly) fail("no excerpt carries a curly quote, so nothing was tested");
     if (!described) fail("no JSON-LD description was rendered");
     ok("list excerpts and JSON-LD descriptions carry characters, not entities");
+  },
+  // A tag in a title is text, and the title's Markdown still renders.
+  "title-html"(page, want) {
+    const html = read(page);
+    const h1 = [...html.matchAll(/<h1\b[^>]*>/gi)].find((m) => hasClass(m[0], "post-title"));
+    if (!h1) fail(`${page} has no post title`);
+    const inner = element(html, h1.index + h1[0].length, "h1");
+    const shown = text(inner).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    if (!shown.includes(want)) fail(`the title does not show ${want}`, inner);
+    if (!/<em>/.test(inner)) fail("the title's Markdown was not rendered", inner);
+    const og = [...html.matchAll(tagRe("meta"))].find((m) => attr(m[0], "property") === "og:title");
+    if (!(attr(og?.[0] ?? "", "content") ?? "").includes(want)) fail(`og:title does not show ${want}`, og?.[0] ?? "(none)");
+    const lds = [...html.matchAll(/<script type="?application\/ld\+json"?>([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+    if (!lds.some((d) => (d.headline ?? "").includes(want))) fail(`the JSON-LD headline does not show ${want}`);
+    const omitted = pages(dir).filter((p) => readFileSync(p, "utf8").includes("raw HTML omitted"));
+    if (omitted.length) fail("raw HTML was dropped from a page", omitted.slice(0, 3).map(rel).join("\n"));
+    ok("a tag in a title reaches the reader as text");
   },
 
   // #263 and #271: the card and the player name the same file, subpath kept.

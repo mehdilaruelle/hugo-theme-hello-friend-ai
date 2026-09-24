@@ -12,12 +12,12 @@
     {{- if .IsHome -}}
       {{- $name = partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
     {{- else -}}
-      {{- $name = .LinkTitle | plainify -}}
+      {{- $name = .LinkTitle -}}
     {{- end -}}
     {{- $items = $items | append (dict "@type" "ListItem" "position" $i "name" $name "item" .Permalink) -}}
   {{- end -}}
 
-  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title.html" $ | plainify)) -}}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title.html" $)) -}}
   {{- $trail := dict
     "@context" "https://schema.org"
     "@type" "BreadcrumbList"
