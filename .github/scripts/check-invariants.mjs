@@ -277,8 +277,8 @@ const checks = {
   // params.social as a table: the build survives and the handle is read.
   "social-map"(handle) {
     const metas = [...read("index.html").matchAll(/<meta\b[^>]*>/gi)].filter((m) => attr(m[0], "name") === "twitter:site");
-    if (!metas.some((m) => attr(m[0], "content") === "@" + handle))
-      fail(`twitter:site is not @${handle}`, metas.map((m) => m[0]).join("\n") || "(no twitter:site)");
+    if (metas.length !== 1 || attr(metas[0][0], "content") !== "@" + handle)
+      fail(`want one twitter:site, @${handle}`, metas.map((m) => m[0]).join("\n") || "(no twitter:site)");
     ok("a table-shaped params.social still names the site's account");
   },
 
