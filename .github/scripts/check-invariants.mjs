@@ -4,7 +4,7 @@
 //
 //   node .github/scripts/check-invariants.mjs <dir> <check> [args...]
 
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { walk, attrRe, value as attrValue } from "./_lib.mjs";
 
@@ -244,6 +244,58 @@ const checks = {
     if (!sources.some((m) => attr(m[0], "src") === want))
       fail(`the player source is not ${want}`, sources.map((m) => m[0]).join("\n") || "(no <source>)");
     ok("a bare string and a list of one name the same file");
+  },
+
+  // A link per favicon file the site ships, with its attributes.
+  favicons() {
+    const page = read("index.html");
+    const start = page.search(/<head\b/i);
+    if (start === -1) fail("index.html has no <head>");
+    const html = element(page, start, "head");
+    const links = [...html.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0]);
+    const want = [
+      ["apple-touch-icon", "apple-touch-icon.png", { sizes: "180x180" }],
+      ["icon", "favicon-32x32.png", { type: "image/png", sizes: "32x32" }],
+      ["icon", "favicon-16x16.png", { type: "image/png", sizes: "16x16" }],
+      ["manifest", "site.webmanifest", {}],
+      ["mask-icon", "safari-pinned-tab.svg", { color: "#1b1c1d" }],
+      ["shortcut icon", "favicon.ico", {}],
+    ];
+    for (const [rel, file, attrs] of want) {
+      const hit = links.find((l) => attr(l, "rel") === rel && (attr(l, "href") ?? "").endsWith("/" + file));
+      if (!hit) fail(`no <link rel="${rel}"> for ${file} in <head>`, links.join("\n"));
+      if (!existsSync(join(dir, file))) fail(`${file} is linked but was not published`);
+      for (const [k, v] of Object.entries(attrs))
+        if (attr(hit, k) !== v) fail(`${file}: ${k} is not ${v}`, hit);
+    }
+    const metas = [...html.matchAll(/<meta\b[^>]*>/gi)].map((m) => m[0]);
+    const tile = metas.find((m) => attr(m, "name") === "msapplication-TileColor");
+    if (attr(tile ?? "", "content") !== "#1b1c1d") fail("msapplication-TileColor is not #1b1c1d", tile ?? "(none)");
+    ok("every favicon the site ships is linked, with its attributes");
+  },
+
+  // params.social as a table: the build survives and the handle is read.
+  "social-map"(handle) {
+    const metas = [...read("index.html").matchAll(/<meta\b[^>]*>/gi)].filter((m) => attr(m[0], "name") === "twitter:site");
+    if (metas.length !== 1 || attr(metas[0][0], "content") !== "@" + handle)
+      fail(`want one twitter:site, @${handle}`, metas.map((m) => m[0]).join("\n") || "(no twitter:site)");
+    ok("a table-shaped params.social still names the site's account");
+  },
+
+  // A site's own tags.html and _variables.scss win over the theme's.
+  "site-overrides"(colour) {
+    let used = false;
+    const theme = [];
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      if (html.includes("site-tags-override")) used = true;
+      if (/feather-tag\b/.test(html)) theme.push(rel(p));
+    }
+    if (!used) fail("the site's tags.html was not used");
+    if (theme.length) fail("the theme's tags.html still rendered", theme.slice(0, 3).join("\n"));
+    if (!css().replace(/\s+/g, "").includes(`--background:${colour}`))
+      fail(`the site's _variables.scss did not reach --background (${colour})`);
+    ok("a site's tags.html and _variables.scss win over the theme's");
   },
 };
 
