@@ -1,0 +1,6 @@
+{{- /* The table entries of params.social (passed in); anything else is skipped. */ -}}
+{{- $out := slice -}}
+{{- range . -}}
+  {{- if reflect.IsMap . -}}{{- $out = $out | append . -}}{{- end -}}
+{{- end -}}
+{{- return $out -}}

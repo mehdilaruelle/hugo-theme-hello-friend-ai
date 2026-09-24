@@ -1,0 +1,9 @@
+{{ if .Params.Cover }}
+  <figure class="post-cover">
+    {{ partial "image.html" (dict "src" .Params.Cover "alt" (partial "title.html" .) "page" . "loading" "eager" "fetchpriority" "high") }}
+
+    {{ if .Params.CoverCaption }}
+      <figcaption class="center">{{ .Params.CoverCaption | markdownify }}</figcaption>
+    {{ end }}
+  </figure>
+{{ end }}

@@ -28,25 +28,9 @@
                        its own, so this changes the markup and not a pixel. */ -}}
                 <h1 class="post-title">{{ partial "title.html" . | markdownify }}</h1>
 
-                {{ if .Params.Cover }}
-                    <figure class="post-cover">
-                        {{ partial "image.html" (dict "src" .Params.Cover "alt" (partial "title.html" .) "page" . "loading" "eager" "fetchpriority" "high") }}
-                    
-                        {{ if .Params.CoverCaption }}
-                            <figcaption class="center">{{ .Params.CoverCaption | markdownify }}</figcaption>
-                        {{ end }}
-                    </figure>
-                {{ end }}
-                
-                {{/* posts/page.html says why the rendered entries. */}}
-                {{ if and (partial "switch.html" .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
-                    <hr />
-                    <aside id="toc">
-                    <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
-                        {{ .TableOfContents }}
-                    </aside>
-                    <hr />
-                {{ end }}
+                {{ partial "post-cover.html" . }}
+
+                {{ partial "toc.html" . }}
 
                 <div class="post-content">
                     {{ .Content }}
@@ -63,10 +47,7 @@
                 {{ partial "tags.html" . }}
                 {{ partial "categories.html" . }}
 
-                {{- /* Plain text when gitUrl is unset; posts/page.html says why. */ -}}
-                {{- if .GitInfo }}
-                    <p>{{ partial "icon.html" (dict "name" "git-commit") }}{{- with .Site.Params.gitUrl }}<a href="{{ . }}{{ $.GitInfo.Hash }}" target="_blank" rel="noopener">{{ $.GitInfo.AbbreviatedHash }}</a>{{ else }}{{ $.GitInfo.AbbreviatedHash }}{{ end }} @ {{ if .Site.Params.dateformNum }}{{ dateFormat .Site.Params.dateformNum .GitInfo.AuthorDate.Local }}{{ else }}{{ dateFormat "2006-01-02" .GitInfo.AuthorDate.Local }}{{ end }}</p>
-                {{- end }}
+                {{- partial "git-info.html" . }}
             </div>
             {{- end }}
         </main>

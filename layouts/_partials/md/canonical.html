@@ -1,0 +1,4 @@
+{{- /* The closing link back to the page. */ -}}
+---
+
+{{ partial "i18n.html" (dict "key" "llmsCanonical" "fallback" "Originally published at") | safeHTML }} {{ .Permalink | safeHTML }}

@@ -5,23 +5,6 @@
 {{- range .Pages -}}{{- $children = $children | append . -}}{{- end -}}
 {{- range where site.Pages "Kind" "taxonomy" -}}{{- $children = $children | append . -}}{{- end -}}
 {{- $children = partial "md/pages.html" $children -}}
-# {{ site.Title }}
-{{ with $desc }}
-> {{ partial "flatten.html" . }}
-{{ end }}
-{{- with partial "md/body.html" . | strings.TrimSpace }}
-{{ . }}
-{{ end }}
-{{- with site.Params.llmsNote }}
-{{ partial "flatten.html" . }}
-{{ end }}
-{{- with $children }}
-## {{ partial "i18n.html" (dict "key" "contents" "fallback" "Contents") }}
-
-{{ range . -}}
-- [{{ partial "md/label.html" . }}]({{ partial "md/url.html" . }}){{ with (partial "md/note.html" .) }}: {{ . }}{{ end }}
-{{ end }}
-{{- end }}
----
-
-{{ partial "i18n.html" (dict "key" "llmsCanonical" "fallback" "Originally published at") }} {{ .Permalink }}
+{{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
+{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "contents" "fallback" "Contents")) "pages" $children) }}
+{{ partial "md/canonical.html" . }}

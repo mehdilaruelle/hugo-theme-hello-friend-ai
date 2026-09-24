@@ -1,0 +1,9 @@
+{{- if .GitInfo }}
+  <p>
+    {{ partial "icon.html" (dict "name" "git-commit") }}
+
+    {{- /* gitUrl is an optional prefix; the hash stays text without one. */ -}}
+    {{- with .Site.Params.gitUrl }}<a href="{{ . }}{{ $.GitInfo.Hash }}" target="_blank" rel="noopener">{{ $.GitInfo.AbbreviatedHash }}</a>{{ else }}{{ $.GitInfo.AbbreviatedHash }}{{ end }}
+    @ {{ partial "date.html" (dict "date" .GitInfo.AuthorDate "format" .Site.Params.dateformNum "fallback" "2006-01-02") }}
+  </p>
+{{- end }}

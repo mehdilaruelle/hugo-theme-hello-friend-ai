@@ -31,27 +31,9 @@
           <div class="post-excerpt">{{ . }}</div>
         {{ end }}
 
-        {{ if .Params.Cover }}
-          <figure class="post-cover">
-            {{ partial "image.html" (dict "src" .Params.Cover "alt" (partial "title.html" .) "page" . "loading" "eager" "fetchpriority" "high") }}
+        {{ partial "post-cover.html" . }}
 
-            {{ if .Params.CoverCaption }}
-              <figcaption class="center">{{ .Params.CoverCaption | markdownify }}</figcaption>
-            {{ end }}
-          </figure>
-        {{ end }}
-
-        {{- /* The rendered entries: .TableOfContents is a non-empty string
-               even when empty, and .Fragments.Headings counts levels the
-               table leaves out -- h1 and h4 by Hugo's default 2..3. */ -}}
-        {{- if and (partial "switch.html" .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
-          <hr />
-          <aside id="toc">
-            <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
-            {{ .TableOfContents }}
-          </aside>
-          <hr />
-        {{- end }}
+        {{- partial "toc.html" . }}
 
         {{ with .Params.Audio }}
           {{- $files := partial "as-list.html" . }}
@@ -91,32 +73,16 @@
                  the build machine's zone, and a datetime in another offset can
                  name a different calendar day for anything near midnight. */ -}}
           <time datetime="{{ .Date.Local.Format "2006-01-02T15:04:05Z07:00" }}">
-            {{- if .Site.Params.dateformNumTime }}
-              {{ dateFormat .Site.Params.dateformNumTime .Date.Local }}
-            {{- else }}
-              {{ dateFormat "2006-01-02 15:04" .Date.Local }}
-            {{- end }}
+              {{ partial "date.html" (dict "date" .Date "format" .Site.Params.dateformNumTime "fallback" "2006-01-02 15:04") }}
           </time>
           {{- end }}
 
           {{ if $hasLastmod }}
-            {{ if .Site.Params.dateformNumTime }}
-              ({{ partial "i18n.html" (dict "key" "lastModified" "fallback" "Last updated") }}: {{ dateFormat .Site.Params.dateformNumTime .Lastmod.Local }})
-            {{ else }} 
-              ({{ partial "i18n.html" (dict "key" "lastModified" "fallback" "Last updated") }}: {{ dateFormat "2006-01-02 15:04" .Lastmod.Local }})
-            {{ end }}
+              ({{ partial "i18n.html" (dict "key" "lastModified" "fallback" "Last updated") }}: {{ partial "date.html" (dict "date" .Lastmod "format" .Site.Params.dateformNumTime "fallback" "2006-01-02 15:04") }})
           {{ end }}
         </p>{{ end }}
 
-        {{- if .GitInfo }}
-          <p>
-            {{ partial "icon.html" (dict "name" "git-commit") }}
-
-            {{- /* gitUrl is an optional prefix; the hash stays text without one. */ -}}
-            {{- with .Site.Params.gitUrl }}<a href="{{ . }}{{ $.GitInfo.Hash }}" target="_blank" rel="noopener">{{ $.GitInfo.AbbreviatedHash }}</a>{{ else }}{{ $.GitInfo.AbbreviatedHash }}{{ end }}
-            @ {{ if .Site.Params.dateformNum }}{{ dateFormat .Site.Params.dateformNum .GitInfo.AuthorDate.Local }}{{ else }}{{ dateFormat "2006-01-02" .GitInfo.AuthorDate.Local }}{{ end }}
-          </p>
-        {{- end }}
+        {{- partial "git-info.html" . }}
       </div>
 
       {{- if partial "switch.html" .Site.Params.EnableSharingButtons }}

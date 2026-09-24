@@ -3,8 +3,7 @@
 {{- if and . (reflect.IsMap .) -}}
   {{- warnidf "social-map-shape" "params.social is a map, so no social icons are rendered. The theme draws icons from the list form: a [[params.social]] entry per network, each with name and url." -}}
 {{- end -}}
-{{ range . -}}
-{{- if reflect.IsMap . -}}
+{{ range partial "social-list.html" . -}}
 {{- /* Over the keys, not by name: Hugo keeps the case a nested param was
        written in, and a quoted value is a string eq will not match. */ -}}
 {{- $newTab := false -}}
@@ -30,5 +29,4 @@
        announcing the glyph as well would say everything twice. Hidden on a
        wrapper, the way sharing-buttons.html does it, rather than on 102 svgs. */ -}}
 <span aria-hidden="true">{{ partial "svg.html" . }}</span></a> &nbsp;
-{{- end -}}
 {{- end -}}

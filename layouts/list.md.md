@@ -3,20 +3,6 @@
 {{- $children := .Pages -}}
 {{- if eq .Kind "taxonomy" -}}{{- $children = .Pages.ByTitle -}}{{- end -}}
 {{- $children = partial "md/pages.html" $children -}}
-# {{ partial "title.html" . }}
-{{ with partial "description.html" . }}
-> {{ partial "flatten.html" . }}
-{{ end }}
-{{- with partial "md/body.html" . | strings.TrimSpace }}
-{{ . }}
-{{ end }}
-{{- with $children }}
-## {{ partial "i18n.html" (dict "key" "contents" "fallback" "Contents") }}
-
-{{ range . -}}
-- [{{ partial "md/label.html" . }}]({{ partial "md/url.html" . }}){{ with (partial "md/note.html" .) }}: {{ . }}{{ end }}
-{{ end }}
-{{- end }}
----
-
-{{ partial "i18n.html" (dict "key" "llmsCanonical" "fallback" "Originally published at") }} {{ .Permalink }}
+{{ partial "md/header.html" (dict "page" . "title" (partial "title.html" .) "desc" (partial "description.html" .)) }}
+{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "contents" "fallback" "Contents")) "pages" $children) }}
+{{ partial "md/canonical.html" . }}

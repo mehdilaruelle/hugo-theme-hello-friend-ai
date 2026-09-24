@@ -1,34 +1,10 @@
-{{- /* llms.txt, the convention at llmstxt.org. Link resolution, label escaping
-       and note trimming are shared with the mirror, in _partials/md/. */ -}}
+{{- /* llms.txt, the convention at llmstxt.org. */ -}}
 {{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
-# {{ site.Title }}
-{{ with $desc }}
-> {{ partial "flatten.html" . }}
-{{ end }}
-{{- with partial "md/body.html" . | strings.TrimSpace }}
-{{ . }}
-{{ end }}
-{{- with site.Params.llmsNote }}
-{{ partial "flatten.html" . }}
-{{ end }}
+{{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
 {{- /* Not a list item: everything in a list here is a page. */ -}}
 {{- with .OutputFormats.Get "llmsfull" }}
 {{ partial "i18n.html" (dict "key" "llmsFullAt" "fallback" "The full text of every page below:") }} {{ .Permalink }}
 {{ end }}
-{{- $all := partial "md/pages.html" site.RegularPages -}}
-{{- $posts := where $all "Section" "in" (site.Params.mainSections | default (slice "posts")) -}}
-{{- $other := $all | complement $posts -}}
-{{- with $posts }}
-## {{ partial "i18n.html" (dict "key" "posts" "fallback" "Posts") }}
-
-{{ range . -}}
-- [{{ partial "md/label.html" . }}]({{ partial "md/url.html" . }}){{ with (partial "md/note.html" .) }}: {{ . }}{{ end }}
-{{ end }}
-{{- end }}
-{{- with $other }}
-## {{ partial "i18n.html" (dict "key" "pages" "fallback" "Pages") }}
-
-{{ range . -}}
-- [{{ partial "md/label.html" . }}]({{ partial "md/url.html" . }}){{ with (partial "md/note.html" .) }}: {{ . }}{{ end }}
-{{ end }}
-{{- end -}}
+{{- $s := partial "md/sections.html" . -}}
+{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "posts" "fallback" "Posts")) "pages" $s.posts) }}
+{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "pages" "fallback" "Pages")) "pages" $s.other) -}}
