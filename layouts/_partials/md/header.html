@@ -1,5 +1,5 @@
 {{- /* (dict "page" . "title" t "desc" d "note" bool). safeHTML: a partial is an HTML template. */ -}}
-# {{ .title | safeHTML }}
+# {{ .title | replaceRE "<" `\<` | safeHTML }}
 {{ with .desc }}
 > {{ partial "flatten.html" . | safeHTML }}
 {{ end }}
