@@ -8,4 +8,5 @@ tags = ["hugo"]
 The heading above holds a code span, `` `<b>` ``, and a bare tag, `<kbd>`.
 Outside the code span the theme escapes `<` so Goldmark does not drop the tag
 as raw HTML. Inside it, Goldmark escapes the text itself, so the theme leaves
-it alone: escaping it too used to show `&lt;b>` in the heading.
+it alone: escaping it too used to show the escape itself, not `<b>`, in the
+heading.
