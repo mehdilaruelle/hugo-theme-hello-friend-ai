@@ -388,6 +388,55 @@ in the `<head>`, so it too is in place before the first paint. It is a file
 rather than an inline script: a strict policy already allows `script-src
 'self'` for the theme's bundle, so this needs no hash and no `'unsafe-inline'`.
 
+## Colours
+
+Each themed colour is one CSS custom property on `:root`. The theme sets
+a light and a dark value for each, so a site changes a colour by setting the
+property in a stylesheet listed in `customCSS`:
+
+```css
+/* static/css/extra.css */
+:root {
+  --background: #fdf6e3;
+}
+```
+
+| property | what it colours |
+| --- | --- |
+| `--background` | the page |
+| `--background-secondary` | code blocks and inline code, the search field, hovered menu items |
+| `--background-header` | the header |
+| `--color` | body text |
+| `--color-variant` | emphasis: `em`, `i`, `strong` |
+| `--color-secondary` | muted text (post metadata and excerpts, heading anchors, the footer) and the scrollbar thumb |
+| `--border-color` | horizontal rules, the FAQ separators, the language switcher's frame |
+| `--table-color` | table borders and the header band |
+| `--color-strong` | text on a mid-tone ground: the table header, the hovered scrollbar |
+| `--control-border-color` | the frame of the copy button, the code-language label and the search field |
+
+A rule in `customCSS` wins over the theme in every state: whether the scheme
+comes from the operating system or from the toggle. That holds for the
+properties above and for a rule on an element, such as
+`.post-content th { border-color: … }`.
+
+So a value set on `:root` applies in both schemes. To change one scheme only,
+scope the rule to it. Light mode has two ways in, the toggle and the operating
+system:
+
+```css
+:root[data-theme="light"] { --background: #fdf6e3; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --background: #fdf6e3; }
+}
+```
+
+Dark mode is the same with `light` and `dark` swapped.
+
+To change the palette itself, copy the theme's `assets/scss/_variables.scss`
+to the same path in your site and edit the `$light-*` and `$dark-*` values.
+Hugo uses your file instead of the theme's, so copy all of it, not only the
+lines you change.
+
 ## Post thumbnails
 
 `params.enableThumbnails` shows each post's `cover` image beside its title in
@@ -527,7 +576,7 @@ templates.
 | `themeColor` | `<meta name="theme-color">`, the browser UI tint on mobile |
 | `ogImage` | the picture a social card falls back to when a page has no `cover`. Use PNG or JPEG — no platform renders an SVG card |
 | `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` for warns at build time — see [How to start](../README.md#how-to-start); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
-| `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL |
+| `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL. `customCSS` can set the theme's colours, see [Colours](#colours) |
 | `gitUrl` | prefix for the commit link under an article — the hash is appended to it, so it ends in `/commit/` or the like. Needs `enableGitInfo = true` at the root. Optional: with `enableGitInfo` on and no `gitUrl`, the hash is shown as plain text rather than linked |
 | `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics; both are required |
 | `llmsNote` | a line addressed to whatever reads `llms.txt`, printed under the summary. A page can set its own, see [Front matter](#front-matter) |
