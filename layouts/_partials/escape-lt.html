@@ -1,22 +1,52 @@
 {{- /* (dict "text" s "with" r): s with each < replaced by r, outside code spans only.
        Markdown escapes a code span's text itself, so escaping it too would show
-       the escape. A span opens on a run of backticks and closes on the next run
-       of the same length; a run with no match is literal text. */ -}}
-{{- $parts := findRE "`+|[^`]+" .text -}}
+       the escape. Follows CommonMark: outside a span a backslash escapes the next
+       character; a span opens on a run of backticks and closes on the next run of
+       the same length, inside which a backslash is literal; a run with no match
+       is literal text. */ -}}
+{{- $c := split .text "" -}}
+{{- $n := len $c -}}
 {{- $out := "" -}}
-{{- $close := -1 -}}
-{{- range $i, $p := $parts -}}
-  {{- if le $i $close -}}
-    {{- $out = print $out $p -}}
-  {{- else if hasPrefix $p "`" -}}
-    {{- range $j, $q := after (add $i 1) $parts -}}
-      {{- if and (lt $close $i) (eq $q $p) -}}
-        {{- $close = add $i 1 $j -}}
+{{- $skip := 0 -}}
+{{- range $i, $ch := $c -}}
+  {{- if lt $i $skip -}}
+  {{- else if and (eq $ch `\`) (lt (add $i 1) $n) -}}
+    {{- $out = print $out $ch (index $c (add $i 1)) -}}
+    {{- $skip = add $i 2 -}}
+  {{- else if eq $ch "`" -}}
+    {{- $run := 0 -}}
+    {{- $stop := false -}}
+    {{- range after $i $c -}}
+      {{- if and (not $stop) (eq . "`") -}}
+        {{- $run = add $run 1 -}}
+      {{- else -}}
+        {{- $stop = true -}}
       {{- end -}}
     {{- end -}}
-    {{- $out = print $out $p -}}
+    {{- $end := -1 -}}
+    {{- $cur := 0 -}}
+    {{- range $k, $d := after (add $i $run) $c -}}
+      {{- if eq $d "`" -}}
+        {{- $cur = add $cur 1 -}}
+      {{- else -}}
+        {{- if and (eq $end -1) (eq $cur $run) -}}
+          {{- $end = add $i $run $k -}}
+        {{- end -}}
+        {{- $cur = 0 -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if and (eq $end -1) (eq $cur $run) -}}
+      {{- $end = $n -}}
+    {{- end -}}
+    {{- if eq $end -1 -}}
+      {{- $end = add $i $run -}}
+    {{- end -}}
+    {{- $out = print $out (delimit (first (sub $end $i) (after $i $c)) "") -}}
+    {{- $skip = $end -}}
+  {{- else if eq $ch "<" -}}
+    {{- $out = print $out $.with -}}
   {{- else -}}
-    {{- $out = print $out (replaceRE "<" $.with $p) -}}
+    {{- $out = print $out $ch -}}
   {{- end -}}
 {{- end -}}
 {{- return $out -}}
