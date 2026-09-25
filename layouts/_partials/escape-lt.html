@@ -1,0 +1,22 @@
+{{- /* (dict "text" s "with" r): s with each < replaced by r, outside code spans only.
+       Markdown escapes a code span's text itself, so escaping it too would show
+       the escape. A span opens on a run of backticks and closes on the next run
+       of the same length; a run with no match is literal text. */ -}}
+{{- $parts := findRE "`+|[^`]+" .text -}}
+{{- $out := "" -}}
+{{- $close := -1 -}}
+{{- range $i, $p := $parts -}}
+  {{- if le $i $close -}}
+    {{- $out = print $out $p -}}
+  {{- else if hasPrefix $p "`" -}}
+    {{- range $j, $q := after (add $i 1) $parts -}}
+      {{- if and (lt $close $i) (eq $q $p) -}}
+        {{- $close = add $i 1 $j -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $out = print $out $p -}}
+  {{- else -}}
+    {{- $out = print $out (replaceRE "<" $.with $p) -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

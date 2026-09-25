@@ -248,6 +248,18 @@ const checks = {
     if (omitted.length) fail("raw HTML was dropped from a page", omitted.slice(0, 3).map(rel).join("\n"));
     ok("a tag in a title reaches the reader as text");
   },
+  // A code span in a title shows its text as written, in the page and its Markdown copy.
+  "title-code"(page, code) {
+    const html = read(page);
+    const h1 = [...html.matchAll(/<h1\b[^>]*>/gi)].find((m) => hasClass(m[0], "post-title"));
+    if (!h1) fail(`${page} has no post title`);
+    const inner = element(html, h1.index + h1[0].length, "h1");
+    const spans = [...inner.matchAll(/<code>([\s\S]*?)<\/code>/g)].map((m) => m[1].replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&"));
+    if (!spans.includes(code)) fail(`the title's code span does not show ${code}`, inner);
+    const md = read(page.replace(/index\.html$/, "index.md")).split("\n")[0];
+    if (!md.includes("`" + code + "`")) fail(`the Markdown copy's heading does not show \`${code}\``, md);
+    ok("a code span in a title shows its text as written");
+  },
 
   // #263 and #271: the card and the player name the same file, subpath kept.
   media(page, want) {
