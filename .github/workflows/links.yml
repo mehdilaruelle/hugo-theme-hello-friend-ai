@@ -203,6 +203,8 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public title-html \
             posts/2025/12/using-details-in-a-title-with-quotes/index.html '<details>'
+          node ../.github/scripts/check-invariants.mjs public title-code \
+            posts/2025/12/the-b-element-and-a-kbd-tag/index.html '<b>' '<kbd>'
 
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
