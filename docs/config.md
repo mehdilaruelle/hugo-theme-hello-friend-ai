@@ -414,10 +414,13 @@ property in a stylesheet listed in `customCSS`:
 | `--color-strong` | text on a mid-tone ground: the table header, the hovered scrollbar |
 | `--control-border-color` | the frame of the copy button, the code-language label and the search field |
 
-A rule in `customCSS` wins over the theme in every state: whether the scheme
+A rule in `customCSS` wins over the theme in every state, whether the scheme
 comes from the operating system or from the toggle. That holds for the
-properties above and for a rule on an element, such as
-`.post-content th { border-color: … }`.
+properties above, and for a rule on an element as long as its selector is at
+least as specific as the theme's: `customCSS` loads after the theme's
+stylesheet, so a tie goes to it. The theme styles table cells with
+`.post-content table th`, so `.post-content table th { border-color: … }` wins
+and `.post-content th` does not.
 
 So a value set on `:root` applies in both schemes. To change one scheme only,
 scope the rule to it. Light mode has two ways in, the toggle and the operating
