@@ -8,7 +8,11 @@
 {{- $t = replaceRE `^(\d{1,9})([.)])(\s|$)` `${1}\${2}${3}` $t -}}
 {{- $t = replaceRE `^([#>+*-])(\s|$)` `\${1}${2}` $t -}}
 {{- $t = replaceRE `^(#{2,6})(\s|$)` `\${1}${2}` $t -}}
-{{- $t = replaceRE `^(-(?:[ \t]*-){2,}|\*(?:[ \t]*\*){2,}|_(?:[ \t]*_){2,})[ \t]*$` `\${1}` $t -}}
+{{- /* Every marker of a rule, not only the first: "\---" left "--", which the
+       typographer made an en dash, and the h1 read "-–". */ -}}
+{{- if findRE `^(-(?:[ \t]*-){2,}|\*(?:[ \t]*\*){2,}|_(?:[ \t]*_){2,})[ \t]*$` $t -}}
+  {{- $t = replaceRE `([-*_])` `\${1}` $t -}}
+{{- end -}}
 {{- $t = replaceRE "^(`{3,}[^`]*|~{3,}.*)$" `\${1}` $t -}}
 {{- $t = replaceRE `^(\[[^\]]+\]:)` `\${1}` $t -}}
 {{- return $t -}}
