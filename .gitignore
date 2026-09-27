@@ -53,6 +53,10 @@ public-menu/
 # The unminified builds of the logo cursor, default and configured.
 public-cursor/
 public-cursor-set/
+# The fixture build of a site override, and the copy of exampleSite it
+# is layered over. Anchored: .github/fixtures/site-overrides/ is tracked.
+public-social-map/
+/site-overrides/
 **/resources/_gen/
 .hugo_build.lock
 hugo_stats.json
