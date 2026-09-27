@@ -24,7 +24,7 @@
         {{- if ge $limit 1 }}{{ $pages = first $limit $pages }}{{ end }}
         {{ range $pages }}
         <item>
-            <title>{{ partial "title.html" . }}</title>
+            <title>{{ partial "title-plain.html" . }}</title>
             <link>{{ .Permalink }}</link>
             {{- /* pubDate is optional, and the zero time publishes as
                    01 Jan 0001. lastBuildDate above is guarded the same way. */}}

@@ -22,14 +22,14 @@
   {{- if and $first (not (partial "is-svg.html" $first)) -}}{{- $img = $first -}}{{- end -}}
 {{- end -}}
 {{- with $img -}}
-  {{- $alt = partial "title.html" $ -}}
+  {{- $alt = partial "title-plain.html" $ -}}
   {{- $owned = true -}}
 {{- end -}}
 {{- if not $img -}}
   {{- with .Params.cover -}}
     {{- if not (partial "is-svg.html" .) -}}
       {{- $img = . -}}
-      {{- $alt = or $.Params.coverCaption (partial "title.html" $) -}}
+      {{- $alt = or $.Params.coverCaption (partial "title-plain.html" $) -}}
       {{- $owned = true -}}
     {{- end -}}
   {{- end -}}

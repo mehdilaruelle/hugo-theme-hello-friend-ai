@@ -108,7 +108,7 @@
     {{- /* A block is its own template, so the pager above is out of scope and
            canonical.html is asked again rather than the paginator rebuilt. */ -}}
     {{- $page := (partial "canonical.html" .).pager -}}
-    {{- $title := printf "%s :: %s" (partial "pager-suffix.html" (dict "text" (partial "title.html" .) "pager" $page)) site.Title -}}
+    {{- $title := printf "%s :: %s" (partial "pager-suffix.html" (dict "text" (partial "title-plain.html" .) "pager" $page)) site.Title -}}
     {{- if .IsHome -}}
       {{- $title = site.Title -}}
       {{- with site.Params.Subtitle }}{{ $title = printf "%s — %s" $title . }}{{ end -}}

@@ -1,0 +1,14 @@
+{{- /* (dict "text" s "with" r): a title made safe for markdownify, which it
+       renders as inline Markdown only. escape-lt.html keeps a tag as text; a
+       leading block marker is escaped too, or "1. Getting started" came out as
+       a list inside the h1 and lost its "1.". The same goes for a rule ("---"),
+       a code fence ("```" with no closing run) and a link reference definition
+       ("[a]: /b"), which rendered as an hr, a code block or nothing at all. */ -}}
+{{- $t := partial "escape-lt.html" (dict "text" (strings.TrimLeft " \t" .text) "with" .with) -}}
+{{- $t = replaceRE `^(\d{1,9})([.)])(\s|$)` `${1}\${2}${3}` $t -}}
+{{- $t = replaceRE `^([#>+*-])(\s|$)` `\${1}${2}` $t -}}
+{{- $t = replaceRE `^(#{2,6})(\s|$)` `\${1}${2}` $t -}}
+{{- $t = replaceRE `^(-(?:[ \t]*-){2,}|\*(?:[ \t]*\*){2,}|_(?:[ \t]*_){2,})[ \t]*$` `\${1}` $t -}}
+{{- $t = replaceRE "^(`{3,}[^`]*|~{3,}.*)$" `\${1}` $t -}}
+{{- $t = replaceRE `^(\[[^\]]+\]:)` `\${1}` $t -}}
+{{- return $t -}}
