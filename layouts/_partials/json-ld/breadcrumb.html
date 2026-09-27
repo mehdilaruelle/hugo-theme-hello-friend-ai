@@ -17,7 +17,7 @@
     {{- $items = $items | append (dict "@type" "ListItem" "position" $i "name" $name "item" .Permalink) -}}
   {{- end -}}
 
-  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title.html" $)) -}}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "name" (partial "title-plain.html" $)) -}}
   {{- $trail := dict
     "@context" "https://schema.org"
     "@type" "BreadcrumbList"

@@ -25,7 +25,7 @@
     <h2 class="related__title">{{ partial "i18n.html" (dict "key" "relatedPosts" "fallback" "Related posts") }}</h2>
     <ul class="related__list">
       {{- range . }}
-      <li><a href="{{ .Permalink }}">{{ partial "title.html" . }}</a></li>
+      <li><a href="{{ .Permalink }}">{{ partial "title-plain.html" . }}</a></li>
       {{- end }}
     </ul>
   </aside>

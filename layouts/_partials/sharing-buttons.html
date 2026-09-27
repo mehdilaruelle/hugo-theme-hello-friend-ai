@@ -1,4 +1,4 @@
-{{- $title := partial "title.html" . -}}
+{{- $title := partial "title-plain.html" . -}}
 {{- $media := (partial "social-image.html" .).url -}}
 {{- define "partials/inline/share-label" -}}
   {{- partial "i18n.html" (dict "key" "shareOn" "args" (dict "Network" .) "fallback" (printf "Share on %s" .)) -}}

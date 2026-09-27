@@ -205,6 +205,12 @@ jobs:
             posts/2025/12/using-details-in-a-title-with-quotes/index.html '<details>'
           node ../.github/scripts/check-invariants.mjs public title-code \
             posts/2025/12/the-b-element-and-a-kbd-tag/index.html '<b>' '<kbd>'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/using-details-in-a-title-with-quotes/index.html 'Using <details> in a title, with “quotes”'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/the-b-element-and-a-kbd-tag/index.html 'The <b> element, and a <kbd> tag'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/a-title-that-opens-like-a-list/index.html '1. A title that opens like a list'
 
       # Nothing else here would notice: the markup is valid either way.
       - name: Check the site switches honour a quoted value
