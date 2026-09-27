@@ -267,19 +267,32 @@ const checks = {
   // Outside its own h1 a title is plain text, and the h1 renders inline Markdown only.
   "title-plain"(page, want) {
     const html = read(page);
-    const decode = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#34;|&quot;/g, '"').replace(/&amp;/g, "&");
+    const quotes = { ldquo: "\u201c", rdquo: "\u201d", lsquo: "\u2018", rsquo: "\u2019" };
+    const decode = (s) => s.replace(/&(ldquo|rdquo|lsquo|rsquo);/g, (_, q) => quotes[q])
+      .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#34;|&quot;/g, '"').replace(/&amp;/g, "&");
     const h1 = [...html.matchAll(/<h1\b[^>]*>/gi)].find((m) => hasClass(m[0], "post-title"));
     if (!h1) fail(`${page} has no post title`);
     const inner = element(html, h1.index + h1[0].length, "h1");
     if (/<(ol|ul|li|blockquote|h[1-6]|p)\b/i.test(inner)) fail("the h1 holds block markup", inner);
+    // The h1 still reads the whole title: an escaped "1." is kept, not dropped.
+    if (decode(text(inner)) !== want) fail(`the h1 does not read ${want}`, inner);
+    const metas = [...html.matchAll(tagRe("meta"))];
+    const site = decode(attr(metas.find((m) => attr(m[0], "property") === "og:site_name")?.[0] ?? "", "content") ?? "");
     const named = {
       title: decode((html.match(/<title>([\s\S]*?)<\/title>/) ?? ["", ""])[1]),
-      "og:title": attr([...html.matchAll(tagRe("meta"))].find((m) => attr(m[0], "property") === "og:title")?.[0] ?? "", "content") ?? "",
-      "twitter:title": attr([...html.matchAll(tagRe("meta"))].find((m) => attr(m[0], "name") === "twitter:title")?.[0] ?? "", "content") ?? "",
+      "og:title": attr(metas.find((m) => attr(m[0], "property") === "og:title")?.[0] ?? "", "content") ?? "",
+      "twitter:title": attr(metas.find((m) => attr(m[0], "name") === "twitter:title")?.[0] ?? "", "content") ?? "",
       headline: [...html.matchAll(/<script type="?application\/ld\+json"?>([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]).headline).find(Boolean) ?? "",
     };
+    // Each field exactly: the fixtures are single pages, so no pager suffix.
+    const expected = {
+      title: `${want} :: ${site}`,
+      "og:title": want,
+      "twitter:title": want,
+      headline: Array.from(want).slice(0, 110).join(""),
+    };
     for (const [where, v] of Object.entries(named)) {
-      if (!decode(v).startsWith(want)) fail(`${where} does not start with ${want}`, v);
+      if (decode(v) !== expected[where]) fail(`${where} is not ${expected[where]}`, v);
     }
     // Every list entry and previous/next button that names the page names it plainly.
     const head = want.slice(0, 12);

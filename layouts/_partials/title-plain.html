@@ -1,11 +1,13 @@
 {{- /* A page's title as plain text, for everywhere but its own h1 and the
        Markdown outputs: the tab, the cards, JSON-LD, the lists, the feed. The h1
        renders a title's inline Markdown, so `code` and *emphasis* elsewhere
-       showed their backticks and asterisks. A title with no Markdown is returned
-       as written. */ -}}
+       showed their backticks and asterisks. A title that renders to no tag and
+       holds no escape or entity is returned as written: through markdownify its
+       straight quotes would turn curly, and the search box would no longer find
+       "don't". */ -}}
 {{- $title := partial "title.html" . -}}
 {{- $html := partial "title-inline.html" (dict "text" $title "with" "&lt;") | markdownify -}}
-{{- if strings.Contains $html "<" -}}
+{{- if or (strings.Contains $html "<") (strings.ContainsAny $title `\&`) -}}
   {{- $title = $html | plainify | htmlUnescape -}}
 {{- end -}}
 {{- return $title -}}
