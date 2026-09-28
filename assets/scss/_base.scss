@@ -209,10 +209,17 @@ figure {
     }
   }
 
+  // A mixed colour, not opacity: opacity dims a code chip's text and ground
+  // together, to 3.6:1 in the dark theme.
   figcaption {
     font-size: 14px;
     margin-top: 5px;
-    opacity: 0.8;
+    color: var(--color);
+    color: color-mix(in srgb, var(--color) 80%, var(--background));
+
+    code {
+      color: var(--color);
+    }
 
     &.left {
       text-align: left;
