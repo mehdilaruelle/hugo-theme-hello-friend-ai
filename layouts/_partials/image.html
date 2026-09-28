@@ -1,7 +1,8 @@
 {{- /* One content image. Resizing needs the file to resolve as a resource: a
        page bundle, or assets/. A file under static/ is not one, so it goes out
-       whole and unmeasured. Takes src, alt, position, style, page, loading,
-       fetchpriority, maxWidth, sizes, fill. */ -}}
+       whole and unmeasured, as does a remote one, which is never fetched.
+       Takes src, alt, position, style, page, loading, fetchpriority, maxWidth,
+       sizes, fill. */ -}}
 
 {{- $src := .src -}}
 {{- $alt := .alt | default "" -}}
@@ -29,8 +30,36 @@
 {{- if le $maxWidth 0 }}{{ $maxWidth = 1400 }}{{ end -}}
 {{- $rendered := $img -}}
 {{- $measurable := false -}}
+{{- $svgWidth := 0 -}}
+{{- $svgHeight := 0 -}}
 {{- if $img -}}{{- if reflect.IsImageResourceWithMeta $img -}}
   {{- $measurable = gt $img.Width 0 -}}
+{{- else if eq $img.MediaType.SubType "svg" -}}
+  {{- /* An SVG is never decoded, so its size is read from its root element. */ -}}
+  {{- $tag := "" -}}
+  {{- with findRE `<svg\b[^>]*>` $img.Content 1 -}}{{- $tag = index . 0 -}}{{- end -}}
+  {{- $num := `([-+]?[\d.]+(?:[eE][-+]?\d+)?)` -}}
+  {{- $px := `\s%s\s*=\s*["']\s*%s\s*(?:px)?\s*["']` -}}
+  {{- $absolute := `\s%s\s*=\s*["'][^"'%%]*["']` -}}
+  {{- $w := findRESubmatch (printf $px "width" $num) $tag 1 -}}
+  {{- $h := findRESubmatch (printf $px "height" $num) $tag 1 -}}
+  {{- if and $w $h -}}
+    {{- $svgWidth = int (math.Round (float (index $w 0 1))) -}}
+    {{- $svgHeight = int (math.Round (float (index $h 0 1))) -}}
+  {{- else if not (or (findRE (printf $absolute "width") $tag) (findRE (printf $absolute "height") $tag)) -}}
+    {{- /* No size of its own: the browser stretches it to the column, so only
+           the ratio is declared, at a width max-width: 100% brings back to it. */ -}}
+    {{- $n := printf `\s*%s` $num -}}
+    {{- with findRESubmatch (printf `\sviewBox\s*=\s*["']%s[\s,]%s[\s,]%s[\s,]%s` $n $n $n $n) $tag 1 -}}
+      {{- $vw := float (index . 0 3) -}}
+      {{- $vh := float (index . 0 4) -}}
+      {{- if and (gt $vw 0) (gt $vh 0) -}}
+        {{- $svgWidth = 1400 -}}
+        {{- $svgHeight = int (math.Round (div (mul 1400 $vh) $vw)) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if or (le $svgWidth 0) (le $svgHeight 0) -}}{{- $svgWidth = 0 -}}{{- end -}}
 {{- end -}}{{- end -}}
 {{- /* Only widths below the source: upscaling invents detail and pays for it. */ -}}
 {{- $widths := slice 480 800 1200 -}}
@@ -80,7 +109,8 @@
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
     {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
-    {{- if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"{{ end }} alt="{{ $alt | plainify }}"
+    {{- if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
+    {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
     {{- with .position }} class="{{ . }}"{{ end }}
     {{- with .style }} style="{{ . | safeCSS }}"{{ end }} />
 {{- end -}}
