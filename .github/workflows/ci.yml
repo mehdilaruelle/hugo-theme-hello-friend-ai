@@ -30,7 +30,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Check the pull request title
-        uses: amannn/action-semantic-pull-request@v6
+        uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -42,10 +42,13 @@ jobs:
     timeout-minutes: 5
     if: github.event_name != 'schedule'
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Check the translations against en.toml
         run: node .github/scripts/check-i18n.mjs .
+
+      - name: Check every action is pinned to a commit SHA
+        run: node .github/scripts/check-pinned-actions.mjs .
 
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
@@ -73,7 +76,7 @@ jobs:
     timeout-minutes: 10
     if: github.event_name != 'schedule'
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: hello-friend-ai
 
@@ -126,7 +129,7 @@ jobs:
     timeout-minutes: 10
     if: github.event_name != 'schedule'
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: hello-friend-ai
 
@@ -161,7 +164,7 @@ jobs:
     timeout-minutes: 10
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: hello-friend-ai
 
