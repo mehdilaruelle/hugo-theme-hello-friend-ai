@@ -564,8 +564,14 @@ Inter loads with `font-display: swap`, so a page is painted in whatever the
 system offers and repainted in Inter. Two fonts with different metrics take
 different amounts of room, so that second paint used to move everything under
 the text. The theme declares fallback faces told to occupy exactly the space
-Inter will, so the swap costs nothing, and preloads the regular weight so it
-happens sooner.
+Inter will, so the swap costs nothing, and preloads the regular and bold
+weights, which every page draws, so it happens sooner.
+
+Each face is split by script into `static/fonts/Inter-<Face>.<subset>.woff2`,
+where the subset is `latin`, `latin-ext`, `cyrillic`, `greek` or `symbols`,
+and a page downloads only the files whose `unicode-range` it draws: a page in
+English fetches about 25 KB per weight instead of 100.
+`.github/scripts/subset-fonts.py` writes them from the full faces.
 
 There is **one face per weight** the theme asks Inter for. A fallback family
 with a single face is matched for every weight, and the browser is left to
@@ -585,7 +591,7 @@ article:
 
 ```text
 unitsPerEm 2816, winAscent 2728, winDescent 680, lineGap 0
-  read from static/fonts/Inter-Regular.woff and Inter-Bold.woff, head and OS/2
+  read from static/fonts/Inter-Regular and Inter-Bold, head and OS/2
   the three weights share them
 Inter is 105.39% the width of Arial
 Inter Medium is 100.16% the width of Arial Bold
@@ -630,10 +636,10 @@ was.
 `fontFallback = true` keeps all three at the measured defaults, which is also
 what an unset `fontFallback` does.
 
-`.github/scripts/font-metrics.mjs` reads the first four numbers out of any WOFF:
+`.github/scripts/font-metrics.mjs` reads the first four numbers out of any WOFF or WOFF2:
 
 ```bash
-node .github/scripts/font-metrics.mjs static/fonts/Inter-Bold.woff
+node .github/scripts/font-metrics.mjs static/fonts/Inter-Bold.latin.woff2
 ```
 
 The width ratio needs a rendering engine rather than a parser, so measure it in
