@@ -50,6 +50,11 @@ jobs:
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
 
+      # The README points into docs/ and docs/ back into it, by heading; a
+      # section that moves or is renamed breaks those links silently.
+      - name: Check the links between README, CONTRIBUTING and docs/
+        run: node .github/scripts/check-doc-links.mjs .
+
       # links.yml proves the switches it lists; this finds the ones it does not.
       - name: Check every switch is read through switch.html
         run: node .github/scripts/check-switches.mjs .
