@@ -2,10 +2,6 @@
     <div class="content">
         <main id="main" class="post">
 
-            {{- /* The condition moved out to the container, and a paragraph
-                   closing tag that was never opened went with it. Every page
-                   without a translation used to carry an empty post-info div
-                   holding nothing but that stray tag. */ -}}
             {{ if .IsTranslated }}
                 <div class="post-info">
                     {{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
@@ -17,15 +13,9 @@
 
             <article>
                 {{- /* h1, as posts use: a page whose title is an h2 has no
-                       top-level heading at all, which leaves a screen reader
-                       nothing to land on and a crawler no subject. .post-title
-                       carries the size, so this changes the outline and not the
-                       look.
-
-                       Not a link: it pointed at the page it was already on,
-                       which takes a visitor nowhere and puts one more edge in
-                       every page's link graph. The anchor carried no styling of
-                       its own, so this changes the markup and not a pixel. */ -}}
+                       top-level heading, which leaves a screen reader nothing to
+                       land on and a crawler no subject. .post-title carries the
+                       size. Not a link: it would point at the page it is on. */ -}}
                 <h1 class="post-title">{{ partial "title-inline.html" (dict "text" (partial "title.html" .) "with" "&lt;") | markdownify }}</h1>
 
                 {{ partial "post-cover.html" . }}

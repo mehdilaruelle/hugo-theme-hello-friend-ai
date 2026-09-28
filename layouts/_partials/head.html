@@ -28,16 +28,10 @@
 {{- with partial "description-meta.html" . }}
 <meta name="description" content="{{ . }}" />
 {{- end }}
-{{- /* No meta keywords tag: unread since about 2009, and it disagreed with the
-       microdata twin beside it -- one read .Params.tags as written, the other
-       through GetTerms, so a page shipped both "hugo" and "Hugo". The tags are
-       still in the keywords of its BlogPosting. params.keywords is now read by
-       nothing, left undocumented rather than made an error. */ -}}
 {{- with .Site.Params.themeColor }}
 <meta name="theme-color" content="{{ . }}" />
 {{- end }}
-{{- /* From canonical.html, because opengraph.html and json-ld.html need the
-       same two answers and used to work them out for themselves. */ -}}
+{{- /* From canonical.html, which opengraph.html and json-ld.html ask as well. */ -}}
 {{- $self := partial "canonical.html" . -}}
 {{- $canonical := $self.url -}}
 {{- $pager := $self.pager -}}
@@ -119,7 +113,6 @@
     <title>{{ $title }}</title>
 {{ end }}
 
-<!-- CSS -->
 {{- $scss := resources.Get "scss/main.scss" -}}
 {{- $opts := dict "targetPath" "main.css" "outputStyle" "compressed" "enableSourceMap" hugo.IsDevelopment "transpiler" "dartsass" -}}
 {{- with $scss -}}
@@ -178,7 +171,6 @@
 {{- /* The body weight, and so the first thing a swap repaints. */ -}}
 <link rel="preload" href="{{ "fonts/Inter-Regular.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
 
-<!-- Icons -->
 {{- partial "favicons.html" . }}
 
 {{ partial "schema.html" . }}
@@ -187,22 +179,18 @@
 
 {{ partial "opengraph.html" . }}
 
-<!-- RSS -->
 {{ with .OutputFormats.Get "rss" -}}
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 {{ end -}}
 
-<!-- Custom head tags -->
 {{- if templates.Exists "_partials/extra-head.html" -}}
     {{ partial "extra-head.html" . }}
 {{- end }}
 
-<!-- Google Analytics internal template -->
 {{- if .Site.Config.Services.GoogleAnalytics.ID }}
     {{ partial "google_analytics.html" . }}
 {{- end }}
 
-<!-- Plausible.io -->
 {{- if $.Site.Params.plausibleDataDomain }}
     <script defer data-domain="{{ .Site.Params.plausibleDataDomain }}" src="{{ .Site.Params.plausibleScriptSource }}"></script>
 {{- end}}

@@ -44,10 +44,9 @@
                                 <li class="post-item">
                                     <a href="{{.Permalink}}" class="post-item-inner{{ if $thumbnail }} post-item-inner--thumbnail{{ end }}{{ if $excerpt }} post-item-inner--excerpt{{ end }}">
                                         {{- if $thumbnail }}
-                                            {{- /* Through image.html, like every other picture here:
-                                                   thumbnail.html shipped a 900 px file into a 52 px box
-                                                   and shifted the row. 156 square is that box at 3x.
-                                                   alt is empty -- the title beside it names the link. */ -}}
+                                            {{- /* Through image.html, like every other picture here: 156
+                                                   square is the thumbnail box at 3x. alt is empty -- the
+                                                   title beside it names the link. */ -}}
                                             {{ partial "image.html" (dict "src" .Params.cover "alt" "" "page" . "position" "post-thumbnail" "fill" "156x156") }}
                                         {{- end }}
                                         <span class="post-title">{{ partial "title-plain.html" . }}</span>

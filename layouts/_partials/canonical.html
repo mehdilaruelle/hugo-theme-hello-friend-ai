@@ -1,17 +1,16 @@
 {{- /*
-  The URL this page names as its own, and which pager of a list it is. Returns
+The URL this page names as its own, and which pager of a list it is. Returns
   a map with url, pager, and the neighbouring pagers' URLs as prev and next --
   empty strings off a paginated list, so a caller can drop the tag.
-
-  Every pager shares one .Permalink, so page 2 and beyond used to name page 1
-  as their canonical -- telling a search engine they are duplicates of it, which
-  is the opposite of what pagination is for.
-
+  
+  Every pager shares one .Permalink; naming it on page 2 and beyond would tell a
+  search engine they are duplicates of page 1, which is the opposite of what
+  pagination is for.
+  
   The paginator is built only on the kinds list.html paginates: building it
   elsewhere would write the /page/2/ output files for nothing.
-
-  Here rather than in head.html, opengraph.html and json-ld.html, which all need
-  the same answer and used to work it out apart.
+  
+  Here because head.html, opengraph.html and json-ld.html all need the answer.
 */ -}}
 {{- $canonical := .Permalink -}}
 {{- $pager := 1 -}}
