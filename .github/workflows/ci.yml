@@ -155,6 +155,79 @@ jobs:
           esac
           echo "$out" | grep -q "Dart Sass is required" \
             || { echo "::error::failed, but not with the message naming what to install"; exit 1; }
+
+  # The README's PageSpeed scores are measured by hand; this re-measures them on
+  # every change. The demo follows the system theme, so it is audited light; the
+  # showcase sets defaultTheme = "dark".
+  lighthouse:
+    name: Lighthouse scores
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event_name != 'schedule'
+    env:
+      # 13, not the 12 that @lhci/cli bundles: 12 marks robots.txt's
+      # Content-Signal line an error, and has no agentic-browsing category.
+      LIGHTHOUSE_VERSION: 13.5.0
+      SITE: http://localhost:8080/hugo-theme-hello-friend-ai
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: hello-friend-ai
+
+      - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
+        run: |
+          curl -sSLf -o hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+
+      - name: Install Dart Sass ${{ env.DART_SASS_VERSION }}
+        run: |
+          curl -sSLf \
+            "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" \
+            | tar -xz
+          echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
+
+      # Laid out as Pages serves them: the demo under the repository's path, the
+      # showcase inside it, and a favicon at the root for the browser's own
+      # /favicon.ico request, which github.io answers and the demos do not.
+      - name: Build both sites as Pages lays them out
+        working-directory: hello-friend-ai
+        run: |
+          (cd exampleSite && hugo --themesDir ../.. --gc --minify --panicOnWarning \
+            --baseURL "${SITE}/" -d "${RUNNER_TEMP}/www/hugo-theme-hello-friend-ai")
+          (cd showcaseSite && hugo --themesDir ../.. --gc --minify --panicOnWarning \
+            --config ../exampleSite/config.toml,config.toml \
+            --baseURL "${SITE}/showcase/" -d "${RUNNER_TEMP}/www/hugo-theme-hello-friend-ai/showcase")
+          cp .github/fixtures/site-overrides/static/favicon.ico "${RUNNER_TEMP}/www/"
+
+      - name: Serve them
+        run: |
+          python3 -m http.server 8080 -d "${RUNNER_TEMP}/www" >/dev/null 2>&1 &
+          for _ in $(seq 20); do curl -sf "${SITE}/" >/dev/null && exit 0; sleep 0.5; done
+          echo "::error::the server never answered"; exit 1
+
+      # The two articles hold a code span in a caption and in a callout, which
+      # each fell under 4.5:1 in the dark theme. A slug follows its title, so a
+      # page that moves fails here rather than being audited as a 404.
+      - name: Audit
+        run: |
+          mkdir -p "${RUNNER_TEMP}/lh"
+          i=0
+          for path in \
+            / /posts/ \
+            /showcase/ /showcase/posts/ /showcase/ar/ \
+            /showcase/posts/2026/01/everything-an-article-is-made-of/ \
+            /showcase/posts/2026/02/diagrams-and-everything-else-on-this-page/
+          do
+            curl -sf -o /dev/null "${SITE}${path}" || { echo "::error::${path} is not served"; exit 1; }
+            i=$((i + 1))
+            npx --yes "lighthouse@${LIGHTHOUSE_VERSION}" "${SITE}${path}" --quiet \
+              --chrome-flags="--headless=new" \
+              --output=json --output-path="${RUNNER_TEMP}/lh/${i}.json"
+          done
+
+      - name: Every category but performance is 100
+        run: node hello-friend-ai/.github/scripts/check-lighthouse.mjs "${RUNNER_TEMP}"/lh/*.json
   latest:
     name: Build exampleSite (latest Hugo, canary)
     runs-on: ubuntu-latest
