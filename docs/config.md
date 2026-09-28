@@ -388,6 +388,12 @@ in the `<head>`, so it too is in place before the first paint. It is a file
 rather than an inline script: a strict policy already allows `script-src
 'self'` for the theme's bundle, so this needs no hash and no `'unsafe-inline'`.
 
+Every page carries `<meta name="darkreader-lock">`, which tells Dark Reader and
+the browser night modes built on it, such as Brave's, to leave the page alone.
+They repaint a site that already has a dark mode, and on this one they left
+Mermaid labels light on light. To let them run anyway, override
+`layouts/_partials/head.html` in your site.
+
 ## Colours
 
 Each themed colour is one CSS custom property on `:root`. The theme sets
