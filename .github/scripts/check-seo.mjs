@@ -1,4 +1,4 @@
-// Asserts the nine invariants the theme's head and structured data rest on.
+// Asserts the ten invariants the theme's head and structured data rest on.
 //
 // Each is something a build reports nothing about: a page can name two URLs as
 // its own, announce a card picture no platform renders, or carry two
@@ -226,6 +226,12 @@ for (const file of walk(root, ".html")) {
       failures.push([file, `headline "${headline}" against og:title "${ogTitle}"`, "the structured data names a third title"]);
     }
   }
+
+  // 10. The Dark Reader opt-out. Nothing fails without it: the diagrams just
+  //     turn light on light for readers using Brave's night mode.
+  if (!named.has("darkreader-lock")) {
+    failures.push([file, "no darkreader-lock meta", "night modes would repaint the theme's own dark mode"]);
+  }
 }
 
 // A directory that exists and holds no pages is the shape a wrong path takes,
@@ -246,3 +252,4 @@ console.log("every JSON-LD block parses, an owned picture is in its BlogPosting,
 console.log("no description or alt carries an entity that was escaped twice");
 console.log("the meta, Open Graph and Twitter descriptions are the same sentence");
 console.log("the title element, og:title, twitter:title and the headline name one page");
+console.log("every page opts out of Dark Reader");

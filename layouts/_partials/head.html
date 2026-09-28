@@ -8,6 +8,9 @@
 <meta name="robots" content="max-image-preview:large" />
 {{ end }}
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{{- /* The theme has its own dark mode. Dark Reader, and the night modes built on
+       it such as Brave's, repaint it anyway and leave diagram labels unreadable. */}}
+<meta name="darkreader-lock">
 {{- /* Blocking and before the stylesheet: it has to run before first paint.
        Only where the toggle exists, or a stored choice would restore a scheme
        the site no longer offers. */ -}}
