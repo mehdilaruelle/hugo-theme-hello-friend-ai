@@ -63,3 +63,6 @@ hugo_stats.json
 
 # Node
 node_modules/
+
+# Lighthouse CI reports.
+.lighthouseci/

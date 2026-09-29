@@ -13,6 +13,11 @@ the board**:
 
 Measured on 13 September 2026 with Lighthouse 13.4.1, on these URLs.
 
+The CI holds the three that do not vary to it: `lighthouse.yml` builds both
+sites as Pages lays them out and fails a pull request that drops accessibility,
+best practices or SEO below 100 on six pages, or shifts the layout at all. Mobile
+performance moves from one runner to the next, so below 95 it only warns.
+
 **Read a mobile performance score as a range.** The demo's home page has read
 99, 97 and 97 before this 100, with Speed Index the part that moved most: 1.5 s,
 3.8 s and 3.9 s, now 1.1 s. The theme changed between some of those runs,

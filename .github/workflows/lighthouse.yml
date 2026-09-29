@@ -1,0 +1,71 @@
+name: Lighthouse
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HUGO_VERSION: 0.164.0
+  DART_SASS_VERSION: 1.102.0
+  LHCI_VERSION: 0.15.1
+
+jobs:
+  lighthouse:
+    name: Lighthouse budgets
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: hello-friend-ai
+
+      - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
+        run: |
+          curl -sSLf -o hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i hugo.deb
+
+      - name: Install Dart Sass ${{ env.DART_SASS_VERSION }}
+        run: |
+          curl -sSLf \
+            "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" \
+            | tar -xz
+          echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
+
+      # Laid out as Pages deploys them: the showcase inside the demo, both
+      # under a subpath.
+      - name: Build both sites
+        run: |
+          site="${RUNNER_TEMP}/site"
+          (cd hello-friend-ai/exampleSite && hugo --themesDir ../.. --gc --minify --panicOnWarning \
+            --baseURL "http://localhost:8080/subpath/" -d "${site}/subpath")
+          (cd hello-friend-ai/showcaseSite && hugo --themesDir ../.. --gc --minify --panicOnWarning \
+            --config ../exampleSite/config.toml,config.toml \
+            --baseURL "http://localhost:8080/subpath/showcase/" -d "${site}/subpath/showcase")
+
+      - name: Serve them
+        run: |
+          python3 -m http.server 8080 --bind 127.0.0.1 -d "${RUNNER_TEMP}/site" >/dev/null 2>&1 &
+          for _ in $(seq 20); do curl -sf http://localhost:8080/subpath/ >/dev/null && exit 0; sleep 0.5; done
+          echo "the server never answered" >&2
+          exit 1
+
+      - name: Audit
+        working-directory: hello-friend-ai
+        run: npx --yes "@lhci/cli@${LHCI_VERSION}" autorun --config=.github/lighthouserc.json
+
+      - if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-reports
+          path: hello-friend-ai/.lighthouseci/
+          if-no-files-found: ignore
