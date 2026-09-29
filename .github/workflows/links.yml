@@ -123,6 +123,10 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-image-sizing.mjs public
 
+      - name: Check each SVG reserves the box it will fill
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-svg-sizing.mjs public
+
       # pre is the scroll container, and it used to be the positioned box too,
       # so the copy button and the language label travelled with the scrolled
       # code and ended up on top of it. Deleting the wrapper would build green
