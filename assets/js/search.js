@@ -44,13 +44,15 @@
       })
       .then((data) => {
         index = data.map((p) => {
+          // A list, but an older index or a site's own may carry a string.
+          const tags = [].concat(p.tags || []).join(" ");
           return {
             page: p,
             haystack: fold(
-              [p.title, (p.tags || []).join(" "), p.summary, p.content].join(" ")
+              [p.title, tags, p.summary, p.content].join(" ")
             ),
             title: fold(p.title),
-            tags: fold((p.tags || []).join(" ")),
+            tags: fold(tags),
           };
         });
         return index;
