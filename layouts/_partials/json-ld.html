@@ -11,9 +11,8 @@
 {{- /* Site-level: $person is the site owner, whatever the page's author. */ -}}
 {{- $siteAuthor := (partial "site-author.html" .).name -}}
 
-{{- /* From the partial that already answers this for the card: worked out here
-       from params.images alone, a page given a cover had a picture in its card
-       and none here. Only one the page brought itself. */ -}}
+{{- /* From the partial that answers this for the card, so the two name the same
+       picture. Only one the page brought itself. */ -}}
 {{- $social := partial "social-image.html" . -}}
 {{- $image := cond $social.owned $social.url "" -}}
 
@@ -163,11 +162,11 @@
   {{- end -}}
   {{- $data = merge $data (dict "publisher" $publisher) -}}
 {{- else if and .IsPage (not (partial "noindex.html" .)) -}}
-  {{- /* A page with no date and no schema of its own fell off the end of this
-         chain and got nothing. "Skipped rather than described badly" is about
-         BlogPosting, which would invent a date and an author; a WebPage invents
-         nothing. A noindex page is still skipped -- describing one the theme
-         asks nobody to index says nothing worth saying. */ -}}
+  {{- /* A page with no date and no schema of its own is a WebPage. "Skipped
+         rather than described badly" is about BlogPosting, which would invent a
+         date and an author; a WebPage invents nothing. A noindex page is still
+         skipped -- describing one the theme asks nobody to index says nothing
+         worth saying. */ -}}
   {{- $data = dict
     "@context" "https://schema.org"
     "@type" "WebPage"

@@ -14,10 +14,10 @@
             <img src="{{ $logo | safeURL }}" alt="{{ .Site.Params.Logo.alt }}" />
         {{ else }}
             <span class="logo__mark" aria-hidden="true">{{ with .Site.Params.Logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>
-            {{- /* Where this site starts, for menu.js: it worked the section
-                   out of location.pathname alone and so named the deployment
-                   prefix under one. Home.RelPermalink carries the prefix and
-                   the language directory together. */ -}}
+            {{- /* Where this site starts, for menu.js: location.pathname
+                   alone would take a deployment prefix for a section.
+                   Home.RelPermalink carries the prefix and the language
+                   directory together. */ -}}
             {{- $cursorPath := partial "switch.html" .Site.Params.Logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>

@@ -1,10 +1,10 @@
 {{- /*
-  The posts a reader is most likely to want next. Takes the page.
-
+The posts a reader is most likely to want next. Takes the page.
+  
   Tuning belongs to the site: Hugo reads a theme's [related] block and throws
   it away, and this call takes no threshold or includeNewer. See docs/config.md.
-
-  Own section only -- a tag on the About page put it under "Related posts".
+  
+  Own section only, or a tagged About page is offered as a related post.
   noindex goes before the limit, or a hidden page costs a slot; where cannot
   call a partial, so the loop does it, as in sitemap.xml.
 */ -}}

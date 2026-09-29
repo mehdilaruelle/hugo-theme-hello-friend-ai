@@ -3,28 +3,22 @@
         {{- $currentPage := . -}}
         {{ range .Site.Menus.main -}}
             {{ if .HasChildren }}
-                {{- /* li outside, div inside. A ul takes li, script and
-                       template and nothing else, and this was a div holding an
-                       li, which every browser recovers from and no parser
-                       should have to. Swapping the two nests both legally and
-                       leaves every selector pointing at the same box. */ -}}
+                {{- /* li outside, div inside: a ul takes li, script and
+                       template and nothing else, and every selector still
+                       points at the same box. */ -}}
                 <li class="submenu">
                     <div class="dropdown">
                     {{- /* The entry's own url, not javascript:void(0).
 
-                           A javascript: URL is blocked by any policy that does
-                           not allow script-src 'unsafe-inline', and this theme
-                           takes the other side of that everywhere else: the
-                           mermaid initialiser and the KaTeX call are both files
-                           so that a strict policy does not have to be relaxed.
+A javascript: URL is blocked by any policy that does
+not allow script-src 'unsafe-inline', and this theme
+takes the other side of that everywhere else: the
+mermaid initialiser and the KaTeX call are both files
+so that a strict policy does not have to be relaxed.
 
-                           It also threw the entry's url away, which is how
-                           /about/ ended up published on the showcase with
-                           nothing on the site linking to it.
-
-                           A parent with no url of its own is a label rather
-                           than a link, and gets a span that is still focusable,
-                           because focus is what opens the panel. */ -}}
+A parent with no url of its own is a label rather
+than a link, and gets a span that is still focusable,
+because focus is what opens the panel. */ -}}
                     {{ if .URL }}
                     <a href="{{ .URL | relLangURL }}" class="dropbtn">{{ .Name }}</a>
                     {{ else }}
@@ -42,8 +36,6 @@
             {{ end }}
         {{- end }}
 
-        {{- /* The language switcher moved to the header — see
-               partials/language-switcher.html. */ -}}
     </ul>
 </nav>
 

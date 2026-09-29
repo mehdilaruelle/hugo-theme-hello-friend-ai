@@ -12,35 +12,19 @@
     <div class="content-center">
         <main id="main">
             <div>
-                {{- /*
-                  The portrait went out without width or height, so nothing
-                  reserved its space and everything under it moved when the
-                  file arrived. On the front page that is the title, the
-                  subtitle and the whole content block, which is a layout
-                  shift measured in tenths.
-
-                  image.html already resolves, measures and resizes, and
-                  refuses to do any of it to an SVG or an animated GIF. Two
-                  things differ here: the portrait is above the fold, so it
-                  loads eagerly and at high priority rather than lazily, and
-                  it is shown small, so it is capped well below the width an
-                  article image gets.
-
-                  eager on its own was not enough. The portrait is the largest
-                  thing the front page paints, so it is the LCP element, and
-                  Lighthouse reported the request as discoverable but not
-                  prioritised: eager says fetch it now, fetchpriority says
-                  fetch it before the rest of what is already queued. A cover
-                  on an article page has carried both since it was added; the
-                  front page had only the first.
-                */ -}}
+                {{- /* Measured by image.html, so the portrait carries width
+                       and height and nothing under it moves when the file
+                       arrives. Unlike an article image it is above the fold
+                       and shown small: it loads eagerly at high priority, as
+                       the largest thing the front page paints, and is capped
+                       well below an article's width. */ -}}
                 {{- /* Twice the width it is shown at, so it is sharp on a
                        dense screen and no larger. Only a value given in px can
                        be doubled; anything else falls back to a size generous
                        for a portrait. */ -}}
                 {{- /* Formatted only when there is a width to state: printf on
-                       an unset maxWidth put style="max-width:%!s(<nil>)" in the
-                       page. image.html omits the attribute for an empty value. */ -}}
+                       an unset maxWidth prints %!s(<nil>). image.html omits the
+                       attribute for an empty value. */ -}}
                 {{- $cap := 512 -}}
                 {{- $width := "" -}}
                 {{- with site.Params.portrait.maxWidth -}}

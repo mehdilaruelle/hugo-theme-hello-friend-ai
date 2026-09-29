@@ -1,20 +1,11 @@
 {{- /*
   Deliberately empty, and not a placeholder.
 
-  Hugo's embedded schema.html emits six itemprop attributes -- name,
-  description, datePublished, dateModified, wordCount, keywords -- and nothing
-  emits an itemscope around them. An itemprop outside an item is not partial
-  microdata, it is none: the parser has no item to hang the properties on. Every
-  page carried six of them and read as zero.
+  It shadows Hugo's embedded schema.html, which emits six itemprop attributes
+  and no itemscope around them: microdata no parser can read. Shadowing rather
+  than dropping the call in head.html, so a site's own schema.html still
+  renders.
 
-  A file of this name in the theme shadows the embedded one, which is how
-  twitter_cards.html is handled next door. Deleting the call in head.html would
-  have suppressed the same markup, but it would also have dropped a site that
-  overrides this partial with real microdata -- a project file wins over this
-  one, so writing layouts/_partials/schema.html still works and now renders on
-  its own rather than alongside Hugo's.
-
-  The facts themselves are in json-ld.html, stated completely and in the form
-  Google reads in preference to microdata. Structured data of your own is better
-  put in extra-head.html, which exists for it.
+  The facts are in json-ld.html. Structured data of your own belongs in
+  extra-head.html.
 */ -}}

@@ -79,8 +79,7 @@
 	<meta property="og:type" content="website">
 {{- end }}
 
-{{- /* The alt and the dimensions sit beside the picture they describe: from
-       head.html the alt outlived the image it belonged to. */ -}}
+{{- /* The alt and the dimensions sit beside the picture they describe. */ -}}
 {{- $social := partial "social-image.html" . }}
 {{- with $social.url }}
 	<meta property="og:image" content="{{ . }}">
