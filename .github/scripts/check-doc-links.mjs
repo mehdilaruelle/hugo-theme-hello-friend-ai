@@ -1,7 +1,5 @@
-// Checks every relative link in the repository's own Markdown -- README,
-// CONTRIBUTING, docs/ -- points at a file that exists and, when it names a
-// #fragment, at a heading or anchor that file has. GitHub renders these, so
-// nothing else would notice a section that moved.
+// Checks every relative link in README, CONTRIBUTING and docs/ reaches a file
+// and, for a #fragment, a heading. Nothing builds these files to notice.
 //
 //   node .github/scripts/check-doc-links.mjs <repo-root>
 
@@ -12,10 +10,8 @@ import { walk } from "./_lib.mjs";
 const root = resolve(process.argv[2] || ".");
 const files = ["README.md", "CONTRIBUTING.md", ...[...walk(join(root, "docs"), ".md")].map((f) => relative(root, f))];
 
-// Fenced and inline code are not rendered as links. Both are blanked rather
-// than removed, so a line number still points at the line. A fence closes on a
-// run of its own character at least as long as the one that opened it, a code
-// span on a run of backticks exactly as long (CommonMark).
+// Code holds no links. Blanked, not removed, so line numbers stay right; fences
+// and spans close as CommonMark says.
 const blank = (text) => text.replace(/[^\n]/g, " ");
 function prose(md) {
   const lines = md.split("\n");
@@ -70,7 +66,7 @@ for (const file of files) {
   const md = prose(readFileSync(path, "utf8"));
   const lines = md.split("\n");
   lines.forEach((line, i) => {
-    // Inline links, and the definitions reference-style links point through.
+    // Inline links and reference definitions.
     const targets = [...line.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)].map((m) => m[1]);
     const definition = line.match(/^ {0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?/);
     if (definition) targets.push(definition[1]);

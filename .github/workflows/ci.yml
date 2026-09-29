@@ -50,8 +50,7 @@ jobs:
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
 
-      # The README points into docs/ and docs/ back into it, by heading; a
-      # section that moves or is renamed breaks those links silently.
+      # A moved or renamed section breaks these links silently.
       - name: Check the links between README, CONTRIBUTING and docs/
         run: node .github/scripts/check-doc-links.mjs .
 
