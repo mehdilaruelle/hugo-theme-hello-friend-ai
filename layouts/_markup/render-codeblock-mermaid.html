@@ -1,4 +1,8 @@
+{{- /* Escaped: the fence body is text, and without it a label such as
+       Vec<u8> became an element and an <img onerror> in a diagram ran, whatever
+       markup.goldmark.renderer.unsafe says. Mermaid decodes the entities before
+       it parses, so a <br> in a label still breaks the line. */ -}}
 <pre class="mermaid">
-  {{- .Inner | safeHTML }}
+  {{- .Inner | htmlEscape | safeHTML }}
 </pre>
 {{ .Page.Store.Set "hasMermaid" true }}

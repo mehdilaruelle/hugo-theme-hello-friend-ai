@@ -21,10 +21,10 @@
   // The source is kept because Mermaid replaces it with the SVG, leaving
   // nothing to draw a second time.
   //
-  // innerHTML and not textContent: the render hook emits the block through
-  // safeHTML, so a label may carry markup, and Mermaid reads innerHTML for
-  // exactly that reason. Flattening it would redraw a different diagram,
-  // turning one<br>two into onetwo on the first theme change.
+  // innerHTML and not textContent: the render hook escapes the block, and
+  // innerHTML keeps it escaped. textContent, written back through innerHTML,
+  // would be parsed as markup, and a label spelling a tag such as Vec<u8>
+  // would become one on the first theme change.
   const blocks = [].slice.call(document.querySelectorAll('.mermaid'));
   const sources = blocks.map((el) => { return el.innerHTML; });
 
