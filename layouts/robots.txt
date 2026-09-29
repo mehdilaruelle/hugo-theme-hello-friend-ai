@@ -15,14 +15,30 @@
   {{- if isset $ai "search" -}}{{- $search = partial "switch.html" $ai.search -}}{{- end -}}
   {{- $custom = $ai.crawlers | default "" | strings.TrimSpace -}}
 {{- end -}}
-{{- /* Only what is refused gets a group: silence is permission. */ -}}
+{{- /* Only what is refused gets a group: silence is permission. A group needs
+       an agent: blank lines and comments do not end one under RFC 9309, so a
+       Disallow: / with no User-agent above it joined the User-agent: * group
+       and turned every crawler away. A site's data/aiCrawlers.yaml can name no
+       agent, or a single one as a string. */ -}}
 {{- $groups := slice -}}
 {{- if not $custom -}}
+  {{- $refused := slice -}}
   {{- if not $train -}}
-    {{- $groups = $groups | append (dict "note" "Declined: fetched to train a model, with no link back." "agents" hugo.Data.aiCrawlers.train) -}}
+    {{- $refused = $refused | append (dict "note" "Declined: fetched to train a model, with no link back." "agents" hugo.Data.aiCrawlers.train) -}}
   {{- end -}}
   {{- if not $cite -}}
-    {{- $groups = $groups | append (dict "note" "Declined: fetched to answer a question and cite the site." "agents" hugo.Data.aiCrawlers.cite) -}}
+    {{- $refused = $refused | append (dict "note" "Declined: fetched to answer a question and cite the site." "agents" hugo.Data.aiCrawlers.cite) -}}
+  {{- end -}}
+  {{- range $g := $refused -}}
+    {{- $agents := slice -}}
+    {{- with $g.agents -}}
+      {{- range partial "as-list.html" . -}}
+        {{- with strings.TrimSpace (printf "%v" .) }}{{ $agents = $agents | append . }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- with $agents -}}
+      {{- $groups = $groups | append (dict "note" $g.note "agents" .) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 User-agent: *
