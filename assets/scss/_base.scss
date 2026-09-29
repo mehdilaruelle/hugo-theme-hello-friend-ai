@@ -209,8 +209,7 @@ figure {
     }
   }
 
-  // A mixed colour, not opacity: opacity dims a code chip's text and ground
-  // together, to 3.6:1 in the dark theme.
+  // Not opacity, which dims a code chip to 3.6:1 in the dark theme.
   figcaption {
     font-size: 14px;
     margin-top: 5px;

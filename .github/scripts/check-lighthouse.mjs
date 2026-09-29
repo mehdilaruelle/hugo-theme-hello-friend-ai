@@ -1,6 +1,5 @@
-// Holds the README's scores to a real audit: every category but performance
-// must be 100, and names the audits that cost it. Performance only warns: it
-// moves with the runner's load, the others are a property of the markup.
+// Every category but performance must be 100; performance only warns, since it
+// moves with the runner's load.
 //
 //   node .github/scripts/check-lighthouse.mjs <report.json>...
 
@@ -23,8 +22,7 @@ for (const file of reports) {
 
   for (const id of STRICT) {
     const cat = lhr.categories[id];
-    // A category the running Lighthouse does not have is a pin gone wrong, not
-    // a pass.
+    // A missing category is a wrong Lighthouse version, not a pass.
     if (!cat) {
       console.log(`  BAD  ${url}  no "${id}" category in Lighthouse ${lhr.lighthouseVersion}`);
       failed++;
