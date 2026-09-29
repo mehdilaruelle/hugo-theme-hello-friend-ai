@@ -1,0 +1,8 @@
+{{- /* A menu entry's href. An entry backed by a page -- pageRef, or menus in
+       front matter -- already has that page's RelPermalink as its URL, base
+       path and language included; relLangURL only recognises the language at
+       the start of a path, so it prepended it a second time under a subpath:
+       /fr/blog/fr/posts/. A url entry is joined to the language here. */ -}}
+{{- $url := .URL -}}
+{{- if not .Page -}}{{- $url = relLangURL $url -}}{{- end -}}
+{{- return $url -}}
