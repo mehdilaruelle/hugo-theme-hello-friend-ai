@@ -1,13 +1,11 @@
-// Every action a workflow runs must be pinned to a full commit SHA. A tag can
-// be moved to other code by whoever controls the action's repository, and the
-// next run executes it with this repository's token.
+// Every action must be pinned to a commit SHA: a tag can be moved to other
+// code, which the next run executes with this repository's token.
 //
 //   node .github/scripts/check-pinned-actions.mjs <theme-root>
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// A local action ("./", or "$/" naming this repository at the running commit)
-// or a container is not fetched from another repository.
+// Local actions ("./", "$/") and containers are not fetched from elsewhere.
 const pinned = (ref) =>
   ref.startsWith("./") ||
   (ref.startsWith("$/") && ref.length > 2) ||
