@@ -1,20 +1,16 @@
-# Splits each Inter face into the subsets _fonts.scss declares, so a page
-# downloads only the scripts it draws. Needs fonttools and brotli.
+# Splits each Inter face into the subsets _fonts.scss declares. Needs fonttools
+# and brotli. The full faces are at 091b810:static/fonts/.
 #
 #   python .github/scripts/subset-fonts.py <dir of full Inter-*.woff2> static/fonts
-#
-# The full faces are Inter 3.19, as this theme shipped them before the split:
-#   git show 091b810:static/fonts/Inter-Regular.woff2 > Inter-Regular.woff2
 import sys
 from pathlib import Path
 
 from fontTools import subset
 from fontTools.ttLib import TTFont
 
-# Keep in step with $inter-subsets in assets/scss/_fonts.scss. "symbols" is
-# every other code point the face carries, so nothing Inter drew is lost.
-# latin is Google Fonts' latin, plus the pagination's arrows and the example
-# footer's heart, each of which would otherwise fetch symbols on every page.
+# Same ranges as _fonts.scss; "symbols" takes every other code point. latin adds
+# the pager's arrows and the footer's heart to Google Fonts' latin, or every
+# page would fetch symbols.
 SUBSETS = {
     "latin": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2764, U+FEFF, U+FFFD",
     "latin-ext": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1D00-1DBF, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",

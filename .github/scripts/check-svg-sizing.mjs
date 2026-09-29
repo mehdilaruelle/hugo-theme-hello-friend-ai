@@ -1,6 +1,5 @@
-// Asserts the width and height the image partial gives each SVG in the
-// svg-sizes fixture. The build passes whatever the regular expressions read,
-// so a miss only shows as a box that reserves nothing, or the wrong shape.
+// Asserts the size the image partial gives each SVG fixture: a wrong read
+// still builds, and only shows as a box of the wrong shape.
 //
 //   node .github/scripts/check-svg-sizing.mjs <public-dir>
 import { readFileSync } from "node:fs";
