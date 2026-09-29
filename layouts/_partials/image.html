@@ -38,7 +38,7 @@
   {{- /* An SVG is never decoded, so its size is read from its root element. */ -}}
   {{- $tag := "" -}}
   {{- with findRE `<svg\b[^>]*>` $img.Content 1 -}}{{- $tag = index . 0 -}}{{- end -}}
-  {{- $num := `([-+]?[\d.]+(?:[eE][-+]?\d+)?)` -}}
+  {{- $num := `([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)` -}}
   {{- $px := `\s%s\s*=\s*["']\s*%s\s*(?:px)?\s*["']` -}}
   {{- $absolute := `\s%s\s*=\s*["'][^"'%%]*["']` -}}
   {{- $w := findRESubmatch (printf $px "width" $num) $tag 1 -}}
@@ -50,7 +50,7 @@
     {{- /* No size of its own: the browser stretches it to the column, so only
            the ratio is declared, at a width max-width: 100% brings back to it. */ -}}
     {{- $n := printf `\s*%s` $num -}}
-    {{- with findRESubmatch (printf `\sviewBox\s*=\s*["']%s[\s,]%s[\s,]%s[\s,]%s` $n $n $n $n) $tag 1 -}}
+    {{- with findRESubmatch (printf `\sviewBox\s*=\s*["']%s[\s,]%s[\s,]%s[\s,]%s\s*["']` $n $n $n $n) $tag 1 -}}
       {{- $vw := float (index . 0 3) -}}
       {{- $vh := float (index . 0 4) -}}
       {{- if and (gt $vw 0) (gt $vh 0) -}}

@@ -14,3 +14,6 @@ element. `check-svg-sizing.mjs` asserts what each of these is given.
 {{< image src="root-em.svg" alt="root-em" >}}
 {{< image src="no-viewbox.svg" alt="no-viewbox" >}}
 {{< image src="empty-viewbox.svg" alt="empty-viewbox" >}}
+{{< image src="dot-width.svg" alt="dot-width" >}}
+{{< image src="dotted-width.svg" alt="dotted-width" >}}
+{{< image src="trailing-junk.svg" alt="trailing-junk" >}}

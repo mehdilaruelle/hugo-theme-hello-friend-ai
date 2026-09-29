@@ -16,6 +16,9 @@ const EXPECTED = {
   "root-em.svg": null,
   "no-viewbox.svg": null,
   "empty-viewbox.svg": null,
+  "dot-width.svg": null,
+  "dotted-width.svg": null,
+  "trailing-junk.svg": null,
 };
 
 const root = process.argv[2] || "public";
