@@ -6,13 +6,19 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-// A local action or a container is not fetched from another repository.
+// A local action ("./", or "$/" naming this repository at the running commit)
+// or a container is not fetched from another repository.
 const pinned = (ref) =>
-  ref.startsWith("./") || ref.startsWith("docker://") || /^[^@\s]+@[0-9a-f]{40}$/.test(ref);
+  ref.startsWith("./") ||
+  (ref.startsWith("$/") && ref.length > 2) ||
+  ref.startsWith("docker://") ||
+  /^[^@\s]+@[0-9a-f]{40}$/.test(ref);
 
 const CASES = [
   ["actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1", true],
   ["./.github/actions/local", true],
+  ["$/.github/actions/local", true],
+  ["$/", false],
   ["actions/checkout@v7", false],
   ["actions/checkout@v7.0.1", false],
   ["actions/checkout@main", false],
