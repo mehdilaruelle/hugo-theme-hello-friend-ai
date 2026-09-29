@@ -12,8 +12,29 @@ import { walk } from "./_lib.mjs";
 const root = resolve(process.argv[2] || ".");
 const files = ["README.md", "CONTRIBUTING.md", ...[...walk(join(root, "docs"), ".md")].map((f) => relative(root, f))];
 
-// Fenced and inline code are not rendered as links.
-const prose = (md) => md.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, "").replace(/`[^`\n]*`/g, "");
+// Fenced and inline code are not rendered as links. Both are blanked rather
+// than removed, so a line number still points at the line. A fence closes on a
+// run of its own character at least as long as the one that opened it, a code
+// span on a run of backticks exactly as long (CommonMark).
+const blank = (text) => text.replace(/[^\n]/g, " ");
+function prose(md) {
+  const lines = md.split("\n");
+  let fence = null;
+  for (let i = 0; i < lines.length; i++) {
+    if (fence) {
+      const close = lines[i].match(/^ {0,3}(`+|~+)[ \t]*$/);
+      if (close && close[1][0] === fence[0] && close[1].length >= fence.length) fence = null;
+      lines[i] = "";
+    } else {
+      const open = lines[i].match(/^ {0,3}(`{3,}|~{3,})/);
+      if (open && !(open[1][0] === "`" && lines[i].slice(open.index + open[0].length).includes("`"))) {
+        fence = open[1];
+        lines[i] = "";
+      }
+    }
+  }
+  return lines.join("\n").replace(/(?<!`)(`+)(?!`)[\s\S]*?(?<!`)\1(?!`)/g, blank);
+}
 
 // GitHub's heading ids: lower case, punctuation dropped, spaces to hyphens,
 // a repeat gets -1, -2...
@@ -49,11 +70,17 @@ for (const file of files) {
   const md = prose(readFileSync(path, "utf8"));
   const lines = md.split("\n");
   lines.forEach((line, i) => {
-    for (const [, target] of line.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) {
+    // Inline links, and the definitions reference-style links point through.
+    const targets = [...line.matchAll(/\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)].map((m) => m[1]);
+    const definition = line.match(/^ {0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?/);
+    if (definition) targets.push(definition[1]);
+    for (const target of targets) {
       if (/^[a-z][a-z0-9+.-]*:/i.test(target)) continue; // http:, mailto:...
       checked++;
       const [pathPart, fragment] = target.split("#");
-      const dest = pathPart ? resolve(dirname(path), decodeURIComponent(pathPart)) : path;
+      // A leading slash is the repository root on GitHub, not the disk's.
+      const decoded = decodeURIComponent(pathPart);
+      const dest = !pathPart ? path : decoded.startsWith("/") ? join(root, decoded) : resolve(dirname(path), decoded);
       const where = `${file}:${i + 1}`;
       if (!existsSync(dest)) {
         console.log(`  BAD  ${where}  ${target}  -- no such file`);
