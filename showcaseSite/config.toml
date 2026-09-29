@@ -1,3 +1,7 @@
+# An entity and a bare ampersand, both legal in the footer's HTML, so the feeds
+# check-feeds.mjs parses carry them into <copyright>.
+copyright = '&copy; 2026 Jane Doe & contributors · <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+
 # Search needs the index, and the index is the home page rendered as JSON.
 # llms, llmsfull and md are the theme's text formats.
 #
