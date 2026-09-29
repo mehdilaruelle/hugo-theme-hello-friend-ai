@@ -511,6 +511,9 @@ not an empty heading.
     limit  = 3       # how many entries at most. Defaults to 5, as 0 does
 ```
 
+`related = false` on its own, in place of the table, turns the section off
+too.
+
 A page kept out of the index never appears in the list — see
 [Keeping a page out of things](#keeping-a-page-out-of-things) — and a post with
 no title in its front matter is listed under its humanized file name rather
