@@ -415,8 +415,8 @@ jobs:
             background-color=#67a2c9 animation-duration=2s
 
 
-      # Neither demo ships favicons or overrides a theme file, so these paths
-      # were never built.
+      # The demos ship four favicons of the six and override no theme file, so
+      # these paths were never built.
       - name: Check a site's favicons and overridden theme files are used
         working-directory: hello-friend-ai
         run: |
