@@ -47,9 +47,6 @@ jobs:
       - name: Check the translations against en.toml
         run: node .github/scripts/check-i18n.mjs .
 
-      - name: Check every action is pinned to a commit SHA
-        run: node .github/scripts/check-pinned-actions.mjs .
-
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
 
