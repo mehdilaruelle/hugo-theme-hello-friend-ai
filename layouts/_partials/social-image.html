@@ -16,6 +16,7 @@
 */ -}}
 {{- $img := "" -}}
 {{- $alt := "" -}}
+{{- $altIsMarkdown := false -}}
 {{- $owned := false -}}
 {{- if isset .Params "images" -}}
   {{- $first := partial "first-image.html" .Params.images -}}
@@ -29,7 +30,12 @@
   {{- with .Params.cover -}}
     {{- if not (partial "is-svg.html" .) -}}
       {{- $img = . -}}
-      {{- $alt = or $.Params.coverCaption (partial "title-plain.html" $) -}}
+      {{- with $.Params.coverCaption -}}
+        {{- $alt = . -}}
+        {{- $altIsMarkdown = true -}}
+      {{- else -}}
+        {{- $alt = partial "title-plain.html" $ -}}
+      {{- end -}}
       {{- $owned = true -}}
     {{- end -}}
   {{- end -}}
@@ -70,11 +76,15 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-{{- with $alt -}}
+{{- if $altIsMarkdown -}}
   {{- /* coverCaption is Markdown and an attribute is text. htmlUnescape because
          plainify strips tags but leaves the entities markdownify made, so an
          apostrophe reached the reader as a literal "&rsquo;". TrimSpace because
-         chomp takes newlines, and the flattening turns one into a space. */ -}}
-  {{- $alt = partial "flatten.html" (. | markdownify) -}}
+         chomp takes newlines, and the flattening turns one into a space.
+
+         Only the caption: the title is plain text already, and rendered again
+         a <kbd> in it was dropped from the alt and, as raw HTML, failed the
+         build under --panicOnWarning. */ -}}
+  {{- $alt = partial "flatten.html" ($alt | markdownify) -}}
 {{- end -}}
 {{- return dict "url" $url "alt" $alt "owned" $owned "width" $width "height" $height -}}
