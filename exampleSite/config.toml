@@ -177,7 +177,7 @@ disableHugoGeneratorInject = false
 
   [params.author]
     name = "Jane Doe"
-    # Optional, and goes into the Person structured data. See SEO in the README.
+    # Optional, and goes into the Person structured data. See docs/seo.md.
     jobTitle = "Platform Engineer"
 
   # Custom footer 
