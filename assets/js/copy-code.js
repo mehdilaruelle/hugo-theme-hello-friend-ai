@@ -35,8 +35,8 @@
       button.className = 'copy-code';
       button.textContent = label;
       // No aria-label. It would win over the text and freeze the name at
-      // "Copy", so neither the confirmation nor the fallback instruction ever
-      // reached a screen reader. aria-live announces the change instead.
+      // "Copy", so neither the confirmation nor the fallback instruction would
+      // reach a screen reader. aria-live announces the change instead.
       button.setAttribute('aria-live', 'polite');
 
       function flash(text, className) {
@@ -49,17 +49,15 @@
       }
 
       button.addEventListener('click', () => {
-        // The code is read from the code element, not the pre: the button is a
-        // sibling of the pre now, but reading the block itself would still pick
-        // up a line-number gutter on a site that turns one on.
+        // The code is read from the code element, not the pre, which would
+        // pick up a line-number gutter on a site that turns one on.
         //
         // textContent, not innerText. Chroma wraps each line of a highlighted
         // block in a span it styles display: flex, which makes every line a
         // block-level box, and innerText inserts a line break at each of those
-        // boundaries on top of the newline already in the source. That put a
-        // blank line between every line of copied code. It only showed once
-        // Prism was gone: Prism used to replace the block's markup with its
-        // own, flex spans included. textContent reads the source as written.
+        // boundaries on top of the newline already in the source: a blank line
+        // between every line of copied code. textContent reads the source as
+        // written.
         const code = pre.querySelector('code').textContent;
 
         navigator.clipboard.writeText(code).then(
@@ -80,8 +78,8 @@
         );
       });
 
-      // On the wrapper, not the pre: inside the scroller the button scrolled
-      // away with the code.
+      // On the wrapper, not the pre: inside the scroller the button would
+      // scroll away with the code.
       wrap.appendChild(button);
     });
   });
