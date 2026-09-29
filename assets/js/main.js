@@ -7,7 +7,7 @@
  * Wrapped, like every other script in the bundle. The files concatenate into
  * one classic script, so a top-level const lands in the global lexical
  * environment the page shares with params.customJS: a site declaring the same
- * name made the whole bundle a SyntaxError.
+ * name makes the whole bundle a SyntaxError.
  */
 
 (function () {
@@ -57,7 +57,6 @@
     }
   }
 
-  // Switch the theme, applying it to the page rather than reloading it.
   function switchTheme() {
     const next =
       document.documentElement.getAttribute("data-theme") === "dark"
@@ -68,7 +67,6 @@
     applyTheme(next);
   }
 
-  // Event listener
   if (themeToggle) {
     themeToggle.addEventListener("click", switchTheme, false);
     // Rendered disabled, so that a page served without this script does not put
