@@ -175,8 +175,11 @@
       crossorigin="anonymous">
 {{- end }}
 
-{{- /* The body weight, and so the first thing a swap repaints. */ -}}
-<link rel="preload" href="{{ "fonts/Inter-Regular.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+{{- /* The body and the headings: every page draws both, and nothing else is
+       preloaded, or nothing is prioritised. */ -}}
+{{- range slice "Regular" "Bold" }}
+<link rel="preload" href="{{ printf "fonts/Inter-%s.latin.woff2" . | absURL }}" as="font" type="font/woff2" crossorigin>
+{{- end }}
 
 <!-- Icons -->
 {{- partial "favicons.html" . }}
