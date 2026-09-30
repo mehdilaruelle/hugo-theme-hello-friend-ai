@@ -1,0 +1,13 @@
+{{- $base := .base -}}
+{{- $lines := slice -}}
+{{- $fenced := false -}}
+{{- range split .text "\n" -}}
+  {{- $line := . -}}
+  {{- if findRE "^ {0,3}(```|~~~)" $line 1 -}}
+    {{- $fenced = not $fenced -}}
+  {{- else if not $fenced -}}
+    {{- $line = replaceRE `\]\(([^/#?<)\s:][^)\s:]*)([)\s])` (printf `](%s${1}${2}` $base) $line -}}
+  {{- end -}}
+  {{- $lines = $lines | append $line -}}
+{{- end -}}
+{{- return delimit $lines "\n" -}}
