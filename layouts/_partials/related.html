@@ -8,8 +8,6 @@ The posts a reader is most likely to want next. Takes the page.
   noindex goes before the limit, or a hidden page costs a slot; where cannot
   call a partial, so the loop does it, as in sitemap.xml.
 */ -}}
-{{- /* A table, as documented; related = false (or true, or "no") read as the
-       switch itself, rather than aborting the build on .limit of a bool. */ -}}
 {{- $on := true -}}
 {{- $limit := 0 -}}
 {{- if reflect.IsMap site.Params.related -}}
