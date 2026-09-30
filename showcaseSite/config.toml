@@ -187,9 +187,6 @@
       name        = "Qui suis-je"
       url         = "about/me/"
       parent      = "about"
-    # pageRef rather than url: an entry backed by a page is resolved by Hugo,
-    # and links.yml builds this site under a subpath, where one once came out
-    # with the language twice (/fr/subpath/showcase/fr/posts/).
     [[languages.fr.menu.main]]
       identifier = "posts"
       name       = "Articles"
