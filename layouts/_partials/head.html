@@ -107,8 +107,7 @@
     {{- $page := (partial "canonical.html" .).pager -}}
     {{- $title := printf "%s :: %s" (partial "pager-suffix.html" (dict "text" (partial "title-plain.html" .) "pager" $page)) site.Title -}}
     {{- if .IsHome -}}
-      {{- $title = site.Title -}}
-      {{- with site.Params.Subtitle }}{{ $title = printf "%s — %s" $title . }}{{ end -}}
+      {{- $title = partial "home-title.html" . -}}
     {{- end }}
     <title>{{ $title }}</title>
 {{ end }}
