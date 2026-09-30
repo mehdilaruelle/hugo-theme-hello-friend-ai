@@ -4,9 +4,8 @@
        the scroll.
 
        .Attributes has to be repeated here: this hook replaces the markup that
-       carried it, so an id or class written under the table is dropped. Each
-       value is escaped as render-heading.html does, and for the same reason: %q
-       let a quote close the attribute. %v first: {sortable=true} is a bool. */ -}}
+       carried it, so an id or class written under the table is dropped. %v:
+       {sortable=true} is a bool. */ -}}
 <div class="table-wrap" tabindex="0">
 <table
   {{- range $k, $v := .Attributes }}

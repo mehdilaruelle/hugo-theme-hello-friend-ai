@@ -6,10 +6,7 @@
        As text it belonged to the heading, and plainify fed it back into the
        meta description and the search index.
 
-       Each value is escaped here, not quoted with %q: Go's \" is not an HTML
-       escape, so a quote in a value closed the attribute and the rest of it
-       became attributes of its own, event handlers included. %v first:
-       {notoc=true} is a bool. */ -}}
+       %v: {notoc=true} is a bool. */ -}}
 {{- $anchor := .Anchor -}}
 <h{{ .Level }} id="{{ $anchor }}"
   {{- range $k, $v := .Attributes }}
