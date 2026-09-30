@@ -12,10 +12,34 @@
   const done = (script && script.dataset.labelDone) || 'Copied';
   const failed = (script && script.dataset.labelFailed) || 'Press Ctrl+C';
 
+  function isLineNumber(el) {
+    if (el.classList.contains('ln') || el.classList.contains('lnt')) return true;
+    const style = getComputedStyle(el);
+    return (style.userSelect || style.webkitUserSelect) === 'none';
+  }
+
+  function codeText(code) {
+    let text = '';
+    (function walk(node) {
+      node.childNodes.forEach((child) => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          text += child.data;
+        } else if (child.nodeType === Node.ELEMENT_NODE && !isLineNumber(child)) {
+          walk(child);
+        }
+      });
+    })(code);
+    return text;
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('pre').forEach((pre) => {
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
+
+      const cell = pre.closest('td');
+      const first = pre.querySelector('code > span');
+      if (cell && cell.nextElementSibling && first && isLineNumber(first)) return;
 
       // The wrapper render-codeblock.html puts around every fenced block.
       // closest, not parentElement: Hugo puts a div.highlight in between
@@ -52,13 +76,12 @@
         // The code is read from the code element, not the pre, which would
         // pick up a line-number gutter on a site that turns one on.
         //
-        // textContent, not innerText. Chroma wraps each line of a highlighted
+        // Text nodes, not innerText. Chroma wraps each line of a highlighted
         // block in a span it styles display: flex, which makes every line a
         // block-level box, and innerText inserts a line break at each of those
         // boundaries on top of the newline already in the source: a blank line
-        // between every line of copied code. textContent reads the source as
-        // written.
-        const code = pre.querySelector('code').textContent;
+        // between every line of copied code.
+        const code = codeText(pre.querySelector('code'));
 
         navigator.clipboard.writeText(code).then(
           () => {

@@ -17,7 +17,7 @@ The URL this page names as its own, and which pager of a list it is. Returns
 {{- $prev := "" -}}
 {{- $next := "" -}}
 {{- if in (slice "section" "taxonomy" "term") .Kind -}}
-  {{- with .Paginate (partial "list-pages.html" .) -}}
+  {{- with partial "paginator.html" . -}}
     {{- $canonical = .URL | absURL -}}
     {{- $pager = .PageNumber -}}
     {{- with .Prev }}{{ $prev = .URL | absURL }}{{ end -}}

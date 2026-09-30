@@ -64,7 +64,7 @@
            the positions name nothing anybody can see. numberOfItems still
            counts the whole collection. */ -}}
     {{- $listed := partial "list-pages.html" . -}}
-    {{- with .Paginate $listed -}}{{- $listed = .Pages -}}{{- end -}}
+    {{- with partial "paginator.html" . -}}{{- $listed = .Pages -}}{{- end -}}
     {{- with $listed -}}
       {{- $items := slice -}}
       {{- range $i, $p := first 20 . -}}
@@ -121,7 +121,7 @@
     {{- $data = merge $data (dict "image" .) -}}
   {{- end -}}
   {{- with .Params.tags -}}
-    {{- $data = merge $data (dict "keywords" (delimit . ", ")) -}}
+    {{- $data = merge $data (dict "keywords" (delimit (partial "as-list.html" .) ", ")) -}}
   {{- end -}}
   {{- /* Page first, site second. license is a URL — that is what schema.org
          means by it — and creditText a name. */ -}}
@@ -145,7 +145,7 @@
     {{- end -}}
   {{- end -}}
   {{- with $logo -}}
-    {{- $node := dict "@type" "ImageObject" "url" (. | absURL) -}}
+    {{- $node := dict "@type" "ImageObject" "url" (partial "abs-url.html" .) -}}
     {{- with resources.Get . -}}
       {{- $node = merge $node (dict "url" .Permalink) -}}
       {{- /* Asking an SVG for its dimensions is a build error. */ -}}

@@ -1,0 +1,3 @@
+{{- $url := .URL -}}
+{{- if not .Page -}}{{- $url = relLangURL $url -}}{{- end -}}
+{{- return $url -}}

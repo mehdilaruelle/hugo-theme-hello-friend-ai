@@ -33,7 +33,7 @@
   {{- with $poster }} poster="{{ . | safeURL }}"{{ end }}
   {{- with .Get "alt" }} aria-label="{{ . | plainify }}"{{ end }}
   {{- /* controls in both modes: a loop has to be stoppable without a script,
-         not only when the author remembers to ask. */ -}}
+         not only when the author remembers to ask. */}}
   controls{{ if not $controls }} autoplay loop{{ end }}
   muted playsinline preload="metadata"
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>

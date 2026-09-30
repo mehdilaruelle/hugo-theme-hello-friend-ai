@@ -1,0 +1,9 @@
+{{- $pages := partial "list-pages.html" . -}}
+{{- $size := int (float (.Params.pagerSize | default 0)) -}}
+{{- $paginator := "" -}}
+{{- if gt $size 0 -}}
+  {{- $paginator = .Paginate $pages $size -}}
+{{- else -}}
+  {{- $paginator = .Paginate $pages -}}
+{{- end -}}
+{{- return $paginator -}}

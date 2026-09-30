@@ -33,7 +33,7 @@
         "title"   (partial "title-plain.html" .)
         "url"     .RelPermalink
         "date"    $date
-        "tags"    (.Params.tags | default slice)
+        "tags"    (partial "as-list.html" (.Params.tags | default slice))
         "summary" (.Summary | plainify | htmlUnescape | chomp)
         "content" (.Plain | htmlUnescape | chomp | truncate $limit "" | htmlUnescape)
     ) -}}

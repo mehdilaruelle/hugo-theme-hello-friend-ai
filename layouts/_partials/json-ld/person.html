@@ -61,7 +61,7 @@
 {{- end -}}
 {{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
 {{- with site.Params.portrait.path -}}
-  {{- $portrait := . | absURL -}}
+  {{- $portrait := partial "abs-url.html" . -}}
   {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}
   {{- end -}}

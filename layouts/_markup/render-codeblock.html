@@ -10,4 +10,23 @@
        Goldmark strips it from .Inner before a hook sees it and the default path
        does not -- without it the last line of every block, and of the clipboard
        text, lost its newline. */ -}}
-<div class="code-block">{{ transform.Highlight (printf "%s\n" .Inner) .Type .Options }}</div>
+{{- $opts := .Options -}}
+{{- if not (or (isset $opts "lineanchors") (isset $opts "lineAnchors")) -}}
+  {{- $opts = merge $opts (dict "lineAnchors" (printf "hl-%d" .Ordinal)) -}}
+{{- end -}}
+{{- $class := "" -}}
+{{- $attrs := "" -}}
+{{- range $k, $v := .Attributes -}}
+  {{- with printf "%v" $v -}}
+    {{- if eq $k "class" -}}
+      {{- $class = printf " %s" (htmlEscape .) -}}
+    {{- else -}}
+      {{- $attrs = printf "%s %s=\"%s\"" $attrs $k (htmlEscape .) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $html := transform.Highlight (printf "%s\n" .Inner) .Type $opts -}}
+{{- if or $class $attrs -}}
+  {{- $html = replace $html `<div class="highlight">` (printf `<div class="highlight%s"%s>` $class $attrs) 1 | safeHTML -}}
+{{- end -}}
+<div class="code-block">{{ $html }}</div>

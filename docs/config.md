@@ -497,6 +497,29 @@ rather than run to the several hundred `.Summary` can reach.
 Excerpts and thumbnails compose. With both on, the excerpt is indented to line
 up with the title rather than with the thumbnail beside it.
 
+## A list layout of your own
+
+A Hugo page has one paginator, fixed by the first `.Paginate` call, and the
+theme makes that call in `<head>`: the canonical URL, `rel="prev"`/`"next"` and
+the `ItemList` in JSON-LD all name the pager. A site `layouts/<section>/list.html`
+that calls `.Paginate` itself is handed that paginator, whatever arguments it
+passes. Ask for the theme's instead, and set the size in the list's front matter:
+
+```go-html-template
+{{ define "main" }}
+  {{ range (partial "paginator.html" .).Pages }}…{{ end }}
+{{ end }}
+```
+
+```yaml
+# content/posts/_index.md
+pagerSize: 2
+```
+
+`paginator.html` pages what `layouts/_partials/list-pages.html` returns, so to
+change which pages a list holds, override that partial rather than passing
+another collection.
+
 ## Related posts
 
 Every article ends with a list of the posts closest to it, so a reader has
@@ -510,6 +533,9 @@ not an empty heading.
     enable = false   # removes the section everywhere
     limit  = 3       # how many entries at most. Defaults to 5, as 0 does
 ```
+
+`related = false` on its own, in place of the table, turns the section off
+too.
 
 A page kept out of the index never appears in the list — see
 [Keeping a page out of things](#keeping-a-page-out-of-things) — and a post with
@@ -584,7 +610,7 @@ templates.
 | `backgroundImageLight` | the same for light mode. Without it light mode shows no image, rather than putting dark text over a dark picture |
 | `themeColor` | `<meta name="theme-color">`, the browser UI tint on mobile |
 | `ogImage` | the picture a social card falls back to when a page has no `cover`. Use PNG or JPEG — no platform renders an SVG card |
-| `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` (or `single.html`) for warns at build time — see [Where articles go](install.md#where-articles-go); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
+| `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`, set by the theme: left to Hugo, it would be whichever section holds the most pages. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` (or `single.html`) for warns at build time — see [Where articles go](install.md#where-articles-go); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
 | `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL. `customCSS` can set the theme's colours, see [Colours](#colours) |
 | `gitUrl` | prefix for the commit link under an article — the hash is appended to it, so it ends in `/commit/` or the like. Needs `enableGitInfo = true` at the root. Optional: with `enableGitInfo` on and no `gitUrl`, the hash is shown as plain text rather than linked |
 | `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics; both are required |
@@ -771,6 +797,7 @@ icons, and the build warns when it sees one.
 | `noindex` | `<meta name="robots" content="noindex">`, and the page is left out of `sitemap.xml` — see [Keeping a page out of things](#keeping-a-page-out-of-things). A page with `layout: search` is already treated this way and does not need it |
 | `comments` | set to `false` to hide the comments on that page — Disqus, Commento and utterances alike. Quoted values count, so `"false"` and `"0"` read the same way |
 | `description` | overrides the summary in `<meta name="description">` and Open Graph |
+| `pagerSize` | on a section, taxonomy or term page (`_index.md`, or a `cascade`): how many entries each pager of that list holds, in place of `[pagination] pagerSize` |
 | `author` | overrides the site author for that page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 

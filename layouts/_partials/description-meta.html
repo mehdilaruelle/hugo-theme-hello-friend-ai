@@ -17,6 +17,6 @@ The sentence a meta tag publishes: the page's own, the site's when it has
        room for the suffix, rather than the suffix that says which pager. */ -}}
 {{- if gt (strings.RuneCount $out) 160 -}}
   {{- $room := sub (strings.RuneCount $description) (sub (strings.RuneCount $out) 160) -}}
-  {{- $out = partial "pager-suffix.html" (dict "text" (truncate $room "" $description) "pager" $pager) -}}
+  {{- $out = partial "pager-suffix.html" (dict "text" (truncate $room "" $description | htmlUnescape) "pager" $pager) -}}
 {{- end -}}
 {{- return $out -}}
