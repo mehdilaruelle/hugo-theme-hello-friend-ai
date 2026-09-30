@@ -1,7 +1,7 @@
 {{- /* (dict "page" . "title" t "desc" d "note" bool). safeHTML: a partial is an HTML template. */ -}}
 # {{ partial "escape-lt.html" (dict "text" .title "with" `\<`) | safeHTML }}
 {{ with .desc }}
-> {{ partial "flatten.html" . | safeHTML }}
+> {{ partial "escape-lt.html" (dict "text" (partial "md/plain.html" (dict "text" .)) "with" `\<`) | safeHTML }}
 {{ end }}
 {{- with partial "md/body.html" .page | strings.TrimSpace }}
 {{ . | safeHTML }}

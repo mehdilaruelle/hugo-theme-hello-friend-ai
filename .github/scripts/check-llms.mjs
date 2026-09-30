@@ -207,6 +207,10 @@ for (const [lang, prefix] of Object.entries(langs)) {
   const found = entities(s);
   if (found) fail(`${lang}: ${found.length} HTML entities, e.g. ${found[0]}`);
 
+  const rawTag = s.split("\n").map((l) => l.match(/^- \[.*?\]\([^)]*\): (.*)$/)?.[1] ?? "")
+    .find((note) => /(?<!\\)<\/?[A-Za-z]/.test(note));
+  if (rawTag) fail(`${lang}: a list note carries raw HTML: ${rawTag.slice(0, 80)}`);
+
   const links = [...mapSection(s, accepts(lang, MAP_KEYS)).matchAll(LIST_LINK)].map((m) => destination(m[1]));
   // Headings but no map: none of them is one this theme writes.
   if (!links.length) fail(/^## \S/m.test(s) ? `${lang}: no list under a heading this theme generates` : `${lang}: no links`);

@@ -2,10 +2,11 @@
        returns is an HTML template whatever its extension, and without it the
        body leaves full of entities. Shared with llms-full.txt. */ -}}
 {{- $body := partial "md/body.html" . -}}
-{{- $note := .Description | default .Summary -}}
+{{- $note := "" -}}
+{{- with .Description }}{{ $note = partial "md/plain.html" (dict "text" .) }}{{ else }}{{ $note = partial "md/plain.html" (dict "text" $.Summary "html" true) }}{{ end -}}
 # {{ partial "escape-lt.html" (dict "text" (partial "title.html" .) "with" `\<`) | safeHTML }}
 {{ with $note }}
-> {{ partial "flatten.html" . | safeHTML }}
+> {{ partial "escape-lt.html" (dict "text" . "with" `\<`) | safeHTML }}
 {{ end }}
 {{- with .Date }}{{ if not .IsZero }}
 {{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit . ", " | safeHTML }}{{ end }}

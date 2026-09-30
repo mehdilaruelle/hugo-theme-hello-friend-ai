@@ -1,7 +1,7 @@
 {{- /* The pages llms.txt maps, carrying their text. params.llmsFullLimit caps
        them, and the file says so when it bites: a truncated copy presenting
        itself as the whole site is the thing to avoid. */ -}}
-{{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
+{{- $desc := .Description | default (partial "flatten.html" (site.Params.homeSubtitle | default site.Params.description | default "")) -}}
 {{- /* llms.txt order, not date order, which is why the notice claims none. */ -}}
 {{- $s := partial "md/sections.html" . -}}
 {{- $ordered := slice -}}
