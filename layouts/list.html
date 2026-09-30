@@ -31,7 +31,7 @@
             {{ else }}
                 {{ range $paginator.Pages.GroupByDate "2006" }}
                     <div class="posts-group">
-                        {{ if ne .Key "0001" }}<div class="post-year">{{ .Key }}</div>{{ end }}
+                        {{ if where .Pages "Date.IsZero" false }}<div class="post-year">{{ .Key }}</div>{{ end }}
 
                         <ul class="posts-list">
                             {{ range .Pages }}
