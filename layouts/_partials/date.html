@@ -1,6 +1,2 @@
-{{- /* (dict "date" t "format" site.Params.x "fallback" "2006-01-02"), in the
-       date's own zone: the offset written in front matter, or the site's
-       timeZone. Not .Local, the build machine's zone, which the lists, the
-       feed and JSON-LD never used: an article could name a different day, or
-       year, from its own entry in the list. */ -}}
+{{- /* (dict "date" t "format" site.Params.x "fallback" "2006-01-02"). */ -}}
 {{- return dateFormat (.format | default .fallback) .date -}}

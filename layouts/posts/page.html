@@ -69,9 +69,6 @@
         {{ if or $hasDate $hasLastmod }}<p>
           {{ partial "icon.html" (dict "name" "calendar") }}
           {{- if $hasDate }}
-          {{- /* The date's own zone, like the text below it and like JSON-LD: a
-                 datetime in another offset can name a different calendar day
-                 for anything near midnight. */ -}}
           <time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
               {{ partial "date.html" (dict "date" .Date "format" .Site.Params.dateformNumTime "fallback" "2006-01-02 15:04") }}
           </time>
