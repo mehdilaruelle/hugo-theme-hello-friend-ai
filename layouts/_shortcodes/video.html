@@ -33,10 +33,7 @@
   {{- with $poster }} poster="{{ . | safeURL }}"{{ end }}
   {{- with .Get "alt" }} aria-label="{{ . | plainify }}"{{ end }}
   {{- /* controls in both modes: a loop has to be stoppable without a script,
-         not only when the author remembers to ask. No trim after the comment:
-         the whitespace before controls is the attribute separator, and with
-         it trimmed a video with no width, height, poster or alt rendered as
-         <videocontrols>, an element no browser knows. */}}
+         not only when the author remembers to ask. */}}
   controls{{ if not $controls }} autoplay loop{{ end }}
   muted playsinline preload="metadata"
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>
