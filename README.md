@@ -6,11 +6,9 @@
 
 [![Hello Friend AI](https://raw.githubusercontent.com/mehdilaruelle/hugo-theme-hello-friend-ai/master/images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 
-**100 on accessibility, best practices and SEO** on PageSpeed Insights — on both
+**100 in every PageSpeed Insights category**, performance included, on both
 demo sites, on mobile and on desktop, with every option in the theme switched on
-at once. Lighthouse 13's agentic browsing category is 100 on all four runs too.
-Performance is 100 on desktop on both; on mobile, 100 on the demo and 99 on the
-showcase.
+at once.
 [The four reports →](docs/performance.md)
 
 > **This is a fork.** All the credit for the theme goes to
@@ -86,7 +84,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Support for [utterances](https://utteranc.es/) comment system
 - Front page content from `content/_index.md`, see [Front page content](docs/content.md#front-page-content)
 - JSON-LD structured data, breadcrumbs and a complete `hreflang` set, see [SEO](docs/seo.md)
-- 100 on accessibility, best practices, SEO and agentic browsing on both demo sites, see [Performance](docs/performance.md)
+- 100 in every PageSpeed Insights category on both demo sites, mobile and desktop, see [Performance](docs/performance.md)
 - Optional `llms.txt`, `llms-full.txt` and a Markdown copy of every page, list pages included, see [llms.txt](docs/config.md#llmstxt)
 - A declarative AI crawler policy: refuse training without refusing citation, see [AI crawlers](docs/config.md#ai-crawlers)
 - Per-page AI control: `noai` to keep one page out of the text outputs, and a licence that travels with the text, see [Keeping a page out of things](docs/config.md#keeping-a-page-out-of-things)
