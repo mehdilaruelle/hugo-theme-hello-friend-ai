@@ -24,7 +24,7 @@
 {{- /* range then if, not where: where cannot call a partial, and its typed
        compare dropped every page whose searchable was a string. */ -}}
 {{- range site.RegularPages -}}
-  {{- if or (not (isset .Params "searchable")) (partial "switch.html" .Params.searchable) -}}
+  {{- if and .Permalink (or (not (isset .Params "searchable")) (partial "switch.html" .Params.searchable)) -}}
     {{- /* Empty rather than the zero time: search.js already renders the date
            only when there is one. */ -}}
     {{- $date := "" -}}
