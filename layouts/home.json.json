@@ -10,9 +10,6 @@
 
   Set searchable = false in a page's front matter to keep it out.
 
-  tags always goes out as a list, even for tags = "x", which Hugo accepts as
-  one term: search.js joins it, and a string has no join.
-
   htmlUnescape appears twice, and each one has its own job. .Plain leaves
   the entities the renderer produced — the apostrophes Goldmark turns into
   &rsquo;, and so on — so the first decodes those, and truncate then counts

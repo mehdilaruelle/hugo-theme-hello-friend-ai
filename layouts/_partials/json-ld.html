@@ -120,8 +120,6 @@
   {{- with $image -}}
     {{- $data = merge $data (dict "image" .) -}}
   {{- end -}}
-  {{- /* as-list.html: Hugo takes tags = "x" as one term, and delimit ranges
-         over a string's bytes, so the keywords read "104, 117, 103, 111". */ -}}
   {{- with .Params.tags -}}
     {{- $data = merge $data (dict "keywords" (delimit (partial "as-list.html" .) ", ")) -}}
   {{- end -}}

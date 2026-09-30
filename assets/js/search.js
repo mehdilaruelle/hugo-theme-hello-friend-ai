@@ -44,7 +44,6 @@
       })
       .then((data) => {
         index = data.map((p) => {
-          // A list, but an older index or a site's own may carry a string.
           const tags = [].concat(p.tags || []).join(" ");
           return {
             page: p,
