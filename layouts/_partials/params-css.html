@@ -1,0 +1,28 @@
+{{- /* The rules the site's params set, concatenated onto the stylesheet by
+       head.html rather than written as style attributes, which a strict
+       style-src refuses. */ -}}
+{{- $css := slice -}}
+{{- $cursor := "" -}}
+{{- if partial "switch.html" site.Params.Logo.logoCursorDisabled -}}
+  {{- $cursor = "visibility:hidden;" -}}
+{{- end -}}
+{{- with site.Params.Logo.logoCursorColor -}}
+  {{- $cursor = printf "%sbackground-color:%v;" $cursor . -}}
+{{- end -}}
+{{- with site.Params.Logo.logoCursorAnimate -}}
+  {{- $cursor = printf "%sanimation-duration:%v;" $cursor . -}}
+{{- end -}}
+{{- with $cursor -}}
+  {{- $css = $css | append (printf ".logo__cursor{%s}" .) -}}
+{{- end -}}
+{{- with site.Params.backgroundImage -}}
+  {{- $bg := printf "--background-image:url(%q);" (urls.JoinPath site.BaseURL .) -}}
+  {{- with site.Params.backgroundImageLight -}}
+    {{- $bg = printf "%s--background-image-light:url(%q);" $bg (urls.JoinPath site.BaseURL .) -}}
+  {{- end -}}
+  {{- $css = $css | append (printf ".background-image{%s}" $bg) -}}
+{{- end -}}
+{{- with partial "portrait-width.html" . -}}
+  {{- $css = $css | append (printf "img.circle.portrait{max-width:%s}" .) -}}
+{{- end -}}
+{{- return delimit $css "" -}}

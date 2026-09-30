@@ -303,7 +303,16 @@ style-src   'self' 'unsafe-inline'
 `style-src 'unsafe-inline'` is Mermaid's doing, not the theme's: it writes a
 <style> element into the SVG it generates, and sets a style attribute on around
 forty of the shapes. A nonce cannot reach either, since both are created at
-runtime. Nothing else on the page needs it.
+runtime.
+
+The theme writes no style attribute of its own: the logo cursor, the background
+image and the portrait width go into the stylesheet. Two things outside it still
+need `'unsafe-inline'` on any page that has them:
+
+- Chroma colours code with style attributes unless the site sets
+  `markup.highlight.noClasses = false` and loads the CSS from
+  `hugo gen chromastyles` through `customCSS`.
+- An `image` shortcode given a `style`.
 
 No font directive is required — Mermaid draws with the fonts already on the
 page.

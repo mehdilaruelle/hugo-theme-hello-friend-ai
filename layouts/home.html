@@ -1,11 +1,8 @@
 {{ define "body" }}
-    {{- /*
-      The images travel as custom properties rather than as background-image
-      itself, because the theme toggle runs in the browser: a value written
-      straight into the attribute could not follow it. The stylesheet picks
-      between them on data-theme.
-    */ -}}
-    <body class="{{ if .Site.Params.backgroundImage }} background-image" style="--background-image: url('{{ urls.JoinPath .Site.BaseURL .Site.Params.backgroundImage }}');{{ with .Site.Params.backgroundImageLight }} --background-image-light: url('{{ urls.JoinPath $.Site.BaseURL . }}');{{ end }}" {{ else }}"{{ end }}>
+    {{- /* The images travel as custom properties, set in params-css.html, rather
+      than as background-image itself, because the theme toggle runs in the
+      browser. The stylesheet picks between them on data-theme. */ -}}
+    <body{{ if .Site.Params.backgroundImage }} class="background-image"{{ end }}>
 {{ end }}
 
 {{ define "main" }}
@@ -22,32 +19,17 @@
                        dense screen and no larger. Only a value given in px can
                        be doubled; anything else falls back to a size generous
                        for a portrait. */ -}}
-                {{- /* Formatted only when there is a width to state: printf on
-                       an unset maxWidth prints %!s(<nil>). image.html omits the
-                       attribute for an empty value. */ -}}
+                {{- /* The max-width itself is set in params-css.html. */ -}}
                 {{- $cap := 512 -}}
-                {{- $width := "" -}}
-                {{- with site.Params.portrait.maxWidth -}}
-                  {{- $width = printf "%v" . | strings.TrimSpace -}}
-                  {{- /* A bare number, quoted or not, is pixels, and 0 is unset. */ -}}
-                  {{- if findRE `^[0-9]+(\.[0-9]+)?$` $width -}}
-                    {{- $px := float $width -}}
-                    {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
-                  {{- end -}}
-                {{- end -}}
-                {{- $style := "" -}}
-                {{- with $width -}}
-                  {{- $style = printf "max-width:%s" . -}}
-                  {{- if findRE `^[0-9]+(\.[0-9]+)?px$` . -}}
-                    {{- $cap = int (mul (float (replaceRE "px$" "" .)) 2) -}}
-                  {{- end -}}
+                {{- $width := partial "portrait-width.html" . -}}
+                {{- if findRE `^[0-9]+(\.[0-9]+)?px$` $width -}}
+                  {{- $cap = int (mul (float (replaceRE "px$" "" $width)) 2) -}}
                 {{- end -}}
                 {{- with .Site.Params.Portrait.Path }}
                 {{ partial "image.html" (dict
                   "src" .
                   "alt" $.Site.Params.Portrait.Alt
-                  "position" "circle"
-                  "style" $style
+                  "position" "circle portrait"
                   "loading" "eager"
                   "fetchpriority" "high"
                   "maxWidth" $cap

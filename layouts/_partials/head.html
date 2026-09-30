@@ -129,7 +129,7 @@
            'unsafe-inline' on a site with a strict policy. */ -}}
     {{- /* Appended rather than @use'd: the rules name published asset paths,
            which only a template can resolve. See flag-css.html. */ -}}
-    {{- $extra := printf "%s%s" (partial "font-fallback.html" .) (partial "flag-css.html" .) -}}
+    {{- $extra := printf "%s%s%s" (partial "font-fallback.html" .) (partial "flag-css.html" .) (partial "params-css.html" .) -}}
     {{- with $extra }}
       {{- /* One digest, on BOTH paths: FromString and Concat both cache by
              target path, and each language passes content of its own since

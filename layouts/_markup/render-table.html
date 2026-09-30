@@ -15,7 +15,7 @@
     {{- range .THead }}
     <tr>
       {{- range . }}
-      <th{{ with .Alignment }}{{ printf " style=%q" (printf "text-align: %s" .) | safeHTMLAttr }}{{ end }}>{{ .Text }}</th>
+      <th{{ with .Alignment }} class="align-{{ . }}"{{ end }}>{{ .Text }}</th>
       {{- end }}
     </tr>
     {{- end }}
@@ -24,7 +24,7 @@
     {{- range .TBody }}
     <tr>
       {{- range . }}
-      <td{{ with .Alignment }}{{ printf " style=%q" (printf "text-align: %s" .) | safeHTMLAttr }}{{ end }}>{{ .Text }}</td>
+      <td{{ with .Alignment }} class="align-{{ . }}"{{ end }}>{{ .Text }}</td>
       {{- end }}
     </tr>
     {{- end }}
