@@ -6,13 +6,14 @@ There are some settings you can set in your `config.toml`.
 
 The settings in the default area are usually provided by Hugo itself. Check [Configure Hugo](https://gohugo.io/getting-started/configuration/#all-configuration-settings) for more information. But I want to list some important things here which are relevant to this theme.
 
-### paginate
+### pagination
 
-```
-paginate = 10
+```toml
+[pagination]
+  pagerSize = 10
 ```
 
-This setting will paginate your list views. Set to `0` to disable it. For more information check (https://gohugo.io/templates/pagination/).
+How many entries each pager of a list holds; 10 is Hugo's default. The old top-level `paginate` key is ignored without a warning. See [Pagination](https://gohugo.io/templates/pagination/).
 
 ## Params, and where to put them when you have several languages
 
