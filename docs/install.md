@@ -89,7 +89,7 @@ WARN  params.mainSections names "blog", but the theme's article template is
       comments, and blog/index.xml loses its full-text content:encoded.
 ```
 
-Add `layouts/blog/page.html` to your own site and the warning stops — a site
+Add `layouts/blog/page.html` (or the older name, `single.html`) to your own site and the warning stops — a site
 that supplies the template is not doing anything wrong. To keep the fallback
 and silence the line, name it in `ignoreLogs`:
 
