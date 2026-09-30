@@ -1,0 +1,2 @@
+{{- $name := index (site.Params.mainSections | default (slice "posts")) 0 -}}
+{{- return site.GetPage (printf "/%s" $name) -}}

@@ -14,8 +14,8 @@
                     {{ partial "icon.html" (dict "name" "home") }}
                     {{- partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
                     </a>
-                    {{- with index (.Site.Params.mainSections | default (slice "posts")) 0 }}
-                    <a href="{{ . | absLangURL }}">
+                    {{- with partial "main-section.html" . }}
+                    <a href="{{ .Permalink }}">
                     {{ partial "icon.html" (dict "name" "archive") }}
                     {{- partial "i18n.html" (dict "key" "archives" "fallback" "Archives") -}}
                     </a>
