@@ -1,5 +1,5 @@
 {{- /* llms.txt, the convention at llmstxt.org. */ -}}
-{{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
+{{- $desc := .Description | default (partial "flatten.html" (site.Params.homeSubtitle | default site.Params.description | default "")) -}}
 {{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
 {{- /* Not a list item: everything in a list here is a page. */ -}}
 {{- with .OutputFormats.Get "llmsfull" }}

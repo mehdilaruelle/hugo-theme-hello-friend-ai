@@ -1,7 +1,7 @@
-{{- /* One line, because a newline ends a list item. htmlUnescape twice: so
-       truncate counts characters not entities, then to undo its escaping. */ -}}
+{{- /* One line, because a newline ends a list item. */ -}}
 {{- $note := "" -}}
-{{- with .Description | default .Summary -}}
-  {{- $note = partial "flatten.html" . | truncate 200 "…" | htmlUnescape -}}
+{{- with .Description }}{{ $note = partial "md/plain.html" (dict "text" .) }}{{ else }}{{ $note = partial "md/plain.html" (dict "text" $.Summary "html" true) }}{{ end -}}
+{{- with $note -}}
+  {{- $note = partial "escape-lt.html" (dict "text" (. | truncate 200 "…" | htmlUnescape) "with" `\<`) -}}
 {{- end -}}
 {{- return $note -}}

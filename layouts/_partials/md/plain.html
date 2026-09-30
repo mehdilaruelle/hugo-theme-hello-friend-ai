@@ -1,0 +1,7 @@
+{{- $t := .text -}}
+{{- if .html -}}
+  {{- $t = partial "flatten.html" $t -}}
+{{- else -}}
+  {{- $t = $t | replaceRE `\s+` " " | strings.TrimSpace -}}
+{{- end -}}
+{{- return $t -}}

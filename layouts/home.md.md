@@ -1,4 +1,6 @@
-{{- $desc := .Description | default site.Params.homeSubtitle | default site.Params.description -}}
+{{- /* The home page's description is text; the subtitle and the site
+       description are HTML wherever else they are shown. */ -}}
+{{- $desc := .Description | default (partial "flatten.html" (site.Params.homeSubtitle | default site.Params.description | default "")) -}}
 {{- /* .Pages leaves out the pages Hugo generates, so /tags/ and /categories/
        were published with nothing linking them. */ -}}
 {{- $children := slice -}}

@@ -1,7 +1,7 @@
 +++
 title = "The `<b>` element, and a <kbd> tag"
 date = "2025-12-02"
-description = "A title with a code span: what the code span holds reaches the reader as written."
+description = "A title with a code span, `<b>`: what the code span holds reaches the reader as written."
 tags = ["hugo"]
 # A cover, so the title also becomes the alt text of the cover and of the card
 # image: two more places where the code span and the tag must stay text.
