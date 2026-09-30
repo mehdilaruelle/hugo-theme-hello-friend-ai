@@ -88,6 +88,7 @@ for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
 // Reading the value is not a truth test: footer.trademark is also its text.
 const ok = (before, after) =>
   /partial\s+"switch\.html"\s*\(?\s*$/.test(before) ||
+  /\b(?:reflect\.Is\w+|isset)\s*\(?\s*$/.test(before) ||
   /printf\s+"[^"]*"\s*$/.test(before) ||
   (/\{\{-?\s*$/.test(before) && /^\s*-?\}\}/.test(after));
 

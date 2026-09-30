@@ -9,9 +9,15 @@ The posts a reader is most likely to want next. Takes the page.
   call a partial, so the loop does it, as in sitemap.xml.
 */ -}}
 {{- $on := true -}}
-{{- with site.Params.related }}{{ if isset . "enable" }}{{ $on = partial "switch.html" .enable }}{{ end }}{{ end -}}
+{{- $limit := 0 -}}
+{{- if reflect.IsMap site.Params.related -}}
+  {{- if isset site.Params.related "enable" }}{{ $on = partial "switch.html" site.Params.related.enable }}{{ end -}}
+  {{- $limit = site.Params.related.limit -}}
+{{- else if isset site.Params "related" -}}
+  {{- $on = partial "switch.html" site.Params.related -}}
+{{- end -}}
 {{- if $on -}}
-  {{- $limit := int (float (site.Params.related.limit | default 0)) -}}
+  {{- $limit = int (float ($limit | default 0)) -}}
   {{- if le $limit 0 }}{{ $limit = 5 }}{{ end -}}
 
   {{- $pages := slice -}}
