@@ -190,7 +190,7 @@
     [[languages.fr.menu.main]]
       identifier = "posts"
       name       = "Articles"
-      url        = "posts/"
+      pageRef    = "/posts"
       weight     = 20
     [[languages.fr.menu.main]]
       identifier = "search"

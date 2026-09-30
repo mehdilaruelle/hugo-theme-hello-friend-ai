@@ -20,19 +20,19 @@ A parent with no url of its own is a label rather
 than a link, and gets a span that is still focusable,
 because focus is what opens the panel. */ -}}
                     {{ if .URL }}
-                    <a href="{{ .URL | relLangURL }}" class="dropbtn">{{ .Name }}</a>
+                    <a href="{{ partial "menu-url.html" . }}" class="dropbtn">{{ .Name }}</a>
                     {{ else }}
                     <span class="dropbtn" tabindex="0">{{ .Name }}</span>
                     {{ end }}
                     <div class="dropdown-content">
                     {{ range .Children }}
-                        <a href="{{ .URL | relLangURL }}">{{ .Name }}</a>
+                        <a href="{{ partial "menu-url.html" . }}">{{ .Name }}</a>
                     {{ end }}
                     </div>
                     </div>
                 </li>
             {{ else }}
-                <li><a href="{{ .URL | relLangURL }}">{{ .Name }}</a></li>
+                <li><a href="{{ partial "menu-url.html" . }}">{{ .Name }}</a></li>
             {{ end }}
         {{- end }}
 
