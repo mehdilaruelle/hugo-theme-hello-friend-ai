@@ -9,5 +9,31 @@
        the wrapper is unchanged. The trailing newline is put back because
        Goldmark strips it from .Inner before a hook sees it and the default path
        does not -- without it the last line of every block, and of the clipboard
-       text, lost its newline. */ -}}
-<div class="code-block">{{ transform.Highlight (printf "%s\n" .Inner) .Type .Options }}</div>
+       text, lost its newline. transform.HighlightCodeBlock would take the
+       context whole, and lose that newline the same way.
+
+       What Hugo does with no hook, and transform.Highlight does not, is done
+       here: each block's line anchors get its own prefix, hl-<ordinal>, or
+       every block numbered its lines id="1", id="2" and the ids collided;
+       and the fence's attributes -- {.wide id="snippet"} -- go on the
+       div.highlight it wraps, escaped as render-heading.html does. */ -}}
+{{- $opts := .Options -}}
+{{- if not (or (isset $opts "lineanchors") (isset $opts "lineAnchors")) -}}
+  {{- $opts = merge $opts (dict "lineAnchors" (printf "hl-%d" .Ordinal)) -}}
+{{- end -}}
+{{- $class := "" -}}
+{{- $attrs := "" -}}
+{{- range $k, $v := .Attributes -}}
+  {{- with printf "%v" $v -}}
+    {{- if eq $k "class" -}}
+      {{- $class = printf " %s" (htmlEscape .) -}}
+    {{- else -}}
+      {{- $attrs = printf "%s %s=\"%s\"" $attrs $k (htmlEscape .) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $html := transform.Highlight (printf "%s\n" .Inner) .Type $opts -}}
+{{- if or $class $attrs -}}
+  {{- $html = replace $html `<div class="highlight">` (printf `<div class="highlight%s"%s>` $class $attrs) 1 | safeHTML -}}
+{{- end -}}
+<div class="code-block">{{ $html }}</div>
