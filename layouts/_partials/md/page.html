@@ -8,7 +8,7 @@
 > {{ partial "flatten.html" . | safeHTML }}
 {{ end }}
 {{- with .Date }}{{ if not .IsZero }}
-{{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit . ", " | safeHTML }}{{ end }}
+{{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit (partial "as-list.html" .) ", " | safeHTML }}{{ end }}
 {{ end }}{{ end }}
 {{ $body | strings.TrimSpace | safeHTML }}
 {{ with .Params.llmsNote }}

@@ -121,7 +121,7 @@
     {{- $data = merge $data (dict "image" .) -}}
   {{- end -}}
   {{- with .Params.tags -}}
-    {{- $data = merge $data (dict "keywords" (delimit . ", ")) -}}
+    {{- $data = merge $data (dict "keywords" (delimit (partial "as-list.html" .) ", ")) -}}
   {{- end -}}
   {{- /* Page first, site second. license is a URL — that is what schema.org
          means by it — and creditText a name. */ -}}
