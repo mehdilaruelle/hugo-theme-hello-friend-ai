@@ -12,10 +12,6 @@
   const done = (script && script.dataset.labelDone) || 'Copied';
   const failed = (script && script.dataset.labelFailed) || 'Press Ctrl+C';
 
-  // The code as written, without Chroma's line numbers, which textContent
-  // would take in. Inline styles mark them user-select: none, as a hand
-  // selection needs; with markup.highlight.noClasses off they are the ln and
-  // lnt classes instead, styled only by whatever stylesheet the site brings.
   function isLineNumber(el) {
     if (el.classList.contains('ln') || el.classList.contains('lnt')) return true;
     const style = getComputedStyle(el);
@@ -41,8 +37,6 @@
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
-      // linenos=table puts the numbers in a pre of their own, in the cell
-      // before the code's: that one gets no button.
       const cell = pre.closest('td');
       if (cell && cell.nextElementSibling) return;
 
