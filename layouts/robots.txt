@@ -18,11 +18,23 @@
 {{- /* Only what is refused gets a group: silence is permission. */ -}}
 {{- $groups := slice -}}
 {{- if not $custom -}}
+  {{- $refused := slice -}}
   {{- if not $train -}}
-    {{- $groups = $groups | append (dict "note" "Declined: fetched to train a model, with no link back." "agents" hugo.Data.aiCrawlers.train) -}}
+    {{- $refused = $refused | append (dict "note" "Declined: fetched to train a model, with no link back." "agents" hugo.Data.aiCrawlers.train) -}}
   {{- end -}}
   {{- if not $cite -}}
-    {{- $groups = $groups | append (dict "note" "Declined: fetched to answer a question and cite the site." "agents" hugo.Data.aiCrawlers.cite) -}}
+    {{- $refused = $refused | append (dict "note" "Declined: fetched to answer a question and cite the site." "agents" hugo.Data.aiCrawlers.cite) -}}
+  {{- end -}}
+  {{- range $g := $refused -}}
+    {{- $agents := slice -}}
+    {{- with $g.agents -}}
+      {{- range partial "as-list.html" . -}}
+        {{- with strings.TrimSpace (printf "%v" .) }}{{ $agents = $agents | append . }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+    {{- with $agents -}}
+      {{- $groups = $groups | append (dict "note" $g.note "agents" .) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 User-agent: *
