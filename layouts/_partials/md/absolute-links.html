@@ -1,12 +1,25 @@
 {{- $base := .base -}}
 {{- $lines := slice -}}
-{{- $fenced := false -}}
+{{- $fence := "" -}}
 {{- range split .text "\n" -}}
   {{- $line := . -}}
-  {{- if findRE "^ {0,3}(```|~~~)" $line 1 -}}
-    {{- $fenced = not $fenced -}}
-  {{- else if not $fenced -}}
-    {{- $line = replaceRE `\]\(([^/#?<)\s:][^)\s:]*)([)\s])` (printf `](%s${1}${2}` $base) $line -}}
+  {{- if $fence -}}
+    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})\\s*$" $line 1 -}}
+      {{- $m := index . 0 1 -}}
+      {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $open := "" -}}
+    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})(.*)$" $line 1 -}}
+      {{- $m := index . 0 -}}
+      {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
+    {{- end -}}
+    {{- if $open -}}
+      {{- $fence = $open -}}
+    {{- else -}}
+      {{- $line = replaceRE `\]\(([^/#?<)\s:][^)\s:]*)([)\s])` (printf `](%s${1}${2}` $base) $line -}}
+      {{- $line = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $base) $line -}}
+    {{- end -}}
   {{- end -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
