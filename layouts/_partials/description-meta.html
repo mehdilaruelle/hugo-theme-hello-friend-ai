@@ -14,9 +14,11 @@ The sentence a meta tag publishes: the page's own, the site's when it has
 {{- $out := partial "pager-suffix.html" (dict "text" $description "pager" $pager) -}}
 {{- /* The suffix is appended after description.html has truncated to 160, so a
        pager shipped a longer tag than any other page. Cut the sentence to make
-       room for the suffix, rather than the suffix that says which pager. */ -}}
+       room for the suffix, rather than the suffix that says which pager.
+       htmlUnescape: truncate escapes plain text, and the meta tag escapes it
+       again, so an apostrophe shipped as &amp;#39;. */ -}}
 {{- if gt (strings.RuneCount $out) 160 -}}
   {{- $room := sub (strings.RuneCount $description) (sub (strings.RuneCount $out) 160) -}}
-  {{- $out = partial "pager-suffix.html" (dict "text" (truncate $room "" $description) "pager" $pager) -}}
+  {{- $out = partial "pager-suffix.html" (dict "text" (truncate $room "" $description | htmlUnescape) "pager" $pager) -}}
 {{- end -}}
 {{- return $out -}}
