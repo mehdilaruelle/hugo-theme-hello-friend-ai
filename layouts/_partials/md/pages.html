@@ -3,6 +3,6 @@
        partial. */ -}}
 {{- $out := slice -}}
 {{- range . -}}
-  {{- if not (partial "md/noai.html" .) -}}{{- $out = $out | append . -}}{{- end -}}
+  {{- if and .Permalink (not (partial "md/noai.html" .)) -}}{{- $out = $out | append . -}}{{- end -}}
 {{- end -}}
 {{- return $out -}}

@@ -70,7 +70,7 @@
       {{- range $i, $p := first 20 . -}}
         {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $p.Permalink "name" (partial "title-plain.html" $p)) -}}
       {{- end -}}
-      {{- $data = merge $data (dict "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $.Pages) "itemListElement" $items)) -}}
+      {{- $data = merge $data (dict "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len (partial "list-pages.html" $)) "itemListElement" $items)) -}}
     {{- end -}}
   {{- end -}}
 {{- else if and .IsPage (eq .Params.schema "ProfilePage") -}}

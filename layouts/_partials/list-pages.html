@@ -2,4 +2,5 @@
 {{- $pages := .Pages -}}
 {{- with .Data.Pages -}}{{- $pages = . -}}{{- end -}}
 {{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- end -}}
+{{- $pages = where $pages "Permalink" "!=" "" -}}
 {{- return $pages -}}

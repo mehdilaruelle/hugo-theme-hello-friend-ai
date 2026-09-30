@@ -1,4 +1,6 @@
-{{ if and (not (partial "switch.html" $.Site.Params.DisableReadOtherPosts)) (or .NextInSection .PrevInSection) }}
+{{- $newer := "" -}}{{- with .NextInSection }}{{ if .Permalink }}{{ $newer = . }}{{ end }}{{ end -}}
+{{- $older := "" -}}{{- with .PrevInSection }}{{ if .Permalink }}{{ $older = . }}{{ end }}{{ end -}}
+{{ if and (not (partial "switch.html" $.Site.Params.DisableReadOtherPosts)) (or $newer $older) }}
     <div class="pagination">
         {{ if .Site.Params.ReadOtherPosts }}
         <div class="pagination__title">
@@ -8,19 +10,19 @@
         {{ end }}
 
         <div class="pagination__buttons">
-            {{ if .NextInSection }}
+            {{ with $newer }}
             <span class="button previous">
-                <a href="{{ .NextInSection.Permalink }}">
+                <a href="{{ .Permalink }}">
                     <span class="button__icon" aria-hidden="true">←</span>
-                    <span class="button__text">{{ partial "title-plain.html" .NextInSection }}</span>
+                    <span class="button__text">{{ partial "title-plain.html" . }}</span>
                 </a>
             </span>
             {{ end }}
 
-            {{ if .PrevInSection }}
+            {{ with $older }}
             <span class="button next">
-                <a href="{{ .PrevInSection.Permalink }}">
-                    <span class="button__text">{{ partial "title-plain.html" .PrevInSection }}</span>
+                <a href="{{ .Permalink }}">
+                    <span class="button__text">{{ partial "title-plain.html" . }}</span>
                     <span class="button__icon" aria-hidden="true">→</span>
                 </a>
             </span>
