@@ -145,7 +145,7 @@
     {{- end -}}
   {{- end -}}
   {{- with $logo -}}
-    {{- $node := dict "@type" "ImageObject" "url" (. | absURL) -}}
+    {{- $node := dict "@type" "ImageObject" "url" (partial "abs-url.html" .) -}}
     {{- with resources.Get . -}}
       {{- $node = merge $node (dict "url" .Permalink) -}}
       {{- /* Asking an SVG for its dimensions is a build error. */ -}}
