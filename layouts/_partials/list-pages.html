@@ -1,8 +1,8 @@
 {{- /* The pages a list page shows, in display order, before pagination.
 
-  Both list.html and json-ld.html paginate, and a Hugo page has one paginator:
-  whichever template runs first fixes it for the other. They have to ask for
-  the same set, or the second call is silently ignored. */ -}}
+  paginator.html pages it, for list.html, canonical.html and json-ld.html
+  alike: a Hugo page has one paginator, and whichever template asks first
+  fixes it for the others. */ -}}
 {{- $pages := .Pages -}}
 {{- with .Data.Pages -}}{{- $pages = . -}}{{- end -}}
 {{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- end -}}
