@@ -38,7 +38,8 @@
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
       const cell = pre.closest('td');
-      if (cell && cell.nextElementSibling) return;
+      const first = pre.querySelector('code > span');
+      if (cell && cell.nextElementSibling && first && isLineNumber(first)) return;
 
       // The wrapper render-codeblock.html puts around every fenced block.
       // closest, not parentElement: Hugo puts a div.highlight in between
