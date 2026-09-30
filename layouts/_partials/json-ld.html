@@ -64,7 +64,7 @@
            the positions name nothing anybody can see. numberOfItems still
            counts the whole collection. */ -}}
     {{- $listed := partial "list-pages.html" . -}}
-    {{- with .Paginate $listed -}}{{- $listed = .Pages -}}{{- end -}}
+    {{- with partial "paginator.html" . -}}{{- $listed = .Pages -}}{{- end -}}
     {{- with $listed -}}
       {{- $items := slice -}}
       {{- range $i, $p := first 20 . -}}

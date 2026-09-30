@@ -497,6 +497,29 @@ rather than run to the several hundred `.Summary` can reach.
 Excerpts and thumbnails compose. With both on, the excerpt is indented to line
 up with the title rather than with the thumbnail beside it.
 
+## A list layout of your own
+
+A Hugo page has one paginator, fixed by the first `.Paginate` call, and the
+theme makes that call in `<head>`: the canonical URL, `rel="prev"`/`"next"` and
+the `ItemList` in JSON-LD all name the pager. A site `layouts/<section>/list.html`
+that calls `.Paginate` itself is handed that paginator, whatever arguments it
+passes. Ask for the theme's instead, and set the size in the list's front matter:
+
+```go-html-template
+{{ define "main" }}
+  {{ range (partial "paginator.html" .).Pages }}…{{ end }}
+{{ end }}
+```
+
+```yaml
+# content/posts/_index.md
+pagerSize: 2
+```
+
+`paginator.html` pages what `layouts/_partials/list-pages.html` returns, so to
+change which pages a list holds, override that partial rather than passing
+another collection.
+
 ## Related posts
 
 Every article ends with a list of the posts closest to it, so a reader has
@@ -774,6 +797,7 @@ icons, and the build warns when it sees one.
 | `noindex` | `<meta name="robots" content="noindex">`, and the page is left out of `sitemap.xml` — see [Keeping a page out of things](#keeping-a-page-out-of-things). A page with `layout: search` is already treated this way and does not need it |
 | `comments` | set to `false` to hide the comments on that page — Disqus, Commento and utterances alike. Quoted values count, so `"false"` and `"0"` read the same way |
 | `description` | overrides the summary in `<meta name="description">` and Open Graph |
+| `pagerSize` | on a section, taxonomy or term page (`_index.md`, or a `cascade`): how many entries each pager of that list holds, in place of `[pagination] pagerSize` |
 | `author` | overrides the site author for that page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 
