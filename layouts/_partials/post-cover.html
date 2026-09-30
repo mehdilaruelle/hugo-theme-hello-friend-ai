@@ -1,6 +1,3 @@
-{{- /* image.html plainifies alt, since a shortcode's can carry markup. The
-       title is plain text already, so it is escaped first: a <kbd> in it stays
-       text instead of being stripped out of the alt. */ -}}
 {{ if .Params.Cover }}
   <figure class="post-cover">
     {{ partial "image.html" (dict "src" .Params.Cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high") }}

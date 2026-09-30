@@ -294,7 +294,6 @@ const checks = {
     for (const [where, v] of Object.entries(named)) {
       if (decode(v) !== expected[where]) fail(`${where} is not ${expected[where]}`, v);
     }
-    // A page with a cover and no caption describes the picture by its title.
     const cardAlt = attr(metas.find((m) => attr(m[0], "property") === "og:image:alt")?.[0] ?? "", "content");
     if (cardAlt && decode(cardAlt) !== want) fail(`og:image:alt is not ${want}`, cardAlt);
     const figure = [...html.matchAll(/<figure\b[^>]*>/gi)].find((m) => hasClass(m[0], "post-cover"));
