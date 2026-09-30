@@ -6,9 +6,9 @@
        As text it belonged to the heading, and plainify fed it back into the
        meta description and the search index.
 
-       %v before %q: {notoc=true} is a bool, and %q printed %!q(bool=true). */ -}}
+       %v: {notoc=true} is a bool. */ -}}
 {{- $anchor := .Anchor -}}
 <h{{ .Level }} id="{{ $anchor }}"
   {{- range $k, $v := .Attributes }}
-    {{- if ne $k "id" }}{{ with printf "%v" $v }}{{ printf " %s=%q" $k . | safeHTMLAttr }}{{ end }}{{ end }}
+    {{- if ne $k "id" }}{{ with printf "%v" $v }}{{ printf " %s=\"%s\"" $k (htmlEscape .) | safeHTMLAttr }}{{ end }}{{ end }}
   {{- end }}>{{ .Text }}<a class="heading-anchor" href="#{{ $anchor }}" aria-label="{{ partial "i18n.html" (dict "key" "headingAnchor" "fallback" "Link to this section") }}"></a></h{{ .Level }}>
