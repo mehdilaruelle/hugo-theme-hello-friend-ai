@@ -1,11 +1,3 @@
-{{- /* A list page's paginator: the pages list-pages.html returns, by pagerSize
-       from the list's own front matter, or [pagination] pagerSize without one.
-
-       Hugo gives a page one paginator, fixed by the first .Paginate call, and
-       head.html makes that call -- canonical.html and json-ld.html need the
-       pager -- before any layout body runs. A layout of a site's own that
-       called .Paginate with other arguments was silently handed this one
-       instead, so it asks here, and the size is set in front matter. */ -}}
 {{- $pages := partial "list-pages.html" . -}}
 {{- $size := int (float (.Params.pagerSize | default 0)) -}}
 {{- $paginator := "" -}}
