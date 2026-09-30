@@ -145,8 +145,6 @@
     {{- end -}}
   {{- end -}}
   {{- with $logo -}}
-    {{- /* abs-url.html, not absURL, which resolves a rooted path against the
-           host and drops a subpath. */ -}}
     {{- $node := dict "@type" "ImageObject" "url" (partial "abs-url.html" .) -}}
     {{- with resources.Get . -}}
       {{- $node = merge $node (dict "url" .Permalink) -}}

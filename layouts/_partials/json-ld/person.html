@@ -61,7 +61,6 @@
 {{- end -}}
 {{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
 {{- with site.Params.portrait.path -}}
-  {{- /* abs-url.html, not absURL, which drops a subpath from a rooted path. */ -}}
   {{- $portrait := partial "abs-url.html" . -}}
   {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}
