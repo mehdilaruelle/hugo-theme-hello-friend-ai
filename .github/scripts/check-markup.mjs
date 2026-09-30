@@ -18,6 +18,7 @@ const artifacts = [
   [/%![a-zA-Z]?\(/g, 'a printf format error'],
   [/ZgotmplZ/g, 'a URL html/template refused'],
   [/(?:<|&lt;)no value(?:>|&gt;)/g, 'a nil the template printed'],
+  [/<video(?![\s>])/g, 'an attribute glued to the video tag'],
 ];
 
 const files = [];

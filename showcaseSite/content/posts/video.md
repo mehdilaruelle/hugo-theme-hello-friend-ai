@@ -35,6 +35,11 @@ loop, so the clip waits to be started:
 
 {{< video src="/video/demo" poster="/video/demo.jpg" width="640" height="360" controls="true" alt="A test pattern" >}}
 
+Only `src` is required. With nothing else the player still gets its controls,
+though the frame stays empty until the video loads:
+
+{{< video src="/video/demo" >}}
+
 `width` and `height` matter more here than for an image: a video has no
 intrinsic size until it loads, so without them the page reflows when it arrives.
 The `poster` is what fills the frame in the meantime.
