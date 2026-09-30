@@ -15,11 +15,7 @@
   {{- if isset $ai "search" -}}{{- $search = partial "switch.html" $ai.search -}}{{- end -}}
   {{- $custom = $ai.crawlers | default "" | strings.TrimSpace -}}
 {{- end -}}
-{{- /* Only what is refused gets a group: silence is permission. A group needs
-       an agent: blank lines and comments do not end one under RFC 9309, so a
-       Disallow: / with no User-agent above it joined the User-agent: * group
-       and turned every crawler away. A site's data/aiCrawlers.yaml can name no
-       agent, or a single one as a string. */ -}}
+{{- /* Only what is refused gets a group: silence is permission. */ -}}
 {{- $groups := slice -}}
 {{- if not $custom -}}
   {{- $refused := slice -}}
