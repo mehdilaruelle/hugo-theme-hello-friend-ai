@@ -1,4 +1,7 @@
-{{- /* A link is written only for a file present in static/. */ -}}
+{{- /* A link is written only for a file present in one of the static
+       directories params.favicon.staticDir names: fileExists cannot see the
+       site's staticDir setting. */ -}}
+{{- $dirs := partial "as-list.html" (.Site.Params.favicon.staticDir | default "static") -}}
 {{- $icons := slice
   (dict "file" "apple-touch-icon.png" "rel" "apple-touch-icon" "sizes" "180x180")
   (dict "file" "favicon-32x32.png" "rel" "icon" "type" "image/png" "sizes" "32x32")
@@ -8,7 +11,10 @@
   (dict "file" "favicon.ico" "rel" "shortcut icon")
 -}}
 {{- range $icons }}
-{{- if fileExists (printf "static/%s" .file) }}
+{{- $file := .file -}}
+{{- $found := false -}}
+{{- range $dirs }}{{ if fileExists (path.Join . $file) }}{{ $found = true }}{{ end }}{{ end -}}
+{{- if $found }}
     <link rel="{{ .rel }}"{{ with .type }} type="{{ . }}"{{ end }}{{ with .sizes }} sizes="{{ . }}"{{ end }} href="{{ .file | relURL }}"{{ with .color }} color="{{ . }}"{{ end }}>
 {{- end }}
 {{- end }}
