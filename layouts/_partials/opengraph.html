@@ -96,16 +96,14 @@
        subpath. json-ld.html carries the same note. */ -}}
 {{- with .Params.audio }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		{{- $url := . }}
-		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		{{- $url := partial "abs-url.html" . }}
 		<meta property="og:audio" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 
 {{- with .Params.videos }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		{{- $url := . }}
-		{{- if not (partial "is-remote.html" $url) }}{{ $url = urls.JoinPath site.BaseURL $url }}{{ end }}
+		{{- $url := partial "abs-url.html" . }}
 		<meta property="og:video" content="{{ $url }}">
 	{{- end }}
 {{- end }}
