@@ -22,6 +22,9 @@
   {{- end -}}
   {{- $css = $css | append (printf ".background-image{%s}" $bg) -}}
 {{- end -}}
+{{- with partial "content-width.html" . -}}
+  {{- $css = $css | append (printf ":root{--content-width:%s}" .) -}}
+{{- end -}}
 {{- with partial "portrait-width.html" . -}}
   {{- $css = $css | append (printf "img.circle.portrait{max-width:%s}" .) -}}
 {{- end -}}

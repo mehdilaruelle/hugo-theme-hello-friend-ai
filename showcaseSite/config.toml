@@ -43,6 +43,10 @@ copyright = '&copy; 2026 Jane Doe & contributors · <a href="https://creativecom
   enableThumbnails = true
   enableListExcerpts = true
 
+  # A bare number, so the px it means is added by the theme. Wider than the
+  # 800px default, and the header, footer, covers and image sizes follow it.
+  contentWidth = 960
+
   # The terms of reuse, once for the site. A page overrides either.
   license    = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
   creditText = "Jane Doe"
