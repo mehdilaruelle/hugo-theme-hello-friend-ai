@@ -74,7 +74,7 @@ other = "Поиск по сайту"
 other = "Введите запрос…"
 
 [searchResultsOne]
-other = "1 результат"
+other = "%d результат"
 
 [searchResultsMany]
 other = "Результатов: %d"

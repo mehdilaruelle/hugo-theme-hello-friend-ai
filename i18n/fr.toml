@@ -61,7 +61,7 @@ other = "Rechercher sur ce site"
 other = "Tapez pour rechercher…"
 
 [searchResultsOne]
-other = "1 résultat"
+other = "%d résultat"
 
 [searchResultsMany]
 other = "%d résultats"
