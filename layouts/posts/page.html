@@ -127,8 +127,8 @@
       <script src="https://utteranc.es/client.js"
               repo="{{ .Site.Params.Utterances.Repository }}"
               {{ if .Site.Params.Utterances.Label }}label="{{ .Site.Params.Utterances.Label }}"{{ end }}
-              issue-term="{{ .Site.Params.Utterances.IssueTerm }}"
-              theme="{{ .Site.Params.Utterances.Theme }}"
+              issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"
+              theme="{{ .Site.Params.Utterances.Theme | default "preferred-color-scheme" }}"
               crossorigin="anonymous"
               async>
       </script>

@@ -258,7 +258,7 @@ disableHugoGeneratorInject = false
   #
   #   label      = ""
   # 
-  #   Blog Post <-> Issue mapping. This parameter is optional. Possible values are:
+  #   Blog Post <-> Issue mapping. Defaults to pathname. Possible values are:
   #      - pathname
   #      - url
   #      - title
@@ -268,7 +268,7 @@ disableHugoGeneratorInject = false
   #
   #   issueTerm  = ""
   #
-  #   Theme used: possible values are:
+  #   Theme used. Defaults to preferred-color-scheme. Possible values are:
   #      - github-light
   #      - github-dark
   #      - preferred-color-scheme
