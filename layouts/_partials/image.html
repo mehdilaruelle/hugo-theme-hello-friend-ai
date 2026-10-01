@@ -102,7 +102,7 @@
 {{- with $rendered -}}
   {{- $url = .RelPermalink -}}
 {{- else -}}
-  {{- if not $remote -}}{{- $url = urls.JoinPath site.BaseURL $src -}}{{- end -}}
+  {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
 {{- end -}}
 
 {{- if $src -}}
