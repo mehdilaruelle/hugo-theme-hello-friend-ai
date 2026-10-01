@@ -773,8 +773,8 @@ release stays a readable diff; the correction belongs in a change of its own.
 
 ### Social links
 
-The icons in the header and footer come from `params.social`, a list with one
-entry per network:
+The icons under the front page's subtitle come from `params.social`, a list
+with one entry per network:
 
 ```toml
 [[params.social]]
@@ -820,6 +820,15 @@ page" key explicitly.
 Write `params.social` as a **list**, not a map. The map form — `[params.social]`
 with `twitter = "janedoe"` — is read for the Twitter card handle but draws no
 icons, and the build warns when it sees one.
+
+The front page is the only place the theme draws them: the header, the footer
+and the articles carry none. To show them somewhere else, call the partial the
+front page uses from a template of your own — for instance a copy of the
+theme's `layouts/_partials/footer.html` in your site's `layouts/_partials/`:
+
+```go-html-template
+{{ with site.Params.social }}{{ partial "social-icons.html" . }}{{ end }}
+```
 
 ### Front matter
 
