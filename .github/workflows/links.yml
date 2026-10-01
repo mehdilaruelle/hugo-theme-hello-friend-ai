@@ -431,6 +431,10 @@ jobs:
           node ../.github/scripts/check-links.mjs public-overrides https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-overrides favicons
           node ../.github/scripts/check-invariants.mjs public-overrides site-overrides '#abcdef'
+          mv static mystatic
+          hugo --themesDir ../.. --gc --minify --destination public-static-dir \
+            --config config.toml,../.github/fixtures/favicon-static-dir.toml
+          node ../.github/scripts/check-invariants.mjs public-static-dir favicons
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite

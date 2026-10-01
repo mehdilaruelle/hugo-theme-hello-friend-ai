@@ -1,0 +1,4 @@
+# Favicons in a staticDir the theme cannot see on its own.
+staticDir = ["mystatic"]
+[params.favicon]
+  staticDir = "mystatic"
