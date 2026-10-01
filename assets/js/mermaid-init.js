@@ -24,6 +24,8 @@
   // innerHTML and not textContent: the render hook escapes the block, and
   // innerHTML keeps it escaped.
   const blocks = [].slice.call(document.querySelectorAll('.mermaid'));
+  // A list's own diagram flags every pager, but only the first shows it.
+  if (!blocks.length) return;
   const sources = blocks.map((el) => { return el.innerHTML; });
 
   import(src).then((module) => {
