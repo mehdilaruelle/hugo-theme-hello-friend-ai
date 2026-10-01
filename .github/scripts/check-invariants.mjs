@@ -227,6 +227,34 @@ const checks = {
     ok(`${seen} gallery thumbnails, each a named link around a measured square`);
   },
 
+  // params.contentWidth: the stylesheet sets the property, and the images are
+  // told the same width. With no argument, the default: neither is written.
+  "content-width"(want) {
+    const set = rules(css(), ":root").filter((b) =>
+      b.split(";").some((d) => d.trim().startsWith("--content-width:")));
+    if (!want) {
+      if (set.length) fail("--content-width is set with no contentWidth configured", set.map((b) => `:root{${b}}`).join("\n"));
+      ok("no contentWidth, no --content-width: the 800px fallback stands");
+      return;
+    }
+    if (!set.some((b) => declares(b, "--content-width", want)))
+      fail(`--content-width:${want} is not in the stylesheet`, set.map((b) => `:root{${b}}`).join("\n") || "(no rule)");
+    const sizes = `(max-width: ${want}) 100vw, ${want}`;
+    const off = [];
+    let seen = 0;
+    for (const p of pages(dir)) {
+      for (const m of readFileSync(p, "utf8").matchAll(/<img\b[^>]*>/gi)) {
+        const s = attr(m[0], "sizes");
+        if (s === null || hasClass(m[0], "portrait")) continue;
+        seen++;
+        if (s !== sizes) off.push(`${rel(p)}: sizes="${s}"`);
+      }
+    }
+    if (!seen) fail("no image with a sizes attribute was built");
+    if (off.length) fail(`an image is not sized to the ${want} column`, off.slice(0, 3).join("\n"));
+    ok(`the column is ${want}, and ${seen} images are sized to it`);
+  },
+
   // Excerpts and JSON-LD descriptions must show characters, not entities.
   entities() {
     const entity = /&(?:[a-z][a-z0-9]*|#\d+|#x[0-9a-f]+);/i;
