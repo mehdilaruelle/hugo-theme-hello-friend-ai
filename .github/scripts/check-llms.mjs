@@ -255,6 +255,15 @@ for (const [lang, prefix] of Object.entries(langs)) {
   if (full.includes("{{<") || full.includes("{{%")) fail(`${lang}: llms-full.txt has an unrendered shortcode`);
   const fullEntities = entities(full);
   if (fullEntities) fail(`${lang}: llms-full.txt has ${fullEntities.length} HTML entities, e.g. ${fullEntities[0]}`);
+  const pageRelative = mdLinks(unfenced(full)).filter((u) => u && !/^(?:[a-z][a-z0-9+.-]*:|\/|#|\?)/i.test(u));
+  if (pageRelative.length) fail(`${lang}: llms-full.txt has ${pageRelative.length} page-relative links, e.g. ${pageRelative[0]}`);
+  const fileResolves = (url) => {
+    const rel = relative(new URL(url).pathname);
+    return /\.[A-Za-z0-9]+$/.test(rel) && !/\.(md|txt)$/.test(rel) ? existsSync(join(root, rel)) : resolves(url);
+  };
+  for (const url of mdLinks(unfenced(full)).filter((u) => u.startsWith(base))) {
+    if (!fileResolves(url)) fail(`${lang}: llms-full.txt links ${url}, which resolves to nothing`);
+  }
 
   // Read out of the file, not looked up one URL at a time: looking up what the
   // map names can never notice a page it never named.

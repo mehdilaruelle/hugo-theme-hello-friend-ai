@@ -17,3 +17,16 @@ element. `check-svg-sizing.mjs` asserts what each of these is given.
 {{< image src="dot-width.svg" alt="dot-width" >}}
 {{< image src="dotted-width.svg" alt="dotted-width" >}}
 {{< image src="trailing-junk.svg" alt="trailing-junk" >}}
+
+The first of them as a plain [Markdown link](commas.svg), relative to this page:
+llms-full.txt, which carries this text from the site's root, has to make it
+absolute.
+
+The same file with its destination in angle brackets: [Markdown link](<commas.svg>).
+
+````markdown
+A fence opens with three backticks:
+```
+````
+
+And after that block, [the second of them](dot-width.svg).
