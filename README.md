@@ -77,6 +77,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Fully responsive
 - Support for audio in posts (thanks to [@talbotp](https://github.com/talbotp))
 - Builtin (enableable/disableable) multilanguage menu
+- A logo for each theme: a dark variant of a picture, an inlined SVG in the text colour, or a cursor colour per scheme, see [The logo](docs/config.md#the-logo)
 - Support for social icons
 - Support for sharing buttons
 - Support for a self-hosted [Commento](https://gitlab.com/commento/commento) or [Comentario](https://comentario.app) instance

@@ -192,10 +192,60 @@ the image replaces the text logo entirely.
 
 | key | what it does |
 | --- | --- |
-| `path` | an image to use instead of the text logo. `alt` describes it |
+| `path` | an image to use instead of the text logo, a path under `static/`. `alt` describes it |
+| `pathDark` | another image, shown in dark mode in place of `path`. See [A picture logo](#a-picture-logo) |
+| `inline` | puts an SVG `path` (and `pathDark`) in the page itself rather than linking it, so it can draw in the text colour. The file has to be under `assets/` |
 | `logoMark` | the character before the text, `>` when unset |
 | `logoText` | the text itself, `hello` when unset |
 | `logoHomeLink` | where the logo links. A URL starting with `http://` or `https://` is used as given; anything else is joined to the site's home, so a site under a subpath keeps its prefix. A protocol-relative `//host/` counts as "anything else" and is joined too. Defaults to the home page |
+
+### A picture logo
+
+A logo drawn for a white page often disappears on the dark one. There are two
+ways round it.
+
+**A second picture.** `pathDark` is shown in dark mode and `path` in light
+mode, following the visitor's system and the theme toggle alike:
+
+```toml
+[params.logo]
+  path     = "img/logo.svg"        # static/img/logo.svg
+  pathDark = "img/logo-dark.svg"
+  alt      = "Jane Doe"
+```
+
+Both go into the page, and the stylesheet hides one. Both are also marked
+`loading="lazy"`, which is what keeps the hidden one from being downloaded: a
+browser does not fetch a lazy image that is not displayed. Toggling the theme
+fetches the other one then.
+
+**One SVG, inlined.** An SVG drawn in `currentColor` takes the colour of the
+text around it, which is the theme's. Linked with an `<img>` it cannot — an
+image does not inherit anything from the page — so `inline` writes the file's
+markup into the header instead:
+
+```toml
+[params.logo]
+  path   = "img/logo.svg"          # assets/img/logo.svg
+  inline = true
+  alt    = "Jane Doe"
+```
+
+```xml
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none" stroke="currentColor">
+```
+
+The file must be under `assets/`, where Hugo can read it. An `inline` that
+finds no SVG there warns and falls back to linking the file. The XML prolog,
+any doctype and comments are dropped, and the root element gets the
+`logo__svg` class plus `role="img"` and `aria-label` from `alt` — or
+`aria-hidden` without one. Give it a `viewBox`: the logo is 44px tall and its
+width comes from that ratio.
+
+`inline` and `pathDark` combine: both files are inlined, one shown at a time.
+
+None of this reaches the structured data, whose logo is
+`params.publisher.logo`, see [SEO](seo.md).
 
 ### The cursor
 
@@ -206,6 +256,7 @@ off, and each key is emitted only when set:
 | --- | --- |
 | `logoCursorDisabled` | hides the cursor |
 | `logoCursorColor` | any CSS colour |
+| `logoCursorColorDark` | the colour in dark mode, by the system or the toggle. `logoCursorColor`, or the theme's pink, stays the light one |
 | `logoCursorAnimate` | any CSS time, as the blink duration. `"0s"` stops it |
 | `logoCursorPathname` | appends the current section to `logoText`, so `/posts/` reads `$ cd /home/posts`. The home page appends nothing |
 

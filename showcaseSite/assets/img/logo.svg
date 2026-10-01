@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Drawn in currentColor, so inlined it takes the text colour of either theme. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none" stroke="currentColor" stroke-width="3">
+  <path d="M6 10l10 10-10 10"/>
+  <path d="M24 30h14"/>
+  <rect x="50" y="8" width="62" height="24" rx="4"/>
+</svg>

@@ -16,8 +16,40 @@
   // and would push .header__right off a phone screen instead of shrinking.
   min-width: 0;
 
-  img {
+  img,
+  &__svg {
     height: 44px;
+  }
+
+  // An inline SVG with a viewBox and no width of its own takes its width from
+  // the height, as an img does.
+  &__svg {
+    display: block;
+    width: auto;
+  }
+
+  // params.logo.pathDark: two pictures, one shown. The system decides unless
+  // the toggle has, the way _colour-tokens.scss picks the palette.
+  &__img--dark {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme=light]) &__img--light {
+      display: none;
+    }
+
+    :root:not([data-theme=light]) &__img--dark {
+      display: block;
+    }
+  }
+
+  :root[data-theme=dark] &__img--light {
+    display: none;
+  }
+
+  :root[data-theme=dark] &__img--dark {
+    display: block;
   }
 
   &__mark {

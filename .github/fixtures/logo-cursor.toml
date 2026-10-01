@@ -1,4 +1,5 @@
 # The logo cursor with something to say; the demo config sets none of them.
 [params.logo]
-  logoCursorColor   = "#67a2c9"
-  logoCursorAnimate = "2s"
+  logoCursorColor     = "#67a2c9"
+  logoCursorColorDark = "#f0a35e"
+  logoCursorAnimate   = "2s"

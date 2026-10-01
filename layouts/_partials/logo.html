@@ -9,9 +9,43 @@
 {{- end }}
 <a href="{{ $home }}">
     <div class="logo">
-        {{ if .Site.Params.Logo.path }}
-            {{- $logo := partial "abs-url.html" .Site.Params.Logo.path -}}
-            <img src="{{ $logo | safeURL }}" alt="{{ .Site.Params.Logo.alt }}" />
+        {{ with .Site.Params.Logo.path }}
+            {{- $logo := site.Params.Logo -}}
+            {{- /* With pathDark, two pictures and the stylesheet shows one,
+                   following the toggle as well as the system. Both lazy: a
+                   lazy image that is display: none is never fetched, so a
+                   visitor downloads the one they see. */ -}}
+            {{- $variants := slice (dict "src" . "class" "") -}}
+            {{- with $logo.pathDark -}}
+              {{- $variants = slice (dict "src" $logo.path "class" " logo__img--light") (dict "src" . "class" " logo__img--dark") -}}
+            {{- end -}}
+            {{- $inline := partial "switch.html" $logo.inline -}}
+            {{- range $variants -}}
+              {{- $variant := . -}}
+              {{- $svg := "" -}}
+              {{- if $inline -}}
+                {{- with resources.Get .src -}}
+                  {{- if eq .MediaType.SubType "svg" }}{{ $svg = . }}{{ end -}}
+                {{- end -}}
+                {{- if not $svg -}}
+                  {{- warnidf "logo-inline-not-svg" "params.logo.inline: %q is not an SVG under assets/, so it is shown as an image. Only a file Hugo can read is inlined." .src -}}
+                {{- end -}}
+              {{- end -}}
+              {{- with $svg -}}
+                {{- /* Inline, so it can draw in currentColor and follow the
+                       theme. The prolog and doctype are not allowed inside
+                       HTML; the class and the name go on the root element,
+                       ahead of any of its own, which the parser then ignores. */ -}}
+                {{- $markup := .Content | replaceRE `(?s)<\?xml.*?\?>|<!DOCTYPE[^>]*>|<!--.*?-->` "" | strings.TrimSpace -}}
+                {{- $name := ` aria-hidden="true"` -}}
+                {{- with $logo.alt }}{{ $name = printf ` role="img" aria-label="%s"` (htmlEscape .) }}{{ end -}}
+                {{- $markup = replaceRE `^<svg\b` (printf `<svg class="logo__svg%s"%s` $variant.class $name) $markup 1 -}}
+                {{- $markup | safeHTML -}}
+              {{- else -}}
+                <img src="{{ partial "abs-url.html" .src | safeURL }}" alt="{{ $logo.alt }}" class="logo__img{{ .class }}"
+                  {{- if $logo.pathDark }} loading="lazy"{{ end }} />
+              {{- end -}}
+            {{- end -}}
         {{ else }}
             <span class="logo__mark" aria-hidden="true">{{ with .Site.Params.Logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>
             {{- /* Where this site starts, for menu.js: location.pathname

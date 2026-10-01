@@ -1,0 +1,6 @@
+# The same mark inlined from assets/, so it draws in the text colour. The
+# ampersand is there to be escaped in the accessible name.
+[params.logo]
+  path   = "img/logo.svg"
+  inline = true
+  alt    = "Jane Doe & co"
