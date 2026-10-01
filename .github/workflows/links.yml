@@ -428,7 +428,7 @@ jobs:
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-logo-inline \
             --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-inline.toml \
             --baseURL "https://example.com/subpath/showcase/"
-          node ../.github/scripts/check-invariants.mjs public-logo-inline logo-inline "Jane Doe & co"
+          node ../.github/scripts/check-invariants.mjs public-logo-inline logo-inline "Jane Doe & co" mark
 
 
       # Neither demo ships favicons or overrides a theme file, so these paths

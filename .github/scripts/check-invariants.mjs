@@ -242,16 +242,20 @@ const checks = {
 
   // params.logo.inline: the SVG itself in the header, named, and with nothing
   // that is not allowed inside HTML.
-  "logo-inline"(name) {
+  "logo-inline"(name, ...keep) {
     const logo = logoOf(read("index.html"));
     const svg = logo.match(/<svg\b[^>]*>/i)?.[0];
     if (!svg) fail("no inline svg in the logo", logo);
     if (/<img\b/i.test(logo)) fail("the logo was inlined and also linked", logo);
     if (!hasClass(svg, "logo__svg")) fail("the inline logo lost its class", svg);
+    if ((svg.match(/\sclass\s*=/gi) ?? []).length !== 1) fail("the inline logo has more than one class attribute", svg);
+    for (const own of keep) {
+      if (!hasClass(svg, own)) fail(`the inline logo dropped its own class "${own}"`, svg);
+    }
     if (attr(svg, "role") !== "img" || (attr(svg, "aria-label") ?? "").replace(/&amp;/g, "&") !== name)
       fail(`the inline logo is not named "${name}"`, svg);
     if (/<\?xml|<!DOCTYPE|<!--/i.test(logo)) fail("a prolog, doctype or comment reached the page", logo);
-    ok(`the logo is inlined and named "${name}"`);
+    ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
   // Excerpts and JSON-LD descriptions must show characters, not entities.

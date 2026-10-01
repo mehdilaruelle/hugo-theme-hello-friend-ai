@@ -22,10 +22,17 @@
             {{- $inline := partial "switch.html" $logo.inline -}}
             {{- range $variants -}}
               {{- $variant := . -}}
+              {{- $src := .src -}}
               {{- $svg := "" -}}
               {{- if $inline -}}
                 {{- with resources.Get .src -}}
-                  {{- if eq .MediaType.SubType "svg" }}{{ $svg = . }}{{ end -}}
+                  {{- if eq .MediaType.SubType "svg" -}}
+                    {{- $svg = . -}}
+                  {{- else -}}
+                    {{- /* A resource is only published once its URL is asked
+                           for, so linking .src as given would 404. */ -}}
+                    {{- $src = .Permalink -}}
+                  {{- end -}}
                 {{- end -}}
                 {{- if not $svg -}}
                   {{- warnidf "logo-inline-not-svg" "params.logo.inline: %q is not an SVG under assets/, so it is shown as an image. Only a file Hugo can read is inlined." .src -}}
@@ -34,15 +41,26 @@
               {{- with $svg -}}
                 {{- /* Inline, so it can draw in currentColor and follow the
                        theme. The prolog and doctype are not allowed inside
-                       HTML; the class and the name go on the root element,
-                       ahead of any of its own, which the parser then ignores. */ -}}
+                       HTML. The class and the name go on the root element,
+                       its own classes merged into the one class attribute:
+                       a second one would be dropped by the parser. */ -}}
                 {{- $markup := .Content | replaceRE `(?s)<\?xml.*?\?>|<!DOCTYPE[^>]*>|<!--.*?-->` "" | strings.TrimSpace -}}
                 {{- $name := ` aria-hidden="true"` -}}
                 {{- with $logo.alt }}{{ $name = printf ` role="img" aria-label="%s"` (htmlEscape .) }}{{ end -}}
-                {{- $markup = replaceRE `^<svg\b` (printf `<svg class="logo__svg%s"%s` $variant.class $name) $markup 1 -}}
+                {{- with findRE `^<svg\b[^>]*>` $markup 1 -}}
+                  {{- $root := index . 0 -}}
+                  {{- $classAttr := `\sclass\s*=\s*(?:"([^"]*)"|'([^']*)')` -}}
+                  {{- $own := "" -}}
+                  {{- with findRESubmatch $classAttr $root 1 -}}
+                    {{- $own = printf "%s%s" (index . 0 1) (index . 0 2) | strings.TrimSpace -}}
+                  {{- end -}}
+                  {{- $tag := replaceRE $classAttr "" $root 1 -}}
+                  {{- $tag = replaceRE `^<svg\b` (printf `<svg class="logo__svg%s%s"%s` $variant.class (cond (ne $own "") (printf " %s" $own) "") $name) $tag 1 -}}
+                  {{- $markup = replace $markup $root $tag 1 -}}
+                {{- end -}}
                 {{- $markup | safeHTML -}}
               {{- else -}}
-                <img src="{{ partial "abs-url.html" .src | safeURL }}" alt="{{ $logo.alt }}" class="logo__img{{ .class }}"
+                <img src="{{ partial "abs-url.html" $src | safeURL }}" alt="{{ $logo.alt }}" class="logo__img{{ .class }}"
                   {{- if $logo.pathDark }} loading="lazy"{{ end }} />
               {{- end -}}
             {{- end -}}

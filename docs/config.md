@@ -236,10 +236,11 @@ markup into the header instead:
 ```
 
 The file must be under `assets/`, where Hugo can read it. An `inline` that
-finds no SVG there warns and falls back to linking the file. The XML prolog,
-any doctype and comments are dropped, and the root element gets the
-`logo__svg` class plus `role="img"` and `aria-label` from `alt` — or
-`aria-hidden` without one. Give it a `viewBox`: the logo is 44px tall and its
+finds no SVG there warns and falls back to linking the file — published from
+`assets/` when it is there, a PNG say, so the link still resolves. The XML
+prolog, any doctype and comments are dropped, and the root element gets the
+`logo__svg` class next to any classes of its own, plus `role="img"` and
+`aria-label` from `alt` — or `aria-hidden` without one. Give it a `viewBox`: the logo is 44px tall and its
 width comes from that ratio.
 
 `inline` and `pathDark` combine: both files are inlined, one shown at a time.
