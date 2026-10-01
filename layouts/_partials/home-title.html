@@ -1,0 +1,3 @@
+{{- $title := site.Title -}}
+{{- with site.Params.Subtitle }}{{ $title = printf "%s — %s" $title . }}{{ end -}}
+{{- return $title -}}
