@@ -176,7 +176,7 @@ const checks = {
     ok("a submenu label follows the writing direction on a phone");
   },
 
-  // #273: the params are optional, so the attribute is too.
+  // A strict style-src refuses the attribute; params-css.html writes the rule.
   "cursor-default"() {
     const styled = [];
     for (const p of pages(dir)) {
@@ -184,21 +184,19 @@ const checks = {
         if (hasClass(m[0], "logo__cursor") && attr(m[0], "style") !== null) styled.push(rel(p));
       }
     }
-    if (styled.length) fail("the default build ships a style attribute on the logo cursor", styled.slice(0, 3).join("\n"));
-    ok("the logo cursor carries no style attribute when it has nothing to say");
+    if (styled.length) fail("a style attribute on the logo cursor", styled.slice(0, 3).join("\n"));
+    ok("the logo cursor carries no style attribute");
   },
 
-  // ...and still carries one when it does.
+  // ...and the stylesheet carries the configured one.
   "cursor-styled"(...want) {
-    const spans = [...read("index.html").matchAll(/<span\b[^>]*>/gi)]
-      .filter((m) => hasClass(m[0], "logo__cursor"));
-    const decls = spans.map((m) => attr(m[0], "style") ?? "");
+    const bodies = rules(css(), ".logo__cursor");
     for (const w of want) {
       const [prop, value] = w.split("=");
-      if (!decls.some((d) => declares(d, prop, value)))
-        fail(`a configured cursor lost ${prop}:${value}`, spans.map((m) => m[0]).join("\n") || "(no cursor)");
+      if (!bodies.some((b) => declares(b, prop, value)))
+        fail(`a configured cursor lost ${prop}:${value}`, bodies.map((b) => `.logo__cursor{${b}}`).join("\n") || "(no rule)");
     }
-    ok("the logo cursor carries a style only when it has one");
+    ok("the configured logo cursor is styled from the stylesheet");
   },
 
   // Excerpts and JSON-LD descriptions must show characters, not entities.

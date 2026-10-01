@@ -14,6 +14,14 @@
   }
 }
 
+// A column's alignment from the Markdown, as a class a strict style-src allows.
+th,
+td {
+  &.align-left { text-align: left; }
+  &.align-center { text-align: center; }
+  &.align-right { text-align: right; }
+}
+
 .post-content {
   table {
     border-collapse: collapse;

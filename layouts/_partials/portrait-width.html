@@ -1,0 +1,11 @@
+{{- /* site.Params.portrait.maxWidth as a CSS length: a bare number, quoted or
+       not, is pixels, and 0 is unset. */ -}}
+{{- $width := "" -}}
+{{- with site.Params.portrait.maxWidth -}}
+  {{- $width = printf "%v" . | strings.TrimSpace -}}
+  {{- if findRE `^[0-9]+(\.[0-9]+)?$` $width -}}
+    {{- $px := float $width -}}
+    {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
+  {{- end -}}
+{{- end -}}
+{{- return $width -}}

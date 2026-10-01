@@ -7,7 +7,7 @@
     {{- $home = urls.JoinPath $home . -}}
   {{- end -}}
 {{- end }}
-<a href="{{ $home }}" style="text-decoration: none;">
+<a href="{{ $home }}">
     <div class="logo">
         {{ if .Site.Params.Logo.path }}
             {{- $logo := partial "abs-url.html" .Site.Params.Logo.path -}}
@@ -22,17 +22,7 @@
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>
                 {{ with .Site.Params.Logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
-            {{- $style := "" -}}
-            {{- if partial "switch.html" .Site.Params.Logo.logoCursorDisabled -}}
-              {{- $style = "visibility:hidden;" -}}
-            {{- end -}}
-            {{- with .Site.Params.Logo.logoCursorColor -}}
-              {{- $style = printf "%sbackground-color:%v;" $style . -}}
-            {{- end -}}
-            {{- with .Site.Params.Logo.logoCursorAnimate -}}
-              {{- $style = printf "%sanimation-duration:%v;" $style . -}}
-            {{- end -}}
-            <span class="logo__cursor"{{ with $style }} style="{{ . | safeCSS }}"{{ end }}>
+            <span class="logo__cursor">
             </span>
         {{ end }}
     </div>

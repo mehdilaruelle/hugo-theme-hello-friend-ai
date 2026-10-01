@@ -30,6 +30,7 @@
     // logo.html wraps the logo in a bare <a>, so the anchor is the flex item.
     > a {
       min-width: 0;
+      text-decoration: none;
     }
   }
 }
