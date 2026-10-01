@@ -166,7 +166,7 @@ video {
 // where markdown would have wrapped it in a paragraph. Restore the vertical
 // rhythm the paragraph used to provide.
 .post-content > img {
-  margin: 1em 0;
+  margin-block: 1em;
 }
 
 figure {
