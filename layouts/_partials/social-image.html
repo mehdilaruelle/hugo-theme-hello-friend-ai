@@ -72,7 +72,7 @@
         {{- end -}}
       {{- end -}}
     {{- else -}}
-      {{- $url = urls.JoinPath site.BaseURL $url -}}
+      {{- $url = partial "abs-url.html" $url -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}

@@ -7,13 +7,13 @@
 // alignment as a post.
 .home-content {
   width: 100%;
-  max-width: 800px;
+  max-width: var(--content-width, 800px);
   text-align: start;
   padding: 0 20px;
   margin: 20px auto 0;
 
   @media #{$media-size-tablet} {
-    max-width: 600px;
+    max-width: min(var(--content-width, 800px), 600px);
   }
 
   :first-child {

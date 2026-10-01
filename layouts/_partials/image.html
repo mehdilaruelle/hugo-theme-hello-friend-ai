@@ -11,7 +11,12 @@
 {{- /* No default: marking every picture high priority prioritises none. */ -}}
 {{- $fetchpriority := .fetchpriority -}}
 {{- /* The measure of an article; a caller showing a fixed size passes its own. */ -}}
-{{- $sizes := .sizes | default site.Params.imageSizes | default "(max-width: 800px) 100vw, 800px" -}}
+{{- $measure := "800px" -}}
+{{- with partial "content-width.html" . -}}
+  {{- /* sizes takes no percentage: a % width keeps the default guess. */ -}}
+  {{- if not (strings.HasSuffix . "%") -}}{{- $measure = . -}}{{- end -}}
+{{- end -}}
+{{- $sizes := .sizes | default site.Params.imageSizes | default (printf "(max-width: %s) 100vw, %s" $measure $measure) -}}
 {{- $remote := partial "is-remote.html" $src -}}
 
 {{- $img := "" -}}
@@ -102,7 +107,7 @@
 {{- with $rendered -}}
   {{- $url = .RelPermalink -}}
 {{- else -}}
-  {{- if not $remote -}}{{- $url = urls.JoinPath site.BaseURL $src -}}{{- end -}}
+  {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
 {{- end -}}
 
 {{- if $src -}}

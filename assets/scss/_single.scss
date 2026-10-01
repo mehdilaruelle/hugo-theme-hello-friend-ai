@@ -3,12 +3,13 @@
 
 .post {
   width: 100%;
-  max-width: 800px;
+  // --content-width is params.contentWidth, set by params-css.html.
+  max-width: var(--content-width, 800px);
   text-align: start;
   padding: 20px;
   margin: 20px auto;
   @media #{$media-size-tablet} {
-    max-width: 600px;
+    max-width: min(var(--content-width, 800px), 600px);
   }
 
   &-date {
@@ -43,8 +44,9 @@
   &-cover {
     border-radius: 8px;
     margin: 40px -50px;
-    width: $max-width;
-    max-width: $max-width;
+    // Out past the text by 50px each side: the column plus 60px.
+    width: calc(var(--content-width, 800px) + 60px);
+    max-width: calc(var(--content-width, 800px) + 60px);
     overflow: hidden;
     @media #{$media-size-tablet} {
       margin: 20px 0;

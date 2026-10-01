@@ -75,6 +75,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Nice code highlighting, server side, with Hugo's built-in [**Chroma**](https://github.com/alecthomas/chroma)
 - An easy way to modify the theme with Hugo tooling
 - Fully responsive
+- A content column of the width you choose, see [Content width](docs/config.md#content-width)
 - Support for audio in posts (thanks to [@talbotp](https://github.com/talbotp))
 - Builtin (enableable/disableable) multilanguage menu
 - A logo for each theme: a dark variant of a picture, an inlined SVG in the text colour, or a cursor colour per scheme, see [The logo](docs/config.md#the-logo)

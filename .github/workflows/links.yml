@@ -401,6 +401,14 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
 
+      # The showcase sets contentWidth = 960 and the demo leaves it unset, so
+      # one asserts the property and the image sizes, the other their absence.
+      - name: Check contentWidth reaches the stylesheet and the image sizes
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs showcaseSite/public content-width 960px
+          node .github/scripts/check-invariants.mjs exampleSite/public content-width
+
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all.
       - name: Check the logo cursor ships no style attribute

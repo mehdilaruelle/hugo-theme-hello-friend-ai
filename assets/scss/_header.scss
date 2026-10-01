@@ -24,7 +24,8 @@
     align-items: center;
     justify-content: space-between;
     margin: 0 auto;
-    width: 760px;
+    // Lined up with the text of the column under it, inside its 20px padding.
+    width: calc(var(--content-width, 800px) - 40px);
     max-width: 100%;
 
     // logo.html wraps the logo in a bare <a>, so the anchor is the flex item.

@@ -507,6 +507,33 @@ to the same path in your site and edit the `$light-*` and `$dark-*` values.
 Hugo uses your file instead of the theme's, so copy all of it, not only the
 lines you change.
 
+## Content width
+
+Articles, lists and the front page's text are set in an 800px column, which
+leaves most of a wide screen empty. `params.contentWidth` sets another:
+
+```toml
+[params]
+  contentWidth = 1000   # a bare number is pixels; "60rem" or "70ch" work too
+```
+
+Everything that lines up with the column follows it: the header and footer stay
+level with its text, and a post's cover still reaches 50px past it on each
+side. So does the `sizes` the theme gives every image, which otherwise tells a
+wide viewport the picture is 800px and has it stretch a copy picked for that —
+unless `imageSizes` is set, which still wins. A percentage is accepted for the
+column but cannot be a `sizes` length, so with one the images keep the 800px
+guess.
+
+On a tablet, the column narrows to 600px (660px for a list) as it always has,
+or to `contentWidth` if that is narrower. `0` or no value keeps 800px. A value
+that is not one CSS length — a typo, or anything carrying a `;` or a brace — is
+not written into the stylesheet: the build warns and keeps the default.
+
+The line length is the cost of going wide. Past 80 or so characters a line
+gets harder to follow back to its start, and 1000px of body text is already
+there; `70ch` holds the measure instead of the pixels.
+
 ## Post thumbnails
 
 `params.enableThumbnails` shows each post's `cover` image beside its title in
@@ -679,7 +706,8 @@ templates.
 | `license` / `creditText` | the terms of reuse, carried in every article's `BlogPosting`. A page can override either |
 | `llmsFullLimit` | how many pages `llms-full.txt` carries. Unset or `0` publishes every one |
 | `ai` | which AI crawlers `robots.txt` turns away. **A table**, see [AI crawlers](#ai-crawlers) |
-| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px` |
+| `contentWidth` | the width of the column articles, lists and the front page are set in. Defaults to `800px`, see [Content width](#content-width) |
+| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set |
 | `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400`, as `0` does |
 
 ```toml
@@ -705,8 +733,8 @@ your layout is not that:
 
 ```toml
 [params]
-  # A content column wider than an article: say so, or a wide viewport is told
-  # the picture is 800px and picks a copy that then has to be stretched.
+  # A picture shown wider or narrower than the column: say so, or a wide
+  # viewport picks a copy for the wrong width. contentWidth already sets this.
   imageSizes    = "(max-width: 1000px) 100vw, 1000px"
   # The widest copy worth generating. Lower it to cut the build and the bytes.
   imageMaxWidth = 1000
