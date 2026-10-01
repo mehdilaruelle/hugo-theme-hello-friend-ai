@@ -11,6 +11,12 @@
     border: none;
     margin: 0;
     padding: 10px;
+
+    // Closed until menu.js takes over, rather than painted open over the page
+    // first. Without the script, noscript.css opens it again.
+    &:not(.menu--ready) {
+      display: none;
+    }
   }
 
   &__inner {

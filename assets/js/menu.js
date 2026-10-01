@@ -34,6 +34,7 @@
   };
 
   isMobileMenu();
+  menu && menu.classList.add("menu--ready");
 
   // Rendered disabled, so a page served without this script does not offer a
   // control that cannot work.

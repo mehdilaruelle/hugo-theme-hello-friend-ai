@@ -1,0 +1,6 @@
+/* Without menu.js the phone menu stays open: the trigger cannot work. */
+@media (max-width: 684px) {
+  .menu:not(.menu--ready) {
+    display: block;
+  }
+}
