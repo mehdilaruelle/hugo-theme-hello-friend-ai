@@ -1,0 +1,16 @@
+{{- /* site.Params.contentWidth as a CSS length, or "" when unset. A bare
+       number, quoted or not, is pixels, and 0 is unset. Anything that is not
+       one length is refused rather than written into the stylesheet, where a
+       stray brace would end the rule and take the next ones with it. */ -}}
+{{- $width := "" -}}
+{{- with site.Params.contentWidth -}}
+  {{- $width = printf "%v" . | strings.TrimSpace -}}
+  {{- if findRE `^[0-9]+(\.[0-9]+)?$` $width -}}
+    {{- $px := float $width -}}
+    {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
+  {{- else if not (findRE `^[0-9]+(\.[0-9]+)?(px|rem|em|ch|vw|%)$` $width) -}}
+    {{- warnidf "content-width-invalid" "params.contentWidth: %q is not a CSS length such as 1000px, 60rem or 70ch, so the default width is kept." $width -}}
+    {{- $width = "" -}}
+  {{- end -}}
+{{- end -}}
+{{- return $width -}}
