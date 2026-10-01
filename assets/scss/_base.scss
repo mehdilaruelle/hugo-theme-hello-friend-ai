@@ -582,11 +582,15 @@ pre > code[data-lang]:not([data-lang=""])::before {
 }
 
 // A touch screen has no hover, so neither the button nor the label would ever
-// appear.
+// appear. Always shown, they need room above the first line.
 @media (hover: none) {
   .copy-code,
   pre > code[data-lang]:not([data-lang=""])::before {
     opacity: 1;
+  }
+
+  .code-block pre {
+    padding-top: 2.75rem;
   }
 }
 
