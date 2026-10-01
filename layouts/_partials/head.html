@@ -56,6 +56,9 @@
        at the site root, and every one of them looks on the home page. */ -}}
 {{- if .IsHome }}
 {{- with .Site.Params.verification }}
+{{- if not (reflect.IsMap .) }}
+{{- warnidf "verification-shape" "params.verification: expected a table such as { google = \"...\" }, got a %T. No verification tag is written." . }}
+{{- else }}
 {{- with .google }}
 <meta name="google-site-verification" content="{{ . }}" />
 {{- end }}
@@ -70,6 +73,7 @@
 {{- end }}
 {{- with .pinterest }}
 <meta name="p:domain_verify" content="{{ . }}" />
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

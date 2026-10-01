@@ -27,7 +27,7 @@
   {{- $owned = true -}}
 {{- end -}}
 {{- if not $img -}}
-  {{- with .Params.cover -}}
+  {{- with partial "string-param.html" (dict "value" .Params.cover "name" "cover") -}}
     {{- if not (partial "is-svg.html" .) -}}
       {{- $img = . -}}
       {{- with $.Params.coverCaption -}}
@@ -47,7 +47,7 @@
   {{- end -}}
 {{- end -}}
 {{- if not $img -}}
-  {{- with site.Params.ogImage -}}
+  {{- with partial "string-param.html" (dict "value" site.Params.ogImage "name" "ogImage") -}}
     {{- if not (partial "is-svg.html" .) -}}{{- $img = . -}}{{- end -}}
   {{- end -}}
 {{- end -}}

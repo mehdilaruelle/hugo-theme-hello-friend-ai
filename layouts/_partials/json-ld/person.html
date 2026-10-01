@@ -12,7 +12,11 @@
       {{- $knowsAbout = . -}}
     {{- end -}}
     {{- /* url is the credential itself; the issuer goes in recognizedBy. */ -}}
-    {{- range .credentials -}}
+    {{- range partial "as-list.html" (.credentials | default slice) -}}
+      {{- if not (reflect.IsMap .) -}}
+        {{- warnidf "credentials-shape" "params.author.credentials: expected a list of tables with name, got a %T. It is skipped." . -}}
+        {{- continue -}}
+      {{- end -}}
       {{- $name := .name -}}
       {{- $category := .category -}}
       {{- $url := .url -}}
