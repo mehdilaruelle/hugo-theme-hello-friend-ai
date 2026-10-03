@@ -40,8 +40,9 @@
 
 {{- $sameAs := slice -}}
 {{- range partial "social-list.html" site.Params.social -}}
+  {{- $name := lower (.name | default "") -}}
   {{- with .url -}}
-    {{- if not (strings.HasPrefix (lower .) "mailto:") -}}
+    {{- if and (in (slice "http" "https") (urls.Parse .).Scheme) (not (in (slice "rss" "email") $name)) -}}
       {{- $sameAs = $sameAs | append . -}}
     {{- end -}}
   {{- end -}}

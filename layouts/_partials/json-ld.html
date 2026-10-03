@@ -18,12 +18,13 @@
 
 {{- $person := partial "json-ld/person.html" . -}}
 
-{{- /* A page naming its own author is a different person from whoever owns the
-       site: a name and nothing else, since the site's profiles are not theirs
-       to claim. */ -}}
+{{- /* A page naming someone other than the site's owner: a name and nothing
+       else, since the site's profiles are not theirs to claim. The same test
+       as article:author in opengraph.html. */ -}}
+{{- $guest := and $author (isset .Params "author") (ne $author $siteAuthor) -}}
 {{- $authorNode := dict -}}
 {{- with $author -}}
-  {{- $authorNode = cond (isset $.Params "author") (dict "@type" "Person" "name" .) $person -}}
+  {{- $authorNode = cond $guest (dict "@type" "Person" "name" .) $person -}}
 {{- end -}}
 
 {{- $data := dict -}}
@@ -99,7 +100,7 @@
   {{- $data = dict
     "@context" "https://schema.org"
     "@type" "BlogPosting"
-    "@id" .Permalink
+    "@id" (printf "%s#article" .Permalink)
     "url" .Permalink
     "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
     "headline" (partial "title-plain.html" . | truncate 110 "" | htmlUnescape)
@@ -158,7 +159,7 @@
   {{- /* An organisation named without a logo keeps that name: the fallback is
          for a site that configured no publisher at all. */ -}}
   {{- if and (not $publisherConfigured) $siteAuthor -}}
-    {{- $publisher = cond (isset $.Params "author") $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink)) -}}
+    {{- $publisher = cond $guest $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink)) -}}
   {{- end -}}
   {{- $data = merge $data (dict "publisher" $publisher) -}}
 {{- else if and .IsPage (not (partial "noindex.html" .)) -}}
