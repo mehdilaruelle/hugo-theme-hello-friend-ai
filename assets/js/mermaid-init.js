@@ -24,6 +24,7 @@
   // innerHTML and not textContent: the render hook escapes the block, and
   // innerHTML keeps it escaped.
   const blocks = [].slice.call(document.querySelectorAll('.mermaid'));
+  if (!blocks.length) return;
   const sources = blocks.map((el) => { return el.innerHTML; });
 
   import(src).then((module) => {
