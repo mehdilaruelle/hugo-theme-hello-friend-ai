@@ -92,14 +92,16 @@ copyright = '&copy; 2026 Jane Doe & contributors · <a href="https://creativecom
       category = "degree"
 
   # The logo cursor, which nothing exercised before. logoCursorPathname appends
-  # the current path to the logo text, so it changes as you move around.
+  # the current path to the logo text, so it changes as you move around. The
+  # cursor is blue on the light palette and orange on the dark one.
   [params.logo]
-    logoMark           = ">"
-    logoText           = "$ cd /home/"
-    logoHomeLink       = "/"
-    logoCursorColor    = "#67a2c9"
-    logoCursorAnimate  = "1.4s"
-    logoCursorPathname = true
+    logoMark            = ">"
+    logoText            = "$ cd /home/"
+    logoHomeLink        = "/"
+    logoCursorColor     = "#67a2c9"
+    logoCursorColorDark = "#f0a35e"
+    logoCursorAnimate   = "1.4s"
+    logoCursorPathname  = true
 
   # A bare number where the exampleSite writes "120px". It means the same, and
   # printing it with %s once put max-width:%!s(int64=120) in the page.
