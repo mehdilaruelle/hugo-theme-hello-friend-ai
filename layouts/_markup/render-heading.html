@@ -8,7 +8,7 @@
 
        %v: {notoc=true} is a bool. */ -}}
 {{- $anchor := .Anchor -}}
-<h{{ .Level }} id="{{ $anchor }}"
+<h{{ .Level }}{{ with $anchor }} id="{{ . }}"{{ end }}
   {{- range $k, $v := .Attributes }}
     {{- if ne $k "id" }}{{ with printf "%v" $v }}{{ printf " %s=\"%s\"" $k (htmlEscape .) | safeHTMLAttr }}{{ end }}{{ end }}
-  {{- end }}>{{ .Text }}<a class="heading-anchor" href="#{{ $anchor }}" aria-label="{{ partial "i18n.html" (dict "key" "headingAnchor" "fallback" "Link to this section") }}"></a></h{{ .Level }}>
+  {{- end }}>{{ .Text }}{{ with $anchor }}<a class="heading-anchor" href="#{{ . }}" aria-label="{{ partial "i18n.html" (dict "key" "headingAnchor" "fallback" "Link to this section") }}"></a>{{ end }}</h{{ .Level }}>
