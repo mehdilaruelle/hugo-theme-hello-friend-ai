@@ -280,6 +280,9 @@ const checks = {
     }
     if (!seen) fail("no image with a sizes attribute was built");
     if (off.length) fail(`an image is not sized to the ${want} column`, off.slice(0, 3).join("\n"));
+    // A cover wider than the column must still fit the viewport.
+    if (!rules(css(), ".post-cover").some((b) => /--cover-width:\s*min\(.*100vw/.test(b)))
+      fail("the post cover is not bounded by the viewport");
     ok(`the column is ${want}, and ${seen} images are sized to it`);
   },
 
