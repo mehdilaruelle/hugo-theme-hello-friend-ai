@@ -114,6 +114,54 @@ ffmpeg -i demo.gif -vf "scale=1600:-2:flags=lanczos" -c:v libx264 -crf 26 -prese
 ffmpeg -i demo.gif -vf "scale=1600:-2:flags=lanczos" -frames:v 1 demo.jpg
 ```
 
+### gallery
+
+A grid of thumbnails, each a link to the full picture. The pictures are files,
+not a list written into the call: put them in the page's folder — a
+[page bundle](https://gohugo.io/content-management/page-bundles/) — and the
+gallery shows them, ordered by file name.
+
+```
+content/posts/a-trip/
+├── index.md
+└── photos/
+    ├── 01-arrival.jpg
+    └── 02-harbour.jpg
+```
+
+```markdown
+{{< gallery match="photos/*" >}}
+```
+
+Properties:
+
+  - `match` (optional, a glob over the bundle's files. Without it the gallery
+    takes every image in the bundle, a `cover` included, so give the gallery a
+    folder of its own. When nothing in the bundle matches, the same glob is
+    tried against `assets/`)
+  - `columns` (optional, `2`, `3` or `4`, default `3`; a phone shows two at most)
+
+Each thumbnail is cropped from the centre to a 600×600 square, so pictures of any
+shape line up. The link goes to the file as it is, uncropped and unresized. An
+SVG cannot be cropped and is left out, and so is a file under `static/`: Hugo
+does not treat those as resources. A gallery that finds nothing warns and
+names the page, which stops a build run with `--panicOnWarning`.
+
+Alt text and a caption belong to the file, so they are written once in the
+front matter rather than in the shortcode call. The caption takes Markdown:
+
+```toml
+[[resources]]
+  src = "photos/01-arrival.jpg"
+  [resources.params]
+    alt     = "The ferry coming into a grey harbour"
+    caption = "Arrival, *early*"
+```
+
+A thumbnail is a link, and a link needs a name, so a picture with no `alt`
+falls back to its resource `title` if the front matter sets one, then to its
+file name — `01-arrival.jpg` reads "01 arrival". Write the `alt`.
+
 ### faq
 
 A question and its answer, written once and read twice: a `<details>` element
