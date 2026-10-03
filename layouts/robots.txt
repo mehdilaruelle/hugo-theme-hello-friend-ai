@@ -57,7 +57,9 @@ Content-Signal: search={{ cond $search "yes" "no" }}, ai-input={{ cond $cite "ye
 {{ range .agents }}User-agent: {{ . }}
 {{ end }}Disallow: /
 {{- end }}
+{{- /* Hugo's built-in robots.txt names no sitemap. On a multilingual site this
+       is the index, pointing at one per language. */}}
+{{- with site.GetPage "/_sitemap" }}
 
-{{/* Hugo's built-in robots.txt names no sitemap. On a multilingual site this
-     is the index, pointing at one per language. */ -}}
-Sitemap: {{ "sitemap.xml" | absURL }}
+Sitemap: {{ site.Home.Sitemap.Filename | absURL }}
+{{- end }}
