@@ -1,0 +1,54 @@
+@use "variables" as *;
+
+// The gallery shortcode.
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-block: 1.5em;
+
+  &--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  &--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  // Two columns at most on a phone.
+  @media #{$media-size-phone} {
+    &--3,
+    &--4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  // Undo _base.scss's display: table on figure.
+  &__item {
+    display: block;
+    margin: 0;
+  }
+
+  a {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  &__image {
+    width: 100%;
+    transition: transform 0.2s ease;
+  }
+
+  a:hover &__image,
+  a:focus-visible &__image {
+    transform: scale(1.03);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__image {
+      transition: none;
+    }
+  }
+
+  figcaption {
+    margin-top: 0.4em;
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+  }
+}

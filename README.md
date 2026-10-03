@@ -83,6 +83,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Support for a self-hosted [Commento](https://gitlab.com/commento/commento) or [Comentario](https://comentario.app) instance
 - Support for [Plausible](https://plausible.io) (thanks to [@Joffcom](https://github.com/Joffcom))
 - Support for [utterances](https://utteranc.es/) comment system
+- A `gallery` shortcode: a page bundle's pictures as a grid of thumbnails, see [Built-in shortcodes](docs/content.md#gallery)
 - Front page content from `content/_index.md`, see [Front page content](docs/content.md#front-page-content)
 - JSON-LD structured data, breadcrumbs and a complete `hreflang` set, see [SEO](docs/seo.md)
 - 100 in every PageSpeed Insights category on both demo sites, mobile and desktop, see [Performance](docs/performance.md)
