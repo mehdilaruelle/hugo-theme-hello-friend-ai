@@ -15,6 +15,11 @@
 {{- with $cursor -}}
   {{- $css = $css | append (printf ".logo__cursor{%s}" .) -}}
 {{- end -}}
+{{- /* Dark by the system (unless toggled light) or by the toggle. */ -}}
+{{- with site.Params.Logo.logoCursorColorDark -}}
+  {{- $dark := printf ".logo__cursor{background-color:%v}" . -}}
+  {{- $css = $css | append (printf "@media (prefers-color-scheme:dark){:root:not([data-theme=light]) %s}:root[data-theme=dark] %s" $dark $dark) -}}
+{{- end -}}
 {{- with site.Params.backgroundImage -}}
   {{- $bg := printf "--background-image:url(%q);" (urls.JoinPath site.BaseURL .) -}}
   {{- with site.Params.backgroundImageLight -}}

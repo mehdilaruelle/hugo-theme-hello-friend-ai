@@ -1,0 +1,5 @@
+# The ampersand checks that alt is escaped.
+[params.logo]
+  path   = "img/logo.svg"
+  inline = true
+  alt    = "Jane Doe & co"

@@ -16,8 +16,38 @@
   // and would push .header__right off a phone screen instead of shrinking.
   min-width: 0;
 
-  img {
+  img,
+  &__svg {
     height: 44px;
+  }
+
+  // Width follows the viewBox ratio.
+  &__svg {
+    display: block;
+    width: auto;
+  }
+
+  // params.logo.pathDark: show the picture matching the theme.
+  &__img--dark {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme=light]) &__img--light {
+      display: none;
+    }
+
+    :root:not([data-theme=light]) &__img--dark {
+      display: block;
+    }
+  }
+
+  :root[data-theme=dark] &__img--light {
+    display: none;
+  }
+
+  :root[data-theme=dark] &__img--dark {
+    display: block;
   }
 
   &__mark {

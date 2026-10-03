@@ -425,6 +425,21 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-default
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-styled \
             background-color=#67a2c9 animation-duration=2s
+          node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
+
+      # Built on the showcase, which holds the logo files.
+      - name: Check a logo with a dark variant, and an inlined one
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --destination public-logo-images \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-images.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-links.mjs public-logo-images https://example.com/subpath/showcase/
+          node ../.github/scripts/check-invariants.mjs public-logo-images logo-images logo-light.svg logo-dark.svg
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-logo-inline \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-inline.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-invariants.mjs public-logo-inline logo-inline "Jane Doe & co" mark
 
 
       # Neither demo ships favicons or overrides a theme file, so these paths

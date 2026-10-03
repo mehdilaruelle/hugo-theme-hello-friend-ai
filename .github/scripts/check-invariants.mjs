@@ -58,6 +58,12 @@ const read = (p) => {
 };
 const css = () => [...walk(dir, ".css")].map((f) => readFileSync(f, "utf8")).join("\n");
 
+// The logo's own div, quoted or not: --minify drops the quotes.
+function logoOf(html) {
+  const m = [...html.matchAll(/<div\b[^>]*>/gi)].find((d) => hasClass(d[0], "logo"));
+  return m ? element(html, m.index, "div") : fail("no logo was rendered");
+}
+
 const checks = {
   // #270
   "post-info"() {
@@ -197,6 +203,56 @@ const checks = {
         fail(`a configured cursor lost ${prop}:${value}`, bodies.map((b) => `.logo__cursor{${b}}`).join("\n") || "(no rule)");
     }
     ok("the configured logo cursor is styled from the stylesheet");
+  },
+
+  // logoCursorColorDark, for the system's dark mode and the toggle's.
+  "cursor-dark"(color) {
+    const all = css();
+    for (const sel of [":root:not([data-theme=light]) .logo__cursor", ":root[data-theme=dark] .logo__cursor"]) {
+      if (!rules(all, sel).some((b) => declares(b, "background-color", color)))
+        fail(`${sel} does not take background-color:${color}`);
+    }
+    if (!/@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root:not\(\[data-theme=light\]\) \.logo__cursor\{/.test(all))
+      fail("the system's dark preference does not reach the cursor rule");
+    ok(`the cursor turns ${color} in dark mode, by the system or the toggle`);
+  },
+
+  // params.logo.pathDark: two lazy pictures, the dark one hidden by default.
+  "logo-images"(light, dark) {
+    const logo = logoOf(read("index.html"));
+    const imgs = [...logo.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0]);
+    const find = (cls) => imgs.find((t) => hasClass(t, cls));
+    for (const [cls, file] of [["logo__img--light", light], ["logo__img--dark", dark]]) {
+      const t = find(cls);
+      if (!t) fail(`no ${cls} in the logo`, logo);
+      if (!(attr(t, "src") ?? "").endsWith(`/${file}`)) fail(`${cls} is not ${file}`, t);
+      if (attr(t, "loading") !== "lazy") fail(`${cls} is not lazy, so it is fetched while hidden`, t);
+      if (!attr(t, "alt")) fail(`${cls} has no alt, so the home link has no name`, t);
+    }
+    if (imgs.length !== 2) fail(`the logo carries ${imgs.length} pictures, not 2`, logo);
+    const all = css();
+    if (!rules(all, ".logo__img--dark").some((b) => declares(b, "display", "none")))
+      fail("the dark picture is not hidden by default");
+    if (!rules(all, ":root[data-theme=dark] .logo__img--light").some((b) => declares(b, "display", "none")))
+      fail("the toggle's dark mode does not hide the light picture");
+    ok("the logo has a picture per scheme, and only the one shown is fetched");
+  },
+
+  // params.logo.inline: a named inline SVG, cleaned of prolog and comments.
+  "logo-inline"(name, ...keep) {
+    const logo = logoOf(read("index.html"));
+    const svg = logo.match(/<svg\b[^>]*>/i)?.[0];
+    if (!svg) fail("no inline svg in the logo", logo);
+    if (/<img\b/i.test(logo)) fail("the logo was inlined and also linked", logo);
+    if (!hasClass(svg, "logo__svg")) fail("the inline logo lost its class", svg);
+    if ((svg.match(/\sclass\s*=/gi) ?? []).length !== 1) fail("the inline logo has more than one class attribute", svg);
+    for (const own of keep) {
+      if (!hasClass(svg, own)) fail(`the inline logo dropped its own class "${own}"`, svg);
+    }
+    if (attr(svg, "role") !== "img" || (attr(svg, "aria-label") ?? "").replace(/&amp;/g, "&") !== name)
+      fail(`the inline logo is not named "${name}"`, svg);
+    if (/<\?xml|<!DOCTYPE|<!--/i.test(logo)) fail("a prolog, doctype or comment reached the page", logo);
+    ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
   // params.contentWidth: the stylesheet sets the property, and the images are

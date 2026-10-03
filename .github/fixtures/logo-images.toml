@@ -1,0 +1,5 @@
+# A picture logo with a dark variant, from static/.
+[params.logo]
+  path     = "img/logo-light.svg"
+  pathDark = "img/logo-dark.svg"
+  alt      = "Jane Doe"
