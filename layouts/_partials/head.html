@@ -144,6 +144,11 @@
     {{- with $css | minify | fingerprint }}
     <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
     {{- end -}}
+    {{- if site.Menus.main }}
+    {{- with resources.Get "css/noscript.css" | minify | fingerprint }}
+    <noscript><link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></noscript>
+    {{- end }}
+    {{- end -}}
   {{- end -}}
 {{- else -}}
   {{- errorf "assets/scss/main.scss is missing, the site would be built without any stylesheet." -}}
