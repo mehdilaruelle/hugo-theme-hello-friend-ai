@@ -49,7 +49,7 @@
 
 {{- $person := dict "@type" "Person" -}}
 {{- with $siteAuthor -}}
-  {{- $person = merge $person (dict "@id" (printf "%s#person" site.Home.Permalink) "name" . "url" site.Home.Permalink) -}}
+  {{- $person = merge $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink) "name" . "url" site.Home.Permalink) -}}
 {{- end -}}
 {{- with $jobTitle -}}
   {{- $person = merge $person (dict "jobTitle" .) -}}

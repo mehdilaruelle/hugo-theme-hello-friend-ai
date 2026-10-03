@@ -158,7 +158,7 @@
   {{- /* An organisation named without a logo keeps that name: the fallback is
          for a site that configured no publisher at all. */ -}}
   {{- if and (not $publisherConfigured) $siteAuthor -}}
-    {{- $publisher = cond (isset $.Params "author") $person (dict "@id" (printf "%s#person" site.Home.Permalink)) -}}
+    {{- $publisher = cond (isset $.Params "author") $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink)) -}}
   {{- end -}}
   {{- $data = merge $data (dict "publisher" $publisher) -}}
 {{- else if and .IsPage (not (partial "noindex.html" .)) -}}
