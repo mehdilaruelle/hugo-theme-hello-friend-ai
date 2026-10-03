@@ -199,34 +199,6 @@ const checks = {
     ok("the configured logo cursor is styled from the stylesheet");
   },
 
-  // The gallery shortcode: every thumbnail is a named link to a published
-  // file, and the picture in it is a measured square.
-  gallery() {
-    const bad = [];
-    let seen = 0;
-    for (const p of pages(dir)) {
-      const html = readFileSync(p, "utf8");
-      for (const g of html.matchAll(/<div\b[^>]*>/gi)) {
-        if (!hasClass(g[0], "gallery")) continue;
-        const body = element(html, g.index + g[0].length, "div");
-        const items = [...body.matchAll(/<a\b[^>]*>\s*(<img\b[^>]*>)/gi)];
-        if (!items.length) bad.push(`${rel(p)}: a gallery with no linked picture`);
-        for (const [a, img] of items) {
-          seen++;
-          const href = attr(a.match(/<a\b[^>]*>/i)[0], "href") ?? "";
-          const alt = (attr(img, "alt") ?? "").trim();
-          const w = attr(img, "width"), h = attr(img, "height");
-          if (!alt) bad.push(`${rel(p)}: ${href} has no alt, so its link has no name`);
-          if (!w || w !== h) bad.push(`${rel(p)}: ${href} is not a measured square (${w}x${h})`);
-          if (!hasClass(img, "gallery__image")) bad.push(`${rel(p)}: ${href} lost the gallery__image class`);
-        }
-      }
-    }
-    if (bad.length) fail("a gallery thumbnail is wrong", bad.slice(0, 5).join("\n"));
-    if (!seen) fail("no gallery was rendered anywhere");
-    ok(`${seen} gallery thumbnails, each a named link around a measured square`);
-  },
-
   // params.contentWidth: the stylesheet sets the property, and the images are
   // told the same width. With no argument, the default: neither is written.
   "content-width"(want) {
@@ -253,6 +225,34 @@ const checks = {
     if (!seen) fail("no image with a sizes attribute was built");
     if (off.length) fail(`an image is not sized to the ${want} column`, off.slice(0, 3).join("\n"));
     ok(`the column is ${want}, and ${seen} images are sized to it`);
+  },
+
+  // The gallery shortcode: every thumbnail is a named link to a published
+  // file, and the picture in it is a measured square.
+  gallery() {
+    const bad = [];
+    let seen = 0;
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      for (const g of html.matchAll(/<div\b[^>]*>/gi)) {
+        if (!hasClass(g[0], "gallery")) continue;
+        const body = element(html, g.index + g[0].length, "div");
+        const items = [...body.matchAll(/<a\b[^>]*>\s*(<img\b[^>]*>)/gi)];
+        if (!items.length) bad.push(`${rel(p)}: a gallery with no linked picture`);
+        for (const [a, img] of items) {
+          seen++;
+          const href = attr(a.match(/<a\b[^>]*>/i)[0], "href") ?? "";
+          const alt = (attr(img, "alt") ?? "").trim();
+          const w = attr(img, "width"), h = attr(img, "height");
+          if (!alt) bad.push(`${rel(p)}: ${href} has no alt, so its link has no name`);
+          if (!w || w !== h) bad.push(`${rel(p)}: ${href} is not a measured square (${w}x${h})`);
+          if (!hasClass(img, "gallery__image")) bad.push(`${rel(p)}: ${href} lost the gallery__image class`);
+        }
+      }
+    }
+    if (bad.length) fail("a gallery thumbnail is wrong", bad.slice(0, 5).join("\n"));
+    if (!seen) fail("no gallery was rendered anywhere");
+    ok(`${seen} gallery thumbnails, each a named link around a measured square`);
   },
 
   // Excerpts and JSON-LD descriptions must show characters, not entities.
