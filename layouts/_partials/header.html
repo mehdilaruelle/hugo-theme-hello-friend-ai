@@ -1,8 +1,8 @@
 <header class="header">
-    <span class="header__inner">
+    <div class="header__inner">
         {{ partial "logo.html" . }}
 
-        <span class="header__right">
+        <div class="header__right">
             {{- /* .main, not .Site.Menus: that is the map of every menu. */ -}}
             {{- if .Site.Menus.main }}
                 {{ partial "menu.html" . }}
@@ -37,6 +37,6 @@
             {{- /* Outside the menu, so it survives the fold into the
                    hamburger. Renders nothing on a single-language site. */ -}}
             {{ partial "language-switcher.html" . }}
-        </span>
-    </span>
+        </div>
+    </div>
 </header>
