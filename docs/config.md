@@ -694,7 +694,7 @@ templates.
 | `enableReadingTime` | shows an estimated reading time on articles |
 | `enableSharingButtons` | shows the sharing row under an article. Every http(s) link in it is `rel="noopener nofollow"`; the `mailto:` and `whatsapp:` ones are written with `noopener` alone, since there is no link equity to withhold on a scheme no crawler follows — and `--minify` drops even that, as redundant on a scheme that opens no window and on a `_blank` every current browser already treats as `noopener`. The Pinterest link sends the page's social picture as its `media` |
 | `disableReadOtherPosts` | hides the previous/next links |
-| `backgroundImage` | an image behind the front page, `cover`-sized and fixed. Used in dark mode |
+| `backgroundImage` | an image behind the front page, `cover`-sized and fixed. Used in dark mode. A path under `static/`, or a full URL |
 | `backgroundImageLight` | the same for light mode. Without it light mode shows no image, rather than putting dark text over a dark picture |
 | `themeColor` | `<meta name="theme-color">`, the browser UI tint on mobile |
 | `ogImage` | the picture a social card falls back to when a page has no `cover`. Use PNG or JPEG — no platform renders an SVG card |
