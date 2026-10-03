@@ -11,10 +11,8 @@
     <div class="logo">
         {{ with .Site.Params.Logo.path }}
             {{- $logo := site.Params.Logo -}}
-            {{- /* With pathDark, two pictures and the stylesheet shows one,
-                   following the toggle as well as the system. Both lazy: a
-                   lazy image that is display: none is never fetched, so a
-                   visitor downloads the one they see. */ -}}
+            {{- /* With pathDark, CSS shows one of two pictures; lazy, so the
+                   hidden one is never fetched. */ -}}
             {{- $variants := slice (dict "src" . "class" "") -}}
             {{- with $logo.pathDark -}}
               {{- $variants = slice (dict "src" $logo.path "class" " logo__img--light") (dict "src" . "class" " logo__img--dark") -}}
@@ -29,8 +27,7 @@
                   {{- if eq .MediaType.SubType "svg" -}}
                     {{- $svg = . -}}
                   {{- else -}}
-                    {{- /* A resource is only published once its URL is asked
-                           for, so linking .src as given would 404. */ -}}
+                    {{- /* Asking for the URL is what publishes it. */ -}}
                     {{- $src = .Permalink -}}
                   {{- end -}}
                 {{- end -}}
@@ -39,11 +36,8 @@
                 {{- end -}}
               {{- end -}}
               {{- with $svg -}}
-                {{- /* Inline, so it can draw in currentColor and follow the
-                       theme. The prolog and doctype are not allowed inside
-                       HTML. The class and the name go on the root element,
-                       its own classes merged into the one class attribute:
-                       a second one would be dropped by the parser. */ -}}
+                {{- /* Strip what HTML does not allow, and merge our class into
+                       the root's own: a second class attribute is ignored. */ -}}
                 {{- $markup := .Content | replaceRE `(?s)<\?xml.*?\?>|<!DOCTYPE[^>]*>|<!--.*?-->` "" | strings.TrimSpace -}}
                 {{- $name := ` aria-hidden="true"` -}}
                 {{- with $logo.alt }}{{ $name = printf ` role="img" aria-label="%s"` (htmlEscape .) }}{{ end -}}

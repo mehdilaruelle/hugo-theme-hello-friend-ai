@@ -205,8 +205,7 @@ const checks = {
     ok("the configured logo cursor is styled from the stylesheet");
   },
 
-  // logoCursorColorDark: the dark colour under both ways in, the system's
-  // choice unless the toggle says light, and the toggle's.
+  // logoCursorColorDark, for the system's dark mode and the toggle's.
   "cursor-dark"(color) {
     const all = css();
     for (const sel of [":root:not([data-theme=light]) .logo__cursor", ":root[data-theme=dark] .logo__cursor"]) {
@@ -218,8 +217,7 @@ const checks = {
     ok(`the cursor turns ${color} in dark mode, by the system or the toggle`);
   },
 
-  // params.logo.pathDark: a picture per scheme, both lazy so the hidden one is
-  // never fetched, and the stylesheet showing one of them.
+  // params.logo.pathDark: two lazy pictures, the dark one hidden by default.
   "logo-images"(light, dark) {
     const logo = logoOf(read("index.html"));
     const imgs = [...logo.matchAll(/<img\b[^>]*>/gi)].map((m) => m[0]);
@@ -240,8 +238,7 @@ const checks = {
     ok("the logo has a picture per scheme, and only the one shown is fetched");
   },
 
-  // params.logo.inline: the SVG itself in the header, named, and with nothing
-  // that is not allowed inside HTML.
+  // params.logo.inline: a named inline SVG, cleaned of prolog and comments.
   "logo-inline"(name, ...keep) {
     const logo = logoOf(read("index.html"));
     const svg = logo.match(/<svg\b[^>]*>/i)?.[0];

@@ -1,5 +1,4 @@
-# A picture logo with a dark variant. Static files, so they are linked rather
-# than processed, the way params.logo.path has always been read.
+# A picture logo with a dark variant, from static/.
 [params.logo]
   path     = "img/logo-light.svg"
   pathDark = "img/logo-dark.svg"

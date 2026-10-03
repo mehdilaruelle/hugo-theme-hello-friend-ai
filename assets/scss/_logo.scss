@@ -21,15 +21,13 @@
     height: 44px;
   }
 
-  // An inline SVG with a viewBox and no width of its own takes its width from
-  // the height, as an img does.
+  // Width follows the viewBox ratio.
   &__svg {
     display: block;
     width: auto;
   }
 
-  // params.logo.pathDark: two pictures, one shown. The system decides unless
-  // the toggle has, the way _colour-tokens.scss picks the palette.
+  // params.logo.pathDark: show the picture matching the theme.
   &__img--dark {
     display: none;
   }

@@ -92,8 +92,7 @@ copyright = '&copy; 2026 Jane Doe & contributors · <a href="https://creativecom
       category = "degree"
 
   # The logo cursor, which nothing exercised before. logoCursorPathname appends
-  # the current path to the logo text, so it changes as you move around. The
-  # cursor is blue on the light palette and orange on the dark one.
+  # the current path to the logo text, so it changes as you move around.
   [params.logo]
     logoMark            = ">"
     logoText            = "$ cd /home/"

@@ -423,8 +423,7 @@ jobs:
             background-color=#67a2c9 animation-duration=2s
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
 
-      # Neither demo has a picture logo, so these two were never built. On the
-      # showcase, whose static/ and assets/ hold the files the fixtures name.
+      # Built on the showcase, which holds the logo files.
       - name: Check a logo with a dark variant, and an inlined one
         working-directory: hello-friend-ai/showcaseSite
         run: |
