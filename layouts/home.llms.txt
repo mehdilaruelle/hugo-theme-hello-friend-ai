@@ -2,9 +2,11 @@
 {{- $desc := .Description | default (partial "flatten.html" (site.Params.homeSubtitle | default site.Params.description | default "")) -}}
 {{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
 {{- /* Not a list item: everything in a list here is a page. */ -}}
-{{- with .OutputFormats.Get "llmsfull" }}
-{{ partial "i18n.html" (dict "key" "llmsFullAt" "fallback" "The full text of every page below:") }} {{ .Permalink }}
-{{ end }}
 {{- $s := partial "md/sections.html" . -}}
+{{- $total := add (len $s.posts) (len $s.other) -}}
+{{- $limit := int (float (site.Params.llmsFullLimit | default 0)) -}}
+{{- with .OutputFormats.Get "llmsfull" }}
+{{ if and (gt $limit 0) (lt $limit $total) }}{{ partial "i18n.html" (dict "key" "llmsFullAtFirst" "args" (dict "Kept" $limit) "fallback" (printf "The full text of the first %d pages below:" $limit)) }}{{ else }}{{ partial "i18n.html" (dict "key" "llmsFullAt" "fallback" "The full text of every page below:") }}{{ end }} {{ .Permalink }}
+{{ end }}
 {{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "posts" "fallback" "Posts")) "pages" $s.posts) }}
 {{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "pages" "fallback" "Pages")) "pages" $s.other) -}}

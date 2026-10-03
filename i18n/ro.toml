@@ -139,6 +139,9 @@ other = "Cuprins"
 [llmsFullAt]
 other = "Textul integral al tuturor paginilor de mai jos:"
 
+[llmsFullAtFirst]
+other = "Textul integral al primelor {{ .Kept }} pagini de mai jos:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} din {{ .Total }} pagini, în ordinea în care le listează llms.txt."
 

@@ -136,6 +136,9 @@ other = "Indice"
 [llmsFullAt]
 other = "Il testo integrale di tutte le pagine elencate sotto:"
 
+[llmsFullAtFirst]
+other = "Il testo integrale delle prime {{ .Kept }} pagine elencate sotto:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} pagine su {{ .Total }}, nell’ordine in cui llms.txt le elenca."
 

@@ -136,6 +136,9 @@ other = "Indes"
 [llmsFullAt]
 other = "El test compless de tütt i pagin chì sota:"
 
+[llmsFullAtFirst]
+other = "El test compless di primm {{ .Kept }} pagin chì sota:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} pagin su {{ .Total }}, in de l’órden che llms.txt el dà."
 

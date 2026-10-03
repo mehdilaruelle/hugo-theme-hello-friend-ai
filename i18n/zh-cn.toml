@@ -136,6 +136,9 @@ other = "目录"
 [llmsFullAt]
 other = "以下所有页面的全文："
 
+[llmsFullAtFirst]
+other = "以下前 {{ .Kept }} 个页面的全文："
+
 [llmsFullTruncated]
 other = "{{ .Total }} 个页面中的 {{ .Kept }} 个，顺序与 llms.txt 一致。"
 

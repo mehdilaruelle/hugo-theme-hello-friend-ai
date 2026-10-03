@@ -1,4 +1,5 @@
 {{- /* (dict "text" s "with" r): s with each < replaced by r, outside code spans only.
+       "label" true also escapes \ [ ] there, for a link label.
        Markdown escapes a code span's text itself, so escaping it too would show
        the escape. Follows CommonMark: outside a span a backslash escapes the next
        character; a span opens on a run of backticks and closes on the next run of
@@ -10,6 +11,8 @@
 {{- $skip := 0 -}}
 {{- range $i, $ch := $c -}}
   {{- if lt $i $skip -}}
+  {{- else if and $.label (in (slice `\` "[" "]") $ch) -}}
+    {{- $out = print $out `\` $ch -}}
   {{- else if and (eq $ch `\`) (lt (add $i 1) $n) -}}
     {{- $out = print $out $ch (index $c (add $i 1)) -}}
     {{- $skip = add $i 2 -}}

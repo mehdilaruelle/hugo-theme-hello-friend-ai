@@ -136,6 +136,9 @@ other = "目錄"
 [llmsFullAt]
 other = "以下所有頁面的全文："
 
+[llmsFullAtFirst]
+other = "以下前 {{ .Kept }} 個頁面的全文："
+
 [llmsFullTruncated]
 other = "{{ .Total }} 個頁面中的 {{ .Kept }} 個，順序與 llms.txt 一致。"
 

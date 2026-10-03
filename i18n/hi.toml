@@ -136,6 +136,9 @@ other = "सामग्री"
 [llmsFullAt]
 other = "नीचे दिए गए सभी पृष्ठों का पूरा पाठ:"
 
+[llmsFullAtFirst]
+other = "नीचे दिए गए पहले {{ .Kept }} पृष्ठों का पूरा पाठ:"
+
 [llmsFullTruncated]
 other = "{{ .Total }} में से {{ .Kept }} पृष्ठ, उसी क्रम में जिसमें llms.txt उन्हें सूचीबद्ध करता है।"
 
