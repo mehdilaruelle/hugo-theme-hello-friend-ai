@@ -28,7 +28,7 @@
     {{- if not $alt }}{{ $alt = path.BaseName .Name | humanize }}{{ end }}
   <figure class="gallery__item">
     <a href="{{ .RelPermalink }}">
-      {{- partial "image.html" (dict "src" .Name "alt" $alt "page" $.Page "fill" "600x600" "position" "gallery__image") -}}
+      {{- partial "image.html" (dict "src" .Name "alt" $alt "page" $.Page "fill" "600x600 Center" "position" "gallery__image") -}}
     </a>
     {{- with .Params.caption }}
     <figcaption>{{ . | markdownify }}</figcaption>
