@@ -1,7 +1,6 @@
 @use "variables" as *;
 
-// The gallery shortcode. A grid rather than floats or flex, so a short last
-// row keeps the columns of the rows above it.
+// The gallery shortcode.
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -11,7 +10,7 @@
   &--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   &--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-  // Two at most on a phone: four 80px thumbnails show nothing worth a tap.
+  // Two columns at most on a phone.
   @media #{$media-size-phone} {
     &--3,
     &--4 {
@@ -19,8 +18,7 @@
     }
   }
 
-  // figure is display: table in _base.scss, which would size it to its
-  // content rather than to the grid cell.
+  // Undo _base.scss's display: table on figure.
   &__item {
     display: block;
     margin: 0;

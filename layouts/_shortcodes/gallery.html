@@ -1,9 +1,5 @@
-{{- /* A grid of thumbnails, each a link to its full picture. The pictures are
-       the page bundle's images, or those `match` names: a glob over the
-       bundle, then over assets/ when the bundle has none that match. A file
-       under static/ is not a resource and cannot be cropped, so it is not
-       found here. Ordered by file name; alt and caption come from the
-       resource's metadata in the front matter. */ -}}
+{{- /* Thumbnails of the bundle's images (or `match`, then assets/), each
+       linking to the full file. */ -}}
 {{- $match := .Get "match" | default "" -}}
 {{- $columns := .Get "columns" | default 3 | int -}}
 {{- if or (lt $columns 2) (gt $columns 4) -}}
@@ -17,9 +13,7 @@
 {{- else -}}
   {{- $images = .Page.Resources.ByType "image" -}}
 {{- end -}}
-{{- /* An SVG is an image to Hugo too, and cannot be cropped: it would sit in
-       the grid at its own shape. Kept out, along with anything not a picture
-       that a broad glob caught. */ -}}
+{{- /* SVGs cannot be cropped. */ -}}
 {{- $images = where (where $images "ResourceType" "image") "MediaType.SubType" "!=" "svg" -}}
 {{- $images = sort $images "Name" -}}
 
@@ -28,9 +22,7 @@
 {{- else -}}
 <div class="gallery gallery--{{ $columns }}">
   {{- range $images }}
-    {{- /* A thumbnail is a link and needs a name. The file name is a poor one,
-           and the last resort: a resource's own title is the file's path
-           unless the front matter sets it. */ -}}
+    {{- /* The link needs a name: alt, then a set title, then the file name. */ -}}
     {{- $alt := .Params.alt | default "" -}}
     {{- if and (not $alt) (ne .Title .Name) }}{{ $alt = .Title }}{{ end -}}
     {{- if not $alt }}{{ $alt = path.BaseName .Name | humanize }}{{ end }}

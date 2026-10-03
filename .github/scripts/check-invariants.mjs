@@ -227,8 +227,7 @@ const checks = {
     ok(`the column is ${want}, and ${seen} images are sized to it`);
   },
 
-  // The gallery shortcode: every thumbnail is a named link to a published
-  // file, and the picture in it is a measured square.
+  // Every gallery thumbnail is a named link around a measured square.
   gallery() {
     const bad = [];
     let seen = 0;

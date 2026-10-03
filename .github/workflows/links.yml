@@ -401,8 +401,6 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
 
-      # The showcase's gallery page: a thumbnail is a link, and a link with an
-      # empty alt inside is a link with no name.
       - name: Check every gallery thumbnail is a named link to a square
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public gallery

@@ -6,8 +6,7 @@ tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
 
-# Alt text and captions travel with the files, not the shortcode call. The
-# fourth picture has neither, so its name falls back to its file name.
+# The fourth picture has no alt, to exercise the file-name fallback.
 [[resources]]
   src = "photos/01-dunes.jpg"
   [resources.params]
