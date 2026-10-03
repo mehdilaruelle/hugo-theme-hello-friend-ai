@@ -21,7 +21,7 @@ series = ["Showcase"]
 [[resources]]
   src = "photos/03-tower.jpg"
   [resources.params]
-    alt = "A single tower against a dark sky"
+    alt = "A striped lighthouse at dusk under a full moon"
     caption = "Portrait, cropped from the **centre**"
 
 [author]
