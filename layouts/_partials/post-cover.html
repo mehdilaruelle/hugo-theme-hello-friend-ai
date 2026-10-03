@@ -1,6 +1,7 @@
-{{ if .Params.Cover }}
+{{ $cover := partial "string-param.html" (dict "value" .Params.Cover "name" "cover") }}
+{{ if $cover }}
   <figure class="post-cover">
-    {{ partial "image.html" (dict "src" .Params.Cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high") }}
+    {{ partial "image.html" (dict "src" $cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high") }}
 
     {{ if .Params.CoverCaption }}
       <figcaption class="center">{{ .Params.CoverCaption | markdownify }}</figcaption>

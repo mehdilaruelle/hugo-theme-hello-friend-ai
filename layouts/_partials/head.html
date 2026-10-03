@@ -56,6 +56,9 @@
        at the site root, and every one of them looks on the home page. */ -}}
 {{- if .IsHome }}
 {{- with .Site.Params.verification }}
+{{- if not (reflect.IsMap .) }}
+{{- warnidf "verification-shape" "params.verification: expected a table such as { google = \"...\" }, got a %T. No verification tag is written." . }}
+{{- else }}
 {{- with .google }}
 <meta name="google-site-verification" content="{{ . }}" />
 {{- end }}
@@ -70,6 +73,7 @@
 {{- end }}
 {{- with .pinterest }}
 <meta name="p:domain_verify" content="{{ . }}" />
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -140,6 +144,11 @@
     {{- with $css | minify | fingerprint }}
     <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
     {{- end -}}
+    {{- if site.Menus.main }}
+    {{- with resources.Get "css/noscript.css" | minify | fingerprint }}
+    <noscript><link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></noscript>
+    {{- end }}
+    {{- end -}}
   {{- end -}}
 {{- else -}}
   {{- errorf "assets/scss/main.scss is missing, the site would be built without any stylesheet." -}}
@@ -182,7 +191,7 @@
 {{ partial "opengraph.html" . }}
 
 {{ with .OutputFormats.Get "rss" -}}
-    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+    {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink (htmlEscape $.Site.Title) | safeHTML }}
 {{ end -}}
 
 {{- if templates.Exists "_partials/extra-head.html" -}}

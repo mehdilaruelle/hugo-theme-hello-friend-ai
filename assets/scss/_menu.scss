@@ -11,6 +11,10 @@
     border: none;
     margin: 0;
     padding: 10px;
+
+    &:not(.menu--ready) {
+      display: none;
+    }
   }
 
   &__inner {

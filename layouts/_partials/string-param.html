@@ -1,0 +1,10 @@
+{{- /* (dict "value" v "name" "cover"): v when it is a string, else "" with a
+       warning rather than a template error further down. */ -}}
+{{- $out := "" -}}
+{{- $type := printf "%T" .value -}}
+{{- if eq $type "string" -}}
+  {{- $out = .value -}}
+{{- else if ne $type "<nil>" -}}
+  {{- warnidf (printf "%s-shape" .name) "%s: expected a path, got %T. It is ignored." .name .value -}}
+{{- end -}}
+{{- return $out -}}
