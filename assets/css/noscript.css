@@ -1,0 +1,5 @@
+@media (max-width: 684px) {
+  .menu:not(.menu--ready) {
+    display: block;
+  }
+}

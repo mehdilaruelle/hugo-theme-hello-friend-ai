@@ -445,6 +445,19 @@ jobs:
           node ../.github/scripts/check-links.mjs public-overrides https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-overrides favicons
           node ../.github/scripts/check-invariants.mjs public-overrides site-overrides '#abcdef'
+          mv static mystatic
+          hugo --themesDir ../.. --gc --minify --destination public-static-dir \
+            --config config.toml,../.github/fixtures/favicon-static-dir.toml
+          node ../.github/scripts/check-invariants.mjs public-static-dir favicons
+
+      - name: Check a wrong-shaped param warns instead of aborting the build
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          out=$(hugo --themesDir ../.. --gc --destination public-shapes \
+            --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
+          for id in ogimage-shape verification-shape credentials-shape; do
+            grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
+          done
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite

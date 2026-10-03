@@ -70,7 +70,7 @@ other = "इस साइट में खोजें"
 other = "खोजने के लिए टाइप करें…"
 
 [searchResultsOne]
-other = "1 परिणाम"
+other = "%d परिणाम"
 
 [searchResultsMany]
 other = "%d परिणाम"

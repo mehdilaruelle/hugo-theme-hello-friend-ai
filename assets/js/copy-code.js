@@ -63,10 +63,13 @@
       // reach a screen reader. aria-live announces the change instead.
       button.setAttribute('aria-live', 'polite');
 
+      let timer;
       function flash(text, className) {
+        clearTimeout(timer);
+        button.classList.remove('copy-code--done', 'copy-code--failed');
         button.textContent = text;
         button.classList.add(className);
-        setTimeout(() => {
+        timer = setTimeout(() => {
           button.textContent = label;
           button.classList.remove(className);
         }, 1600);

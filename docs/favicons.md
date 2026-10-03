@@ -16,7 +16,9 @@ files, and put them in your site's `static` folder:
 | `mstile-150x150.png` | named inside `browserconfig.xml`, which Windows looks for at the site root |
 
 The six the theme links are each linked **only when the file is present**, so a
-site without them emits no broken links. The last three are never referenced
+site without them emits no broken links. The theme looks in `static/`; a site
+whose `staticDir` is elsewhere names it, or a list of them, as
+`params.favicon.staticDir`. The last three are never referenced
 from the HTML at all — they are reached through the two files that name them,
 which RealFaviconGenerator generates alongside the images. Ship those two files
 too, or the three images are dead weight.

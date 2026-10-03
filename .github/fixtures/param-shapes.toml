@@ -1,0 +1,6 @@
+# Params in a shape the theme does not read: each has to warn, not abort.
+[params]
+  ogImage      = ["a.png"]
+  verification = "abc"
+  [params.author]
+    credentials = ["x"]

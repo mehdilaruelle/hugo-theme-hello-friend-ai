@@ -35,7 +35,8 @@
 
                         <ul class="posts-list">
                             {{ range .Pages }}
-                                {{- $thumbnail := and (partial "switch.html" .Site.Params.enableThumbnails) .Params.cover }}
+                                {{- $cover := partial "string-param.html" (dict "value" .Params.cover "name" "cover") }}
+                                {{- $thumbnail := and (partial "switch.html" .Site.Params.enableThumbnails) $cover }}
                                 {{- /* Description first, .Summary as a fallback, cut short. */ -}}
                                 {{- $excerpt := "" }}
                                 {{- if partial "switch.html" .Site.Params.enableListExcerpts }}
@@ -47,7 +48,7 @@
                                             {{- /* Through image.html, like every other picture here: 156
                                                    square is the thumbnail box at 3x. alt is empty -- the
                                                    title beside it names the link. */ -}}
-                                            {{ partial "image.html" (dict "src" .Params.cover "alt" "" "page" . "position" "post-thumbnail" "fill" "156x156") }}
+                                            {{ partial "image.html" (dict "src" $cover "alt" "" "page" . "position" "post-thumbnail" "fill" "156x156") }}
                                         {{- end }}
                                         <span class="post-title">{{ partial "title-plain.html" . }}</span>
                                         {{ if not .Date.IsZero }}{{- /* An undated page has the zero time, and "Jan 1" reads like a real date rather than a missing one. */ -}}<time class="post-day" datetime="{{ .Date.Format "2006-01-02" }}">

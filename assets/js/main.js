@@ -74,12 +74,12 @@
     // it can.
     themeToggle.removeAttribute("disabled");
     // Follow the system only while the visitor has expressed no preference.
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", () => !readStoredTheme() && detectOSColorTheme());
-    window
-      .matchMedia("(prefers-color-scheme: light)")
-      .addEventListener("change", () => !readStoredTheme() && detectOSColorTheme());
+    const follow = () => !readStoredTheme() && detectOSColorTheme();
+    ["dark", "light"].forEach((scheme) => {
+      const query = window.matchMedia(`(prefers-color-scheme: ${scheme})`);
+      if (query.addEventListener) query.addEventListener("change", follow);
+      else if (query.addListener) query.addListener(follow);
+    });
 
     detectOSColorTheme();
   } else {

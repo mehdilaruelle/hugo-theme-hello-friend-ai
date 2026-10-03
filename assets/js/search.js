@@ -84,6 +84,17 @@
     return n;
   }
 
+  let rules;
+  try {
+    rules = new Intl.PluralRules(document.documentElement.lang || undefined);
+  } catch (e) {
+    rules = new Intl.PluralRules("en");
+  }
+  function plural(n) {
+    const one = n === 1 || (form.getAttribute("data-hits-one") || "").indexOf("%d") !== -1;
+    return one && rules.select(n) === "one" ? "one" : "many";
+  }
+
   function say(key, count) {
     const t = form.getAttribute("data-hits-" + key) || "";
     status.textContent = t.replace("%d", count);
@@ -121,7 +132,7 @@
             return d !== 0 ? d : (b.page.date || "").localeCompare(a.page.date || "");
           });
 
-        say(hits.length === 1 ? "one" : "many", hits.length);
+        say(plural(hits.length), hits.length);
 
         const frag = document.createDocumentFragment();
         hits.forEach((h) => {
