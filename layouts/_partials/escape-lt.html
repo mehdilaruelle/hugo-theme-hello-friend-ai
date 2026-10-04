@@ -11,11 +11,11 @@
 {{- $skip := 0 -}}
 {{- range $i, $ch := $c -}}
   {{- if lt $i $skip -}}
-  {{- else if and $.label (in (slice `\` "[" "]") $ch) -}}
-    {{- $out = print $out `\` $ch -}}
   {{- else if and (eq $ch `\`) (lt (add $i 1) $n) -}}
     {{- $out = print $out $ch (index $c (add $i 1)) -}}
     {{- $skip = add $i 2 -}}
+  {{- else if and $.label (in (slice `\` "[" "]") $ch) -}}
+    {{- $out = print $out `\` $ch -}}
   {{- else if eq $ch "`" -}}
     {{- $run := 0 -}}
     {{- $stop := false -}}
