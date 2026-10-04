@@ -2,7 +2,7 @@
     {{ $paginator := partial "paginator.html" . }}
 
     <div class="content">
-        <main id="main" class="posts">
+        <main id="hf-main" class="posts">
             {{- /* Named as a pager from page two on, like the <title>: each is
                    its own canonical, so each arrives on its own. */ -}}
             {{- $heading := partial "pager-suffix.html" (dict "text" (partial "title-plain.html" .) "pager" $paginator.PageNumber) }}
