@@ -4,7 +4,7 @@
         <div class="footer__content">
             {{- /* A switch or the text to show: "true" means the year, like the boolean. */}}
             {{ if partial "switch.html" .Site.Params.footer.trademark }}<span>&copy; {{ if eq (lower (printf "%v" .Site.Params.footer.trademark)) "true" }}{{ now.Year }}{{ else }}{{ .Site.Params.footer.trademark }}{{ end }}</span>{{ end }}
-            {{ if partial "switch.html" .Site.Params.footer.author }}<span><a href="{{ .Site.Home.RelPermalink }}">{{ (partial "site-author.html" .).name }}</a></span>{{ end }}
+            {{ if partial "switch.html" .Site.Params.footer.author }}{{ with (partial "site-author.html" .).name }}<span><a href="{{ site.Home.RelPermalink }}">{{ . }}</a></span>{{ end }}{{ end }}
             {{ if partial "switch.html" .Site.Params.footer.copyright }}<span>{{ .Site.Copyright| safeHTML }}</span>{{ end }}
             {{ if partial "switch.html" .Site.Params.footer.rss }}{{ with partial "main-section.html" . }}{{ with .OutputFormats.Get "rss" }}<span><a href="{{ .Permalink }}" target="_blank" rel="noopener" title="rss">{{ partial "icon.html" (dict "name" "rss") }}</a></span>{{ end }}{{ end }}{{ end }}
             {{ range .Site.Params.footer.topText }}<span>{{ . | safeHTML}}</span>{{ end }}

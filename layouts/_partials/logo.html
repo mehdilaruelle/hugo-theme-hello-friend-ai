@@ -11,6 +11,7 @@
     <div class="logo">
         {{ with .Site.Params.Logo.path }}
             {{- $logo := site.Params.Logo -}}
+            {{- $alt := $logo.alt | default site.Title -}}
             {{- /* With pathDark, CSS shows one of two pictures; lazy, so the
                    hidden one is never fetched. */ -}}
             {{- $variants := slice (dict "src" . "class" "") -}}
@@ -40,7 +41,7 @@
                        the root's own: a second class attribute is ignored. */ -}}
                 {{- $markup := .Content | replaceRE `(?s)<\?xml.*?\?>|<!DOCTYPE[^>]*>|<!--.*?-->` "" | strings.TrimSpace -}}
                 {{- $name := ` aria-hidden="true"` -}}
-                {{- with $logo.alt }}{{ $name = printf ` role="img" aria-label="%s"` (htmlEscape .) }}{{ end -}}
+                {{- with $alt }}{{ $name = printf ` role="img" aria-label="%s"` (htmlEscape .) }}{{ end -}}
                 {{- with findRE `^<svg\b[^>]*>` $markup 1 -}}
                   {{- $root := index . 0 -}}
                   {{- $classAttr := `\sclass\s*=\s*(?:"([^"]*)"|'([^']*)')` -}}
@@ -54,7 +55,7 @@
                 {{- end -}}
                 {{- $markup | safeHTML -}}
               {{- else -}}
-                <img src="{{ partial "abs-url.html" $src | safeURL }}" alt="{{ $logo.alt }}" class="logo__img{{ .class }}"
+                <img src="{{ partial "abs-url.html" $src | safeURL }}" alt="{{ $alt }}" class="logo__img{{ .class }}"
                   {{- if $logo.pathDark }} loading="lazy"{{ end }} />
               {{- end -}}
             {{- end -}}

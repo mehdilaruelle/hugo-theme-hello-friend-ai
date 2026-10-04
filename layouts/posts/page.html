@@ -11,7 +11,7 @@
             {{ partial "i18n.html" (dict "key" "readingTime" "args" .Page.ReadingTime "fallback" (cond (eq .Page.ReadingTime 1) "One minute" (printf "%d minutes" .Page.ReadingTime))) }}
           {{ end }}
 
-          {{ if .IsTranslated }} | {{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
+          {{ if .IsTranslated }}{{ if partial "switch.html" .Site.Params.EnableReadingTime }} | {{ end }}{{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
             {{ range .Translations }}
                 {{ partial "translation-link.html" . }}
             {{ end}}
