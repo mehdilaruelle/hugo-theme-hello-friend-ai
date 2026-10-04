@@ -38,7 +38,7 @@
       {{- $url := .url | default "" -}}
       {{- if and $url (in (slice "twitter" "x") $name) -}}
         {{- /* The last segment is the handle; a host has a dot, a handle never. */ -}}
-        {{- $candidate := path.Base (strings.TrimSuffix "/" $url) -}}
+        {{- $candidate := path.Base (strings.TrimSuffix "/" (urls.Parse $url).Path) -}}
         {{- if not (strings.Contains $candidate ".") -}}
           {{- $handle = $candidate -}}
         {{- end -}}
