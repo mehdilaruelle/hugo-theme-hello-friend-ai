@@ -19,7 +19,8 @@
 
 {{- $src := .Get "src" -}}
 {{- $formats := split (.Get "formats" | default "webm,mp4") "," -}}
-{{- $controls := eq (.Get "controls") "true" -}}
+{{- $controls := partial "switch.html" (.Get "controls") -}}
+{{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
 {{- /* A site served from a subpath needs it kept; a remote URL must be left
        alone. */ -}}
@@ -39,7 +40,7 @@
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>
   {{- range $formats }}
     {{- $ext := trim . " " }}
-    <source src="{{ partial "abs-url.html" (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ $ext }}">
+    <source src="{{ partial "abs-url.html" (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ index $types (lower $ext) | default (lower $ext) }}">
   {{- end }}
 </video>
 {{- end -}}
