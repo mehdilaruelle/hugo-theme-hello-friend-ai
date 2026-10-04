@@ -112,7 +112,7 @@
     margin: 0 5px;
   }
 
-  .flag {
+  .flag:not(.flag--code) {
     border-radius: 50%;
   }
 }
@@ -200,6 +200,11 @@
 
   &.previous .button__icon {
     margin-inline-end: 8px;
+  }
+
+  [dir=rtl] & .button__icon {
+    display: inline-block;
+    transform: scaleX(-1);
   }
 }
 

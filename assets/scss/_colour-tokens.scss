@@ -24,6 +24,7 @@ $colour-tokens: (
   @if $theme == dark {
     $i: 2;
   }
+  color-scheme: $theme;
   @each $name, $pair in $colour-tokens {
     --#{$name}: #{list.nth($pair, $i)};
   }

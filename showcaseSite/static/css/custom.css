@@ -5,8 +5,8 @@
 /* The callout shortcode this site defines for itself, in
    layouts/_shortcodes/callout.html. */
 .callout {
-  border-left: 3px solid currentColor;
-  padding-left: 1rem;
+  border-inline-start: 3px solid currentColor;
+  padding-inline-start: 1rem;
   /* Not opacity, which would dim a code chip below 4.5:1. */
   color: color-mix(in srgb, var(--color) 85%, var(--background));
 }
