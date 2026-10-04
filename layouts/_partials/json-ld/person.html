@@ -42,7 +42,8 @@
 {{- range partial "social-list.html" site.Params.social -}}
   {{- $name := lower (.name | default "") -}}
   {{- with .url -}}
-    {{- if and (in (slice "http" "https") (urls.Parse .).Scheme) (not (in (slice "rss" "email") $name)) -}}
+    {{- $u := urls.Parse . -}}
+    {{- if and (in (slice "http" "https") $u.Scheme) $u.Host (not (in (slice "rss" "email") $name)) -}}
       {{- $sameAs = $sameAs | append . -}}
     {{- end -}}
   {{- end -}}
