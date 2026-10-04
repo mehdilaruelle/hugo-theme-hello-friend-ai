@@ -19,7 +19,7 @@
             {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
         {{ end -}}
         {{- /* services.rss.limit, which Hugo's internal template applies and this one did not. */ -}}
-        {{- $pages := where .Pages "Permalink" "!=" "" -}}
+        {{- $pages := where .RegularPages "Permalink" "!=" "" -}}
         {{- $limit := .Site.Config.Services.RSS.Limit -}}
         {{- if ge $limit 1 }}{{ $pages = first $limit $pages }}{{ end }}
         {{ range $pages }}

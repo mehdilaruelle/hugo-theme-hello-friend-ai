@@ -9,5 +9,5 @@ Whether this page is kept out of a search engine's index. Returns a boolean.
   for one.
 */ -}}
 {{- $noindex := partial "switch.html" .Params.noindex -}}
-{{- if eq .Layout "search" -}}{{- $noindex = true -}}{{- end -}}
+{{- if or (eq .Layout "search") (eq .Kind "404") -}}{{- $noindex = true -}}{{- end -}}
 {{- return $noindex -}}
