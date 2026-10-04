@@ -42,11 +42,12 @@
   }
 
   &-cover {
+    // 50px past the text each side, but never wider than the viewport.
+    --cover-width: min(calc(var(--content-width, 800px) + 60px), calc(100vw - 40px));
     border-radius: 8px;
-    margin: 40px -50px;
-    // Out past the text by 50px each side: the column plus 60px.
-    width: calc(var(--content-width, 800px) + 60px);
-    max-width: calc(var(--content-width, 800px) + 60px);
+    margin: 40px calc((100% - var(--cover-width)) / 2);
+    width: var(--cover-width);
+    max-width: var(--cover-width);
     overflow: hidden;
     @media #{$media-size-tablet} {
       margin: 20px 0;
