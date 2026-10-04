@@ -98,18 +98,19 @@ Build the exampleSite and make sure it stays warning-free:
 
 ```bash
 cd exampleSite
-hugo --themesDir ../.. --gc --panicOnWarning
+hugo --themesDir ../.. --gc --minify --panicOnWarning
 ```
 
 That needs Hugo extended and Dart Sass — see
 [Requirements](README.md#requirements). CI runs exactly this, plus a second
-build without Dart Sass to keep the LibSass fallback working.
+build without Dart Sass, which has to fail with a clear message: there is no
+LibSass fallback.
 
 Then build the showcase, which is the same site with every option turned on:
 
 ```bash
 cd showcaseSite
-hugo --themesDir ../.. --gc --panicOnWarning --config ../exampleSite/config.toml,config.toml
+hugo --themesDir ../.. --gc --minify --panicOnWarning --config ../exampleSite/config.toml,config.toml
 ```
 
 `showcaseSite/` holds only what differs — a configuration file and a couple of

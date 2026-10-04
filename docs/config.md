@@ -197,7 +197,7 @@ the image replaces the text logo entirely.
 | `inline` | puts an SVG `path` (and `pathDark`) in the page itself rather than linking it, so it can draw in the text colour. The file has to be under `assets/` |
 | `logoMark` | the character before the text, `>` when unset |
 | `logoText` | the text itself, `hello` when unset |
-| `logoHomeLink` | where the logo links. A URL starting with `http://` or `https://` is used as given; anything else is joined to the site's home, so a site under a subpath keeps its prefix. A protocol-relative `//host/` counts as "anything else" and is joined too. Defaults to the home page |
+| `logoHomeLink` | where the logo links. A URL with a scheme (`https://`, `mailto:`) or a host (`//host/`) is used as given; anything else is joined to the site's home, so a site under a subpath keeps its prefix. Defaults to the home page |
 
 ### A picture logo
 
@@ -814,14 +814,6 @@ something true of the article and false of the picture.
 URL, so `url = "https://twitter.com/janedoe"` is enough and there is nothing
 extra to configure. A URL with no handle in it — the bare
 `https://twitter.com/` — emits no tag.
-
-One trap remains in the Open Graph partial: it absolutises `audio` and `videos`
-with `absURL`, and a leading slash there resolves against the host rather than
-the base URL. On a site served from a subpath, write them without one —
-`audio = ["video/demo.mp4"]`, not `["/video/demo.mp4"]`. The theme now carries
-its own copy of that partial and could correct it, but the copy is deliberately
-Hugo's line for line apart from the two URLs it had to fix, so the next Hugo
-release stays a readable diff; the correction belongs in a change of its own.
 
 ### Social links
 
