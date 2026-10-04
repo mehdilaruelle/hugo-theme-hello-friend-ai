@@ -136,6 +136,9 @@ other = "İçindekiler"
 [llmsFullAt]
 other = "Aşağıdaki tüm sayfaların tam metni:"
 
+[llmsFullAtFirst]
+other = "Aşağıdaki ilk {{ .Kept }} sayfanın tam metni:"
+
 [llmsFullTruncated]
 other = "{{ .Total }} sayfadan {{ .Kept }} tanesi, llms.txt içindeki sırayla."
 

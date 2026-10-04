@@ -136,6 +136,9 @@ other = "Contenido"
 [llmsFullAt]
 other = "El texto completo de todas las páginas siguientes:"
 
+[llmsFullAtFirst]
+other = "El texto completo de las primeras {{ .Kept }} páginas siguientes:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} de {{ .Total }} páginas, en el orden en que llms.txt las lista."
 

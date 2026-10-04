@@ -137,6 +137,9 @@ other = "目次"
 [llmsFullAt]
 other = "以下のすべてのページの全文:"
 
+[llmsFullAtFirst]
+other = "以下の最初の {{ .Kept }} ページの全文:"
+
 [llmsFullTruncated]
 other = "{{ .Total }} ページのうち {{ .Kept }} ページ、llms.txt と同じ順序です。"
 

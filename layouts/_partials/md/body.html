@@ -4,7 +4,7 @@
        are decoded — < > & " are markup once decoded, and a code sample inside a
        shortcode is entitled to keep them written as entities. */ -}}
 {{- $body := .RenderShortcodes -}}
-{{- range $entity, $char := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" -}}
+{{- range $entity, $char := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
   {{- $body = replace $body $entity $char -}}
 {{- end -}}
 {{- return $body -}}

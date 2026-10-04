@@ -140,6 +140,9 @@ other = "Содержание"
 [llmsFullAt]
 other = "Полный текст всех страниц ниже:"
 
+[llmsFullAtFirst]
+other = "Полный текст первых страниц ниже ({{ .Kept }}):"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} страниц из {{ .Total }}, в порядке, указанном в llms.txt."
 

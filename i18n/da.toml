@@ -136,6 +136,9 @@ other = "Indhold"
 [llmsFullAt]
 other = "Den fulde tekst af alle sider nedenfor:"
 
+[llmsFullAtFirst]
+other = "Den fulde tekst af de første {{ .Kept }} sider nedenfor:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} af {{ .Total }} sider, i den rækkefølge llms.txt angiver."
 

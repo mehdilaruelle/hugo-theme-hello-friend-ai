@@ -136,6 +136,9 @@ other = "Daftar isi"
 [llmsFullAt]
 other = "Teks lengkap semua halaman di bawah ini:"
 
+[llmsFullAtFirst]
+other = "Teks lengkap {{ .Kept }} halaman pertama di bawah ini:"
+
 [llmsFullTruncated]
 other = "{{ .Kept }} dari {{ .Total }} halaman, dalam urutan yang tercantum di llms.txt."
 

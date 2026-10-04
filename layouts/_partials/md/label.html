@@ -1,2 +1,2 @@
 {{- /* [ ] \ are link-label syntax, and < would open raw HTML. */ -}}
-{{- return partial "escape-lt.html" (dict "text" (partial "title.html" . | replaceRE `([\\\[\]])` `\${1}`) "with" `\<`) -}}
+{{- return partial "escape-lt.html" (dict "text" (partial "title.html" .) "with" `\<` "label" true) -}}

@@ -136,6 +136,9 @@ other = "ഉള്ളടക്കം"
 [llmsFullAt]
 other = "താഴെയുള്ള എല്ലാ പേജുകളുടെയും പൂർണ്ണ വാചകം:"
 
+[llmsFullAtFirst]
+other = "താഴെയുള്ള ആദ്യത്തെ {{ .Kept }} പേജുകളുടെ പൂർണ്ണ വാചകം:"
+
 [llmsFullTruncated]
 other = "{{ .Total }}-ൽ {{ .Kept }} പേജുകൾ, llms.txt പട്ടികപ്പെടുത്തുന്ന അതേ ക്രമത്തിൽ."
 
