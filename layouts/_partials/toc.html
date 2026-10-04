@@ -3,7 +3,7 @@
   <hr />
   <aside id="hf-toc">
     <div class="toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
-    {{ .TableOfContents }}
+    {{ .TableOfContents | replaceRE `<a href="#">(.*?)</a>` "$1" | safeHTML }}
   </aside>
   <hr />
 {{- end }}
