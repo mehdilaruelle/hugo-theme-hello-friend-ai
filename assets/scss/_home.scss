@@ -16,11 +16,11 @@
     max-width: min(var(--content-width, 800px), 600px);
   }
 
-  :first-child {
+  > :first-child {
     margin-block-start: 0;
   }
 
-  :last-child {
+  > :last-child {
     margin-block-end: 0;
   }
 }
