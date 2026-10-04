@@ -33,7 +33,7 @@ one   = "Ona parolla"
 other = "{{ .Count }} paroll"
 
 [lastModified]
-other = "Last update"
+other = "Ultim agiornament"
 
 [language]
 other = "Lengua"

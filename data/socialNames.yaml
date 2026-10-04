@@ -16,6 +16,7 @@ csgo: "CS:GO"
 cyberdefenders: CyberDefenders
 dev: DEV Community
 deviantart: DeviantArt
+facebook-messenger: Facebook Messenger
 gitbook: GitBook
 github: GitHub
 gitlab: GitLab
@@ -37,6 +38,8 @@ opencollective: Open Collective
 orcid: ORCID
 paypal: PayPal
 peertube: PeerTube
+podcasts-apple: Apple Podcasts
+podcasts-google: Google Podcasts
 repec: RePEc
 researchgate: ResearchGate
 rss: RSS

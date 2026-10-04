@@ -10,7 +10,7 @@ other = "其他語言"
 # 404.html
 #
 [archives]
-other = "貼文"
+other = "檔案"
 
 [home]
 other = "主頁"

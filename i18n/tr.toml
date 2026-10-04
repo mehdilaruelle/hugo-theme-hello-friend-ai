@@ -29,7 +29,7 @@ other = "{{ .Count }} dakika"
 other = "İçindekiler"
 
 [wordCount]
-one   = "One Kelime"
+one   = "Bir Kelime"
 other = "{{ .Count }} Kelime"
 
 [lastModified]

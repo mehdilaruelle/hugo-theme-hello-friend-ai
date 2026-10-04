@@ -33,7 +33,7 @@ one   = "Una Palabra"
 other = "{{ .Count }} Palabras"
 
 [lastModified]
-other = "Ultima actualización"
+other = "Última actualización"
 
 # partials/pagination-list.html
 [pagination]
