@@ -21,9 +21,9 @@
   {{- $css = $css | append (printf "@media (prefers-color-scheme:dark){:root:not([data-theme=light]) %s}:root[data-theme=dark] %s" $dark $dark) -}}
 {{- end -}}
 {{- with site.Params.backgroundImage -}}
-  {{- $bg := printf "--background-image:url(%q);" (urls.JoinPath site.BaseURL .) -}}
+  {{- $bg := printf "--background-image:url(%q);" (partial "abs-url.html" .) -}}
   {{- with site.Params.backgroundImageLight -}}
-    {{- $bg = printf "%s--background-image-light:url(%q);" $bg (urls.JoinPath site.BaseURL .) -}}
+    {{- $bg = printf "%s--background-image-light:url(%q);" $bg (partial "abs-url.html" .) -}}
   {{- end -}}
   {{- $css = $css | append (printf ".background-image{%s}" $bg) -}}
 {{- end -}}
