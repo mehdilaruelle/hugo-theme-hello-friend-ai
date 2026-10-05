@@ -1,7 +1,5 @@
-{{- /* site.Params.contentWidth as a CSS length, or "" when unset. A bare
-       number, quoted or not, is pixels, and 0 is unset. Anything that is not
-       one length is refused rather than written into the stylesheet, where a
-       stray brace would end the rule and take the next ones with it. */ -}}
+{{- /* params.contentWidth as one CSS length (a bare number is px), or "".
+       Anything else is refused: a stray brace would break the stylesheet. */ -}}
 {{- $width := "" -}}
 {{- with site.Params.contentWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}

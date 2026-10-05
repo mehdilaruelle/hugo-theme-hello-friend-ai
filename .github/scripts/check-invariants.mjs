@@ -255,8 +255,8 @@ const checks = {
     ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
-  // params.contentWidth: the stylesheet sets the property, and the images are
-  // told the same width. With no argument, the default: neither is written.
+  // contentWidth reaches the stylesheet, the image sizes and the layout.
+  // With no argument it is unset, and nothing is written.
   "content-width"(want) {
     const set = rules(css(), ":root").filter((b) =>
       b.split(";").some((d) => d.trim().startsWith("--content-width:")));

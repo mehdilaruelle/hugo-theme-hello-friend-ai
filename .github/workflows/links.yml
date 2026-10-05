@@ -405,8 +405,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public gallery
 
-      # The showcase sets contentWidth = 960 and the demo leaves it unset, so
-      # one asserts the property and the image sizes, the other their absence.
+      # Set to 960 on the showcase, unset on the demo.
       - name: Check contentWidth reaches the stylesheet and the image sizes
         working-directory: hello-friend-ai
         run: |

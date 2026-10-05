@@ -3,7 +3,6 @@
 
 .post {
   width: 100%;
-  // --content-width is params.contentWidth, set by params-css.html.
   max-width: var(--content-width, 800px);
   text-align: start;
   padding: 20px;

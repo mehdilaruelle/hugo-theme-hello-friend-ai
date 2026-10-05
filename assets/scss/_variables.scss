@@ -32,6 +32,5 @@ $media-size-tablet: "(max-width: 900px)";
 }
 
 /* Content */
-// No longer read by the theme, which sizes the column from --content-width
-// (params.contentWidth). Kept so a site's own copy of _single.scss still compiles.
+// Unused since --content-width; kept so a site's own _single.scss compiles.
 $max-width: 860px;
