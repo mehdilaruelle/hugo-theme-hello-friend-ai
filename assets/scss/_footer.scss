@@ -13,7 +13,7 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    // Lined up with the text of the column under it, inside its 20px padding.
+    // Level with the column's text, inside its 20px padding.
     width: calc(var(--content-width, 800px) - 40px);
     max-width: 100%;
 
@@ -25,6 +25,9 @@
   &__content {
     display: flex;
     flex-direction: row;
+    // Items that do not fit move to the next line whole, not squeezed in.
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
     font-size: 1rem;
     @include secondary-colour;

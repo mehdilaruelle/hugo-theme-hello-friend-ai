@@ -283,6 +283,8 @@ const checks = {
     // A cover wider than the column must still fit the viewport.
     if (!rules(css(), ".post-cover").some((b) => /--cover-width:\s*min\(.*100vw/.test(b)))
       fail("the post cover is not bounded by the viewport");
+    if (!rules(css(), ".footer__content").some((b) => declares(b, "flex-wrap", "wrap")))
+      fail("footer items are squeezed onto one line instead of wrapping");
     ok(`the column is ${want}, and ${seen} images are sized to it`);
   },
 
