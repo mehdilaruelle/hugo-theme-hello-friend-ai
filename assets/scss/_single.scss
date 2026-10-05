@@ -39,6 +39,9 @@
 
   &-content {
     margin-top: 30px;
+    // A bare URL is one word, so it would widen the page on a phone.
+    // break-word rather than anywhere: table cells keep their minimum width.
+    overflow-wrap: break-word;
   }
 
   &-cover {
