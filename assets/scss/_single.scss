@@ -39,6 +39,8 @@
 
   &-content {
     margin-top: 30px;
+    // Not anywhere: table cells keep their minimum width.
+    overflow-wrap: break-word;
   }
 
   &-cover {
