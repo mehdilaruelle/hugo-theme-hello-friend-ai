@@ -43,7 +43,7 @@ copyright = 'Text & images: <a href="https://creativecommons.org/licenses/by-nc/
   enableThumbnails = true
   enableListExcerpts = true
 
-  # A bare number means px. Header, footer, covers and image sizes follow it.
+  # A bare number means px.
   contentWidth = 960
 
   # The terms of reuse, once for the site. A page overrides either.

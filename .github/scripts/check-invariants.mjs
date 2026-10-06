@@ -255,8 +255,7 @@ const checks = {
     ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
-  // contentWidth reaches the stylesheet, the image sizes and the layout.
-  // With no argument it is unset, and nothing is written.
+  // contentWidth reaches the stylesheet and image sizes; no argument means unset.
   "content-width"(want) {
     const set = rules(css(), ":root").filter((b) =>
       b.split(";").some((d) => d.trim().startsWith("--content-width:")));

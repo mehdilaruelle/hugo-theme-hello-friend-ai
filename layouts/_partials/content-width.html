@@ -1,5 +1,4 @@
-{{- /* params.contentWidth as one CSS length (a bare number is px), or "".
-       Anything else is refused: a stray brace would break the stylesheet. */ -}}
+{{- /* params.contentWidth as one CSS length (bare number = px), else "". */ -}}
 {{- $width := "" -}}
 {{- with site.Params.contentWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}
