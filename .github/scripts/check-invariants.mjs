@@ -255,8 +255,7 @@ const checks = {
     ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
-  // params.contentWidth: the stylesheet sets the property, and the images are
-  // told the same width. With no argument, the default: neither is written.
+  // contentWidth reaches the stylesheet and image sizes; no argument means unset.
   "content-width"(want) {
     const set = rules(css(), ":root").filter((b) =>
       b.split(";").some((d) => d.trim().startsWith("--content-width:")));
@@ -283,6 +282,8 @@ const checks = {
     // A cover wider than the column must still fit the viewport.
     if (!rules(css(), ".post-cover").some((b) => /--cover-width:\s*min\(.*100vw/.test(b)))
       fail("the post cover is not bounded by the viewport");
+    if (!rules(css(), ".footer__content").some((b) => declares(b, "flex-wrap", "wrap")))
+      fail("footer items are squeezed onto one line instead of wrapping");
     ok(`the column is ${want}, and ${seen} images are sized to it`);
   },
 

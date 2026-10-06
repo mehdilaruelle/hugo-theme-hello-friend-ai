@@ -43,8 +43,7 @@ copyright = 'Text & images: <a href="https://creativecommons.org/licenses/by-nc/
   enableThumbnails = true
   enableListExcerpts = true
 
-  # A bare number, so the px it means is added by the theme. Wider than the
-  # 800px default, and the header, footer, covers and image sizes follow it.
+  # A bare number means px.
   contentWidth = 960
 
   # The terms of reuse, once for the site. A page overrides either.
