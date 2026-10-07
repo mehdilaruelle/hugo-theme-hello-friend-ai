@@ -111,6 +111,7 @@ a letter or digit (`^[a-z0-9][a-z0-9-]*$`): `my-network.svg` is found,
 - [twitch](https://simpleicons.org/?q=twitch)
 - [twitter](https://simpleicons.org/?q=twitter)
 - [unsplash](https://simpleicons.org/?q=unsplash)
+- [upwork](https://simpleicons.org/?q=upwork)
 - [whatsapp](https://simpleicons.org/?q=whatsapp)
 - [X](https://simpleicons.org/?q=X)
 - [xampp](https://simpleicons.org/?q=xampp)
