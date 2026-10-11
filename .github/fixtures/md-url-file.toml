@@ -1,0 +1,4 @@
+# The md format on every page, over content holding a page whose url names a
+# file. Both would be written to /legacy/page.html.
+[outputs]
+  page = ["HTML", "md"]
