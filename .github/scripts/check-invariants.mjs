@@ -505,10 +505,14 @@ const checks = {
     for (const html of pagers) {
       for (const m of html.matchAll(/<a\b[^>]*>/g)) {
         if (!hasClass(m[0], "post-item-inner")) continue;
-        const date = (html.slice(m.index).match(/datetime\s*=\s*["']?([0-9-]+)/) || [])[1];
+        // Inside this link only: past it, the next post's date would stand in.
+        const date = (element(html, m.index, "a").match(/datetime\s*=\s*["']?([0-9-]+)/) || [])[1];
+        if (!date) fail(`${section}/ lists ${attr(m[0], "href")} with no date, so its order cannot be read`);
         posts.push({ href: attr(m[0], "href"), date });
       }
     }
+    // An empty list has every order, and every arrow points nowhere.
+    if (!posts.length) fail(`${section}/ has ${pagers.length} pagers and no post in them`);
     for (let i = 1; i < posts.length; i++) {
       if (posts[i].date > posts[i - 1].date)
         fail(`${section}/ lists ${posts[i].date} after ${posts[i - 1].date}`, `  ${posts[i - 1].href}\n  ${posts[i].href}`);
@@ -536,9 +540,11 @@ const checks = {
   // A taxonomy lists terms by name: its pagers are pages, not newer or older posts.
   "taxonomy-pager"(page, previous, next) {
     const html = read(page);
-    const buttons = html.match(/class\s*=\s*["']?pagination__buttons[\s\S]*?<\/div>/)?.[0] ?? "";
-    for (const label of [previous, next]) {
-      if (!text(buttons).includes(label)) fail(`${page}: no "${label}" on the pager`, text(buttons).replace(/\s+/g, " "));
+    // Each label on its own control: swapped, both would still be on the pager.
+    for (const [side, label] of [["previous", previous], ["next", next]]) {
+      const button = html.match(new RegExp(`class\\s*=\\s*["']?button ${side}["']?[^>]*>([\\s\\S]*?)</span>\\s*</a>`))?.[1];
+      const shown = text(button ?? "").replace(/\s+/g, " ");
+      if (!shown.includes(label)) fail(`${page}: the ${side} pager reads "${shown || "nothing"}", not "${label}"`);
     }
     ok(`the taxonomy pager reads "${previous}" and "${next}"`);
   },
