@@ -489,6 +489,40 @@ const checks = {
       fail(`the site's _variables.scss did not reach --background (${colour})`);
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
+
+  // The search field's edge is what shows it is a field, and it was 1.37:1 in
+  // light and the fill's own colour in dark. Read from the compiled tokens of
+  // each scheme, and from the rule, so a field drawn some other way fails too.
+  "field-border"() {
+    const sheet = css();
+    const lum = (hex) => {
+      const h = hex.replace("#", "");
+      const full = h.length === 3 ? [...h].map((c) => c + c).join("") : h;
+      return [0, 2, 4]
+        .map((i) => parseInt(full.slice(i, i + 2), 16) / 255)
+        .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+        .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+    };
+    const ratio = (a, b) => {
+      const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+      return (hi + 0.05) / (lo + 0.05);
+    };
+    const field = rules(sheet, '.search-form input[type="search"]').join(";")
+      || rules(sheet, ".search-form input[type=search]").join(";");
+    if (!/border:[^;]*var\(--field-border-color\)/.test(field))
+      fail("the search field's border is not --field-border-color", field || "(no search field rule)");
+    const bad = [];
+    for (const scheme of ["light", "dark"]) {
+      const body = rules(sheet, `:root:where([data-theme=${scheme}])`).join(";");
+      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,6})\\b`))?.[1];
+      const [edge, page] = [token("field-border-color"), token("background")];
+      if (!edge || !page) { bad.push(`${scheme}: --field-border-color or --background is not a hex colour`); continue; }
+      const r = ratio(edge, page);
+      if (r < 3) bad.push(`${scheme}: ${edge} on ${page} is ${r.toFixed(2)}:1, under 3`);
+    }
+    if (bad.length) fail("the search field's edge is too faint to show it", bad.join("\n"));
+    ok("the search field's edge is 3:1 or more against the page in both schemes");
+  },
 };
 
 const run = checks[check];
