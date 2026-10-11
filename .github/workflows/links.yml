@@ -135,6 +135,15 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-code-blocks.mjs public
 
+      # A focus ring, a copy button's status and a search result's date are
+      # drawn on demand or by script, where a static accessibility scan does
+      # not look. Each was under its minimum on one ground or another.
+      - name: Check the focus ring and the status colours meet their contrast
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs exampleSite/public contrast
+          node .github/scripts/check-invariants.mjs showcaseSite/public contrast
+
       # Open Graph and Twitter tags are written by two partials. They used to
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a

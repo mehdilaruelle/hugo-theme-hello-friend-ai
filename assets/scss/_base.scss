@@ -4,7 +4,11 @@ html {
   box-sizing: border-box;
   line-height: 1.6;
   letter-spacing: 0.06em;
-  scroll-behavior: smooth;
+
+  // Only for a visitor who has not asked the system for less motion.
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
 }
 
 *,
@@ -517,16 +521,16 @@ hr {
 
   &:focus-visible {
     opacity: 1;
-    outline: 2px solid #67a2c9;
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
   }
 
   &--done {
-    color: #67a2c9;
+    color: var(--copy-done);
   }
 
   &--failed {
-    color: #d9534f;
+    color: var(--copy-failed);
   }
 }
 
@@ -644,10 +648,12 @@ pre > code[data-lang]:not([data-lang=""])::before {
     font-weight: 600;
   }
 
+  // The secondary text colour, not an opacity: #a9a9b3 at 0.7 over the dark
+  // ground came to #818188, 4.02:1, under the 4.5 small text needs.
   time {
     display: block;
     font-size: 0.85rem;
-    opacity: 0.7;
+    color: var(--color-secondary);
     margin-top: 2px;
   }
 

@@ -17,6 +17,17 @@ $colour-tokens: (
   "color-strong":          ($light-color, $dark-color-variant),
   // Frame of controls on the header ground.
   "control-border-color":  ($light-border-color, $dark-background-secondary),
+  // Written here rather than in _variables.scss, which a site may have copied
+  // whole: a variable missing from its copy would stop the build.
+  // The keyboard focus ring: 3:1 or more against every ground it is drawn on
+  // (WCAG 1.4.11). #67a2c9 is 2.77:1 on #fff and 2.30:1 on #eaeaea; #3a77a3
+  // is 4.83, 4.63 on #fafafa and 4.02.
+  "focus-ring":            (#3a77a3, #67a2c9),
+  // The copy button's 12px status text, on the header ground: 4.5:1 or more.
+  // Light: 4.63 and 5.10 on #fafafa, where #67a2c9 and #d9534f were 2.65 and
+  // 3.80. Dark: 6.17 and 5.30 on #1b1c1d, where #d9534f was 4.31.
+  "copy-done":             (#3a77a3, #67a2c9),
+  "copy-failed":           (#c9302c, #e06c69),
 );
 
 @mixin colour-tokens($theme) {
