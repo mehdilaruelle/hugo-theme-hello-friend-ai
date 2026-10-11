@@ -37,9 +37,12 @@
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
+      // The line-number gutter of linenos=table: a pre in a cell with the code
+      // in the next one. Read by its content, not its first span: hl_lines on
+      // line 1 wraps that number in a highlight span, which is not itself
+      // unselectable, and the gutter got a button that copied nothing.
       const cell = pre.closest('td');
-      const first = pre.querySelector('code > span');
-      if (cell && cell.nextElementSibling && first && isLineNumber(first)) return;
+      if (cell && cell.nextElementSibling && !codeText(pre.querySelector('code')).trim()) return;
 
       // The wrapper render-codeblock.html puts around every fenced block.
       // closest, not parentElement: Hugo puts a div.highlight in between
@@ -107,6 +110,16 @@
       // On the wrapper, not the pre: inside the scroller the button would
       // scroll away with the code.
       wrap.appendChild(button);
+
+      // The language label sits beside the button, which is as wide as its text
+      // in this language and state: "Press Ctrl+C" or "Копировать" ran under a
+      // label placed for "Copy". Measured, not guessed, and again whenever the
+      // text changes. Through the CSSOM, which a strict style-src allows.
+      if (window.ResizeObserver) {
+        new ResizeObserver(() => {
+          wrap.style.setProperty('--copy-code-width', button.offsetWidth + 'px');
+        }).observe(button);
+      }
     });
   });
 })();
