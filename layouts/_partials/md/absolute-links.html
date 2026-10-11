@@ -1,26 +1,93 @@
-{{- $base := .base -}}
+{{- /* (dict "text" s "base" permalink "page" p): s with its page-relative links
+       made absolute, for llms-full.txt, which carries every page's text from
+       the site's root. Resolved as a browser resolves them, against the
+       permalink up to its last slash: "pic.png" on /legacy/page.html is
+       /legacy/pic.png, not /legacy/page.htmlpic.png. A page bundle whose
+       permalink is a file (uglyURLs) publishes its resources in a directory of
+       that name, so a link naming one of them goes there instead.
+       Code is left as written: fences, behind a list's indent or a quote's >
+       too, indented blocks, and code spans. Inline links, reference
+       definitions and raw HTML src and href are rewritten. */ -}}
+{{- $base := replaceRE `[^/]*$` "" .base -}}
+{{- $bundle := $base -}}
+{{- $names := slice -}}
+{{- with .page -}}
+  {{- if and .File (in (slice "index" "_index") .File.BaseFileName) (not (hasSuffix $.base "/")) -}}
+    {{- $bundle = printf "%s/" (replaceRE `\.[^./]*$` "" $.base) -}}
+  {{- end -}}
+  {{- if ne $bundle $base -}}
+    {{- range .Resources }}{{ $names = $names | append .Name }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- /* A replacement template reads $ as a group: /posts/a$1b/ lost its $1b. */ -}}
+{{- $b := replace $base "$" "$$" -}}
+{{- $bb := replace $bundle "$" "$$" -}}
+{{- $md := `[^/#?<)\s:][^)\s:]*` -}}
+{{- $def := `[^/#?<>\s:][^>\s:]*` -}}
+{{- $dq := `[^/#?"\s:][^"\s:]*` -}}
+{{- $sq := `[^/#?'\s:][^'\s:]*` -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
+{{- $code := false -}}
+{{- $list := false -}}
+{{- $blank := true -}}
 {{- range split .text "\n" -}}
   {{- $line := . -}}
+  {{- $isBlank := not (strings.TrimSpace $line) -}}
   {{- if $fence -}}
-    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})\\s*$" $line 1 -}}
+    {{- with findRESubmatch "^[\\s>]*(`{3,}|~{3,})\\s*$" $line 1 -}}
       {{- $m := index . 0 1 -}}
       {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
     {{- end -}}
   {{- else -}}
     {{- $open := "" -}}
-    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})(.*)$" $line 1 -}}
+    {{- with findRESubmatch "^[\\s>]*(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
       {{- $m := index . 0 -}}
       {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
     {{- end -}}
+    {{- /* Four spaces in: a code block, unless a list item holds the line. */ -}}
+    {{- $indented := findRE "^(?: {4}|\\t)" $line 1 -}}
+    {{- if not $isBlank -}}
+      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)])(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
+    {{- end -}}
+    {{- $code = and $indented (not $list) (or $blank $code) -}}
     {{- if $open -}}
       {{- $fence = $open -}}
-    {{- else -}}
-      {{- $line = replaceRE `\]\(([^/#?<)\s:][^)\s:]*)([)\s])` (printf `](%s${1}${2}` $base) $line -}}
-      {{- $line = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $base) $line -}}
+    {{- else if not $code -}}
+      {{- /* Split on runs of backticks: a span closes on the next run of the
+             same length, and a run with none is text. */ -}}
+      {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" $line) "\x00" -}}
+      {{- $out := "" -}}
+      {{- $span := 0 -}}
+      {{- range $i, $p := $parts -}}
+        {{- if modBool $i 2 -}}
+          {{- if not $span -}}
+            {{- range $name := $names -}}
+              {{- $q := printf `(?:\./)?%s` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $name) -}}
+              {{- $to := print $bb (replace $name "$" "$$") -}}
+              {{- $p = replaceRE (printf `\]\(%s([)\s])` $q) (printf `](%s${1}` $to) $p -}}
+              {{- $p = replaceRE (printf `\]\(<%s>` $q) (printf `](<%s>` $to) $p -}}
+              {{- $p = replaceRE (printf `^( {0,3}\[[^\]]+\]:[ \t]*<?)%s(>?(?:\s|$))` $q) (printf `${1}%s${2}` $to) $p -}}
+              {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s(["'])` $q) (printf `${1}%s${2}` $to) $p -}}
+            {{- end -}}
+            {{- $p = replaceRE (printf `\]\((%s)([)\s])` $md) (printf `](%s${1}${2}` $b) $p -}}
+            {{- $p = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $b) $p -}}
+            {{- $p = replaceRE (printf `^( {0,3}\[[^\]]+\]:[ \t]*<?)(%s)(>?(?:\s|$))` $def) (printf `${1}%s${2}${3}` $b) $p -}}
+            {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*")(%s)"` $dq) (printf `${1}%s${2}"` $b) $p -}}
+            {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*')(%s)'` $sq) (printf `${1}%s${2}'` $b) $p -}}
+          {{- end -}}
+        {{- else if not $span -}}
+          {{- /* Opens a span only if the same run closes it later on the line. */ -}}
+          {{- range after (add $i 1) $parts -}}{{- if and (not $span) (eq . $p) }}{{ $span = len $p }}{{ end -}}{{- end -}}
+        {{- else if eq (len $p) $span -}}
+          {{- $span = 0 -}}
+        {{- end -}}
+        {{- $out = print $out $p -}}
+      {{- end -}}
+      {{- $line = $out -}}
     {{- end -}}
   {{- end -}}
+  {{- $blank = $isBlank -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
 {{- return delimit $lines "\n" -}}

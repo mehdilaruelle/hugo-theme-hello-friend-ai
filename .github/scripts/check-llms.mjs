@@ -44,8 +44,9 @@ const MARKUP = /&(?:lt|gt|amp|quot|#0*(?:34|38|60|62)|#x0*(?:22|26|3[ce]));/gi;
 const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
 // A fence is <pre> in Markdown: the author's text verbatim, which the
 // typographer never touches, so it is excused whole as prose() excuses <pre>.
-const FENCE_OPEN = /^ {0,3}(`{3,}(?=[^`]*$)|~{3,})/;
-const FENCE_CLOSE = /^ {0,3}(`{3,}|~{3,})\s*$/;
+// Behind a list item's indent or a quote's > too, as absolute-links.html reads them.
+const FENCE_OPEN = /^[\s>]*(?:(?:[-*+]|\d{1,9}[.)])\s+)?(`{3,}(?=[^`]*$)|~{3,})/;
+const FENCE_CLOSE = /^[\s>]*(`{3,}|~{3,})\s*$/;
 const unfenced = (s) => {
   let fence = "";
   return s.split("\n").map((line) => {
@@ -87,6 +88,14 @@ const destination = (raw) => {
 const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
+// What else carries a URL in Markdown: a reference definition, and raw HTML.
+const DEFINITION = /^ {0,3}\[[^\]]+\]:[ \t]*<?([^\s>]+)/gm;
+const ATTRIBUTE = /\s(?:src|href)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
+const allLinks = (s) => [
+  ...mdLinks(s),
+  ...[...s.matchAll(DEFINITION)].map((m) => m[1]),
+  ...[...s.matchAll(ATTRIBUTE)].map((m) => m[1] ?? m[2]),
+];
 // The generated lists close the file, under headings the templates take from
 // i18n, so the theme's own translations name them — as does the site's, which
 // may override any of them.
@@ -180,6 +189,24 @@ const carriedIn = (full) => {
   return out;
 };
 
+// The text outside code of every kind: fences, indented blocks a list item does
+// not hold, and code spans. A link written in code is an example, not a link.
+const codeless = (s) => {
+  let list = false;
+  let code = false;
+  let blank = true;
+  return unfenced(s).split("\n").map((line) => {
+    const empty = !line.trim();
+    if (!empty) {
+      if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:\s|$)/.test(line)) list = true;
+      else if (!/^\s/.test(line)) list = false;
+    }
+    code = /^(?: {4}|\t)/.test(line) && !list && (blank || code);
+    blank = empty;
+    return code ? "" : outsideCode(line);
+  }).join("\n");
+};
+
 // The path decides, nothing else: a fragment joined into a filename looks for
 // a file nobody wrote.
 const basePath = new URL(base).pathname;
@@ -191,7 +218,8 @@ const target = (url) => {
   let path;
   try { path = new URL(url).pathname; } catch { return null; }
   const rel = relative(path);
-  return /\.(md|txt)$/.test(rel) ? join(root, rel) : join(root, rel, "index.html");
+  // A file by its extension, a directory by its index: legacy.html is a page.
+  return /\.[A-Za-z0-9]+$/.test(rel) ? join(root, rel) : join(root, rel, "index.html");
 };
 // The text outside code spans, which escape-lt.html leaves as written.
 const outsideCode = (s) => {
@@ -255,14 +283,14 @@ for (const [lang, prefix] of Object.entries(langs)) {
   if (full.includes("{{<") || full.includes("{{%")) fail(`${lang}: llms-full.txt has an unrendered shortcode`);
   const fullEntities = entities(full);
   if (fullEntities) fail(`${lang}: llms-full.txt has ${fullEntities.length} HTML entities, e.g. ${fullEntities[0]}`);
-  const pageRelative = mdLinks(unfenced(full)).filter((u) => u && !/^(?:[a-z][a-z0-9+.-]*:|\/|#|\?)/i.test(u));
+  const fullLinks = allLinks(codeless(full));
+  const pageRelative = fullLinks.filter((u) => u && !/^(?:[a-z][a-z0-9+.-]*:|\/|#|\?)/i.test(u));
   if (pageRelative.length) fail(`${lang}: llms-full.txt has ${pageRelative.length} page-relative links, e.g. ${pageRelative[0]}`);
-  const fileResolves = (url) => {
-    const rel = relative(new URL(url).pathname);
-    return /\.[A-Za-z0-9]+$/.test(rel) && !/\.(md|txt)$/.test(rel) ? existsSync(join(root, rel)) : resolves(url);
-  };
-  for (const url of mdLinks(unfenced(full)).filter((u) => u.startsWith(base))) {
-    if (!fileResolves(url)) fail(`${lang}: llms-full.txt links ${url}, which resolves to nothing`);
+  // A base that kept a file name: page.html + sibling.html read as one name.
+  const glued = fullLinks.find((u) => /\.html[^\s#?/)>"'\]]/.test(u));
+  if (glued) fail(`${lang}: llms-full.txt joins a link onto a file name: ${glued}`);
+  for (const url of fullLinks.filter((u) => u.startsWith(base))) {
+    if (!resolves(url)) fail(`${lang}: llms-full.txt links ${url}, which resolves to nothing`);
   }
 
   // Read out of the file, not looked up one URL at a time: looking up what the
