@@ -295,7 +295,7 @@ Only `repository` is required: `issueTerm` defaults to `pathname` and `theme` to
 | `params.utterances.repository` | the public `owner/repo` holding the issues |
 | `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, an issue number, or a specific term |
 | `params.utterances.label` | a label put on the issues utterances opens. Optional: the attribute is omitted when unset |
-| `params.utterances.theme` | `preferred-color-scheme` (the default), `github-light`, `github-dark`, `github-dark-orange`, `icy-dark` and the rest utterances offers |
+| `params.utterances.theme` | `preferred-color-scheme` (the default), `github-light`, `github-dark`, `github-dark-orange`, `icy-dark` and the rest utterances offers. The default follows the page rather than the system: `github-light` or `github-dark` as the page is, `params.defaultTheme` and the toggle included. Any other value is used as given, whatever the page's theme |
 
 ## Footer
 

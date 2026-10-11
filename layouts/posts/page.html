@@ -124,14 +124,25 @@
              handshake the fetch would pay on leaving the queue. crossorigin,
              matching it. */ -}}
       <link rel="preconnect" href="https://utteranc.es" crossorigin>
+      {{- $theme := .Site.Params.Utterances.Theme | default "preferred-color-scheme" }}
+      {{- if eq $theme "preferred-color-scheme" }}
+      {{- /* utterances' own preferred-color-scheme follows the system, not the
+             page, so utterances.js loads it in the page's theme and follows
+             the toggle. */}}
+      <div class="utterances-follow"
+           data-repo="{{ .Site.Params.Utterances.Repository }}"
+           {{ if .Site.Params.Utterances.Label }}data-label="{{ .Site.Params.Utterances.Label }}"{{ end }}
+           data-issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"></div>
+      {{- else }}
       <script src="https://utteranc.es/client.js"
               repo="{{ .Site.Params.Utterances.Repository }}"
               {{ if .Site.Params.Utterances.Label }}label="{{ .Site.Params.Utterances.Label }}"{{ end }}
               issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"
-              theme="{{ .Site.Params.Utterances.Theme | default "preferred-color-scheme" }}"
+              theme="{{ $theme }}"
               crossorigin="anonymous"
               async>
       </script>
+      {{- end }}
       {{ end }}
 
     </main>
