@@ -9,5 +9,14 @@
 {{- $html := partial "title-inline.html" (dict "text" $title "with" "&lt;") | markdownify -}}
 {{- if or (strings.Contains $html "<") (strings.ContainsAny $title `\&`) -}}
   {{- $title = $html | plainify | htmlUnescape -}}
+{{- else -}}
+  {{- /* An emoji code renders to no tag either, so ":rocket:" went out as
+         written everywhere but the h1. emojify only where the h1 has it: with
+         enableEmoji off, markdownify leaves the code in place too. */ -}}
+  {{- range findRE `:[A-Za-z0-9_+-]+:` $title -}}
+    {{- if and (ne (emojify .) .) (not (strings.Contains $html .)) -}}
+      {{- $title = replace $title . (emojify . | string) -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
 {{- return $title -}}

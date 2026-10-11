@@ -132,7 +132,9 @@ linkTitle = "Blog"
 to come out with no structured data at all, which is backwards for the page
 that exists to say who is behind the site. Give it `schema = "ProfilePage"` in
 its front matter and it is described as one, with the `Person` above as its
-`mainEntity` under the same `@id`:
+`mainEntity` under the same `@id`. That holds for a section too: an
+`about/_index.md` with pages under it is a `ProfilePage`, not the
+`CollectionPage` a list would otherwise be.
 
 ```toml
 +++

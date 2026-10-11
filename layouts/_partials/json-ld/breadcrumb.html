@@ -6,7 +6,10 @@
 {{- with $section -}}
   {{- $items := slice -}}
   {{- $i := 0 -}}
-  {{- range $.Ancestors.Reverse -}}
+  {{- /* An ancestor that is never rendered has no URL to give, and Google
+         wants one on every crumb but the last: it is left out, and the
+         positions close up. */ -}}
+  {{- range where $.Ancestors.Reverse "Permalink" "!=" "" -}}
     {{- $i = add $i 1 -}}
     {{- $name := "" -}}
     {{- if .IsHome -}}
