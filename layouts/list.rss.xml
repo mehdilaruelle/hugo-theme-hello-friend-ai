@@ -2,13 +2,22 @@
        &lt;?xml and stops being one. It has to be the first byte, hence the
        trim markers. */ -}}
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+{{- /* Every feed: the front page, each section, taxonomy and term. Hugo's
+       built-in feed served all but /posts/ and missed every fix below. */ -}}
 {{- /* xmlns:content is what makes content:encoded below mean anything. */}}
 {{- $author := partial "site-author.html" . -}}
+{{- $title := partial "title-plain.html" . -}}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
-        <title>{{ if eq  .Title  .Site.Title }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} on {{ end }}{{ .Site.Title }}{{ end }}</title>
+        {{- if or .IsHome (eq $title site.Title) (not $title) }}
+        <title>{{ site.Title }}</title>
         <link>{{ .Permalink }}</link>
-        <description>Recent content {{ if ne  .Title  .Site.Title }}{{ with .Title }}in {{.}} {{ end }}{{ end }}on {{ .Site.Title }}</description>
+        <description>{{ partial "i18n.html" (dict "key" "feedDescriptionSite" "args" (dict "Site" site.Title) "fallback" (printf "Recent content on %s" site.Title)) }}</description>
+        {{- else }}
+        <title>{{ partial "i18n.html" (dict "key" "feedTitle" "args" (dict "Title" $title "Site" site.Title) "fallback" (printf "%s on %s" $title site.Title)) }}</title>
+        <link>{{ .Permalink }}</link>
+        <description>{{ partial "i18n.html" (dict "key" "feedDescription" "args" (dict "Title" $title "Site" site.Title) "fallback" (printf "Recent content in %s on %s" $title site.Title)) }}</description>
+        {{- end }}
         <generator>Hugo -- gohugo.io</generator>{{ with .Site.Language.Locale }}
         <language>{{.}}</language>{{end}}{{ with $author.email }}
         <managingEditor>{{.}}{{ with $author.name }} ({{.}}){{end}}</managingEditor>{{end}}{{ with $author.email }}
@@ -18,18 +27,28 @@
         {{ with .OutputFormats.Get "RSS" -}}
             {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
         {{ end -}}
+        {{- /* What Hugo's own feed lists: every article on the front page, a
+               section's own (its subsections have feeds of their own), and the
+               terms or the pages of a taxonomy or a term. */ -}}
+        {{- $pages := .Pages -}}
+        {{- if .IsHome }}{{ $pages = site.RegularPages }}{{ else if .IsSection }}{{ $pages = .RegularPages }}{{ end -}}
+        {{- $pages = where $pages "Permalink" "!=" "" -}}
         {{- /* services.rss.limit, which Hugo's internal template applies and this one did not. */ -}}
-        {{- $pages := where .RegularPages "Permalink" "!=" "" -}}
         {{- $limit := .Site.Config.Services.RSS.Limit -}}
         {{- if ge $limit 1 }}{{ $pages = first $limit $pages }}{{ end }}
         {{ range $pages }}
+        {{- $page := . }}
         <item>
             <title>{{ partial "title-plain.html" . }}</title>
             <link>{{ .Permalink }}</link>
             {{- /* pubDate is optional, and the zero time publishes as
-                   01 Jan 0001. lastBuildDate above is guarded the same way. */}}
-            {{ if not .Date.IsZero }}<pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>{{ end }}
-            {{ with $author.email }}<author>{{.}}{{ with $author.name }} ({{.}}){{end}}</author>{{end}}
+                   01 Jan 0001. lastBuildDate above is guarded the same way.
+                   PublishDate, as datePublished on the page itself. */}}
+            {{ if not .PublishDate.IsZero }}<pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>{{ end }}
+            {{- /* The site's author only on what the site's author wrote: a
+                   guest post names its own writer on the page and in JSON-LD,
+                   and the field takes an email this feed has none of. */}}
+            {{ with $author.email }}{{ if eq (partial "author.html" $page) $author.name }}<author>{{.}}{{ with $author.name }} ({{.}}){{end}}</author>{{end}}{{end}}
             <guid>{{ .Permalink }}</guid>
             {{- /* description is the summary, content:encoded the whole
                    article: the split every reader expects. */}}

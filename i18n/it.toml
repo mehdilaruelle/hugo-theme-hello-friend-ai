@@ -152,3 +152,15 @@ other = "Link a questa sezione"
 #
 [relatedPosts]
 other = "Articoli correlati"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} su {{ .Site }}"
+
+[feedDescription]
+other = "Contenuti recenti di {{ .Title }} su {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Contenuti recenti su {{ .Site }}"

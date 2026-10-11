@@ -152,3 +152,15 @@ other = "ഈ വിഭാഗത്തിലേക്കുള്ള ലിങ്
 #
 [relatedPosts]
 other = "ബന്ധപ്പെട്ട പോസ്റ്റുകൾ"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }}: {{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }}: {{ .Title }} — പുതിയ ഉള്ളടക്കം"
+
+[feedDescriptionSite]
+other = "{{ .Site }}: പുതിയ ഉള്ളടക്കം"

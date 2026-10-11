@@ -155,3 +155,15 @@ other = "Link către această secțiune"
 #
 [relatedPosts]
 other = "Articole similare"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} pe {{ .Site }}"
+
+[feedDescription]
+other = "Conținut recent din {{ .Title }} pe {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Conținut recent pe {{ .Site }}"

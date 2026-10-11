@@ -3,6 +3,11 @@
 //
 // A scanner, not a validator: it checks what a template can get wrong.
 //
+// A feed is also read for what it says, which used to differ by feed: Hugo's
+// built-in template served the front page, the taxonomies and their terms, and
+// it published 01 Jan 0001 for an undated page, an empty title, a raw Markdown
+// title and the copyright's link as escaped markup.
+//
 //   node .github/scripts/check-feeds.mjs <public-dir>
 
 import { readFileSync } from "node:fs";
@@ -106,13 +111,40 @@ function scan(s) {
   return bad;
 }
 
+// What every item and channel in an RSS feed has to say, beyond parsing.
+function feed(s) {
+  const bad = [];
+  const text = (tag) =>
+    [...s.matchAll(new RegExp(`<${tag}\\s*/>|<${tag}>([\\s\\S]*?)</${tag}>`, "g"))].map((m) => m[1] ?? "");
+  for (const tag of ["title", "link", "guid"]) {
+    if (text(tag).some((t) => !t.trim())) bad.push(`an empty <${tag}>`);
+  }
+  for (const tag of ["pubDate", "lastBuildDate"]) {
+    const zero = text(tag).find((t) => /\b0001\b/.test(t));
+    if (zero) bad.push(`<${tag}>${zero.trim()}</${tag}>: the zero time, for a page with no date`);
+  }
+  for (const c of text("copyright")) {
+    if (/<|&lt;/.test(c)) bad.push(`<copyright> carries markup: ${c.trim()}`);
+  }
+  // `code` or *emphasis* the title's Markdown was meant to render.
+  const md = text("title").find((t) => /`[^`]+`|(^|\s)\*[^*\s][^*]*\*/.test(t));
+  if (md) bad.push(`a title still written in Markdown: ${md.trim()}`);
+  return bad;
+}
+
 const root = process.argv[2] || "public";
 const failures = [];
 let files = 0;
+let feeds = 0;
 
 for (const file of walk(root, ".xml")) {
   files++;
-  const problems = scan(readFileSync(file, "utf8"));
+  const xml = readFileSync(file, "utf8");
+  const problems = scan(xml);
+  if (/<rss\b/.test(xml)) {
+    feeds++;
+    problems.push(...feed(xml));
+  }
   // One broken item breaks the document; a handful of lines is enough.
   for (const p of problems.slice(0, 5)) failures.push([file, p]);
 }
@@ -124,7 +156,7 @@ if (files === 0) {
   process.exit(1);
 }
 
-console.log(`checked ${files} XML files`);
+console.log(`checked ${files} XML files, ${feeds} of them feeds`);
 if (failures.length) {
   console.error(`\n${failures.length} problem(s):\n`);
   for (const [file, why] of failures) console.error(`  ${file}\n    ${why}`);
