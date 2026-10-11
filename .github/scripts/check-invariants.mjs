@@ -499,7 +499,10 @@ const checks = {
     if (!bodies.some((b) => /inset-inline-end:\s*calc\(\s*var\(\s*--copy-code-width\b/.test(b)))
       fail("the language label is not placed by --copy-code-width", bodies.map((b) => `${sel}{${b}}`).join("\n") || `(no ${sel} rule)`);
     const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
-    if (!js.includes("--copy-code-width")) fail("no script sets --copy-code-width");
+    // Set from the button's measured width: the name alone would pass a script
+    // that kept the property and lost the measuring.
+    if (!/\.style\.setProperty\(\s*["']--copy-code-width["']\s*,[^)]*\.offsetWidth\b/.test(js))
+      fail("no script sets --copy-code-width from the button's measured width");
     ok("the language label is placed by the copy button's measured width");
   },
 };
