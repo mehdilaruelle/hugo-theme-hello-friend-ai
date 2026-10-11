@@ -170,6 +170,16 @@ for (const file of walk(root, ".html")) {
     failures.push([file, "the page and the FAQPage ask different questions", why]);
   }
 
+  // 6c. An answer opens with a block. RenderString is inline by default, which
+  //     took the <p> off a one-paragraph answer: it sat flush with the question,
+  //     and the indent meant for the answer landed on each <code> or <em> in it.
+  for (const d of details) {
+    const answer = d.replace(/^[\s\S]*?<\/summary\s*>/i, "").replace(/<\/details\s*>$/i, "").trimStart();
+    if (answer && !/^<(?:p|ul|ol|dl|div|pre|blockquote|table|figure|h[1-6]|hr)\b/i.test(answer)) {
+      failures.push([file, "a faq answer is not a block", `it opens with: ${answer.slice(0, 60)}`]);
+    }
+  }
+
   // 7. An entity that survived into the text. plainify leaves the entities
   //    Goldmark makes, so an apostrophe was escaped a second time and the tag
   //    shipped "site&rsquo;s" as words. The value is decoded once above, so
