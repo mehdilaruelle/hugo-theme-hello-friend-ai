@@ -28,7 +28,7 @@ many  = "{{ .Count }} хвилин"
 other = "{{ .Count }} хвилин"
 
 [tableOfContents]
-other = "Вміст"
+other = "Зміст"
 
 [wordCount]
 one   = "{{ .Count }} слово"
