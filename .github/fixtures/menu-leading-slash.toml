@@ -1,0 +1,97 @@
+# The showcase's four menus with every url written with a leading slash, the
+# way the README writes them. Under a subpath that spelling used to put the
+# language in front of the subpath (/fr/subpath/showcase/posts/), and the demos
+# write "posts/", so neither ever built it. Each language is restated whole:
+# a menu array set here replaces the showcase's rather than adding to it.
+
+[languages.en.menu]
+    [[languages.en.menu.main]]
+      identifier  = "about"
+      name        = "About"
+      url         = "/about/"
+      weight      = 10
+      hasChildren = true
+    [[languages.en.menu.main]]
+      identifier  = "me"
+      name        = "About Me"
+      url         = "/about/me/"
+      parent      = "about"
+    [[languages.en.menu.main]]
+      identifier = "posts"
+      name       = "Posts"
+      url        = "/posts/"
+      weight     = 20
+    [[languages.en.menu.main]]
+      identifier = "search"
+      name       = "Search"
+      url        = "/search/"
+      weight     = 30
+
+[languages.fr.menu]
+    [[languages.fr.menu.main]]
+      identifier  = "about"
+      name        = "À propos"
+      url         = "/about/"
+      weight      = 10
+      hasChildren = true
+    [[languages.fr.menu.main]]
+      identifier  = "me"
+      name        = "Qui suis-je"
+      url         = "/about/me/"
+      parent      = "about"
+    [[languages.fr.menu.main]]
+      identifier = "posts"
+      name       = "Articles"
+      pageRef    = "/posts"
+      weight     = 20
+    [[languages.fr.menu.main]]
+      identifier = "search"
+      name       = "Recherche"
+      url        = "/search/"
+      weight     = 30
+
+[languages.ja.menu]
+    [[languages.ja.menu.main]]
+      identifier  = "about"
+      name        = "概要"
+      url         = "/about/"
+      weight      = 10
+      hasChildren = true
+    [[languages.ja.menu.main]]
+      identifier  = "me"
+      name        = "自己紹介"
+      url         = "/about/me/"
+      parent      = "about"
+    [[languages.ja.menu.main]]
+      identifier = "posts"
+      name       = "記事"
+      url        = "/posts/"
+      weight     = 20
+    [[languages.ja.menu.main]]
+      identifier = "search"
+      name       = "検索"
+      url        = "/search/"
+      weight     = 30
+
+[languages.ar.menu]
+    [[languages.ar.menu.main]]
+      identifier  = "about"
+      name        = "حول"
+      url         = "/about/"
+      weight      = 10
+      hasChildren = true
+    [[languages.ar.menu.main]]
+      identifier  = "me"
+      name        = "من أنا"
+      url         = "/about/me/"
+      parent      = "about"
+    [[languages.ar.menu.main]]
+      identifier = "posts"
+      name       = "المقالات"
+      url        = "/posts/"
+      weight     = 20
+    [[languages.ar.menu.main]]
+      identifier = "search"
+      name       = "بحث"
+      url        = "/search/"
+      weight     = 30

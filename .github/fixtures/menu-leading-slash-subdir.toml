@@ -1,0 +1,25 @@
+# The exampleSite's menu with leading slashes, and its one language moved into
+# a directory of its own: the language then goes in front of every url, the
+# default one included, and used to land in front of the subpath too
+# (/en/subpath/posts/). The array replaces the exampleSite's main menu.
+defaultContentLanguageInSubdir = true
+
+[menu]
+  [[menu.main]]
+    identifier  = "about"
+    name        = "About"
+    url         = "/about/"
+    weight      = 10
+    hasChildren = true
+
+  [[menu.main]]
+    identifier  = "me"
+    name        = "About Me"
+    url         = "/about/me/"
+    parent      = "about"
+
+  [[menu.main]]
+    identifier = "posts"
+    name       = "Posts"
+    url        = "/posts/"
+    weight     = 20

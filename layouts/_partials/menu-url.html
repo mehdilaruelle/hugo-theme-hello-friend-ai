@@ -1,3 +1,13 @@
 {{- $url := .URL -}}
-{{- if not .Page -}}{{- $url = relLangURL $url -}}{{- end -}}
+{{- if not .Page -}}
+  {{- /* Hugo has already put the baseURL path in front of a url written with a
+         leading slash, and relLangURL reads the result as rooted at the host:
+         under /sub/, "/posts/" came out as /fr/sub/posts/. Taken back off first,
+         the language goes in after the subpath, as it does for "posts/". */ -}}
+  {{- $root := printf "%s/" (strings.TrimSuffix "/" (urls.Parse site.BaseURL).Path) -}}
+  {{- if and (ne $root "/") (hasPrefix $url $root) -}}
+    {{- $url = strings.TrimPrefix $root $url -}}
+  {{- end -}}
+  {{- $url = relLangURL $url -}}
+{{- end -}}
 {{- return $url -}}
