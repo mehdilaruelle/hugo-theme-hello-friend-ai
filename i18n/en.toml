@@ -39,6 +39,8 @@ other = "Last updated"
 [pagination]
 newerPosts = "Newer posts"
 olderPosts = "Older posts"
+previousPage = "Previous page"
+nextPage = "Next page"
 
 [skipToContent]
 other = "Skip to content"

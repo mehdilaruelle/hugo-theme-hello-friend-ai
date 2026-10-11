@@ -489,6 +489,59 @@ const checks = {
       fail(`the site's _variables.scss did not reach --background (${colour})`);
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
+
+  // A list in date order across every pager, and each article's arrows on the
+  // posts either side of it. Hugo's default order puts weight before date, so
+  // a weighted post was paged ahead of newer ones and the arrows skipped them.
+  "date-order"(section = "posts", base = "/") {
+    const pagers = [];
+    for (let n = 1; ; n++) {
+      const p = n === 1 ? `${section}/index.html` : `${section}/page/${n}/index.html`;
+      if (!existsSync(join(dir, p))) break;
+      pagers.push(read(p));
+    }
+    if (pagers.length < 2) fail(`${section}/ has ${pagers.length} pager(s), so no order spans two`);
+    const posts = [];
+    for (const html of pagers) {
+      for (const m of html.matchAll(/<a\b[^>]*>/g)) {
+        if (!hasClass(m[0], "post-item-inner")) continue;
+        const date = (html.slice(m.index).match(/datetime\s*=\s*["']?([0-9-]+)/) || [])[1];
+        posts.push({ href: attr(m[0], "href"), date });
+      }
+    }
+    for (let i = 1; i < posts.length; i++) {
+      if (posts[i].date > posts[i - 1].date)
+        fail(`${section}/ lists ${posts[i].date} after ${posts[i - 1].date}`, `  ${posts[i - 1].href}\n  ${posts[i].href}`);
+    }
+    const file = (href) => {
+      let path = new URL(href, "https://example.invalid/").pathname;
+      if (path.startsWith(base)) path = path.slice(base.length);
+      return join(path, "index.html");
+    };
+    const arrow = (html, side) => {
+      const m = html.match(new RegExp(`class\\s*=\\s*["']?button ${side}["']?\\s*>\\s*(<a\\b[^>]*>)`));
+      return m ? attr(m[1], "href") : undefined;
+    };
+    posts.forEach((post, i) => {
+      const html = read(file(post.href));
+      const want = { previous: posts[i - 1]?.href, next: posts[i + 1]?.href };
+      for (const side of ["previous", "next"]) {
+        if (arrow(html, side) !== want[side])
+          fail(`${file(post.href)}: the ${side} arrow points at ${arrow(html, side) ?? "nothing"}`, `  wanted ${want[side] ?? "nothing"}`);
+      }
+    });
+    ok(`${posts.length} posts newest first across ${pagers.length} pagers, each arrow on its neighbour`);
+  },
+
+  // A taxonomy lists terms by name: its pagers are pages, not newer or older posts.
+  "taxonomy-pager"(page, previous, next) {
+    const html = read(page);
+    const buttons = html.match(/class\s*=\s*["']?pagination__buttons[\s\S]*?<\/div>/)?.[0] ?? "";
+    for (const label of [previous, next]) {
+      if (!text(buttons).includes(label)) fail(`${page}: no "${label}" on the pager`, text(buttons).replace(/\s+/g, " "));
+    }
+    ok(`the taxonomy pager reads "${previous}" and "${next}"`);
+  },
 };
 
 const run = checks[check];

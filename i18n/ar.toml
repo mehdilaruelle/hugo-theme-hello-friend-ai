@@ -50,6 +50,8 @@ other = "آخر تحديث"
 [pagination]
 newerPosts = "مقالات أحدث"
 olderPosts = "مقالات أقدم"
+previousPage = "الصفحة السابقة"
+nextPage = "الصفحة التالية"
 
 [skipToContent]
 other = "تخطَّ إلى المحتوى"

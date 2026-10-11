@@ -1,5 +1,11 @@
-{{- $newer := "" -}}{{- with .NextInSection }}{{ if .Permalink }}{{ $newer = . }}{{ end }}{{ end -}}
-{{- $older := "" -}}{{- with .PrevInSection }}{{ if .Permalink }}{{ $older = . }}{{ end }}{{ end -}}
+{{- /* By date, as the list pages it walks through. NextInSection follows
+       Hugo's default order, weight before date, so the arrow from the newest
+       post skipped over every unweighted one to the next weighted post.
+       Pages.Next steps toward the front of the collection, which is the newer
+       side of a newest-first list. */ -}}
+{{- $pages := where .CurrentSection.RegularPages.ByDate.Reverse "Permalink" "!=" "" -}}
+{{- $newer := $pages.Next . | default "" -}}
+{{- $older := $pages.Prev . | default "" -}}
 {{ if and (not (partial "switch.html" $.Site.Params.DisableReadOtherPosts)) (or $newer $older) }}
     <div class="pagination">
         {{ if .Site.Params.ReadOtherPosts }}

@@ -1,6 +1,10 @@
 {{- /* The pages a list page shows, in display order, before pagination. */ -}}
 {{- $pages := .Pages -}}
 {{- with .Data.Pages -}}{{- $pages = . -}}{{- end -}}
-{{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- end -}}
+{{- /* Newest first, as the year headings and the "Newer/Older posts" pagers
+       say. Hugo's default order puts weight before date, so a weighted post was
+       paged ahead of newer ones, and the year groups re-sorted it only within
+       each pager. */ -}}
+{{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- else -}}{{- $pages = $pages.ByDate.Reverse -}}{{- end -}}
 {{- $pages = where $pages "Permalink" "!=" "" -}}
 {{- return $pages -}}
