@@ -470,6 +470,21 @@ jobs:
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
 
+      # params-css.html writes these into the stylesheet itself, where a "}"
+      # closes the theme's rule and opens one of the site's making, and a value
+      # of the wrong kind is dropped by the browser with nothing said.
+      - name: Check params written into the stylesheet are checked first
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          out=$(hugo --themesDir ../.. --gc --destination public-css-params \
+            --config config.toml,../.github/fixtures/css-params.toml 2>&1) || { echo "$out"; exit 1; }
+          for id in css-param-invalid portrait-width-invalid; do
+            grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
+          done
+          ! grep -l 'body{display:none' public-css-params/*.css || { echo "  BAD  the colour opened a rule of its own"; exit 1; }
+          node ../.github/scripts/check-invariants.mjs public-css-params cursor-styled animation-duration=2s
+          echo "  each param is checked before it reaches the stylesheet"
+
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
         run: |

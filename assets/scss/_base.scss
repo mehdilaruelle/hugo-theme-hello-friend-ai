@@ -18,7 +18,6 @@ body {
   padding: 0;
   font-family: Inter, "Inter fallback", -apple-system, BlinkMacSystemFont,
     "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;
-  font-display: auto;
   font-size: 1rem;
   line-height: 1.54;
   text-rendering: optimizeLegibility;
@@ -240,7 +239,6 @@ em, i, strong {
 
 :not(pre) > code {
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-  font-display: auto;
   font-feature-settings: normal;
   // Same reason as the block below. isolate so that fixing the direction here
   // does not reorder the RTL sentence around it.
@@ -319,20 +317,24 @@ blockquote {
   @media #{$media-size-phone} {
     margin: 10px;
     padding: 10px;
+    // Room for the glyph inside the quote: the margin is too narrow to hold
+    // it as on a wider screen, where it sits outside.
+    padding-inline-start: 44px;
   }
 
   &:before {
     content: "”";
     font-family: Georgia, serif;
-    font-display: auto;
     font-size: 3.875rem;
     position: absolute;
     inset-inline-start: -40px;
     top: -20px;
 
-    // The phone rule pulls the margin in to 10px, so -40px would clip.
+    // The phone rule pulls the margin in to 10px, so -40px would clip, and
+    // -10px put the glyph over the border and the first letter. It sits in the
+    // padding instead, clear of both.
     @media #{$media-size-phone} {
-      inset-inline-start: -10px;
+      inset-inline-start: 10px;
     }
   }
 
