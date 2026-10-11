@@ -21,7 +21,12 @@
 
 {{- $img := "" -}}
 {{- if not $remote -}}
-  {{- with $page.Resources.GetMatch $src -}}
+  {{- /* The name exactly first: GetMatch reads it as a glob, so a file named
+         "x [1].jpg" or "y{2}.jpg" matched nothing and went out from the site
+         root, unsized. GetMatch after it still takes a pattern on purpose. */ -}}
+  {{- with $page.Resources.Get $src -}}
+    {{- $img = . -}}
+  {{- else with $page.Resources.GetMatch $src -}}
     {{- $img = . -}}
   {{- else -}}
     {{- with resources.Get $src -}}{{- $img = . -}}{{- end -}}
