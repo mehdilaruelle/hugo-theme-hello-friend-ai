@@ -135,6 +135,12 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-code-blocks.mjs public
 
+      - name: Check the focus ring and the status colours meet their contrast
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs exampleSite/public contrast
+          node .github/scripts/check-invariants.mjs showcaseSite/public contrast
+
       # Open Graph and Twitter tags are written by two partials. They used to
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a

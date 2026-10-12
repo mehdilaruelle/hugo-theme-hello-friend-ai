@@ -489,6 +489,57 @@ const checks = {
       fail(`the site's _variables.scss did not reach --background (${colour})`);
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
+
+  // Colours a static scan never sees in use (focus ring, script-written status and
+  // dates), read from each scheme's compiled tokens so a site's own are checked too.
+  contrast() {
+    const sheet = css();
+    const lum = (hex) => {
+      const h = hex.replace("#", "");
+      const full = h.length === 3 ? [...h].map((c) => c + c).join("") : h;
+      return [0, 2, 4]
+        .map((i) => parseInt(full.slice(i, i + 2), 16) / 255)
+        .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+        .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+    };
+    const ratio = (a, b) => {
+      const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
+      return (hi + 0.05) / (lo + 0.05);
+    };
+    // [token, ground, minimum]: 3 for a non-text indicator, 4.5 for small text.
+    const pairs = [
+      ["focus-ring", "background", 3],
+      ["focus-ring", "background-header", 3],
+      ["focus-ring", "background-secondary", 3],
+      ["copy-done", "background-header", 4.5],
+      ["copy-failed", "background-header", 4.5],
+      ["color-secondary", "background", 4.5],
+    ];
+    const bad = [];
+    for (const scheme of ["light", "dark"]) {
+      const body = rules(sheet, `:root:where([data-theme=${scheme}])`).join(";");
+      // Three or six digits only: lum() reads no other length.
+      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#(?:[0-9a-fA-F]{3}){1,2})\\b`))?.[1];
+      for (const [fg, bg, min] of pairs) {
+        if (!token(fg) || !token(bg)) { bad.push(`${scheme}: --${fg} or --${bg} is not a hex colour`); continue; }
+        const r = ratio(token(fg), token(bg));
+        if (r < min) bad.push(`${scheme}: --${fg} ${token(fg)} on --${bg} ${token(bg)} is ${r.toFixed(2)}:1, under ${min}`);
+      }
+    }
+    // The tokens prove nothing if a rule paints a literal outline. normalize.css's
+    // Firefox ring is in ButtonText, a system colour, so it is left to the browser.
+    for (const m of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      for (const [, value] of m[2].matchAll(/(?:^|;)\s*outline(?:-color)?:([^;]*)/g)) {
+        const v = value.trim();
+        if (!/^(?:none|0|1px dotted ButtonText)$/.test(v) && !v.includes("var(--focus-ring)"))
+          bad.push(`${m[1].trim()}: an outline in ${v}, not var(--focus-ring)`);
+      }
+      if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
+        bad.push(".search-results time: dimmed by opacity");
+    }
+    if (bad.length) fail("a colour under its contrast minimum", bad.join("\n"));
+    ok(`${pairs.length * 2} colour pairs meet their contrast minimum in both schemes`);
+  },
 };
 
 const run = checks[check];
