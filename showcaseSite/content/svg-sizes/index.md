@@ -30,3 +30,33 @@ A fence opens with three backticks:
 ````
 
 And after that block, [the second of them](dot-width.svg).
+
+Code is carried as written. A code span, `[a span](commas.svg)`, and an
+indented block:
+
+    [indented](commas.svg)
+
+- A fence inside a list item:
+
+    ```
+    [in a list](commas.svg)
+    ```
+
+> ```
+> [in a quote](commas.svg)
+> ```
+
+- A list item's own indented block, four spaces past its text:
+
+      [six in a list](commas.svg)
+
+A fence whose code shows a quoted fence, which only a quote could close:
+
+```
+> ```
+[behind a quoted close](commas.svg)
+```
+
+And a [reference link][commas], whose definition is a relative path too.
+
+[commas]: commas.svg

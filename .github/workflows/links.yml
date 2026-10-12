@@ -163,6 +163,29 @@ jobs:
           node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
             --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
 
+      # A link in code is an example, so it is carried as the author wrote it.
+      - name: Check llms-full.txt leaves links in code as written
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          bad=0
+          for snippet in '`[a span](commas.svg)`' '    [indented](commas.svg)' \
+                         '    [in a list](commas.svg)' '> [in a quote](commas.svg)' \
+                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)'; do
+            grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  every link in code is carried as written"
+          exit "$bad"
+
+      - name: Check llms-full.txt resolves a bundle published as a file
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/llms-ugly-bundle.toml \
+            --baseURL "https://example.com/subpath/showcase/" -d public-ugly
+          test -f public-ugly/llms-links/ugly.html && test -f public-ugly/llms-links/ugly/commas.svg
+          node ../.github/scripts/check-llms.mjs public-ugly https://example.com/subpath/showcase/ \
+            --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
+
       # With neither the note nor the llms-full line between them, a body
       # heading over a link list has the generated lists shape exactly.
       - name: Check llms.txt with no note and no llms-full
