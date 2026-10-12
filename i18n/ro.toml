@@ -76,7 +76,7 @@ other = "Scrie pentru a căuta…"
 other = "1 rezultat"
 
 [searchResultsMany]
-other = "%d rezultate"
+other = "Rezultate: %d"
 
 [searchFailed]
 other = "Indexul de căutare nu a putut fi încărcat."
