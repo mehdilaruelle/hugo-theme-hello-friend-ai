@@ -6,7 +6,8 @@ tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
 
-# The fourth picture has no alt, to exercise the file-name fallback.
+# The fourth picture has no alt, to exercise the file-name fallback. The fifth
+# has brackets in its name, which a glob reads as a character class.
 [[resources]]
   src = "photos/01-dunes.jpg"
   [resources.params]
@@ -23,6 +24,11 @@ series = ["Showcase"]
   [resources.params]
     alt = "A striped lighthouse at dusk under a full moon"
     caption = "Portrait, cropped from the **centre**"
+
+[[resources]]
+  src = "photos/05-lake [copy].jpg"
+  [resources.params]
+    alt = "The lake again, from a file whose name holds brackets"
 
 [author]
   name = "Jane Doe"
