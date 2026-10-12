@@ -1,4 +1,3 @@
-# utterances left on its default theme, over config-comments.toml, which names
-# one: the default is the one that has to follow the page rather than the system.
+# Back to the default theme, over config-comments.toml, which names one.
 [params.utterances]
   theme = "preferred-color-scheme"

@@ -1,11 +1,5 @@
-// utterances, in the theme the page is in.
-//
-// Left to its own preferred-color-scheme, utterances follows the system, which
-// is not always the page: params.defaultTheme and the toggle can both say
-// otherwise, and the comments came out light under a dark article. So the
-// client is loaded from here, with the page's theme, and told of every change.
-// A site that names a theme of its own gets the plain script tag instead, and
-// none of this.
+// utterances in the page's theme. Its own preferred-color-scheme follows the
+// system, which params.defaultTheme and the toggle can contradict.
 
 (function () {
   const mount = document.querySelector('.utterances-follow');
@@ -13,7 +7,6 @@
 
   const root = document.documentElement;
   const system = window.matchMedia('(prefers-color-scheme: dark)');
-  // data-theme when main.js or theme-init.js has set it, the system otherwise.
   const current = () => {
     const theme = root.getAttribute('data-theme') || (system.matches ? 'dark' : 'light');
     return theme === 'dark' ? 'github-dark' : 'github-light';
@@ -23,7 +16,6 @@
   script.src = 'https://utteranc.es/client.js';
   script.async = true;
   script.crossOrigin = 'anonymous';
-  // repo, issue-term and label, as the template wrote them.
   for (const attr of mount.attributes) {
     if (attr.name.startsWith('data-')) script.setAttribute(attr.name.slice(5), attr.value);
   }
@@ -31,8 +23,7 @@
   script.setAttribute('theme', sent);
   mount.appendChild(script);
 
-  // utterances listens for this message on its frame. Before the frame exists,
-  // the attribute is what the client will read.
+  // Before the frame exists, the client reads the attribute instead.
   function sync() {
     const theme = current();
     if (theme === sent) return;
