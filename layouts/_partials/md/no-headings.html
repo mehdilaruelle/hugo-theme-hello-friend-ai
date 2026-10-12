@@ -1,0 +1,31 @@
+{{- /* Markdown with each ATX heading outside a fence printed as a bold line. */ -}}
+{{- $lines := slice -}}
+{{- $fence := "" -}}
+{{- $quotes := 0 -}}
+{{- $indent := 0 -}}
+{{- range split . "\n" -}}
+  {{- $line := . -}}
+  {{- if $fence -}}
+    {{- /* Closed only in its own container, at most three spaces further in. */ -}}
+    {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
+      {{- $m := index . 0 3 -}}
+      {{- $q := len (findRE ">" (index . 0 1)) -}}
+      {{- $in := len (replace (index . 0 2) "\t" "    ") -}}
+      {{- if and (eq $q $quotes) (le $in (add $indent 3)) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
+      {{- $m := index . 0 -}}
+      {{- if not (and (hasPrefix (index $m 3) "`") (strings.Contains (index $m 4) "`")) -}}
+        {{- $fence = index $m 3 -}}
+        {{- $quotes = len (findRE ">" (index $m 1)) -}}
+        {{- $indent = len (replace (index $m 2) "\t" "    ") -}}
+      {{- end -}}
+    {{- end -}}
+    {{- if not $fence -}}
+      {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*$` `**${1}**` $line -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $lines = $lines | append $line -}}
+{{- end -}}
+{{- return delimit $lines "\n" -}}

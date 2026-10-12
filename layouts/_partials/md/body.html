@@ -2,9 +2,57 @@
        through Goldmark, whose typographer returns &rsquo; and its kin: right in
        the HTML the shortcode produced, noise in a file read as text. Only those
        are decoded — < > & " are markup once decoded, and a code sample inside a
-       shortcode is entitled to keep them written as entities. */ -}}
-{{- $body := .RenderShortcodes -}}
-{{- range $entity, $char := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
-  {{- $body = replace $body $entity $char -}}
+       shortcode is entitled to keep them written as entities. Not in code,
+       which shows an entity as written; a leading &#43; would open a list. */ -}}
+{{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
+{{- $lines := slice -}}
+{{- $fence := "" -}}
+{{- $code := false -}}
+{{- $list := false -}}
+{{- $blank := true -}}
+{{- range split .RenderShortcodes "\n" -}}
+  {{- $line := . -}}
+  {{- $isBlank := not (strings.TrimSpace $line) -}}
+  {{- if $fence -}}
+    {{- with findRESubmatch "^[\\s>]*(`{3,}|~{3,})\\s*$" $line 1 -}}
+      {{- $m := index . 0 1 -}}
+      {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $open := "" -}}
+    {{- with findRESubmatch "^[\\s>]*(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
+      {{- $m := index . 0 -}}
+      {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
+    {{- end -}}
+    {{- /* Four spaces in: a code block, unless a list item holds the line. */ -}}
+    {{- if not $isBlank -}}
+      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)])(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
+    {{- end -}}
+    {{- $code = and (findRE "^(?: {4}|\\t)" $line 1) (not $list) (or $blank $code) -}}
+    {{- if $open -}}
+      {{- $fence = $open -}}
+    {{- else if not $code -}}
+      {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
+      {{- /* A code span closes on the next backtick run of its length. */ -}}
+      {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" $line) "\x00" -}}
+      {{- $out := "" -}}
+      {{- $span := 0 -}}
+      {{- range $i, $p := $parts -}}
+        {{- if modBool $i 2 -}}
+          {{- if not $span -}}
+            {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
+          {{- end -}}
+        {{- else if not $span -}}
+          {{- range after (add $i 1) $parts -}}{{- if and (not $span) (eq . $p) }}{{ $span = len $p }}{{ end -}}{{- end -}}
+        {{- else if eq (len $p) $span -}}
+          {{- $span = 0 -}}
+        {{- end -}}
+        {{- $out = print $out $p -}}
+      {{- end -}}
+      {{- $line = $out -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $blank = $isBlank -}}
+  {{- $lines = $lines | append $line -}}
 {{- end -}}
-{{- return $body -}}
+{{- return delimit $lines "\n" -}}

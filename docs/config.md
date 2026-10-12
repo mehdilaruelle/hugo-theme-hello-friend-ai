@@ -1142,6 +1142,13 @@ Each list replaces the whole of Hugo's default for that kind, which is why
 `RSS` is named again above: leaving it out drops the section and taxonomy
 feeds.
 
+A page whose `url` names a file, such as `url: /legacy/page.html` on a site
+moved from Jekyll or WordPress, is the exception. Hugo writes every format of
+it to that exact path, so the Markdown copy and the HTML land on the same file,
+and the one written last replaces the other. The build warns about it
+(`md-url-names-a-file`). Give that page `outputs: ["HTML"]`, or end its `url`
+with a slash.
+
 A list page's Markdown is its title, its own description, its body, then its
 children as links to their own `.md`. The children are listed whole rather than
 one pager at a time — pagination is a reading aid for a screen, and a file

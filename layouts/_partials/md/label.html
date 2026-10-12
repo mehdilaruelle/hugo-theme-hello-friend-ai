@@ -1,2 +1,3 @@
 {{- /* [ ] \ are link-label syntax, and < would open raw HTML. */ -}}
-{{- return partial "escape-lt.html" (dict "text" (partial "title.html" .) "with" `\<` "label" true) -}}
+{{- /* One line: a label broken over two by a YAML `|` title ends the list item. */ -}}
+{{- return partial "escape-lt.html" (dict "text" (partial "title.html" . | replaceRE `\s+` " " | strings.TrimSpace) "with" `\<` "label" true) -}}
