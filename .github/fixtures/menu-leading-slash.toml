@@ -1,8 +1,5 @@
-# The showcase's four menus with every url written with a leading slash, the
-# way the README writes them. Under a subpath that spelling used to put the
-# language in front of the subpath (/fr/subpath/showcase/posts/), and the demos
-# write "posts/", so neither ever built it. Each language is restated whole:
-# a menu array set here replaces the showcase's rather than adding to it.
+# The showcase's menus with leading-slash urls, as the README writes them.
+# Each language is restated whole: a menu array here replaces the showcase's.
 
 [languages.en.menu]
     [[languages.en.menu.main]]

@@ -1,7 +1,5 @@
-# The exampleSite's menu with leading slashes, and its one language moved into
-# a directory of its own: the language then goes in front of every url, the
-# default one included, and used to land in front of the subpath too
-# (/en/subpath/posts/). The array replaces the exampleSite's main menu.
+# Leading-slash urls, with the one language in a subdirectory so it is prefixed too.
+# The array replaces the exampleSite's main menu rather than adding to it.
 defaultContentLanguageInSubdir = true
 
 [menu]

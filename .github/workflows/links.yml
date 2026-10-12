@@ -369,10 +369,7 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
-      # Both demos write "posts/", while the README writes "/posts/": under a
-      # subpath that spelling put the language in front of the subpath. The
-      # showcase has the four languages; the exampleSite, with its one language
-      # moved into a directory, has the default language prefixed as well.
+      # The demos write "posts/", so the README's "/posts/" is only built here.
       - name: Check a leading-slash menu url under a subpath, in every language
         working-directory: hello-friend-ai
         run: |
