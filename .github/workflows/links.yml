@@ -369,9 +369,7 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
-      # Three shapes neither demo has: a section that is never rendered over a
-      # page, an about section asking for ProfilePage, and an emoji code in a
-      # title. Each built green and described the page wrongly.
+      # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
       - name: Check the SEO invariants on the shapes the demos lack
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -382,8 +380,7 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
-          # check-seo.mjs compares the card with the h1, which agree as well
-          # when neither renders the code: the emoji itself is asserted here.
+          # check-seo.mjs also passes when neither the h1 nor the card renders it.
           grep -qF '"og:title" content="Shipping it 🚀"' public-seo-shapes/posts/2024/01/shipping-it-rocket/index.html \
             || { echo "  BAD  the card's title does not render :rocket:"; exit 1; }
           echo "  an emoji code in a title reaches the card as an emoji"

@@ -6,9 +6,7 @@
 {{- with $section -}}
   {{- $items := slice -}}
   {{- $i := 0 -}}
-  {{- /* An ancestor that is never rendered has no URL to give, and Google
-         wants one on every crumb but the last: it is left out, and the
-         positions close up. */ -}}
+  {{- /* Google wants a URL on every crumb but the last; an unrendered ancestor has none. */ -}}
   {{- range where $.Ancestors.Reverse "Permalink" "!=" "" -}}
     {{- $i = add $i 1 -}}
     {{- $name := "" -}}

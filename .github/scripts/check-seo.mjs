@@ -131,8 +131,7 @@ for (const file of walk(root, ".html")) {
     }
   }
 
-  // 5b. A breadcrumb links every crumb but the last, numbered from 1 with no
-  //     gap. An ancestor that is never rendered gave "item":"" mid-trail.
+  // 5b. A breadcrumb links every crumb but the last, numbered from 1 with no gap.
   for (const b of blocks.filter((b) => b && b["@type"] === "BreadcrumbList")) {
     const items = Array.isArray(b.itemListElement) ? b.itemListElement : [];
     items.forEach((it, i) => {
@@ -231,8 +230,6 @@ for (const file of walk(root, ".html")) {
     if (shown && !shown.includes(ogTitle)) {
       failures.push([file, `title "${shown}" omits og:title "${ogTitle}"`, "the tab and the card name different pages"]);
     }
-    // An emoji code the h1 rendered: the tab, the card and the feed showed
-    // ":rocket:" as written.
     const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i)?.[1] ?? "";
     const code = ogTitle.match(/:[A-Za-z0-9_+-]+:/)?.[0];
     if (code && h1 && !h1.includes(code)) {

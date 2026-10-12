@@ -45,12 +45,10 @@
   {{- end -}}
 {{- else if and (eq .Params.schema "ProfilePage") (or .IsPage (eq (partial "canonical.html" .).pager 1)) -}}
   {{- /* An about page is not an article, so this is tested before the date
-         below, and before the list kinds: asking for a ProfilePage is
-         explicit, while having a date or pages under it is a guess. An
-         about/_index.md with a page under it was a CollectionPage, with no
-         word said. On its first pager only, as a list is described.
-         mainEntity is the Person the page is about, under the same @id the
-         home page and every article already carry. */ -}}
+         and the list kinds: asking for a ProfilePage is explicit, a date or
+         pages under it a guess. First pager only, as for a list. mainEntity
+         is the Person the page is about, under the same @id the home page and
+         every article already carry. */ -}}
   {{- $data = dict
     "@context" "https://schema.org"
     "@type" "ProfilePage"
