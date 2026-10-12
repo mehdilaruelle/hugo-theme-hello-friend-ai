@@ -490,9 +490,8 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // A list in date order across every pager, and each article's arrows on the
-  // posts either side of it. Hugo's default order puts weight before date, so
-  // a weighted post was paged ahead of newer ones and the arrows skipped them.
+  // Newest first across every pager, and each article's arrows on its neighbours:
+  // Hugo's default order puts weight before date.
   "date-order"(section = "posts", base = "/") {
     const pagers = [];
     for (let n = 1; ; n++) {
@@ -505,13 +504,13 @@ const checks = {
     for (const html of pagers) {
       for (const m of html.matchAll(/<a\b[^>]*>/g)) {
         if (!hasClass(m[0], "post-item-inner")) continue;
-        // Inside this link only: past it, the next post's date would stand in.
+        // This link only: past it, the next post's date would stand in.
         const date = (element(html, m.index, "a").match(/datetime\s*=\s*["']?([0-9-]+)/) || [])[1];
         if (!date) fail(`${section}/ lists ${attr(m[0], "href")} with no date, so its order cannot be read`);
         posts.push({ href: attr(m[0], "href"), date });
       }
     }
-    // An empty list has every order, and every arrow points nowhere.
+    // Else the order and arrow checks pass over nothing.
     if (!posts.length) fail(`${section}/ has ${pagers.length} pagers and no post in them`);
     for (let i = 1; i < posts.length; i++) {
       if (posts[i].date > posts[i - 1].date)

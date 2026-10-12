@@ -1,8 +1,5 @@
-{{- /* By date, as the list pages it walks through. NextInSection follows
-       Hugo's default order, weight before date, so the arrow from the newest
-       post skipped over every unweighted one to the next weighted post.
-       Pages.Next steps toward the front of the collection, which is the newer
-       side of a newest-first list. */ -}}
+{{- /* By date, as the lists: NextInSection puts weight before date. Pages.Next
+       steps toward the front, the newer side of a newest-first list. */ -}}
 {{- $pages := where .CurrentSection.RegularPages.ByDate.Reverse "Permalink" "!=" "" -}}
 {{- $newer := $pages.Next . | default "" -}}
 {{- $older := $pages.Prev . | default "" -}}

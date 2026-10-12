@@ -369,9 +369,7 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
-      # The exampleSite weights two posts, and both demos list fewer posts than
-      # a pager holds, so nothing paged them. Weight came before date: the
-      # pagers and the arrows under an article skipped the newer posts.
+      # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
         working-directory: hello-friend-ai/exampleSite
         run: |

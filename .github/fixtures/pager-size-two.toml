@@ -1,4 +1,3 @@
-# Two posts a pager, so a list of four spans two and its order can go wrong
-# between them. The exampleSite weights two of its posts.
+# Two posts a pager, so the order has pagers to go wrong across.
 [pagination]
   pagerSize = 2

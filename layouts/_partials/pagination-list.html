@@ -1,5 +1,4 @@
-{{- /* A taxonomy lists its terms by title, so its pagers are neither newer
-       nor older: they are the previous and the next page. */ -}}
+{{- /* A taxonomy lists terms by title: its pagers are neither newer nor older. */ -}}
 {{- $prev := partial "i18n.html" (dict "key" "pagination.newerPosts" "fallback" "Newer posts") -}}
 {{- $next := partial "i18n.html" (dict "key" "pagination.olderPosts" "fallback" "Older posts") -}}
 {{- if eq .Kind "taxonomy" -}}
