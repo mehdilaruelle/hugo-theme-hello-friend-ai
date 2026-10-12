@@ -490,10 +490,8 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // Contrast of the colours a static scan never sees in use: a focus ring, a
-  // copy button's status and a search result's date, the last two written by
-  // script. Read from the compiled tokens of each scheme, so a site's own
-  // _variables.scss is checked too.
+  // Colours a static scan never sees in use (focus ring, script-written status and
+  // dates), read from each scheme's compiled tokens so a site's own are checked too.
   contrast() {
     const sheet = css();
     const lum = (hex) => {
@@ -528,9 +526,8 @@ const checks = {
         if (r < min) bad.push(`${scheme}: --${fg} ${token(fg)} on --${bg} ${token(bg)} is ${r.toFixed(2)}:1, under ${min}`);
       }
     }
-    // The tokens prove nothing if a rule still paints a literal over them: an
-    // outline is none, 0 or the focus ring. normalize.css's Firefox ring is in
-    // ButtonText, a system colour, so it is left to the browser.
+    // The tokens prove nothing if a rule paints a literal outline. normalize.css's
+    // Firefox ring is in ButtonText, a system colour, so it is left to the browser.
     for (const m of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
       for (const [, value] of m[2].matchAll(/(?:^|;)\s*outline(?:-color)?:([^;]*)/g)) {
         const v = value.trim();
