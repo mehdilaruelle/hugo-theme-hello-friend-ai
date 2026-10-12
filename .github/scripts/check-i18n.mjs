@@ -61,8 +61,7 @@ const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
 // CLDR 48: in these the form covers more than one count (21, 102, 10 …), so it
-// carries the number. fr, pt and hi too, whose `one` adds 0: a post of nothing
-// but an image counted "Un Mot" and "Une minute".
+// carries the number. fr, pt and hi too, whose `one` adds 0.
 const RANGED = {
   be: ['one'], br: ['one', 'two'], bs: ['one'], ceb: ['one'], dsb: ['one', 'two'],
   fil: ['one'], fr: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hi: ['one'],
