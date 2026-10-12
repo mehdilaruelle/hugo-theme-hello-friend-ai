@@ -3,11 +3,6 @@
 //
 // A scanner, not a validator: it checks what a template can get wrong.
 //
-// A feed is also read for what it says, which used to differ by feed: Hugo's
-// built-in template served the front page, the taxonomies and their terms, and
-// it published 01 Jan 0001 for an undated page, an empty title, a raw Markdown
-// title and the copyright's link as escaped markup.
-//
 //   node .github/scripts/check-feeds.mjs <public-dir>
 
 import { readFileSync } from "node:fs";

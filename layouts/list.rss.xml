@@ -2,8 +2,6 @@
        &lt;?xml and stops being one. It has to be the first byte, hence the
        trim markers. */ -}}
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
-{{- /* Every feed: the front page, each section, taxonomy and term. Hugo's
-       built-in feed served all but /posts/ and missed every fix below. */ -}}
 {{- /* xmlns:content is what makes content:encoded below mean anything. */}}
 {{- $author := partial "site-author.html" . -}}
 {{- $title := partial "title-plain.html" . -}}
@@ -27,9 +25,8 @@
         {{ with .OutputFormats.Get "RSS" -}}
             {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
         {{ end -}}
-        {{- /* What Hugo's own feed lists: every article on the front page, a
-               section's own (its subsections have feeds of their own), and the
-               terms or the pages of a taxonomy or a term. */ -}}
+        {{- /* As Hugo's own feed: every article on the front page, a section's
+               own (subsections have their own feeds), .Pages elsewhere. */ -}}
         {{- $pages := .Pages -}}
         {{- if .IsHome }}{{ $pages = site.RegularPages }}{{ else if .IsSection }}{{ $pages = .RegularPages }}{{ end -}}
         {{- $pages = where $pages "Permalink" "!=" "" -}}
@@ -43,11 +40,9 @@
             <link>{{ .Permalink }}</link>
             {{- /* pubDate is optional, and the zero time publishes as
                    01 Jan 0001. lastBuildDate above is guarded the same way.
-                   PublishDate, as datePublished on the page itself. */}}
+                   PublishDate, to match the page's datePublished. */}}
             {{ if not .PublishDate.IsZero }}<pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>{{ end }}
-            {{- /* The site's author only on what the site's author wrote: a
-                   guest post names its own writer on the page and in JSON-LD,
-                   and the field takes an email this feed has none of. */}}
+            {{- /* Site author's posts only: <author> takes an email, and a guest has none. */}}
             {{ with $author.email }}{{ if eq (partial "author.html" $page) $author.name }}<author>{{.}}{{ with $author.name }} ({{.}}){{end}}</author>{{end}}{{end}}
             <guid>{{ .Permalink }}</guid>
             {{- /* description is the summary, content:encoded the whole
