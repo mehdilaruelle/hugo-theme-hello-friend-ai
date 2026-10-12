@@ -1,7 +1,5 @@
 {{- /* site.Params.portrait.maxWidth as a CSS length: a bare number, quoted or
-       not, is pixels, and 0 is unset. Anything else warns and is left out, as
-       contentWidth does: "120 px" reached the stylesheet and the browser
-       dropped the rule without a word. */ -}}
+       not, is pixels, and 0 is unset. */ -}}
 {{- $width := "" -}}
 {{- with site.Params.portrait.maxWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}

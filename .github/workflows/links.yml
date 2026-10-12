@@ -470,9 +470,6 @@ jobs:
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
 
-      # params-css.html writes these into the stylesheet itself, where a "}"
-      # closes the theme's rule and opens one of the site's making, and a value
-      # of the wrong kind is dropped by the browser with nothing said.
       - name: Check params written into the stylesheet are checked first
         working-directory: hello-friend-ai/exampleSite
         run: |

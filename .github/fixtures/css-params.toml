@@ -1,6 +1,4 @@
-# Params written into the stylesheet, each of a shape it cannot take: a colour
-# carrying a rule of its own, and a length with a space in it. Each has to warn
-# and stay out of the stylesheet. A bare number is a duration in seconds.
+# A colour carrying a rule and a spaced length must warn; a bare "2" is 2s.
 [params]
   [params.logo]
     logoCursorColor   = "#67a2c9}body{display:none"

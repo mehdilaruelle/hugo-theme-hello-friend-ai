@@ -1,11 +1,6 @@
 {{- /* (dict "value" v "name" n "kind" "colour"|"time"): v as one CSS value, or
-       "" with a warning. params-css.html writes these into the stylesheet, so
-       a ";" or "}" in one ended the rule and opened another of the site's own
-       making ("#67a2c9}body{display:none"), and a value of the wrong kind was
-       dropped by the browser with nothing said. A bare number is seconds, as a
-       bare contentWidth is pixels. A colour has too many spellings to list, so
-       it is checked for what no colour holds: the characters that end a value,
-       a rule or the stylesheet. */ -}}
+       "" with a warning. A colour has too many spellings to list, so it is
+       checked for the characters that end a value, a rule or the stylesheet. */ -}}
 {{- $v := printf "%v" .value | strings.TrimSpace -}}
 {{- $ok := false -}}
 {{- if eq .kind "time" -}}
