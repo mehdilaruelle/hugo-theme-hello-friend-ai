@@ -520,16 +520,23 @@ const checks = {
     const bad = [];
     for (const scheme of ["light", "dark"]) {
       const body = rules(sheet, `:root:where([data-theme=${scheme}])`).join(";");
-      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,6})\\b`))?.[1];
+      // Three or six digits only: lum() reads no other length.
+      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#(?:[0-9a-fA-F]{3}){1,2})\\b`))?.[1];
       for (const [fg, bg, min] of pairs) {
         if (!token(fg) || !token(bg)) { bad.push(`${scheme}: --${fg} or --${bg} is not a hex colour`); continue; }
         const r = ratio(token(fg), token(bg));
         if (r < min) bad.push(`${scheme}: --${fg} ${token(fg)} on --${bg} ${token(bg)} is ${r.toFixed(2)}:1, under ${min}`);
       }
     }
-    // The tokens prove nothing if a rule still paints a literal over them.
+    // The tokens prove nothing if a rule still paints a literal over them: an
+    // outline is none, 0 or the focus ring. normalize.css's Firefox ring is in
+    // ButtonText, a system colour, so it is left to the browser.
     for (const m of sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
-      if (/(?:^|;)\s*outline:[^;]*#[0-9a-fA-F]{3,6}/.test(m[2])) bad.push(`${m[1].trim()}: an outline in a literal colour`);
+      for (const [, value] of m[2].matchAll(/(?:^|;)\s*outline(?:-color)?:([^;]*)/g)) {
+        const v = value.trim();
+        if (!/^(?:none|0|1px dotted ButtonText)$/.test(v) && !v.includes("var(--focus-ring)"))
+          bad.push(`${m[1].trim()}: an outline in ${v}, not var(--focus-ring)`);
+      }
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
