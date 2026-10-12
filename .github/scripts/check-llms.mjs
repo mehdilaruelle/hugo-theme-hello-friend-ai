@@ -316,7 +316,7 @@ for (const f of mds) {
   // The H1 and the quote under it are front-matter text, read as text: a
   // title over two lines, a closing " #", or a description opening like a
   // list each turned into something else.
-  const [h1, second, , third] = s.split("\n");
+  const [h1, second, third] = s.split("\n");
   if (second?.trim()) fail(`${f}: the title runs onto a second line: ${second}`);
   if (/[ \t]#+[ \t]*$/.test(h1) && !/\\#+[ \t]*$/.test(h1)) fail(`${f}: the title ends in a closing # sequence: ${h1}`);
   if (/^> (?:#{1,6}|[-+*]|\d{1,9}[.)])(?:\s|$)|^> >/.test(third ?? "")) fail(`${f}: the description opens a block: ${third}`);

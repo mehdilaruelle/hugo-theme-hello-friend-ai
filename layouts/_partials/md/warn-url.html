@@ -2,10 +2,10 @@
        Markdown copy is written to the page's own path and one of the two
        replaces the other: /legacy/page.html came out as Markdown. Only
        --printPathWarnings reported it. Called from the md templates, which run
-       only on a page that asks for md. */ -}}
+       only on a page that asks for md; a page with no HTML has nothing to lose. */ -}}
 {{- with .Params.url -}}
   {{- $url := printf "%v" . -}}
-  {{- if and (not (hasSuffix $url "/")) (path.Ext $url) -}}
+  {{- if and (not (hasSuffix $url "/")) (path.Ext $url) ($.OutputFormats.Get "html") -}}
     {{- warnidf "md-url-names-a-file" "%s: url %q names a file, so the md copy is written to the same path as the HTML and replaces it, or is replaced by it. Set outputs: [\"HTML\"] on the page, or end its url with a slash. See docs/config.md." $.Path $url -}}
   {{- end -}}
 {{- end -}}

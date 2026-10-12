@@ -1,0 +1,4 @@
+# llms.txt over a home page whose text holds a fence: its headings are made
+# bold lines, and a line in the code is not one of them.
+[outputs]
+  home = ["HTML", "llms"]
