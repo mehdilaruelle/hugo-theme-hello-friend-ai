@@ -490,7 +490,8 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // WCAG 1.4.11: the search field's edge, all that shows it, is 3:1 on the page.
+  // WCAG 1.4.11: the search field's edge, all that shows it, is 3:1 against the
+  // page outside it and its own fill inside.
   "field-border"() {
     const sheet = css();
     const lum = (hex) => {
@@ -512,14 +513,17 @@ const checks = {
     const bad = [];
     for (const scheme of ["light", "dark"]) {
       const body = rules(sheet, `:root:where([data-theme=${scheme}])`).join(";");
-      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{3,6})\\b`))?.[1];
-      const [edge, page] = [token("field-border-color"), token("background")];
-      if (!edge || !page) { bad.push(`${scheme}: --field-border-color or --background is not a hex colour`); continue; }
-      const r = ratio(edge, page);
-      if (r < 3) bad.push(`${scheme}: ${edge} on ${page} is ${r.toFixed(2)}:1, under 3`);
+      const token = (name) => body.match(new RegExp(`--${name}:\\s*(#(?:[0-9a-fA-F]{3}){1,2})\\b`))?.[1];
+      const edge = token("field-border-color");
+      for (const ground of ["background", "background-secondary"]) {
+        const g = token(ground);
+        if (!edge || !g) { bad.push(`${scheme}: --field-border-color or --${ground} is not a hex colour`); continue; }
+        const r = ratio(edge, g);
+        if (r < 3) bad.push(`${scheme}: ${edge} on --${ground} ${g} is ${r.toFixed(2)}:1, under 3`);
+      }
     }
     if (bad.length) fail("the search field's edge is too faint to show it", bad.join("\n"));
-    ok("the search field's edge is 3:1 or more against the page in both schemes");
+    ok("the search field's edge is 3:1 or more against the page and its fill in both schemes");
   },
 };
 
