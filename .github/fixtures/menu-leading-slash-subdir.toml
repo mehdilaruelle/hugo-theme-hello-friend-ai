@@ -1,0 +1,23 @@
+# Leading-slash urls, with the one language in a subdirectory so it is prefixed too.
+# The array replaces the exampleSite's main menu rather than adding to it.
+defaultContentLanguageInSubdir = true
+
+[menu]
+  [[menu.main]]
+    identifier  = "about"
+    name        = "About"
+    url         = "/about/"
+    weight      = 10
+    hasChildren = true
+
+  [[menu.main]]
+    identifier  = "me"
+    name        = "About Me"
+    url         = "/about/me/"
+    parent      = "about"
+
+  [[menu.main]]
+    identifier = "posts"
+    name       = "Posts"
+    url        = "/posts/"
+    weight     = 20
