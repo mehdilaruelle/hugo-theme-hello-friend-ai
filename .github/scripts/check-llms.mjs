@@ -44,8 +44,7 @@ const MARKUP = /&(?:lt|gt|amp|quot|#0*(?:34|38|60|62)|#x0*(?:22|26|3[ce]));/gi;
 const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
 // A fence is <pre> in Markdown: the author's text verbatim, which the
 // typographer never touches, so it is excused whole as prose() excuses <pre>.
-// Behind a list item's indent or a quote's > too, as absolute-links.html reads them.
-// Closed in the container it opened in: "> ```" is code in a fence outside a quote.
+// Behind a list marker or a quote's > too, closed only at the quote depth it opened at.
 const FENCE_OPEN = /^([\s>]*)(?:(?:[-*+]|\d{1,9}[.)])\s+)?(`{3,}(?=[^`]*$)|~{3,})/;
 const FENCE_CLOSE = /^([\s>]*)(`{3,}|~{3,})\s*$/;
 const quotes = (prefix) => (prefix.match(/>/g) || []).length;
@@ -91,7 +90,6 @@ const destination = (raw) => {
 const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
-// What else carries a URL in Markdown: a reference definition, and raw HTML.
 const DEFINITION = /^(?: {0,3}> ?)* {0,3}\[[^\]]+\]:[ \t]*<?([^\s>]+)/gm;
 const ATTRIBUTE = /\s(?:src|href)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
 const allLinks = (s) => [
@@ -192,10 +190,7 @@ const carriedIn = (full) => {
   return out;
 };
 
-// The text outside code of every kind: fences, indented blocks, a list item's
-// too, and code spans. A link written in code is an example, not a link. Read
-// as absolute-links.html reads it: four spaces past the content of the list
-// item holding the line, or past the margin outside one, after a blank line.
+// The text outside code, read as absolute-links.html reads it: a link in code is an example.
 const codeless = (s) => {
   let list = false;
   let indent = 0;
@@ -231,7 +226,6 @@ const target = (url) => {
   let path;
   try { path = new URL(url).pathname; } catch { return null; }
   const rel = relative(path);
-  // A file by its extension, a directory by its index: legacy.html is a page.
   return /\.[A-Za-z0-9]+$/.test(rel) ? join(root, rel) : join(root, rel, "index.html");
 };
 // The text outside code spans, which escape-lt.html leaves as written.
@@ -299,7 +293,6 @@ for (const [lang, prefix] of Object.entries(langs)) {
   const fullLinks = allLinks(codeless(full));
   const pageRelative = fullLinks.filter((u) => u && !/^(?:[a-z][a-z0-9+.-]*:|\/|#|\?)/i.test(u));
   if (pageRelative.length) fail(`${lang}: llms-full.txt has ${pageRelative.length} page-relative links, e.g. ${pageRelative[0]}`);
-  // A base that kept a file name: page.html + sibling.html read as one name.
   const glued = fullLinks.find((u) => /\.html[^\s#?/)>"'\]]/.test(u));
   if (glued) fail(`${lang}: llms-full.txt joins a link onto a file name: ${glued}`);
   for (const url of fullLinks.filter((u) => u.startsWith(base))) {

@@ -1,7 +1,6 @@
 +++
 title = "A bundle published as a file"
 noindex = true
-# Its md copy is not what this page is about: legacy.md has the same line.
 outputs = ["HTML"]
 +++
 

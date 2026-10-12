@@ -2,7 +2,7 @@
 title = "A page migrated with its old file name"
 url = "/llms-links/legacy.html"
 noindex = true
-# The md format would write to the same file: url names it whole.
+# url names the file whole, so the md output would write over it.
 outputs = ["HTML"]
 +++
 

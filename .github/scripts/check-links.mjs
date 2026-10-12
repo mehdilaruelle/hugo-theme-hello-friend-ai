@@ -119,8 +119,7 @@ for (const file of walk(root)) {
       }
       resolved = path.slice(prefix.length - 1);
     } else {
-      // Already resolved against the page by new URL above: joined to its
-      // directory a second time, "../x.svg" on /a/b.html looked in /a/x.svg.
+      // Already resolved against the page by new URL above.
       resolved = posix.normalize(path);
     }
 
