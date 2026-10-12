@@ -167,3 +167,15 @@ other = "رابط إلى هذا القسم"
 #
 [relatedPosts]
 other = "مقالات ذات صلة"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} على {{ .Site }}"
+
+[feedDescription]
+other = "أحدث المحتوى في {{ .Title }} على {{ .Site }}"
+
+[feedDescriptionSite]
+other = "أحدث المحتوى على {{ .Site }}"

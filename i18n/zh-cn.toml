@@ -152,3 +152,15 @@ other = "本节链接"
 #
 [relatedPosts]
 other = "相关文章"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }} 上的{{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }} 上{{ .Title }}的最新内容"
+
+[feedDescriptionSite]
+other = "{{ .Site }} 的最新内容"

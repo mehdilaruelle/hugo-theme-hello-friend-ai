@@ -152,3 +152,15 @@ other = "इस अनुभाग का लिंक"
 #
 [relatedPosts]
 other = "संबंधित पोस्ट"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }} पर {{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }} पर {{ .Title }} की हाल की सामग्री"
+
+[feedDescriptionSite]
+other = "{{ .Site }} पर हाल की सामग्री"

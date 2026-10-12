@@ -152,3 +152,15 @@ other = "Ligam a chesta sezion"
 #
 [relatedPosts]
 other = "Articol somejant"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} su {{ .Site }}"
+
+[feedDescription]
+other = "Contegnuu noeuv de {{ .Title }} su {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Contegnuu noeuv su {{ .Site }}"
