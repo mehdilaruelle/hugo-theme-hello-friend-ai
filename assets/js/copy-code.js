@@ -37,10 +37,8 @@
       // Mermaid renders into a pre, and there is no source worth copying there.
       if (pre.classList.contains('mermaid') || !pre.querySelector('code')) return;
 
-      // The line-number gutter of linenos=table: a pre in a cell with the code
-      // in the next one. Read by its content, not its first span: hl_lines on
-      // line 1 wraps that number in a highlight span, which is not itself
-      // unselectable, and the gutter got a button that copied nothing.
+      // The linenos=table gutter, read by its text: hl_lines on line 1 wraps the
+      // first number in a highlight span, which is not itself unselectable.
       const cell = pre.closest('td');
       if (cell && cell.nextElementSibling && !codeText(pre.querySelector('code')).trim()) return;
 
@@ -111,10 +109,8 @@
       // scroll away with the code.
       wrap.appendChild(button);
 
-      // The language label sits beside the button, which is as wide as its text
-      // in this language and state: "Press Ctrl+C" or "Копировать" ran under a
-      // label placed for "Copy". Measured, not guessed, and again whenever the
-      // text changes. Through the CSSOM, which a strict style-src allows.
+      // The label's offset follows the button's text, whatever the language and
+      // state. Through the CSSOM, which a strict style-src allows.
       if (window.ResizeObserver) {
         new ResizeObserver(() => {
           wrap.style.setProperty('--copy-code-width', button.offsetWidth + 'px');

@@ -490,17 +490,14 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // The language label clears the copy button by the button's measured width.
-  // A fixed 5rem cleared "Copy" and ran under "Press Ctrl+C" and "Копировать".
-  // Nothing here renders CSS, so the rule and the script setting it are asserted.
+  // The language label clears the copy button by its measured width. Nothing here
+  // renders CSS, so the rule and the script setting it are asserted.
   "copy-label"() {
     const sel = 'pre>code[data-lang]:not([data-lang=""])::before';
     const bodies = rules(css(), sel);
     if (!bodies.some((b) => /inset-inline-end:\s*calc\(\s*var\(\s*--copy-code-width\b/.test(b)))
       fail("the language label is not placed by --copy-code-width", bodies.map((b) => `${sel}{${b}}`).join("\n") || `(no ${sel} rule)`);
     const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
-    // Set from the button's measured width: the name alone would pass a script
-    // that kept the property and lost the measuring.
     if (!/\.style\.setProperty\(\s*["']--copy-code-width["']\s*,[^)]*\.offsetWidth\b/.test(js))
       fail("no script sets --copy-code-width from the button's measured width");
     ok("the language label is placed by the copy button's measured width");

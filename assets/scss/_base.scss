@@ -544,9 +544,7 @@ hr {
 // It appears with the copy button rather than before it, and it is positioned
 // by its right edge, so shifting that edge clears the button whatever the
 // language is called: a longer name simply extends further left. copy-code.js
-// sets --copy-code-width to the button's width, whatever it says in whichever
-// language: a fixed 5rem cleared "Copy" and ran under "Press Ctrl+C". The
-// fallback is that offset, for a browser with no ResizeObserver.
+// sets --copy-code-width; the fallback is for a browser with no ResizeObserver.
 //
 // aria-hidden is not available on a pseudo-element, and it does not need to be.
 // Generated content is not announced by a screen reader in the browsers this
