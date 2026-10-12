@@ -1,8 +1,5 @@
-{{- /* A url that names a file is used verbatim by every output format, so the
-       Markdown copy is written to the page's own path and one of the two
-       replaces the other: /legacy/page.html came out as Markdown. Only
-       --printPathWarnings reported it. Called from the md templates, which run
-       only on a page that asks for md; a page with no HTML has nothing to lose. */ -}}
+{{- /* A url naming a file is used verbatim by every output format, so the md
+       copy and the HTML share one path. A page with no HTML has nothing to lose. */ -}}
 {{- with .Params.url -}}
   {{- $url := printf "%v" . -}}
   {{- if and (not (hasSuffix $url "/")) (path.Ext $url) ($.OutputFormats.Get "html") -}}

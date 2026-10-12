@@ -227,9 +227,7 @@ for (const [lang, prefix] of Object.entries(langs)) {
     .find((note) => /(?<!\\)<\/?[A-Za-z]/.test(outsideCode(note)));
   if (rawTag) fail(`${lang}: a list note carries raw HTML: ${rawTag.slice(0, 80)}`);
 
-  // llmstxt.org: the H1, the quote, then text with no heading until the file
-  // lists. A heading in the front page's body filed the note and the llms-full
-  // line under itself for a parser splitting on H2s.
+  // llmstxt.org: no heading between the quote and the file lists.
   const map = mapSection(s, accepts(lang, MAP_KEYS));
   const early = unfenced(s.slice(0, s.length - map.length)).match(/^#{2,6}[ \t].*$/m);
   if (early) fail(`${lang}: llms.txt has a heading before its lists: ${early[0]}`);
@@ -313,9 +311,7 @@ for (const f of mds) {
   if (s.includes("{{<") || s.includes("{{%")) fail(`${f}: an unrendered shortcode`);
   const found = entities(s);
   if (found) fail(`${f}: ${found.length} HTML entities, e.g. ${found[0]}`);
-  // The H1 and the quote under it are front-matter text, read as text: a
-  // title over two lines, a closing " #", or a description opening like a
-  // list each turned into something else.
+  // The H1 and the quote are front-matter text and must not read as Markdown.
   const [h1, second, third] = s.split("\n");
   if (second?.trim()) fail(`${f}: the title runs onto a second line: ${second}`);
   if (/[ \t]#+[ \t]*$/.test(h1) && !/\\#+[ \t]*$/.test(h1)) fail(`${f}: the title ends in a closing # sequence: ${h1}`);

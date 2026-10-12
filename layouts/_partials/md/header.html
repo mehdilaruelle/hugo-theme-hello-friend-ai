@@ -1,10 +1,6 @@
 {{- /* (dict "page" . "title" t "desc" d "note" bool "llms" bool "after" s).
-       safeHTML: a partial is an HTML template.
-       "llms" is llms.txt, where llmstxt.org allows no heading between the quote
-       and the file lists: the note and "after" (the llms-full line) come first,
-       and a heading of the page's own body is printed as a bold line. A
-       "## Start here" there filed both under itself for a parser splitting on
-       H2s. */ -}}
+       safeHTML: a partial is an HTML template. "llms": llmstxt.org allows no
+       heading before the file lists, so the body's headings go bold. */ -}}
 # {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" .title "with" `\<`)) "as" "heading") | safeHTML }}
 {{ with .desc }}
 > {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" (partial "md/plain.html" (dict "text" .)) "with" `\<`)) "as" "quote") | safeHTML }}

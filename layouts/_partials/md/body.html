@@ -2,10 +2,8 @@
        through Goldmark, whose typographer returns &rsquo; and its kin: right in
        the HTML the shortcode produced, noise in a file read as text. Only those
        are decoded — < > & " are markup once decoded, and a code sample inside a
-       shortcode is entitled to keep them written as entities.
-       Outside code only: `&rsquo;` written in a code span or a fence is the
-       author showing the entity, and decoding it showed something else. A
-       &#43; opening a line stays one, decoded it opened a list. */ -}}
+       shortcode is entitled to keep them written as entities. Not in code,
+       which shows an entity as written; a leading &#43; would open a list. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
@@ -35,8 +33,7 @@
       {{- $fence = $open -}}
     {{- else if not $code -}}
       {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
-      {{- /* Split on runs of backticks: a span closes on the next run of the
-             same length, and a run with none is text. */ -}}
+      {{- /* A code span closes on the next backtick run of its length. */ -}}
       {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" $line) "\x00" -}}
       {{- $out := "" -}}
       {{- $span := 0 -}}

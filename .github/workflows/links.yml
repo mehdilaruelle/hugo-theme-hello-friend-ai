@@ -163,8 +163,6 @@ jobs:
           node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
             --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
 
-      # A code span and a fence keep an entity written as one, and a title, a
-      # description and a decoded "+" are read as text, not as Markdown syntax.
       - name: Check the Markdown copy carries front matter and code as written
         working-directory: hello-friend-ai/showcaseSite
         run: |
@@ -179,8 +177,7 @@ jobs:
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
           exit "$bad"
 
-      # Headings in llms.txt's body become bold lines, and a line in a fence is
-      # code: "    ```" four spaces in does not close the fence it sits in.
+      # llms.txt prints body headings as bold lines, but not a line in a fence.
       - name: Check llms.txt leaves a fence's lines as written
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -400,8 +397,6 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
-      # A url naming a file is used verbatim by every format, so the md copy
-      # replaced the HTML, and only --printPathWarnings said so.
       - name: Check a url naming a file warns when the md copy would replace it
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -409,7 +404,6 @@ jobs:
             --contentDir ../.github/fixtures/md-url-file \
             --config config.toml,../.github/fixtures/md-url-file.toml 2>&1) || { echo "$out"; exit 1; }
           grep -q 'url "/legacy/page.html" names a file' <<< "$out" || { echo "$out"; echo "  BAD  no md-url-names-a-file warning"; exit 1; }
-          # A page with no HTML output has nothing for its md copy to replace.
           ! grep -q 'url "/legacy/notes.md"' <<< "$out" || { echo "$out"; echo "  BAD  warned on an md-only page"; exit 1; }
           echo "  the build warns that the md copy would replace the HTML, and only then"
 

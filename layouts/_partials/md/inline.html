@@ -1,9 +1,5 @@
-{{- /* (dict "text" s "as" "heading"|"quote"): s as one line that opens a
-       Markdown block, read as text. Collapsed to one line first: a YAML `|`
-       title broke the H1 and the list label in two. Then, for a heading, a
-       closing run of # is escaped ("Learn C #" was the heading "Learn C"); for
-       the line after "> ", a leading #, >, -, +, * or "1." / "1)" is escaped
-       ("- starts like a list" became a list inside the quote). */ -}}
+{{- /* (dict "text" s "as" "heading"|"quote"): s on one line, read as text: a
+       heading's closing # run, or a block marker opening a quote, is escaped. */ -}}
 {{- $t := .text | replaceRE `\s+` " " | strings.TrimSpace -}}
 {{- if eq .as "heading" -}}
   {{- $t = replaceRE `(^|\s)(#+)$` `${1}\${2}` $t -}}

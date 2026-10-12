@@ -6,8 +6,7 @@
 {{- range split . "\n" -}}
   {{- $line := . -}}
   {{- if $fence -}}
-    {{- /* Closed in the container it opened in, at most three spaces further
-           in: "> ```" or "    ```" in a plain fence is a line of its code. */ -}}
+    {{- /* Closed only in its own container, at most three spaces further in. */ -}}
     {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
       {{- $m := index . 0 3 -}}
       {{- $q := len (findRE ">" (index . 0 1)) -}}
