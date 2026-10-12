@@ -1,0 +1,5 @@
+# One section on uglyURLs: a bundle there is published as ugly.html, with its
+# files in ugly/, so its relative links resolve against a directory its
+# permalink does not name.
+[uglyURLs]
+  llms-links = true

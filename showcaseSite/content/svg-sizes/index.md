@@ -46,6 +46,17 @@ indented block:
 > [in a quote](commas.svg)
 > ```
 
+- A list item's own indented block, four spaces past its text:
+
+      [six in a list](commas.svg)
+
+A fence whose code shows a quoted fence, which only a quote could close:
+
+```
+> ```
+[behind a quoted close](commas.svg)
+```
+
 And a [reference link][commas], whose definition is a relative path too.
 
 [commas]: commas.svg

@@ -45,18 +45,21 @@ const TAG = /^ {0,3}<(\/?)([A-Za-z][A-Za-z0-9-]*)(?:\s[^>]*)?>/;
 // A fence is <pre> in Markdown: the author's text verbatim, which the
 // typographer never touches, so it is excused whole as prose() excuses <pre>.
 // Behind a list item's indent or a quote's > too, as absolute-links.html reads them.
-const FENCE_OPEN = /^[\s>]*(?:(?:[-*+]|\d{1,9}[.)])\s+)?(`{3,}(?=[^`]*$)|~{3,})/;
-const FENCE_CLOSE = /^[\s>]*(`{3,}|~{3,})\s*$/;
+// Closed in the container it opened in: "> ```" is code in a fence outside a quote.
+const FENCE_OPEN = /^([\s>]*)(?:(?:[-*+]|\d{1,9}[.)])\s+)?(`{3,}(?=[^`]*$)|~{3,})/;
+const FENCE_CLOSE = /^([\s>]*)(`{3,}|~{3,})\s*$/;
+const quotes = (prefix) => (prefix.match(/>/g) || []).length;
 const unfenced = (s) => {
   let fence = "";
+  let quoted = 0;
   return s.split("\n").map((line) => {
     if (fence) {
       const c = FENCE_CLOSE.exec(line);
-      if (c && c[1][0] === fence[0] && c[1].length >= fence.length) fence = "";
+      if (c && quotes(c[1]) === quoted && c[2][0] === fence[0] && c[2].length >= fence.length) fence = "";
       return "";
     }
     const o = FENCE_OPEN.exec(line);
-    if (o) { fence = o[1]; return ""; }
+    if (o) { fence = o[2]; quoted = quotes(o[1]); return ""; }
     return line;
   }).join("\n");
 };
@@ -89,7 +92,7 @@ const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
 // What else carries a URL in Markdown: a reference definition, and raw HTML.
-const DEFINITION = /^ {0,3}\[[^\]]+\]:[ \t]*<?([^\s>]+)/gm;
+const DEFINITION = /^(?: {0,3}> ?)* {0,3}\[[^\]]+\]:[ \t]*<?([^\s>]+)/gm;
 const ATTRIBUTE = /\s(?:src|href)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
 const allLinks = (s) => [
   ...mdLinks(s),
@@ -189,19 +192,29 @@ const carriedIn = (full) => {
   return out;
 };
 
-// The text outside code of every kind: fences, indented blocks a list item does
-// not hold, and code spans. A link written in code is an example, not a link.
+// The text outside code of every kind: fences, indented blocks, a list item's
+// too, and code spans. A link written in code is an example, not a link. Read
+// as absolute-links.html reads it: four spaces past the content of the list
+// item holding the line, or past the margin outside one, after a blank line.
 const codeless = (s) => {
   let list = false;
+  let indent = 0;
   let code = false;
   let blank = true;
   return unfenced(s).split("\n").map((line) => {
     const empty = !line.trim();
-    if (!empty) {
-      if (/^ {0,3}(?:[-*+]|\d{1,9}[.)])(?:\s|$)/.test(line)) list = true;
-      else if (!/^\s/.test(line)) list = false;
+    const lead = /^[ \t]*/.exec(line)[0].replace(/\t/g, "    ").length;
+    const at = list ? indent : 0;
+    code = !empty && lead >= at + 4 && (blank || code);
+    if (!empty && !code) {
+      const m = /^( *)([-*+]|\d{1,9}[.)])([ \t]*)/.exec(line);
+      const gap = m ? m[3].replace(/\t/g, "    ").length : 0;
+      if (m && m[1].length <= at + 3 && (gap || m[0].length === line.length)) {
+        list = true;
+        // A gap of five or more is a code block's: the content starts one in.
+        indent = m[1].length + m[2].length + (gap >= 1 && gap <= 4 ? gap : 1);
+      } else if (!lead) list = false;
     }
-    code = /^(?: {4}|\t)/.test(line) && !list && (blank || code);
     blank = empty;
     return code ? "" : outsideCode(line);
   }).join("\n");

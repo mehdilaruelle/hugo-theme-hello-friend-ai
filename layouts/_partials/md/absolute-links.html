@@ -6,8 +6,9 @@
        permalink is a file (uglyURLs) publishes its resources in a directory of
        that name, so a link naming one of them goes there instead.
        Code is left as written: fences, behind a list's indent or a quote's >
-       too, indented blocks, and code spans. Inline links, reference
-       definitions and raw HTML src and href are rewritten. */ -}}
+       too, indented blocks, a list item's too, and code spans. Inline links,
+       reference definitions, a quote's too, and raw HTML src and href are
+       rewritten. */ -}}
 {{- $base := replaceRE `[^/]*$` "" .base -}}
 {{- $bundle := $base -}}
 {{- $names := slice -}}
@@ -26,31 +27,55 @@
 {{- $def := `[^/#?<>\s:][^>\s:]*` -}}
 {{- $dq := `[^/#?"\s:][^"\s:]*` -}}
 {{- $sq := `[^/#?'\s:][^'\s:]*` -}}
+{{- /* What may stand before a reference definition: a quote's > as well. */ -}}
+{{- $dp := `(?: {0,3}> ?)* {0,3}` -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
+{{- $quotes := 0 -}}
 {{- $code := false -}}
 {{- $list := false -}}
+{{- $indent := 0 -}}
 {{- $blank := true -}}
 {{- range split .text "\n" -}}
   {{- $line := . -}}
   {{- $isBlank := not (strings.TrimSpace $line) -}}
   {{- if $fence -}}
-    {{- with findRESubmatch "^[\\s>]*(`{3,}|~{3,})\\s*$" $line 1 -}}
-      {{- $m := index . 0 1 -}}
-      {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- /* Closed in the container it opened in: "> ```" is code in a fence
+           outside a quote. */ -}}
+    {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
+      {{- $m := index . 0 2 -}}
+      {{- $q := len (findRE ">" (index . 0 1)) -}}
+      {{- if and (eq $q $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
     {{- end -}}
   {{- else -}}
     {{- $open := "" -}}
-    {{- with findRESubmatch "^[\\s>]*(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
+    {{- with findRESubmatch "^([\\s>]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
       {{- $m := index . 0 -}}
-      {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
+      {{- if not (and (hasPrefix (index $m 2) "`") (strings.Contains (index $m 3) "`")) -}}
+        {{- $open = index $m 2 -}}
+        {{- $quotes = len (findRE ">" (index $m 1)) -}}
+      {{- end -}}
     {{- end -}}
-    {{- /* Four spaces in: a code block, unless a list item holds the line. */ -}}
-    {{- $indented := findRE "^(?: {4}|\\t)" $line 1 -}}
-    {{- if not $isBlank -}}
-      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)])(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
+    {{- /* Four spaces past the content of the list item holding the line, or
+           past the margin outside one: a code block, after a blank line. */ -}}
+    {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
+    {{- $at := cond $list $indent 0 -}}
+    {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
+    {{- if and (not $isBlank) (not $code) -}}
+      {{- with findRESubmatch "^( *)([-*+]|\\d{1,9}[.)])([ \\t]*)" $line 1 -}}
+        {{- $m := index . 0 -}}
+        {{- $gap := len (replace (index $m 3) "\t" "    ") -}}
+        {{- if and (le (len (index $m 1)) (add $at 3)) (or $gap (eq (len (index $m 0)) (len $line))) -}}
+          {{- $list = true -}}
+          {{- /* A gap of five or more is a code block's: the content starts one in. */ -}}
+          {{- $indent = add (len (index $m 1)) (len (index $m 2)) (cond (and (ge $gap 1) (le $gap 4)) $gap 1) -}}
+        {{- else if not $lead -}}
+          {{- $list = false -}}
+        {{- end -}}
+      {{- else -}}
+        {{- if not $lead }}{{ $list = false }}{{ end -}}
+      {{- end -}}
     {{- end -}}
-    {{- $code = and $indented (not $list) (or $blank $code) -}}
     {{- if $open -}}
       {{- $fence = $open -}}
     {{- else if not $code -}}
@@ -65,14 +90,15 @@
             {{- range $name := $names -}}
               {{- $q := printf `(?:\./)?%s` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $name) -}}
               {{- $to := print $bb (replace $name "$" "$$") -}}
-              {{- $p = replaceRE (printf `\]\(%s([)\s])` $q) (printf `](%s${1}` $to) $p -}}
-              {{- $p = replaceRE (printf `\]\(<%s>` $q) (printf `](<%s>` $to) $p -}}
-              {{- $p = replaceRE (printf `^( {0,3}\[[^\]]+\]:[ \t]*<?)%s(>?(?:\s|$))` $q) (printf `${1}%s${2}` $to) $p -}}
-              {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s(["'])` $q) (printf `${1}%s${2}` $to) $p -}}
+              {{- /* Followed by its end, or by a query or fragment it keeps. */ -}}
+              {{- $p = replaceRE (printf `\]\(%s([?#)\s])` $q) (printf `](%s${1}` $to) $p -}}
+              {{- $p = replaceRE (printf `\]\(<%s([?#>])` $q) (printf `](<%s${1}` $to) $p -}}
+              {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)%s([?#]|>?(?:\s|$))` $dp $q) (printf `${1}%s${2}` $to) $p -}}
+              {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s([?#"'])` $q) (printf `${1}%s${2}` $to) $p -}}
             {{- end -}}
             {{- $p = replaceRE (printf `\]\((%s)([)\s])` $md) (printf `](%s${1}${2}` $b) $p -}}
             {{- $p = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $b) $p -}}
-            {{- $p = replaceRE (printf `^( {0,3}\[[^\]]+\]:[ \t]*<?)(%s)(>?(?:\s|$))` $def) (printf `${1}%s${2}${3}` $b) $p -}}
+            {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)(%s)(>?(?:\s|$))` $dp $def) (printf `${1}%s${2}${3}` $b) $p -}}
             {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*")(%s)"` $dq) (printf `${1}%s${2}"` $b) $p -}}
             {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*')(%s)'` $sq) (printf `${1}%s${2}'` $b) $p -}}
           {{- end -}}
