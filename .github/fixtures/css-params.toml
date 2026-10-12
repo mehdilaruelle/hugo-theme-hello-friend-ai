@@ -1,7 +1,9 @@
-# A colour carrying a rule and a spaced length must warn; a bare "2" is 2s.
+# A colour opening a comment or carrying a rule, and a spaced length, must warn;
+# a bare "2" is 2s.
 [params]
   [params.logo]
-    logoCursorColor   = "#67a2c9}body{display:none"
-    logoCursorAnimate = "2"
+    logoCursorColor     = "red/*"
+    logoCursorColorDark = "#67a2c9}body{display:none"
+    logoCursorAnimate   = "2"
   [params.portrait]
     maxWidth = "120 px"
