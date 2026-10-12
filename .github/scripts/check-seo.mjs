@@ -131,6 +131,15 @@ for (const file of walk(root, ".html")) {
     }
   }
 
+  // 5b. A breadcrumb links every crumb but the last, numbered from 1 with no gap.
+  for (const b of blocks.filter((b) => b && b["@type"] === "BreadcrumbList")) {
+    const items = Array.isArray(b.itemListElement) ? b.itemListElement : [];
+    items.forEach((it, i) => {
+      if (it?.position !== i + 1) failures.push([file, `breadcrumb item ${i + 1} has position ${it?.position}`, "positions run 1, 2, 3"]);
+      if (i < items.length - 1 && !it?.item) failures.push([file, `breadcrumb "${it?.name}" has no item`, "every crumb but the last links its page"]);
+    });
+  }
+
   // 6. A search page is not for an index: thin, and endlessly generable. Split
   //    into directives, not searched as a substring -- "noindexing" passed.
   const directives = robots.flatMap((r) => r.toLowerCase().split(/[\s,]+/)).filter(Boolean);
@@ -220,6 +229,11 @@ for (const file of walk(root, ".html")) {
     const shown = decode(html.match(TITLE)?.[1] ?? "").trim();
     if (shown && !shown.includes(ogTitle)) {
       failures.push([file, `title "${shown}" omits og:title "${ogTitle}"`, "the tab and the card name different pages"]);
+    }
+    const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i)?.[1] ?? "";
+    const code = ogTitle.match(/:[A-Za-z0-9_+-]+:/)?.[0];
+    if (code && h1 && !h1.includes(code)) {
+      failures.push([file, `og:title "${ogTitle}" keeps ${code}`, "the h1 renders it as an emoji"]);
     }
     const headline = blocks.map((b) => b && b.headline).find(Boolean);
     if (headline && decode(headline).trim() !== ogTitle) {

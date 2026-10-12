@@ -43,6 +43,29 @@
   {{- with $author -}}
     {{- $data = merge $data (dict "author" $authorNode) -}}
   {{- end -}}
+{{- else if and (eq .Params.schema "ProfilePage") (or .IsPage (eq (partial "canonical.html" .).pager 1)) -}}
+  {{- /* An about page is not an article, so this is tested before the date
+         and the list kinds: asking for a ProfilePage is explicit, a date or
+         pages under it a guess. First pager only, as for a list. mainEntity
+         is the Person the page is about, under the same @id the home page and
+         every article already carry. */ -}}
+  {{- $data = dict
+    "@context" "https://schema.org"
+    "@type" "ProfilePage"
+    "@id" .Permalink
+    "url" .Permalink
+    "name" (partial "title-plain.html" .)
+    "inLanguage" .Language.Lang
+  -}}
+  {{- with .Description -}}
+    {{- $data = merge $data (dict "description" .) -}}
+  {{- end -}}
+  {{- /* $person always carries at least its @type, so it cannot be the test.
+         A site with no author configured has no person to point at, and a
+         mainEntity holding nothing but a type says less than no mainEntity. */ -}}
+  {{- with $siteAuthor -}}
+    {{- $data = merge $data (dict "mainEntity" $person) -}}
+  {{- end -}}
 {{- else if in (slice "section" "taxonomy" "term") .Kind -}}
   {{- /* A section or taxonomy page is a list of things, which is what a
          CollectionPage is. Only the first pager is described: page two is the
@@ -73,28 +96,6 @@
       {{- end -}}
       {{- $data = merge $data (dict "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len (partial "list-pages.html" $)) "itemListElement" $items)) -}}
     {{- end -}}
-  {{- end -}}
-{{- else if and .IsPage (eq .Params.schema "ProfilePage") -}}
-  {{- /* An about page is not an article, so this is tested before the date
-         below: asking for a ProfilePage is explicit, and having a date is a
-         guess. mainEntity is the Person the page is about, under the same @id
-         the home page and every article already carry. */ -}}
-  {{- $data = dict
-    "@context" "https://schema.org"
-    "@type" "ProfilePage"
-    "@id" .Permalink
-    "url" .Permalink
-    "name" (partial "title-plain.html" .)
-    "inLanguage" .Language.Lang
-  -}}
-  {{- with .Description -}}
-    {{- $data = merge $data (dict "description" .) -}}
-  {{- end -}}
-  {{- /* $person always carries at least its @type, so it cannot be the test.
-         A site with no author configured has no person to point at, and a
-         mainEntity holding nothing but a type says less than no mainEntity. */ -}}
-  {{- with $siteAuthor -}}
-    {{- $data = merge $data (dict "mainEntity" $person) -}}
   {{- end -}}
 {{- else if and .IsPage (not .Date.IsZero) -}}
   {{- $data = dict
