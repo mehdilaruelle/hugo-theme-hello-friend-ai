@@ -490,9 +490,7 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // The search field's edge is what shows it is a field, and it was 1.37:1 in
-  // light and the fill's own colour in dark. Read from the compiled tokens of
-  // each scheme, and from the rule, so a field drawn some other way fails too.
+  // WCAG 1.4.11: the search field's edge, all that shows it, is 3:1 on the page.
   "field-border"() {
     const sheet = css();
     const lum = (hex) => {
