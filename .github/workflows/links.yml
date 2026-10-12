@@ -369,6 +369,17 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
+      # No demo lists more posts than a pager holds, so the order was never paged.
+      - name: Check posts are paged and linked newest first
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --destination public-pagers \
+            --config config.toml,../.github/fixtures/pager-size-two.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-invariants.mjs public-pagers date-order posts /subpath/
+          node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager \
+            tags/page/2/index.html "Previous page" "Next page"
+
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
         working-directory: hello-friend-ai/exampleSite
