@@ -23,18 +23,32 @@
   script.setAttribute('theme', sent);
   mount.appendChild(script);
 
-  // Before the frame exists, the client reads the attribute instead.
+  // The frame loads lazily and drops messages until then: hold the theme until
+  // it first posts to the page, and before the client runs, it reads the attribute.
+  let ready = false;
+  let shown = sent;
+  const frameOf = () => mount.querySelector('iframe.utterances-frame') || document.querySelector('iframe.utterances-frame');
+  function deliver() {
+    if (!ready || shown === sent) return;
+    const frame = frameOf();
+    if (!frame || !frame.contentWindow) return;
+    frame.contentWindow.postMessage({ type: 'set-theme', theme: sent }, 'https://utteranc.es');
+    shown = sent;
+  }
   function sync() {
     const theme = current();
     if (theme === sent) return;
     sent = theme;
     script.setAttribute('theme', theme);
-    const frame = mount.querySelector('iframe.utterances-frame') || document.querySelector('iframe.utterances-frame');
-    if (frame && frame.contentWindow) {
-      frame.contentWindow.postMessage({ type: 'set-theme', theme: theme }, 'https://utteranc.es');
-    }
+    if (!frameOf()) shown = theme;
+    deliver();
   }
 
+  window.addEventListener('message', (event) => {
+    if (event.origin !== 'https://utteranc.es') return;
+    ready = true;
+    deliver();
+  });
   new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   if (system.addEventListener) system.addEventListener('change', sync);
   else if (system.addListener) system.addListener(sync);
