@@ -170,9 +170,7 @@ for (const file of walk(root, ".html")) {
     failures.push([file, "the page and the FAQPage ask different questions", why]);
   }
 
-  // 6c. An answer opens with a block. RenderString is inline by default, which
-  //     took the <p> off a one-paragraph answer: it sat flush with the question,
-  //     and the indent meant for the answer landed on each <code> or <em> in it.
+  // 6c. An answer opens with a block: inline, RenderString drops a lone paragraph's <p>.
   for (const d of details) {
     const answer = d.replace(/^[\s\S]*?<\/summary\s*>/i, "").replace(/<\/details\s*>$/i, "").trimStart();
     if (answer && !/^<(?:p|ul|ol|dl|div|pre|blockquote|table|figure|h[1-6]|hr)\b/i.test(answer)) {

@@ -2,9 +2,7 @@
 {{- if not $q -}}
   {{- errorf "faq: needs a question, as {{< faq \"Why?\" >}} — %s" .Position -}}
 {{- end -}}
-{{- /* display block: inline, RenderString takes the <p> off a one-paragraph
-       answer, which then sat bare in <details>, flush with the question, and
-       the indent below landed on each <code> and <em> in it instead. */ -}}
+{{- /* display block: inline, RenderString drops a one-paragraph answer's <p>. */ -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
