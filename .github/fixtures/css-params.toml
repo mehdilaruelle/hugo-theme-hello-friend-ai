@@ -1,5 +1,4 @@
-# A colour opening a comment or carrying a rule, and a spaced length, must warn;
-# a bare "2" is 2s.
+# Must warn: a colour opening a comment or a rule, a spaced length. "2" is 2s.
 [params]
   [params.logo]
     logoCursorColor     = "red/*"

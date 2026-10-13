@@ -1,6 +1,6 @@
 {{- /* (dict "value" v "name" n "kind" "colour"|"time"): v as one CSS value, or
-       "" with a warning. A colour has too many spellings to list, so it is
-       checked for what ends a value, a rule or the stylesheet, or opens a comment. */ -}}
+       "" with a warning. A colour has too many spellings to list, so it is checked
+       for what ends a value, a rule or the stylesheet, or opens a comment. */ -}}
 {{- $v := printf "%v" .value | strings.TrimSpace -}}
 {{- $ok := false -}}
 {{- if eq .kind "time" -}}
