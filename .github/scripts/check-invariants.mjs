@@ -490,8 +490,7 @@ const checks = {
     ok("a site's tags.html and _variables.scss win over the theme's");
   },
 
-  // WCAG 1.4.11: the search field's edge, all that shows it, is 3:1 against the
-  // page outside it and its own fill inside.
+  // WCAG 1.4.11: the search field's edge is 3:1 on the page and on its own fill.
   "field-border"() {
     const sheet = css();
     const lum = (hex) => {
