@@ -23,8 +23,7 @@
   script.setAttribute('theme', sent);
   mount.appendChild(script);
 
-  // The frame loads lazily and drops messages until then: hold the theme until
-  // it first posts to the page, and before the client runs, it reads the attribute.
+  // The lazy frame drops messages until it first posts to the page: the theme waits.
   let ready = false;
   let shown = sent;
   const frameOf = () => mount.querySelector('iframe.utterances-frame') || document.querySelector('iframe.utterances-frame');
