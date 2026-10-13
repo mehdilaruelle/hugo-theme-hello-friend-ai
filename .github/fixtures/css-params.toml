@@ -1,0 +1,8 @@
+# Must warn: a colour opening a comment or a rule, a spaced length. "2" is 2s.
+[params]
+  [params.logo]
+    logoCursorColor     = "red/*"
+    logoCursorColorDark = "#67a2c9}body{display:none"
+    logoCursorAnimate   = "2"
+  [params.portrait]
+    maxWidth = "120 px"

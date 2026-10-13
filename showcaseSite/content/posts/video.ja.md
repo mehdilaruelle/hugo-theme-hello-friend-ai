@@ -19,9 +19,9 @@ series = ["Showcase"]
 
 | ファイル | サイズ |
 | --- | --- |
-| `demo.gif` | 4248 Ko |
-| `demo.mp4` | 366 Ko |
-| `demo.webm` | 290 Ko |
+| `demo.gif` | 4248 KB |
+| `demo.mp4` | 366 KB |
+| `demo.webm` | 290 KB |
 
 `video` ショートコードは拡張子を除いたパスを取り、形式ごとに `<source>` を
 出力します。ブラウザは再生できる最初のものを選びます。
