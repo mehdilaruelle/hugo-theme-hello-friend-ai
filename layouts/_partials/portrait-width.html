@@ -5,7 +5,7 @@
 {{- with site.Params.portrait.maxWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}
   {{- $num := `(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)` -}}
-  {{- $unit := `(?:px|r?em|r?ex|r?ch|r?lh|cap|ic|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|pt|pc|cm|mm|q|in|%)` -}}
+  {{- $unit := `(?:px|r?em|r?ex|r?ch|r?lh|r?cap|r?ic|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|pt|pc|cm|mm|q|in|%)` -}}
   {{- if findRE (printf `^%s$` $num) $width -}}
     {{- $px := float $width -}}
     {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
