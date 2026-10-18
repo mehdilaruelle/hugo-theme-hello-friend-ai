@@ -130,8 +130,7 @@
            data-repo="{{ .Site.Params.Utterances.Repository }}"
            {{ if .Site.Params.Utterances.Label }}data-label="{{ .Site.Params.Utterances.Label }}"{{ end }}
            data-issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"></div>
-      {{- /* Its own file, beside the mount: not the shared bundle, which a site's
-             javascript.html can replace and an earlier script's error can stop. */ -}}
+      {{- /* Not in the bundle, which a site's javascript.html can replace. */ -}}
       {{- with resources.Get "js/utterances.js" | resources.Minify | resources.Fingerprint "sha512" }}
       <script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
       {{- end }}

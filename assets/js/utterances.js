@@ -1,5 +1,4 @@
-// utterances in the page's theme. Its own preferred-color-scheme follows the
-// system, which params.defaultTheme and the toggle can contradict.
+// utterances in the page's theme: its own preferred-color-scheme follows the system.
 
 (function () {
   const mount = document.querySelector('.utterances-follow');
@@ -16,7 +15,6 @@
   script.src = 'https://utteranc.es/client.js';
   script.async = true;
   script.crossOrigin = 'anonymous';
-  // The three the client reads, and only those: nothing else reaches the script.
   for (const name of ['repo', 'issue-term', 'label']) {
     const value = mount.getAttribute('data-' + name);
     if (value) script.setAttribute(name, value);
@@ -25,10 +23,10 @@
   script.setAttribute('theme', sent);
   mount.appendChild(script);
 
-  // The lazy frame drops messages until it first posts to the page: the theme waits.
+  // The frame drops messages until it has posted one.
   let ready = false;
   let shown = sent;
-  const frameOf = () => mount.querySelector('iframe.utterances-frame') || document.querySelector('iframe.utterances-frame');
+  const frameOf = () => mount.querySelector('iframe.utterances-frame');
   function deliver() {
     if (!ready || shown === sent) return;
     const frame = frameOf();
