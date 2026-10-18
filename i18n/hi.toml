@@ -22,14 +22,14 @@ other = "क्षमा करें ! पेज़ नहीं मिला…"
 # posts/single.html
 #
 [readingTime]
-one   = "एक मिनट"
+one   = "{{ .Count }} मिनट"
 other = "{{ .Count }} मिनट"
 
 [tableOfContents]
 other = "अनुक्रमणिका"
 
 [wordCount]
-one   = "एक शब्द"
+one   = "{{ .Count }} शब्द"
 other = "{{ .Count }} शब्द"
 
 [lastModified]
