@@ -158,6 +158,11 @@ front matter rather than in the shortcode call. The caption takes Markdown:
     caption = "Arrival, *early*"
 ```
 
+`src` is a glob, so a file name holding `[`, `]`, `{`, `}`, `*` or `?` takes a
+backslash before each, in single quotes: `src = 'photos/lake \[copy\].jpg'`.
+Unescaped, it can match another file or none: the alt lands on the wrong
+picture, or this one falls back to its file name.
+
 A thumbnail is a link, and a link needs a name, so a picture with no `alt`
 falls back to its resource `title` if the front matter sets one, then to its
 file name — `01-arrival.jpg` reads "01 arrival". Write the `alt`.

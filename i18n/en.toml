@@ -155,7 +155,7 @@ other = "Link to this section"
 other = "Related posts"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} on {{ .Site }}"

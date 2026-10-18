@@ -171,7 +171,7 @@ other = "رابط إلى هذا القسم"
 other = "مقالات ذات صلة"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} على {{ .Site }}"

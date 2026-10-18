@@ -174,16 +174,20 @@ jobs:
             --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
 
       # A link in code is an example, so it is carried as the author wrote it.
-      - name: Check llms-full.txt leaves links in code as written
+      - name: Check llms-full.txt leaves links in code and footnotes as written
         working-directory: hello-friend-ai/showcaseSite
         run: |
           bad=0
           for snippet in '`[a span](commas.svg)`' '    [indented](commas.svg)' \
                          '    [in a list](commas.svg)' '> [in a quote](commas.svg)' \
-                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)'; do
+                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)' \
+                         '[^sizes]: Each size is read from the file itself.' \
+                         '[Note]: neither is a line shaped like one, commas.svg and all.' \
+                         '    The note goes on, with [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) again.' \
+                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
-          [ "$bad" = 0 ] && echo "  every link in code is carried as written"
+          [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 
       # With neither the note nor the llms-full line between them, a body
@@ -412,11 +416,12 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: |
           hugo --themesDir ../.. --gc --destination public-pagers \
-            --config config.toml,../.github/fixtures/pager-size-two.toml \
+            --config config.toml,../.github/fixtures/pager-size-three.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-pagers date-order posts /subpath/
-          node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager \
-            tags/page/2/index.html "Previous page" "Next page"
+          for pager in tags/index.html tags/page/2/index.html; do
+            node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager "$pager" "Previous page" "Next page"
+          done
 
       # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
       - name: Check the SEO invariants on the shapes the demos lack
@@ -464,7 +469,12 @@ jobs:
 
       - name: Check every gallery thumbnail is a named link to a square
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-invariants.mjs public gallery
+        run: |
+          node ../.github/scripts/check-invariants.mjs public gallery
+          # A bracketed file name still gets the alt its front matter writes.
+          grep -q 'alt="The lake again, from a file whose name holds brackets"' \
+            public/posts/2026/02/a-gallery-from-a-page-bundle/index.html \
+            || { echo "  BAD  05-lake [copy].jpg lost its front-matter alt"; exit 1; }
 
       - name: Check contentWidth reaches the stylesheet and the image sizes
         working-directory: hello-friend-ai
@@ -485,6 +495,8 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-styled \
             background-color=#67a2c9 animation-duration=2s
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
+          grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
+            || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
 
       # Built on the showcase, which holds the logo files.
       - name: Check a logo with a dark variant, and an inlined one

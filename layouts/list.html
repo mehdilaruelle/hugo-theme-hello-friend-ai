@@ -29,12 +29,18 @@
                     </ul>
                 </div>
             {{ else }}
-                {{ range $paginator.Pages.GroupByDate "2006" }}
+                {{- /* By year in the list's own order: GroupByDate sorts again, and
+                       reverses posts that share a date. */ -}}
+                {{- $years := slice }}
+                {{- range $paginator.Pages }}{{ $years = $years | append .Date.Year }}{{ end }}
+                {{ range uniq $years }}
+                    {{- $year := . }}
                     <div class="posts-group">
-                        {{ if where .Pages "Date.IsZero" false }}<div class="post-year">{{ .Key }}</div>{{ end }}
+                        {{ $group := where $paginator.Pages "Date.Year" $year }}
+                        {{ if where $group "Date.IsZero" false }}<div class="post-year">{{ $year }}</div>{{ end }}
 
                         <ul class="posts-list">
-                            {{ range .Pages }}
+                            {{ range $group }}
                                 {{- $cover := partial "string-param.html" (dict "value" .Params.cover "name" "cover") }}
                                 {{- $thumbnail := and (partial "switch.html" .Site.Params.enableThumbnails) $cover }}
                                 {{- /* Description first, .Summary as a fallback, cut short. */ -}}

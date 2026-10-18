@@ -1,0 +1,1 @@
+<rss version="2.0"><channel><title>site-rss-override</title><link>{{ .Permalink }}</link><description></description></channel></rss>
