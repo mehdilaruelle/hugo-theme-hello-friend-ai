@@ -201,7 +201,7 @@ jobs:
                       '\+ this line is a paragraph, and a decoded "+" opening it would make it a' \
                       '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
                       'Out of the quote, it’s prose again.' '    Its second paragraph: it’s decoded as well.' \
-                      'Under it, it’s prose.'; do
+                      'Under it, it’s prose.' 'Under that, it’s prose too.'; do
             grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
           done
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"

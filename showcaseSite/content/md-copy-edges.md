@@ -44,3 +44,8 @@ An indented block shows a fence marker without opening a fence:
     ```
 
 Under it, it&rsquo;s prose.
+
+A paragraph's next line, four spaces in, opens no fence either:
+    ```
+
+Under that, it&rsquo;s prose too.
