@@ -22,3 +22,12 @@
 
 [params]
   mainSections = ["posts"]
+
+# What the theme needs of Hugo, so a site that cannot build it is told at
+# startup rather than part way through. The extended edition is not a
+# preference: the stylesheet is transpiled with Dart Sass, which only it
+# carries, and head.html can report a missing one but not supply it.
+[module]
+  [module.hugoVersion]
+    extended = true
+    min      = "0.158.0"
