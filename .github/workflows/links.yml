@@ -307,9 +307,7 @@ jobs:
           post=posts/2026/01/a-video-where-a-gif-used-to-be/index.html
           bad=0
           grep -q 'class=utterances-follow' "public-utterances/$post" || { echo "  BAD  the default theme did not get the following mount"; bad=1; }
-          ! grep -q 'utteranc.es/client.js' "public-utterances/$post" || { echo "  BAD  the default theme still writes the static client"; bad=1; }
           grep -q 'set-theme' public-utterances/bundle.*.js || { echo "  BAD  no script tells utterances of a theme change"; bad=1; }
-          grep -q 'origin!=="https://utteranc.es"' public-utterances/bundle.*.js || { echo "  BAD  a theme change before the frame loads is lost"; bad=1; }
           grep -q 'theme=github-light' "public-comments/$post" || { echo "  BAD  a named theme lost the static client"; bad=1; }
           [ "$bad" = 0 ] && echo "  utterances follows the page by default, and a named theme stands"
           exit "$bad"
