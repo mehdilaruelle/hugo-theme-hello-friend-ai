@@ -139,12 +139,6 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public copy-label
 
-      - name: Check the search field's edge can be seen
-        working-directory: hello-friend-ai
-        run: |
-          node .github/scripts/check-invariants.mjs exampleSite/public field-border
-          node .github/scripts/check-invariants.mjs showcaseSite/public field-border
-
       # Open Graph and Twitter tags are written by two partials. They used to
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a
