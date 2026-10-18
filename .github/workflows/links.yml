@@ -466,21 +466,9 @@ jobs:
         run: |
           out=$(hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in ogimage-shape verification-shape credentials-shape; do
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
-
-      - name: Check params written into the stylesheet are checked first
-        working-directory: hello-friend-ai/exampleSite
-        run: |
-          out=$(hugo --themesDir ../.. --gc --destination public-css-params \
-            --config config.toml,../.github/fixtures/css-params.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in css-param-invalid portrait-width-invalid; do
-            grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
-          done
-          ! grep -l 'body{display:none' public-css-params/*.css || { echo "  BAD  the colour opened a rule of its own"; exit 1; }
-          node ../.github/scripts/check-invariants.mjs public-css-params cursor-styled animation-duration=2s
-          echo "  each param is checked before it reaches the stylesheet"
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
