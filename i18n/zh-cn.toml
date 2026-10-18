@@ -39,6 +39,8 @@ other = "最后修改"
 [pagination]
 newerPosts = "较新条目"
 olderPosts = "旧条目"
+previousPage = "上一页"
+nextPage = "下一页"
 
 [language]
 other = "语言"
@@ -152,3 +154,15 @@ other = "本节链接"
 #
 [relatedPosts]
 other = "相关文章"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }} 上的{{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }} 上{{ .Title }}的最新内容"
+
+[feedDescriptionSite]
+other = "{{ .Site }} 的最新内容"

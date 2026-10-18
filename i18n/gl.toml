@@ -36,6 +36,8 @@ other = "{{ .Count }} Palabras"
 [pagination]
 newerPosts = "Entradas más recientes"
 olderPosts = "Entradas antiguas"
+previousPage = "Páxina anterior"
+nextPage = "Páxina seguinte"
 
 [language]
 other = "Idioma"
@@ -152,3 +154,15 @@ other = "Ligazón a esta sección"
 #
 [relatedPosts]
 other = "Entradas relacionadas"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} en {{ .Site }}"
+
+[feedDescription]
+other = "Contido recente de {{ .Title }} en {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Contido recente en {{ .Site }}"
