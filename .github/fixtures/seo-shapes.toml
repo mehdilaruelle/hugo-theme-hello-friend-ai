@@ -1,0 +1,2 @@
+# So the h1 renders the emoji code in posts/shipping.md.
+enableEmoji = true
