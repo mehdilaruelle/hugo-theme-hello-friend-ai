@@ -152,3 +152,15 @@ other = "Link til dette afsnit"
 #
 [relatedPosts]
 other = "Relaterede indlæg"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} på {{ .Site }}"
+
+[feedDescription]
+other = "Seneste indhold i {{ .Title }} på {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Seneste indhold på {{ .Site }}"

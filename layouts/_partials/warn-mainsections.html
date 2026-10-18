@@ -11,6 +11,6 @@
        it by name. */ -}}
 {{- range site.Params.mainSections -}}
   {{- if not (or (templates.Exists (printf "%s/page.html" .)) (templates.Exists (printf "%s/single.html" .))) -}}
-    {{- warnidf (printf "mainsections-no-article-template-%s" .) "params.mainSections names %q, but the theme's article template is layouts/posts/page.html. Articles in content/%s/ render without reading time, word count, dates, sharing buttons, prev/next, related posts or comments, and %s/index.xml loses its full-text content:encoded. Either move them to content/posts/ or add layouts/%s/page.html to your site. See docs/config.md." . . . . -}}
+    {{- warnidf (printf "mainsections-no-article-template-%s" .) "params.mainSections names %q, but the theme's article template is layouts/posts/page.html. Articles in content/%s/ render without reading time, word count, dates, sharing buttons, prev/next, related posts or comments. Either move them to content/posts/ or add layouts/%s/page.html to your site. See docs/config.md." . . . -}}
   {{- end -}}
 {{- end -}}
