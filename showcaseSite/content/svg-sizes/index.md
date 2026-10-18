@@ -74,9 +74,18 @@ A footnote is not a definition, and keeps its text.[^sizes]
 
 Out of the quote, [the first of them](commas.svg) once more.
 
-A definition whose title escapes its quotes, [the escaped one][escaped], and one
-written in a list item, [the listed one][listed]:
+A definition whose title escapes its quotes, [the escaped one][escaped], one
+written in a list item, [the listed one][listed], and one nested deeper, [the
+nested one][nested]:
 
 [escaped]: commas.svg "the \"commas\" one"
 
 - [listed]: commas.svg
+  A list item can open with a definition.
+  - and hold a sublist
+    - [nested]: commas.svg
+
+Neither a task box nor code in a list item is a definition:
+
+- [ ]: commas.svg
+-     [shown]: commas.svg

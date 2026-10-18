@@ -91,7 +91,7 @@ const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
 // A footnote is not a definition, nor is a label followed by prose.
-const DEFINITION = /^(?: {0,3}> ?)* {0,3}(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)?\[[^\]^][^\]]*\]:[ \t]*<?([^\s>]+)>?(?:[ \t]+(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\((?:[^)\\]|\\.)*\)))?[ \t]*$/gm;
+const DEFINITION = /^(?: {0,3}> ?)* *(?:(?:[-*+]|\d{1,9}[.)])(?: {1,4}| {0,3}\t))?\[[ \t]*[^\]\s^][^\]]*\]:[ \t]*<?([^\s>]+)>?(?:[ \t]+(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\((?:[^)\\]|\\.)*\)))?[ \t]*$/gm;
 const ATTRIBUTE = /\s(?:src|href)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
 const allLinks = (s) => [
   ...mdLinks(s),
