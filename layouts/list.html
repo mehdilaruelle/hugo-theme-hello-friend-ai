@@ -29,8 +29,8 @@
                     </ul>
                 </div>
             {{ else }}
-                {{- /* Runs of one year in the list's own order: GroupByDate sorts again,
-                       and reverses posts that share a date. */ -}}
+                {{- /* By year in the list's own order: GroupByDate sorts again, and
+                       reverses posts that share a date. */ -}}
                 {{- $groups := slice }}
                 {{- $run := slice }}
                 {{- range $paginator.Pages }}
