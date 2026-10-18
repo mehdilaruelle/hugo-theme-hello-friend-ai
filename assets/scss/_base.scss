@@ -546,10 +546,8 @@ hr {
 //
 // It appears with the copy button rather than before it, and it is positioned
 // by its right edge, so shifting that edge clears the button whatever the
-// language is called: a longer name simply extends further left. The offset
-// clears the widest copyCode translation the theme ships, Copier at 62px, with
-// room to spare. A site translating it to something much longer would want to
-// raise it.
+// language is called: a longer name simply extends further left. copy-code.js
+// sets --copy-code-width; the fallback is for a browser with no ResizeObserver.
 //
 // aria-hidden is not available on a pseudo-element, and it does not need to be.
 // Generated content is not announced by a screen reader in the browsers this
@@ -559,7 +557,8 @@ pre > code[data-lang]:not([data-lang=""])::before {
   position: absolute;
   z-index: 10;
   top: 8px;
-  inset-inline-end: 5rem;
+  // The button's 8px from the edge, its width, and 8px between the two.
+  inset-inline-end: calc(var(--copy-code-width, 4rem) + 16px);
   padding: 4px 10px;
   border: 1px solid transparent;
   border-radius: 6px;

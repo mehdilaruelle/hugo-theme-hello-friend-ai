@@ -135,6 +135,10 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-code-blocks.mjs public
 
+      - name: Check the language label clears the copy button
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public copy-label
+
       - name: Check the focus ring and the status colours meet their contrast
         working-directory: hello-friend-ai
         run: |

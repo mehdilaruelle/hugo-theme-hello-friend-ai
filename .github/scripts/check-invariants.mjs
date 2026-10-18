@@ -548,6 +548,19 @@ const checks = {
     ok(`the taxonomy pager reads "${previous}" and "${next}"`);
   },
 
+  // The language label clears the copy button by its measured width. Nothing here
+  // renders CSS, so the rule and the script setting it are asserted.
+  "copy-label"() {
+    const sel = 'pre>code[data-lang]:not([data-lang=""])::before';
+    const bodies = rules(css(), sel);
+    if (!bodies.some((b) => /inset-inline-end:\s*calc\(\s*var\(\s*--copy-code-width\b/.test(b)))
+      fail("the language label is not placed by --copy-code-width", bodies.map((b) => `${sel}{${b}}`).join("\n") || `(no ${sel} rule)`);
+    const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
+    if (!/\.style\.setProperty\(\s*["']--copy-code-width["']\s*,[^)]*\.offsetWidth\b/.test(js))
+      fail("no script sets --copy-code-width from the button's measured width");
+    ok("the language label is placed by the copy button's measured width");
+  },
+
   // Colours a static scan never sees in use (focus ring, script-written status and
   // dates), read from each scheme's compiled tokens so a site's own are checked too.
   contrast() {
