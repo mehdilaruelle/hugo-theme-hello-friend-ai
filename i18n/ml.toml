@@ -42,6 +42,8 @@ other = "ഭാഷ"
 [pagination]
 newerPosts = "പുതിയ പോസ്റ്റുകൾ"
 olderPosts = "പഴയ പോസ്റ്റുകൾ"
+previousPage = "മുമ്പത്തെ പേജ്"
+nextPage = "അടുത്ത പേജ്"
 
 [skipToContent]
 other = "ഉള്ളടക്കത്തിലേക്ക് പോകുക"

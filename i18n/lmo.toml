@@ -42,6 +42,8 @@ other = "Lengua"
 [pagination]
 newerPosts = "Articol pussee noeuv"
 olderPosts = "Articol pussee vecc"
+previousPage = "Pagina de prima"
+nextPage = "Pagina dopo"
 
 [skipToContent]
 other = "Va al contegnuu"

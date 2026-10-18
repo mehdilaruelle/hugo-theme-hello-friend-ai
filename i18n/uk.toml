@@ -43,6 +43,8 @@ other = "Останнє оновлення"
 [pagination]
 newerPosts = "Нові записи"
 olderPosts = "Старіші записи"
+previousPage = "Попередня сторінка"
+nextPage = "Наступна сторінка"
 
 [language]
 other = "Мова"

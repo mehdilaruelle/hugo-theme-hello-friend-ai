@@ -39,6 +39,8 @@ other = "Son güncelleme"
 [pagination]
 newerPosts = "Daha yeni girişler"
 olderPosts = "Eski girişler"
+previousPage = "Önceki sayfa"
+nextPage = "Sonraki sayfa"
 
 [language]
 other = "Dil"

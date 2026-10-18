@@ -42,6 +42,8 @@ other = "Sprog"
 [pagination]
 newerPosts = "Nyere indlæg"
 olderPosts = "Ældre indlæg"
+previousPage = "Forrige side"
+nextPage = "Næste side"
 
 [skipToContent]
 other = "Gå til indhold"

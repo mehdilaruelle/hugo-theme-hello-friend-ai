@@ -42,6 +42,8 @@ other = "語言"
 [pagination]
 newerPosts = "較新文章"
 olderPosts = "較舊文章"
+previousPage = "上一頁"
+nextPage = "下一頁"
 
 [skipToContent]
 other = "跳至內容"

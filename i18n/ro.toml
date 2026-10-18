@@ -42,6 +42,8 @@ other = "Ultima modificare"
 [pagination]
 newerPosts = "Intrări mai noi"
 olderPosts = "Intrări mai vechi"
+previousPage = "Pagina anterioară"
+nextPage = "Pagina următoare"
 
 [language]
 other = "Limbă"

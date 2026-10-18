@@ -42,6 +42,8 @@ other = "भाषा"
 [pagination]
 newerPosts = "नई पोस्ट"
 olderPosts = "पुरानी पोस्ट"
+previousPage = "पिछला पृष्ठ"
+nextPage = "अगला पृष्ठ"
 
 [skipToContent]
 other = "सामग्री पर जाएँ"

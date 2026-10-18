@@ -15,6 +15,13 @@ The settings in the default area are usually provided by Hugo itself. Check [Con
 
 How many entries each pager of a list holds; 10 is Hugo's default. The old top-level `paginate` key is ignored without a warning. See [Pagination](https://gohugo.io/templates/pagination/).
 
+A list of posts is in date order, newest first, across all its pagers, and the
+links under an article step to the post just newer and just older than it.
+`weight` does not move a post up: the list is grouped by year and its pagers say
+"Newer posts" and "Older posts", which a pinned post would contradict. A
+taxonomy (`/tags/`) lists its terms by name, and its pagers read "Previous page"
+and "Next page".
+
 ## Params, and where to put them when you have several languages
 
 A param can be set once under `[params]`, or once per language under

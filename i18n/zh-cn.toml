@@ -39,6 +39,8 @@ other = "最后修改"
 [pagination]
 newerPosts = "较新条目"
 olderPosts = "旧条目"
+previousPage = "上一页"
+nextPage = "下一页"
 
 [language]
 other = "语言"
