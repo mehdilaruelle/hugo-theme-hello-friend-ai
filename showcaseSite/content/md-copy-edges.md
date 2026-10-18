@@ -38,3 +38,9 @@ Term
 : A definition's second paragraph is prose too.
 
     Its second paragraph: it&rsquo;s decoded as well.
+
+An indented block shows a fence marker without opening a fence:
+
+    ```
+
+Under it, it&rsquo;s prose.
