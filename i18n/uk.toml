@@ -160,7 +160,7 @@ other = "Посилання на цей розділ"
 other = "Схожі записи"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} — {{ .Site }}"

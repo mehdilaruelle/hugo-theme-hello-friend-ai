@@ -19,6 +19,9 @@
 {{- $dq := `[^/#?"\s:][^"\s:]*` -}}
 {{- $sq := `[^/#?'\s:][^'\s:]*` -}}
 {{- $dp := `(?: {0,3}> ?)* {0,3}` -}}
+{{- /* A definition's label, not a footnote's, and what may follow its destination: a title. */ -}}
+{{- $label := `\[[^\]^][^\]]*\]:` -}}
+{{- $title := `(?:[ \t]+(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*$` -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
 {{- $quotes := 0 -}}
@@ -29,14 +32,23 @@
 {{- range split .text "\n" -}}
   {{- $line := . -}}
   {{- $isBlank := not (strings.TrimSpace $line) -}}
+  {{- $inFence := false -}}
   {{- if $fence -}}
-    {{- /* Closed only at the quote depth it opened at: "> ```" in a plain fence is code. */ -}}
-    {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
-      {{- $m := index . 0 2 -}}
-      {{- $q := len (findRE ">" (index . 0 1)) -}}
-      {{- if and (eq $q $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- $inFence = true -}}
+    {{- if lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes -}}
+      {{- /* A line out of the quote ends it, and the fence it holds. */ -}}
+      {{- $fence = "" -}}
+      {{- $inFence = false -}}
+    {{- else -}}
+      {{- /* Closed only at the quote depth it opened at: "> ```" in a plain fence is code. */ -}}
+      {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
+        {{- $m := index . 0 2 -}}
+        {{- $q := len (findRE ">" (index . 0 1)) -}}
+        {{- if and (eq $q $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+      {{- end -}}
     {{- end -}}
-  {{- else -}}
+  {{- end -}}
+  {{- if not $inFence -}}
     {{- $open := "" -}}
     {{- with findRESubmatch "^([\\s>]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
       {{- $m := index . 0 -}}
@@ -49,7 +61,11 @@
     {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
     {{- $at := cond $list $indent 0 -}}
     {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
-    {{- if and (not $isBlank) (not $code) -}}
+    {{- if and (not $isBlank) (not $code) (findRE `^ {0,3}\[\^[^\]]+\]:` $line 1) -}}
+      {{- /* A footnote holds its paragraphs four spaces in, as a list item does. */ -}}
+      {{- $list = true -}}
+      {{- $indent = 4 -}}
+    {{- else if and (not $isBlank) (not $code) -}}
       {{- with findRESubmatch "^( *)([-*+]|\\d{1,9}[.)])([ \\t]*)" $line 1 -}}
         {{- $m := index . 0 -}}
         {{- $gap := len (replace (index $m 3) "\t" "    ") -}}
@@ -79,12 +95,12 @@
               {{- $to := print $bb (replace $name "$" "$$") -}}
               {{- $p = replaceRE (printf `\]\(%s([?#)\s])` $q) (printf `](%s${1}` $to) $p -}}
               {{- $p = replaceRE (printf `\]\(<%s([?#>])` $q) (printf `](<%s${1}` $to) $p -}}
-              {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)%s([?#]|>?(?:\s|$))` $dp $q) (printf `${1}%s${2}` $to) $p -}}
+              {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)%s((?:[?#][^\s>]*)?>?%s)` $dp $label $q $title) (printf `${1}%s${2}` $to) $p -}}
               {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s([?#"'])` $q) (printf `${1}%s${2}` $to) $p -}}
             {{- end -}}
             {{- $p = replaceRE (printf `\]\((%s)([)\s])` $md) (printf `](%s${1}${2}` $b) $p -}}
             {{- $p = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $b) $p -}}
-            {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)(%s)(>?(?:\s|$))` $dp $def) (printf `${1}%s${2}${3}` $b) $p -}}
+            {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)(%s)(>?%s)` $dp $label $def $title) (printf `${1}%s${2}${3}` $b) $p -}}
             {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*")(%s)"` $dq) (printf `${1}%s${2}"` $b) $p -}}
             {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*')(%s)'` $sq) (printf `${1}%s${2}'` $b) $p -}}
           {{- end -}}

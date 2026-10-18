@@ -156,7 +156,7 @@ other = "本節連結"
 other = "相關文章"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Site }} 上的{{ .Title }}"

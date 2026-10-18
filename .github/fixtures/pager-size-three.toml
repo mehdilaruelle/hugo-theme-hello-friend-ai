@@ -1,0 +1,3 @@
+# Three posts a pager: the two of 2014-04-02 share one, and the order spans two.
+[pagination]
+  pagerSize = 3

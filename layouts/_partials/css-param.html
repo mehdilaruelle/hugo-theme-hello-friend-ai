@@ -1,0 +1,16 @@
+{{- /* (dict "value" v "name" n "kind" "colour"|"time"): v as one CSS value, or
+       "" with a warning. A colour has too many spellings to list, so it is checked
+       for what ends a value, a rule or the stylesheet, or opens a comment. */ -}}
+{{- $v := printf "%v" .value | strings.TrimSpace -}}
+{{- $ok := false -}}
+{{- if eq .kind "time" -}}
+  {{- if findRE `^[0-9]+(\.[0-9]+)?$` $v }}{{ $v = printf "%ss" $v }}{{ end -}}
+  {{- $ok = gt (len (findRE `^([0-9]+(\.[0-9]+)?|\.[0-9]+)m?s$` $v)) 0 -}}
+{{- else -}}
+  {{- $ok = and $v (eq (len (findRE `[;{}<>"'\\\r\n]|/\*` $v)) 0) -}}
+{{- end -}}
+{{- if not $ok -}}
+  {{- warnidf "css-param-invalid" "%s: %q is not a CSS %s, so the stylesheet leaves it out." .name (printf "%v" .value) .kind -}}
+  {{- $v = "" -}}
+{{- end -}}
+{{- return $v -}}

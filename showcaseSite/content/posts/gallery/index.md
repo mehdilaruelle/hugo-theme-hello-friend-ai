@@ -7,7 +7,7 @@ categories = ["Development"]
 series = ["Showcase"]
 
 # The fourth picture has no alt, to exercise the file-name fallback. The fifth
-# has brackets in its name, which a glob reads as a character class.
+# has brackets in its name, which a glob reads as a character class: src escapes them.
 [[resources]]
   src = "photos/01-dunes.jpg"
   [resources.params]
@@ -26,7 +26,7 @@ series = ["Showcase"]
     caption = "Portrait, cropped from the **centre**"
 
 [[resources]]
-  src = "photos/05-lake [copy].jpg"
+  src = 'photos/05-lake \[copy\].jpg'
   [resources.params]
     alt = "The lake again, from a file whose name holds brackets"
 

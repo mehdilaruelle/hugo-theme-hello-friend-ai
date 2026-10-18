@@ -121,6 +121,12 @@ function feed(s) {
   for (const c of text("copyright")) {
     if (/<|&lt;/.test(c)) bad.push(`<copyright> carries markup: ${c.trim()}`);
   }
+  // Newest first, as the lists: Hugo's default order puts weight before date.
+  const dates = [...s.matchAll(/<item>[\s\S]*?<\/item>/g)]
+    .map((m) => Date.parse(m[0].match(/<pubDate>([^<]*)<\/pubDate>/)?.[1] ?? ""))
+    .filter((d) => !Number.isNaN(d));
+  const newer = dates.findIndex((d, i) => i && d > dates[i - 1]);
+  if (newer > 0) bad.push(`item ${newer + 1} is newer than the one before it`);
   // `code` or *emphasis* the title's Markdown was meant to render.
   const md = text("title").find((t) => /`[^`]+`|(^|\s)\*[^*\s][^*]*\*/.test(t));
   if (md) bad.push(`a title still written in Markdown: ${md.trim()}`);

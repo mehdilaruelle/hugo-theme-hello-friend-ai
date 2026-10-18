@@ -485,9 +485,14 @@ const checks = {
     }
     if (!used) fail("the site's tags.html was not used");
     if (theme.length) fail("the theme's tags.html still rendered", theme.slice(0, 3).join("\n"));
+    // Every feed, the front page's and the taxonomies' too, from the site's rss.xml.
+    const feeds = [...walk(dir, ".xml")].filter((f) => f.endsWith("index.xml"));
+    const themeFeeds = feeds.filter((f) => !readFileSync(f, "utf8").includes("site-rss-override"));
+    if (!feeds.length || themeFeeds.length)
+      fail("the site's _default/rss.xml was not used for every feed", themeFeeds.slice(0, 3).map(rel).join("\n"));
     if (!css().replace(/\s+/g, "").includes(`--background:${colour}`))
       fail(`the site's _variables.scss did not reach --background (${colour})`);
-    ok("a site's tags.html and _variables.scss win over the theme's");
+    ok("a site's tags.html, rss.xml and _variables.scss win over the theme's");
   },
 
   // Newest first across every pager, and each article's arrows on its neighbours:
@@ -540,12 +545,17 @@ const checks = {
   "taxonomy-pager"(page, previous, next) {
     const html = read(page);
     // Each label on its own control: swapped, both would still be on the pager.
+    // The first and last pagers have one control, so the one there is read.
+    let found = 0;
     for (const [side, label] of [["previous", previous], ["next", next]]) {
       const button = html.match(new RegExp(`class\\s*=\\s*["']?button ${side}["']?[^>]*>([\\s\\S]*?)</span>\\s*</a>`))?.[1];
-      const shown = text(button ?? "").replace(/\s+/g, " ");
+      if (button === undefined) continue;
+      found++;
+      const shown = text(button).replace(/\s+/g, " ");
       if (!shown.includes(label)) fail(`${page}: the ${side} pager reads "${shown || "nothing"}", not "${label}"`);
     }
-    ok(`the taxonomy pager reads "${previous}" and "${next}"`);
+    if (!found) fail(`${page}: no pager control`);
+    ok(`${page}: the taxonomy pager reads "${previous}" and "${next}"`);
   },
 
   // The language label clears the copy button by its measured width. Nothing here
