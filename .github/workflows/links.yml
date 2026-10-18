@@ -135,6 +135,16 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-code-blocks.mjs public
 
+      - name: Check the language label clears the copy button
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public copy-label
+
+      - name: Check the focus ring and the status colours meet their contrast
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs exampleSite/public contrast
+          node .github/scripts/check-invariants.mjs showcaseSite/public contrast
+
       # Open Graph and Twitter tags are written by two partials. They used to
       # take their picture from two different sources, so a site setting
       # params.images showed one image and named another on every page with a
@@ -162,6 +172,19 @@ jobs:
         run: |
           node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
             --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
+
+      # A link in code is an example, so it is carried as the author wrote it.
+      - name: Check llms-full.txt leaves links in code as written
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          bad=0
+          for snippet in '`[a span](commas.svg)`' '    [indented](commas.svg)' \
+                         '    [in a list](commas.svg)' '> [in a quote](commas.svg)' \
+                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)'; do
+            grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  every link in code is carried as written"
+          exit "$bad"
 
       - name: Check the Markdown copy carries front matter and code as written
         working-directory: hello-friend-ai/showcaseSite
@@ -408,6 +431,18 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-pagers date-order posts /subpath/
           node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager \
             tags/page/2/index.html "Previous page" "Next page"
+
+      # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
+      - name: Check the SEO invariants on the shapes the demos lack
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --destination public-seo-shapes \
+            --contentDir ../.github/fixtures/seo-shapes \
+            --config config.toml,../.github/fixtures/seo-shapes.toml
+          node ../.github/scripts/check-seo.mjs public-seo-shapes
+          grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
+            || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
+          echo "  a ProfilePage section is described as one"
 
       - name: Check a url naming a file warns when the md copy would replace it
         working-directory: hello-friend-ai/exampleSite

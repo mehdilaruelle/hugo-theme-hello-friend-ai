@@ -119,7 +119,8 @@ for (const file of walk(root)) {
       }
       resolved = path.slice(prefix.length - 1);
     } else {
-      resolved = posix.normalize(posix.join(posix.dirname(page), path));
+      // Already resolved against the page by new URL above.
+      resolved = posix.normalize(path);
     }
 
     checked++;

@@ -61,13 +61,13 @@ const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
 // CLDR 48: in these the form covers more than one count (21, 102, 10 …), so it
-// carries the number. Not fr, pt or hi, whose `one` adds only 0.
+// carries the number. fr, pt and hi too, whose `one` adds 0.
 const RANGED = {
   be: ['one'], br: ['one', 'two'], bs: ['one'], ceb: ['one'], dsb: ['one', 'two'],
-  fil: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hr: ['one'], hsb: ['one', 'two'],
-  is: ['one'], kw: ['two'], lt: ['one'], lv: ['zero', 'one'], mk: ['one'],
-  prg: ['zero', 'one'], ru: ['one'], sgs: ['one'], sl: ['one', 'two'], sr: ['one'],
-  tl: ['one'], tzm: ['one'], uk: ['one'],
+  fil: ['one'], fr: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hi: ['one'],
+  hr: ['one'], hsb: ['one', 'two'], is: ['one'], kw: ['two'], lt: ['one'],
+  lv: ['zero', 'one'], mk: ['one'], prg: ['zero', 'one'], pt: ['one'], ru: ['one'],
+  sgs: ['one'], sl: ['one', 'two'], sr: ['one'], tl: ['one'], tzm: ['one'], uk: ['one'],
 };
 const spellableIn = (file) => {
   const ranged = RANGED[file.replace(/\.toml$/, '').split('-')[0]] ?? [];

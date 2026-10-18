@@ -21,7 +21,11 @@
 
 {{- $img := "" -}}
 {{- if not $remote -}}
-  {{- with $page.Resources.GetMatch $src -}}
+  {{- /* The exact name first, since GetMatch reads "x [1].jpg" as a glob;
+         GetMatch still follows, for a pattern. */ -}}
+  {{- with $page.Resources.Get $src -}}
+    {{- $img = . -}}
+  {{- else with $page.Resources.GetMatch $src -}}
     {{- $img = . -}}
   {{- else -}}
     {{- with resources.Get $src -}}{{- $img = . -}}{{- end -}}
