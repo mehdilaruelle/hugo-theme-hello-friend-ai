@@ -116,6 +116,12 @@ Translate the page it lands on too, or the menu says *Articles* and the page it
 opens is headed *Posts*. For a section that is generated rather than written,
 that means adding `content/<section>/_index.<code>.md` with a `title`.
 
+The main menu tells assistive technologies where the reader is: the entry for
+the page being shown carries `aria-current="page"`, and the entry that holds it
+`aria-current="true"` — *Posts* on an article, a parent on its child's page.
+That works for entries set by `url` as well as by `pageRef`: a `url` holds every
+page under it, except the home page's, which would otherwise hold them all.
+
 ### The language switcher
 
 `params.enableGlobalLanguageMenu` puts a globe in the header, next to the theme

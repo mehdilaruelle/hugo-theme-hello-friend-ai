@@ -1,0 +1,30 @@
+{{- /* The aria-current of a main menu entry: "page" on the entry of the page
+       being rendered, "true" on one that holds it, "" elsewhere.
+
+       IsMenuCurrent and HasMenuCurrent only know entries linked to a page, and
+       the demos and the README write url = "posts/", which links none. So the
+       resolved url is compared too, trailing slash aside, and holds every page
+       under it. The home url holds every page, so it is only ever "page".
+       A parent holds what any of its children holds. */ -}}
+{{- $page := .page -}}
+{{- $entry := .entry -}}
+{{- $state := "" -}}
+{{- $here := strings.TrimSuffix "/" $page.RelPermalink -}}
+{{- $url := "" -}}
+{{- if $entry.URL -}}
+  {{- $url = strings.TrimSuffix "/" (partial "menu-url.html" $entry) -}}
+{{- end -}}
+{{- if or ($page.IsMenuCurrent "main" $entry) (and $entry.URL (eq $url $here)) -}}
+  {{- $state = "page" -}}
+{{- else if $page.HasMenuCurrent "main" $entry -}}
+  {{- $state = "true" -}}
+{{- else if and $entry.URL (ne $url (strings.TrimSuffix "/" site.Home.RelPermalink)) (hasPrefix $here (printf "%s/" $url)) -}}
+  {{- $state = "true" -}}
+{{- else -}}
+  {{- range $entry.Children -}}
+    {{- if partial "menu-current.html" (dict "page" $page "entry" .) -}}
+      {{- $state = "true" -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $state -}}
