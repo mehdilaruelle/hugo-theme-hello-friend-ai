@@ -29,15 +29,22 @@
                     </ul>
                 </div>
             {{ else }}
-                {{- /* By year in the list's own order: GroupByDate sorts again, and
-                       reverses posts that share a date. */ -}}
-                {{- $years := slice }}
-                {{- range $paginator.Pages }}{{ $years = $years | append .Date.Year }}{{ end }}
-                {{ range uniq $years }}
-                    {{- $year := . }}
+                {{- /* Runs of one year in the list's own order: GroupByDate sorts again,
+                       and reverses posts that share a date. */ -}}
+                {{- $groups := slice }}
+                {{- $run := slice }}
+                {{- range $paginator.Pages }}
+                    {{- if and $run (ne .Date.Year (index $run 0).Date.Year) }}
+                        {{- $groups = $groups | append (dict "pages" $run) }}
+                        {{- $run = slice }}
+                    {{- end }}
+                    {{- $run = $run | append . }}
+                {{- end }}
+                {{- with $run }}{{ $groups = $groups | append (dict "pages" .) }}{{ end }}
+                {{ range $groups }}
+                    {{- $group := .pages }}
                     <div class="posts-group">
-                        {{ $group := where $paginator.Pages "Date.Year" $year }}
-                        {{ if where $group "Date.IsZero" false }}<div class="post-year">{{ $year }}</div>{{ end }}
+                        {{ if where $group "Date.IsZero" false }}<div class="post-year">{{ (index $group 0).Date.Year }}</div>{{ end }}
 
                         <ul class="posts-list">
                             {{ range $group }}
