@@ -53,6 +53,14 @@ public-menu/
 # The unminified builds of the logo cursor, default and configured.
 public-cursor/
 public-cursor-set/
+# The fixture builds of a leading-slash menu, the pagers, the shapes the demos
+# lack (SEO, wrong-typed params) and a logo's dark and inlined variants.
+public-menu-slash/
+public-pagers/
+public-seo-shapes/
+public-shapes/
+public-logo-images/
+public-logo-inline/
 # The fixture build of a site override, and the copy of exampleSite it
 # is layered over. Anchored: .github/fixtures/site-overrides/ is tracked.
 public-social-map/
