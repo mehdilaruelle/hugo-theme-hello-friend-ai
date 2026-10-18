@@ -39,6 +39,8 @@ other = "Mise à jour"
 [pagination]
 newerPosts = "Articles plus récents"
 olderPosts = "Articles plus anciens"
+previousPage = "Page précédente"
+nextPage = "Page suivante"
 
 [skipToContent]
 other = "Aller au contenu"
@@ -151,3 +153,15 @@ other = "Lien vers cette section"
 #
 [relatedPosts]
 other = "Articles similaires"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} sur {{ .Site }}"
+
+[feedDescription]
+other = "Contenu récent de {{ .Title }} sur {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Contenu récent sur {{ .Site }}"

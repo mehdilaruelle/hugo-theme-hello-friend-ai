@@ -42,6 +42,8 @@ other = "भाषा"
 [pagination]
 newerPosts = "नई पोस्ट"
 olderPosts = "पुरानी पोस्ट"
+previousPage = "पिछला पृष्ठ"
+nextPage = "अगला पृष्ठ"
 
 [skipToContent]
 other = "सामग्री पर जाएँ"
@@ -152,3 +154,15 @@ other = "इस अनुभाग का लिंक"
 #
 [relatedPosts]
 other = "संबंधित पोस्ट"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }} पर {{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }} पर {{ .Title }} की हाल की सामग्री"
+
+[feedDescriptionSite]
+other = "{{ .Site }} पर हाल की सामग्री"

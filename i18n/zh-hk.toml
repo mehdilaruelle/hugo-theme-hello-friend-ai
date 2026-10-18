@@ -42,6 +42,8 @@ other = "語言"
 [pagination]
 newerPosts = "較新文章"
 olderPosts = "較舊文章"
+previousPage = "上一頁"
+nextPage = "下一頁"
 
 [skipToContent]
 other = "跳至內容"
@@ -152,3 +154,15 @@ other = "本節連結"
 #
 [relatedPosts]
 other = "相關文章"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Site }} 上的{{ .Title }}"
+
+[feedDescription]
+other = "{{ .Site }} 上{{ .Title }}的最新內容"
+
+[feedDescriptionSite]
+other = "{{ .Site }} 的最新內容"

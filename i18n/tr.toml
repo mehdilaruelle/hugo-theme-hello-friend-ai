@@ -39,6 +39,8 @@ other = "Son güncelleme"
 [pagination]
 newerPosts = "Daha yeni girişler"
 olderPosts = "Eski girişler"
+previousPage = "Önceki sayfa"
+nextPage = "Sonraki sayfa"
 
 [language]
 other = "Dil"
@@ -152,3 +154,15 @@ other = "Bu bölüme bağlantı"
 #
 [relatedPosts]
 other = "İlgili yazılar"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} | {{ .Site }}"
+
+[feedDescription]
+other = "Son içerikler: {{ .Title }} | {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Son içerikler | {{ .Site }}"

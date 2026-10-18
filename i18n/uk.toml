@@ -43,6 +43,8 @@ other = "Останнє оновлення"
 [pagination]
 newerPosts = "Нові записи"
 olderPosts = "Старіші записи"
+previousPage = "Попередня сторінка"
+nextPage = "Наступна сторінка"
 
 [language]
 other = "Мова"
@@ -156,3 +158,15 @@ other = "Посилання на цей розділ"
 #
 [relatedPosts]
 other = "Схожі записи"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} — {{ .Site }}"
+
+[feedDescription]
+other = "Нові матеріали: {{ .Title }} — {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Нові матеріали — {{ .Site }}"
