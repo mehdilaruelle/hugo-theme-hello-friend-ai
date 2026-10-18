@@ -1,6 +1,7 @@
 {{- /* The pages a list page shows, in display order, before pagination. */ -}}
 {{- $pages := .Pages -}}
 {{- with .Data.Pages -}}{{- $pages = . -}}{{- end -}}
-{{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- end -}}
+{{- /* Newest first: Hugo's default order puts weight before date. */ -}}
+{{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- else -}}{{- $pages = $pages.ByDate.Reverse -}}{{- end -}}
 {{- $pages = where $pages "Permalink" "!=" "" -}}
 {{- return $pages -}}

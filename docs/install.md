@@ -66,16 +66,13 @@ configuration. Miss that step and Hugo reports `module "<old>" not found`.
 ## Where articles go
 
 The section name matters too: articles go in `content/posts/`. Hugo resolves an
-article's template by section name, and the theme's article layouts are
-`layouts/posts/page.html` and `layouts/posts/section.rss.xml`. A section named
-anything else falls back to the generic page template and to Hugo's built-in
-feed. What that costs:
-
-- on the page: reading time, date, word count, last-modified, sharing buttons,
-  previous/next links, Disqus, Commento, Utterances, the description
-  standfirst, the audio player
-- in the feed: the full-text `<content:encoded>`, the theme's channel metadata,
-  and `services.rss.limit`
+article's template by section name, and the theme's article layout is
+`layouts/posts/page.html`. A section named anything else falls back to the
+generic page template, without reading time, date, word count, last-modified,
+sharing buttons, previous/next links, Disqus, Commento, Utterances, the
+description standfirst or the audio player. Its feed is the same as every other
+one: `layouts/list.rss.xml` serves the front page, every section, taxonomy and
+term.
 
 `params.mainSections` does not move this. It points the footer's RSS icon and
 the 404 page at a section; it does not change which template renders an
@@ -86,7 +83,7 @@ the build warns when it names one the theme has no article template for:
 WARN  params.mainSections names "blog", but the theme's article template is
       layouts/posts/page.html. Articles in content/blog/ render without reading
       time, word count, dates, sharing buttons, prev/next, related posts or
-      comments, and blog/index.xml loses its full-text content:encoded.
+      comments.
 ```
 
 Add `layouts/blog/page.html` (or the older name, `single.html`) to your own site and the warning stops — a site

@@ -42,6 +42,8 @@ other = "Lengua"
 [pagination]
 newerPosts = "Articol pussee noeuv"
 olderPosts = "Articol pussee vecc"
+previousPage = "Pagina de prima"
+nextPage = "Pagina dopo"
 
 [skipToContent]
 other = "Va al contegnuu"
@@ -152,3 +154,15 @@ other = "Ligam a chesta sezion"
 #
 [relatedPosts]
 other = "Articol somejant"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} su {{ .Site }}"
+
+[feedDescription]
+other = "Contegnuu noeuv de {{ .Title }} su {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Contegnuu noeuv su {{ .Site }}"
