@@ -1,0 +1,26 @@
+{{- /* A picture written in Markdown goes through image.html like the
+       shortcode's: resized, converted and measured when it resolves as a
+       resource, served as written when it does not, a remote one untouched.
+
+       The first picture of a page with no cover above it is likely the
+       Largest Contentful Paint, and lazy loading would hold it back, so it is
+       fetched at once and first. Every later one stays lazy. */ -}}
+{{- $src := .Destination -}}
+{{- $u := urls.Parse .Destination -}}
+{{- /* Looked up by its decoded path, "my%20photo.jpg" being "my photo.jpg";
+       a query or a fragment names no resource, so the url stays as written. */ -}}
+{{- if and (not (partial "is-remote.html" .Destination)) (not $u.RawQuery) (not $u.Fragment) -}}
+  {{- $src = $u.Path -}}
+{{- end -}}
+{{- $cover := and (eq (printf "%T" .Page.Params.cover) "string") .Page.Params.cover -}}
+{{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) -}}
+{{- $attrs := merge (.Attributes | default dict) (cond (ne .Title "") (dict "title" .Title) dict) -}}
+{{- partial "image.html" (dict
+  "src" $src
+  "fallback" .Destination
+  "alt" .PlainText
+  "page" .Page
+  "loading" (cond $first "eager" "lazy")
+  "fetchpriority" (cond $first "high" "")
+  "attrs" $attrs
+) -}}

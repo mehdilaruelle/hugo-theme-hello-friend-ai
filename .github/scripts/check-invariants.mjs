@@ -170,6 +170,48 @@ const checks = {
     ok("the logo reads left-to-right on an RTL page");
   },
 
+  // Pictures written in Markdown, from .github/fixtures/markdown-images.
+  "markdown-images"() {
+    const imgs = (page) => [...read(page).matchAll(tagRe("img"))].map((m) => m[0]);
+    const find = (page, alt) =>
+      imgs(page).find((t) => attr(t, "alt") === alt) ?? fail(`${page}: no img with alt "${alt}"`, imgs(page).join("\n"));
+    const want = (tag, name, value) => {
+      if (attr(tag, name) !== value) fail(`${attr(tag, "alt")}: ${name} is ${attr(tag, name)}, wanted ${value}`, tag);
+    };
+
+    const bundle = "posts/2026/10/a-bundle-with-a-picture/index.html";
+    for (const alt of ["The first picture", "The second picture"]) {
+      const tag = find(bundle, alt);
+      if (!/\.webp$/.test(attr(tag, "src") ?? "")) fail(`${alt}: not served as WebP`, tag);
+      const widths = (attr(tag, "srcset") ?? "").split(",").map((c) => c.trim().split(/\s+/)[1]);
+      if (widths.join(" ") !== "480w 800w 1200w") fail(`${alt}: srcset offers ${widths.join(" ") || "nothing"}`, tag);
+      want(tag, "width", "1200");
+      want(tag, "height", "800");
+    }
+    const first = find(bundle, "The first picture");
+    want(first, "loading", "eager");
+    want(first, "fetchpriority", "high");
+    want(first, "title", "Dunes at dusk");
+    const second = find(bundle, "The second picture");
+    want(second, "loading", "lazy");
+    want(second, "fetchpriority", null);
+
+    const after = find("posts/2026/10/a-page-with-a-cover/index.html", "After the cover");
+    want(after, "loading", "lazy");
+    want(after, "fetchpriority", null);
+
+    const loose = "posts/2026/10/pictures-that-are-not-resources/index.html";
+    want(find(loose, "Beside the page"), "src", "notthere.jpg");
+    want(find(loose, "From static"), "src", "/images/static.png");
+    want(find(loose, "Remote"), "src", "https://example.com/remote.png?w=1#top");
+    const attrs = find(loose, "With attributes");
+    want(attrs, "class", "wide");
+    want(attrs, "id", "hero");
+    want(attrs, "data-note", "a&amp;b");
+    want(attrs, "loading", "lazy");
+    ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
+  },
+
   // #272
   submenu(page) {
     const html = read(page);

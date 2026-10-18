@@ -1,0 +1,6 @@
+# Pictures written in Markdown, which neither demo has. The image stands alone
+# so the attribute block below it reaches the img rather than a paragraph.
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+  [markup.goldmark.parser.attribute]
+    block = true
