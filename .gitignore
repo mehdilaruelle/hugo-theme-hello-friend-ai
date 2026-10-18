@@ -56,7 +56,6 @@ public-cursor-set/
 # The fixture build of a site override, and the copy of exampleSite it
 # is layered over. Anchored: .github/fixtures/site-overrides/ is tracked.
 public-social-map/
-public-ugly/
 /site-overrides/
 **/resources/_gen/
 .hugo_build.lock
