@@ -1,3 +1,11 @@
 {{- $url := .URL -}}
-{{- if not .Page -}}{{- $url = relLangURL $url -}}{{- end -}}
+{{- if not .Page -}}
+  {{- /* Hugo already put the baseURL path in front of a leading-slash url, and relLangURL
+         would put the language before that path: taken off first, as for "posts/". */ -}}
+  {{- $root := printf "%s/" (strings.TrimSuffix "/" (urls.Parse site.BaseURL).Path) -}}
+  {{- if and (ne $root "/") (hasPrefix $url $root) -}}
+    {{- $url = strings.TrimPrefix $root $url -}}
+  {{- end -}}
+  {{- $url = relLangURL $url -}}
+{{- end -}}
 {{- return $url -}}

@@ -369,6 +369,21 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
+      # The demos write "posts/", so the README's "/posts/" is only built here.
+      - name: Check a leading-slash menu url under a subpath, in every language
+        working-directory: hello-friend-ai
+        run: |
+          cd showcaseSite
+          hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
+          cd ../exampleSite
+          hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
+            --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/
+
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
         working-directory: hello-friend-ai/exampleSite
