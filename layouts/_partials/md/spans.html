@@ -1,0 +1,18 @@
+{{- /* (line): the line cut at its backtick runs, as (dict "text" s "code" bool);
+       the runs themselves count as code. A run opens a code span only if an equal
+       run follows, and the span closes on the next run of its length. */ -}}
+{{- $parts := split (replaceRE "(`+)" "\x00$1\x00" .) "\x00" -}}
+{{- $out := slice -}}
+{{- $span := 0 -}}
+{{- range $i, $p := $parts -}}
+  {{- $code := true -}}
+  {{- if modBool $i 2 -}}
+    {{- $code = gt $span 0 -}}
+  {{- else if not $span -}}
+    {{- range after (add $i 1) $parts -}}{{- if and (not $span) (eq . $p) }}{{ $span = len $p }}{{ end -}}{{- end -}}
+  {{- else if eq (len $p) $span -}}
+    {{- $span = 0 -}}
+  {{- end -}}
+  {{- $out = $out | append (dict "text" $p "code" $code) -}}
+{{- end -}}
+{{- return $out -}}

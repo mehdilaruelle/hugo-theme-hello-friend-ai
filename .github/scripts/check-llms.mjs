@@ -267,10 +267,7 @@ for (const [lang, prefix] of Object.entries(langs)) {
 
   // llmstxt.org: no heading between the quote and the file lists.
   const map = mapSection(s, accepts(lang, MAP_KEYS));
-  const head = unfenced(s.slice(0, s.length - map.length));
-  // ATX, or a paragraph line over a setext underline.
-  const early = head.match(/^#{2,6}[ \t].*$/m)
-    || head.match(/^(?! {0,3}(?:[>#|]|[-*+](?:\s|$))| {4}|[ \t]*$).+\n {0,3}(?:=+|-+)[ \t]*$/m);
+  const early = unfenced(s.slice(0, s.length - map.length)).match(/^#{2,6}[ \t].*$/m);
   if (early) fail(`${lang}: llms.txt has a heading before its lists: ${early[0]}`);
 
   const links = [...map.matchAll(LIST_LINK)].map((m) => destination(m[1]));

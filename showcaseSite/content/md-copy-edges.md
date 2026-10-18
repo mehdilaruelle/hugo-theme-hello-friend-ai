@@ -33,3 +33,8 @@ inside a plain fence, &rsquo; stays
 > a fence the quote leaves open
 
 Out of the quote, it&rsquo;s prose again.
+
+Term
+: A definition's second paragraph is prose too.
+
+    Its second paragraph: it&rsquo;s decoded as well.

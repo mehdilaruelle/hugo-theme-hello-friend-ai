@@ -5,68 +5,23 @@
        shortcode is entitled to keep them written as entities. Not in code,
        which shows an entity as written; a leading &#43; would open a list. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
+{{- $text := .RenderShortcodes -}}
 {{- $lines := slice -}}
-{{- $fence := "" -}}
-{{- $quotes := 0 -}}
-{{- $code := false -}}
-{{- $list := false -}}
-{{- $blank := true -}}
-{{- range split .RenderShortcodes "\n" -}}
-  {{- $line := . -}}
-  {{- $isBlank := not (strings.TrimSpace $line) -}}
-  {{- $inFence := false -}}
-  {{- if $fence -}}
-    {{- $inFence = true -}}
-    {{- if lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes -}}
-      {{- /* A line out of the quote ends it, and the fence it holds. */ -}}
-      {{- $fence = "" -}}
-      {{- $inFence = false -}}
-    {{- else -}}
-      {{- /* Closed only at the quote depth it opened at: "> ```" in a plain fence is code. */ -}}
-      {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
-        {{- $m := index . 0 2 -}}
-        {{- if and (eq (len (findRE ">" (index . 0 1))) $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+{{- $code := partial "md/code-lines.html" $text -}}
+{{- range $n, $raw := split $text "\n" -}}
+  {{- $line := $raw -}}
+  {{- if not (index $code $n) -}}
+    {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
+    {{- $out := "" -}}
+    {{- range partial "md/spans.html" $line -}}
+      {{- $p := .text -}}
+      {{- if not .code -}}
+        {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
       {{- end -}}
+      {{- $out = print $out $p -}}
     {{- end -}}
+    {{- $line = $out -}}
   {{- end -}}
-  {{- if not $inFence -}}
-    {{- $open := "" -}}
-    {{- with findRESubmatch "^([\\s>]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
-      {{- $m := index . 0 -}}
-      {{- if not (and (hasPrefix (index $m 2) "`") (strings.Contains (index $m 3) "`")) -}}
-        {{- $open = index $m 2 -}}
-        {{- $quotes = len (findRE ">" (index $m 1)) -}}
-      {{- end -}}
-    {{- end -}}
-    {{- /* Four spaces in: a code block, unless a list item or a footnote holds the line. */ -}}
-    {{- if not $isBlank -}}
-      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)]|\\[\\^[^\\]]+\\]:)(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
-    {{- end -}}
-    {{- $code = and (findRE "^(?: {4}|\\t)" $line 1) (not $list) (or $blank $code) -}}
-    {{- if $open -}}
-      {{- $fence = $open -}}
-    {{- else if not $code -}}
-      {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
-      {{- /* A code span closes on the next backtick run of its length. */ -}}
-      {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" $line) "\x00" -}}
-      {{- $out := "" -}}
-      {{- $span := 0 -}}
-      {{- range $i, $p := $parts -}}
-        {{- if modBool $i 2 -}}
-          {{- if not $span -}}
-            {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
-          {{- end -}}
-        {{- else if not $span -}}
-          {{- range after (add $i 1) $parts -}}{{- if and (not $span) (eq . $p) }}{{ $span = len $p }}{{ end -}}{{- end -}}
-        {{- else if eq (len $p) $span -}}
-          {{- $span = 0 -}}
-        {{- end -}}
-        {{- $out = print $out $p -}}
-      {{- end -}}
-      {{- $line = $out -}}
-    {{- end -}}
-  {{- end -}}
-  {{- $blank = $isBlank -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
 {{- return delimit $lines "\n" -}}

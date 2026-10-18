@@ -1,57 +1,12 @@
-{{- /* Markdown with each heading outside a fence printed as a bold line: ATX, or a
-       paragraph line over a setext === or --- underline, which is dropped. */ -}}
+{{- /* Markdown with each ATX heading outside code printed as a bold line. */ -}}
 {{- $lines := slice -}}
-{{- $fence := "" -}}
-{{- $quotes := 0 -}}
-{{- $indent := 0 -}}
-{{- $para := false -}}
-{{- $start := 0 -}}
-{{- range split . "\n" -}}
-  {{- $line := . -}}
-  {{- $inFence := false -}}
-  {{- $isPara := false -}}
-  {{- $drop := false -}}
-  {{- if $fence -}}
-    {{- $inFence = true -}}
-    {{- if lt (len (findRE ">" (replaceRE "^((?:[ \\t]*>)*).*$" "$1" $line))) $quotes -}}
-      {{- /* A line out of the quote ends it, and the fence it holds. */ -}}
-      {{- $fence = "" -}}
-      {{- $inFence = false -}}
-    {{- else -}}
-      {{- /* Closed only in its own container, at most three spaces further in. */ -}}
-      {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
-        {{- $m := index . 0 3 -}}
-        {{- $q := len (findRE ">" (index . 0 1)) -}}
-        {{- $in := len (replace (index . 0 2) "\t" "    ") -}}
-        {{- if and (eq $q $quotes) (le $in (add $indent 3)) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
-      {{- end -}}
-    {{- end -}}
+{{- $code := partial "md/code-lines.html" . -}}
+{{- range $n, $raw := split . "\n" -}}
+  {{- $line := $raw -}}
+  {{- if not (index $code $n) -}}
+    {{- /* A file saved with CRLF keeps its \r after the closing **. */ -}}
+    {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$` `**${1}**${2}` $line -}}
   {{- end -}}
-  {{- if not $inFence -}}
-    {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
-      {{- $m := index . 0 -}}
-      {{- if not (and (hasPrefix (index $m 3) "`") (strings.Contains (index $m 4) "`")) -}}
-        {{- $fence = index $m 3 -}}
-        {{- $quotes = len (findRE ">" (index $m 1)) -}}
-        {{- $indent = len (replace (index $m 2) "\t" "    ") -}}
-      {{- end -}}
-    {{- end -}}
-    {{- if not $fence -}}
-      {{- if and $para (findRE `^ {0,3}(?:=+|-+)[ \t]*$` $line 1) -}}
-        {{- /* The paragraph above is the heading: one bold line, and the underline goes. */ -}}
-        {{- $text := delimit (apply (after $start $lines) "strings.TrimSpace" ".") " " -}}
-        {{- $lines = first $start $lines | append (printf "**%s**" $text) -}}
-        {{- $drop = true -}}
-      {{- else -}}
-        {{- $atx := findRE `^ {0,3}#{1,6}(?:[ \t]|$)` $line 1 -}}
-        {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*$` `**${1}**` $line -}}
-        {{- /* What a setext underline could make a heading of: plain paragraph text. */ -}}
-        {{- $isPara = and (strings.TrimSpace $line) (not $atx) (not (findRE `^(?: {4}|\t| {0,3}(?:[>|<]|[-*+](?:\s|$)|\d{1,9}[.)](?:\s|$)|(?:[-*_][ \t]*){3,}$|\[[^\]]+\]:))` $line 1)) -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
-  {{- if and $isPara (not $para) }}{{ $start = len $lines }}{{ end -}}
-  {{- $para = $isPara -}}
-  {{- if not $drop }}{{ $lines = $lines | append $line }}{{ end -}}
+  {{- $lines = $lines | append $line -}}
 {{- end -}}
 {{- return delimit $lines "\n" -}}
