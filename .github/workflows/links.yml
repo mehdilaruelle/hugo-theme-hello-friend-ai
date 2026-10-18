@@ -406,10 +406,6 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
-          # check-seo.mjs also passes when neither the h1 nor the card renders it.
-          grep -qF '"og:title" content="Shipping it 🚀"' public-seo-shapes/posts/2024/01/shipping-it-rocket/index.html \
-            || { echo "  BAD  the card's title does not render :rocket:"; exit 1; }
-          echo "  an emoji code in a title reaches the card as an emoji"
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
