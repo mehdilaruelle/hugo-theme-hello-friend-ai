@@ -17,3 +17,19 @@ as written: `&rsquo;`. So does a fence:
 
 &#43; this line is a paragraph, and a decoded "+" opening it would make it a
 list item.
+
+A footnote's second paragraph is prose, not code.[^edge]
+
+[^edge]: The note.
+
+    Its second paragraph: it&rsquo;s decoded.
+
+```md
+> ```
+inside a plain fence, &rsquo; stays
+```
+
+> ```
+> a fence the quote leaves open
+
+Out of the quote, it&rsquo;s prose again.

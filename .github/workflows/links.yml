@@ -194,7 +194,9 @@ jobs:
           bad=0
           for want in '# Learn C \#' '> \- a description that opens like a list' \
                       'as written: `&rsquo;`. So does a fence:' '<p>It&rsquo;s &mdash; written as entities</p>' \
-                      '\+ this line is a paragraph, and a decoded "+" opening it would make it a'; do
+                      '\+ this line is a paragraph, and a decoded "+" opening it would make it a' \
+                      '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
+                      'Out of the quote, it’s prose again.'; do
             grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
           done
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"

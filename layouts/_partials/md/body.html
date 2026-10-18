@@ -7,26 +7,40 @@
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
+{{- $quotes := 0 -}}
 {{- $code := false -}}
 {{- $list := false -}}
 {{- $blank := true -}}
 {{- range split .RenderShortcodes "\n" -}}
   {{- $line := . -}}
   {{- $isBlank := not (strings.TrimSpace $line) -}}
+  {{- $inFence := false -}}
   {{- if $fence -}}
-    {{- with findRESubmatch "^[\\s>]*(`{3,}|~{3,})\\s*$" $line 1 -}}
-      {{- $m := index . 0 1 -}}
-      {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- $inFence = true -}}
+    {{- if lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes -}}
+      {{- /* A line out of the quote ends it, and the fence it holds. */ -}}
+      {{- $fence = "" -}}
+      {{- $inFence = false -}}
+    {{- else -}}
+      {{- /* Closed only at the quote depth it opened at: "> ```" in a plain fence is code. */ -}}
+      {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
+        {{- $m := index . 0 2 -}}
+        {{- if and (eq (len (findRE ">" (index . 0 1))) $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+      {{- end -}}
     {{- end -}}
-  {{- else -}}
+  {{- end -}}
+  {{- if not $inFence -}}
     {{- $open := "" -}}
-    {{- with findRESubmatch "^[\\s>]*(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
+    {{- with findRESubmatch "^([\\s>]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
       {{- $m := index . 0 -}}
-      {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
+      {{- if not (and (hasPrefix (index $m 2) "`") (strings.Contains (index $m 3) "`")) -}}
+        {{- $open = index $m 2 -}}
+        {{- $quotes = len (findRE ">" (index $m 1)) -}}
+      {{- end -}}
     {{- end -}}
-    {{- /* Four spaces in: a code block, unless a list item holds the line. */ -}}
+    {{- /* Four spaces in: a code block, unless a list item or a footnote holds the line. */ -}}
     {{- if not $isBlank -}}
-      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)])(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
+      {{- if findRE "^ {0,3}(?:[-*+]|\\d{1,9}[.)]|\\[\\^[^\\]]+\\]:)(?:\\s|$)" $line 1 }}{{ $list = true }}{{ else if not (findRE "^\\s" $line 1) }}{{ $list = false }}{{ end -}}
     {{- end -}}
     {{- $code = and (findRE "^(?: {4}|\\t)" $line 1) (not $list) (or $blank $code) -}}
     {{- if $open -}}
