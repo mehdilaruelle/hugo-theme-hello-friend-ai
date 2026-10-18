@@ -16,8 +16,10 @@
   script.src = 'https://utteranc.es/client.js';
   script.async = true;
   script.crossOrigin = 'anonymous';
-  for (const attr of mount.attributes) {
-    if (attr.name.startsWith('data-')) script.setAttribute(attr.name.slice(5), attr.value);
+  // The three the client reads, and only those: nothing else reaches the script.
+  for (const name of ['repo', 'issue-term', 'label']) {
+    const value = mount.getAttribute('data-' + name);
+    if (value) script.setAttribute(name, value);
   }
   let sent = current();
   script.setAttribute('theme', sent);
