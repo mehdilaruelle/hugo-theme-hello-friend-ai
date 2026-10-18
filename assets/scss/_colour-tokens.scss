@@ -23,6 +23,8 @@ $colour-tokens: (
   // The copy button's 12px status text, on the header ground: 4.5:1 or more.
   "copy-done":             (#3a77a3, #67a2c9),
   "copy-failed":           (#c9302c, #e06c69),
+  // Edge of a text field: 3:1 or more against the page and its fill (WCAG 1.4.11).
+  "field-border-color":    (#858585, #8a8a94),
 );
 
 @mixin colour-tokens($theme) {

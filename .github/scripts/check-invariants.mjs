@@ -585,6 +585,8 @@ const checks = {
       ["copy-done", "background-header", 4.5],
       ["copy-failed", "background-header", 4.5],
       ["color-secondary", "background", 4.5],
+      ["field-border-color", "background", 3],
+      ["field-border-color", "background-secondary", 3],
     ];
     const bad = [];
     for (const scheme of ["light", "dark"]) {
