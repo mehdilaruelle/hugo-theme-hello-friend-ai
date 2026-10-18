@@ -1,14 +1,12 @@
-{{- /* (dict "text" s "as" "heading"|"quote"): s on one line, read as text: a
-       heading's closing # run, or a block marker, fence or rule opening a quote, is escaped. */ -}}
-{{- $t := .text | replaceRE `\s+` " " | strings.TrimSpace -}}
+{{- /* (dict "text" s "as" "heading"|"quote"): s on one line, read as text: < and
+       a heading's closing # run, or what would open a block in a quote, escaped. */ -}}
+{{- $t := partial "escape-lt.html" (dict "text" .text "with" `\<`) | replaceRE `\s+` " " | strings.TrimSpace -}}
 {{- if eq .as "heading" -}}
   {{- $t = replaceRE `(^|\s)(#+)$` `${1}\${2}` $t -}}
 {{- else if eq .as "quote" -}}
   {{- $t = replaceRE `^(#{1,6}|[-+*])(\s|$)` `\${1}${2}` $t -}}
-  {{- $t = replaceRE `^>` `\>` $t -}}
   {{- $t = replaceRE `^(\d{1,9})([.)])(\s|$)` `${1}\${2}${3}` $t -}}
-  {{- /* A fence would open a code block, a thematic break draw a rule. */ -}}
-  {{- $t = replaceRE "^(`{3,}|~{3,})" `\${1}` $t -}}
+  {{- $t = replaceRE "^(>|`{3,}|~{3,})" `\${1}` $t -}}
   {{- $t = replaceRE `^((?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$` `\${1}` $t -}}
 {{- end -}}
 {{- return $t -}}

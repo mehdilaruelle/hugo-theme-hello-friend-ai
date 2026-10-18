@@ -1,5 +1,4 @@
-{{- /* A url naming a file is used verbatim by every output format, so the md
-       copy and the HTML share one path. A page with no HTML has nothing to lose. */ -}}
+{{- /* A url naming a file is shared by every output format: the md copy and the HTML collide. */ -}}
 {{- with .Params.url -}}
   {{- $url := printf "%v" . -}}
   {{- if and (not (hasSuffix $url "/")) (path.Ext $url) ($.OutputFormats.Get "html") -}}

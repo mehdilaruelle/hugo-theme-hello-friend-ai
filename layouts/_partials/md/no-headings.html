@@ -4,7 +4,7 @@
 {{- range $n, $raw := split . "\n" -}}
   {{- $line := $raw -}}
   {{- if not (index $code $n) -}}
-    {{- /* A file saved with CRLF keeps its \r after the closing **. */ -}}
+    {{- /* CRLF keeps its \r after the closing **. */ -}}
     {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$` `**${1}**${2}` $line -}}
   {{- end -}}
   {{- $lines = $lines | append $line -}}

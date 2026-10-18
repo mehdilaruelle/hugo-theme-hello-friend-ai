@@ -1,25 +1,14 @@
 {{- /* (dict "page" . "title" t "desc" d "note" bool "llms" bool "after" s).
-       safeHTML: a partial is an HTML template. "llms": llmstxt.org allows no
-       heading before the file lists, so the body's headings go bold. */ -}}
-# {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" .title "with" `\<`)) "as" "heading") | safeHTML }}
+       safeHTML: a partial is an HTML template. llms.txt allows no heading
+       before its lists, so there the body's headings go bold. */ -}}
+# {{ partial "md/inline.html" (dict "text" .title "as" "heading") | safeHTML }}
 {{ with .desc }}
-> {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" (partial "md/plain.html" (dict "text" .)) "with" `\<`)) "as" "quote") | safeHTML }}
+> {{ partial "md/inline.html" (dict "text" (partial "md/plain.html" (dict "text" .)) "as" "quote") | safeHTML }}
 {{ end }}
-{{- if .llms }}
-{{- if .note }}{{ with site.Params.llmsNote }}
-{{ partial "flatten.html" . | safeHTML }}
-{{ end }}{{ end -}}
-{{- with .after }}
+{{- $note := "" }}{{ if .note }}{{ with site.Params.llmsNote }}{{ $note = partial "flatten.html" . }}{{ end }}{{ end }}
+{{- $body := partial "md/body.html" .page | strings.TrimSpace }}
+{{- $parts := slice $body $note }}
+{{- if .llms }}{{ $parts = slice $note .after (partial "md/no-headings.html" $body) }}{{ end }}
+{{- range $parts }}{{ with . }}
 {{ . | safeHTML }}
-{{ end -}}
-{{- with partial "md/body.html" .page | strings.TrimSpace }}
-{{ partial "md/no-headings.html" . | safeHTML }}
-{{ end -}}
-{{- else }}
-{{- with partial "md/body.html" .page | strings.TrimSpace }}
-{{ . | safeHTML }}
-{{ end }}
-{{- if .note }}{{ with site.Params.llmsNote }}
-{{ partial "flatten.html" . | safeHTML }}
 {{ end }}{{ end -}}
-{{- end -}}

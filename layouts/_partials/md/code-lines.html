@@ -1,6 +1,4 @@
-{{- /* (text): one bool per line, true where the line is code — a fence with its
-       opener and closer, or an indented block — so that every md partial
-       leaves the same lines as written. */ -}}
+{{- /* (text): one bool per line, true where it is code: a fence, markers included, or an indented block. */ -}}
 {{- $flags := slice -}}
 {{- $fence := "" -}}
 {{- $quotes := 0 -}}
@@ -16,11 +14,11 @@
   {{- if $fence -}}
     {{- $is = true -}}
     {{- if lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes -}}
-      {{- /* A line out of the quote ends it, and the fence it holds. */ -}}
+      {{- /* Leaving the quote ends the fence. */ -}}
       {{- $fence = "" -}}
       {{- $is = false -}}
     {{- else -}}
-      {{- /* Closed only in its own container: at its quote depth, at most three spaces further in. */ -}}
+      {{- /* A closer only at the opener's quote depth, at most three spaces further in. */ -}}
       {{- with findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
         {{- $m := index . 0 3 -}}
         {{- $in := len (replace (index . 0 2) "\t" "    ") -}}
@@ -29,12 +27,11 @@
     {{- end -}}
   {{- end -}}
   {{- if not $is -}}
-    {{- /* An indented code block: four spaces past the list item's content or the margin, after a blank line. */ -}}
+    {{- /* Indented code: four spaces past the container, after a blank line. */ -}}
     {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
     {{- $at := cond $list $indent 0 -}}
     {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
     {{- $open := "" -}}
-    {{- /* A fence marker in an indented block is shown, not opened. */ -}}
     {{- with and (not $code) (findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1) -}}
       {{- $m := index . 0 -}}
       {{- /* A backtick fence's info string holds no backtick. */ -}}
@@ -45,20 +42,20 @@
       {{- end -}}
     {{- end -}}
     {{- if and (not $isBlank) (not $code) (findRE `^ {0,3}\[\^[^\]]+\]:` $line 1) -}}
-      {{- /* A footnote holds its paragraphs four spaces in, as a list item does. */ -}}
+      {{- /* A footnote's paragraphs sit four spaces in. */ -}}
       {{- $list = true -}}
       {{- $indent = 4 -}}
     {{- else if and (not $isBlank) (not $code) (findRE `^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$` $line 1) -}}
-      {{- /* A thematic break, "* * *" or "- - -", is no list item. */ -}}
+      {{- /* A thematic break is no list item. */ -}}
       {{- if not $lead }}{{ $list = false }}{{ end -}}
     {{- else if and (not $isBlank) (not $code) -}}
-      {{- /* A list item, or a definition list's ": " which holds its paragraphs the same way. */ -}}
+      {{- /* A list item, or a definition's ":". */ -}}
       {{- with findRESubmatch "^( *)([-*+:]|\\d{1,9}[.)])([ \\t]*)" $line 1 -}}
         {{- $m := index . 0 -}}
         {{- $gap := len (replace (index $m 3) "\t" "    ") -}}
         {{- if and (le (len (index $m 1)) (add $at 3)) (or $gap (eq (len (index $m 0)) (len $line))) -}}
           {{- $list = true -}}
-          {{- /* A gap of five or more is a code block's: the content starts one in. */ -}}
+          {{- /* A gap of five or more starts code: the content starts one in. */ -}}
           {{- $indent = add (len (index $m 1)) (len (index $m 2)) (cond (and (ge $gap 1) (le $gap 4)) $gap 1) -}}
         {{- else if not $lead -}}
           {{- $list = false -}}

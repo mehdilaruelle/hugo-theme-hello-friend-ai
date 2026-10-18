@@ -52,7 +52,7 @@ const unfenced = (s) => {
   let fence = "";
   let quoted = 0;
   return s.split("\n").map((line) => {
-    // A line out of the quote ends it, and the fence it holds.
+    // Leaving the quote ends the fence.
     if (fence && quotes(line.match(/^(?: {0,3}>)*/)[0]) < quoted) fence = "";
     if (fence) {
       const c = FENCE_CLOSE.exec(line);
@@ -72,7 +72,6 @@ const entities = (s) => {
     // Closed on its own line, so it carries no further: "<span>x</span>" must
     // not excuse the prose under it.
     if (tag) open = !tag[1] && !new RegExp(`</${tag[2]}\\s*>`, "i").test(line);
-    // A code span shows an entity as written, as a fence does.
     return open || tag ? line.replace(MARKUP, "") : outsideCode(line);
   }).join("\n");
   return prose(text).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);

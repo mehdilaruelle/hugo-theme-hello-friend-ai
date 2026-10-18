@@ -4,9 +4,9 @@
 {{- $body := partial "md/body.html" . -}}
 {{- $note := "" -}}
 {{- with .Description }}{{ $note = partial "md/plain.html" (dict "text" .) }}{{ else }}{{ $note = partial "md/plain.html" (dict "text" $.Summary "html" true) }}{{ end -}}
-# {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" (partial "title.html" .) "with" `\<`)) "as" "heading") | safeHTML }}
+# {{ partial "md/inline.html" (dict "text" (partial "title.html" .) "as" "heading") | safeHTML }}
 {{ with $note }}
-> {{ partial "md/inline.html" (dict "text" (partial "escape-lt.html" (dict "text" . "with" `\<`)) "as" "quote") | safeHTML }}
+> {{ partial "md/inline.html" (dict "text" . "as" "quote") | safeHTML }}
 {{ end }}
 {{- with .Date }}{{ if not .IsZero }}
 {{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit (partial "as-list.html" .) ", " | safeHTML }}{{ end }}

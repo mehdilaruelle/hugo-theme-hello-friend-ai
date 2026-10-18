@@ -1,6 +1,5 @@
-{{- /* (line): the line cut at its backtick runs, as (dict "text" s "code" bool);
-       the runs themselves count as code. A run opens a code span only if an equal
-       run follows, and the span closes on the next run of its length. */ -}}
+{{- /* (line): the line cut at backtick runs, as (dict "text" s "code" bool).
+       A run opens a span only if an equal run follows. */ -}}
 {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" .) "\x00" -}}
 {{- $out := slice -}}
 {{- $span := 0 -}}
