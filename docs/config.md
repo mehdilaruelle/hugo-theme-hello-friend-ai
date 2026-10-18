@@ -271,7 +271,8 @@ off, and each key is emitted only when set:
 These values are written into the stylesheet, so each is checked first: a
 colour holding `;`, `{`, `}`, a quote or `<`, or a duration that is not one,
 warns (`css-param-invalid`) and is left out. `params.portrait.maxWidth` warns
-the same way (`portrait-width-invalid`) when it is not a CSS length.
+the same way (`portrait-width-invalid`) when it is not a CSS length: one in any
+unit, or a `calc()`, `min()`, `max()`, `clamp()` or `var()`.
 
 `logoCursorPathname` is filled in by the browser after the page loads, since
 the section comes from the URL being visited. The cursor stops animating on its

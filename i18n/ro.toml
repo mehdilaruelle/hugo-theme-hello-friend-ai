@@ -159,7 +159,7 @@ other = "Link către această secțiune"
 other = "Articole similare"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} pe {{ .Site }}"

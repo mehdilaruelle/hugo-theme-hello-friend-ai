@@ -1,3 +1,0 @@
-# Two posts a pager, so the order has pagers to go wrong across.
-[pagination]
-  pagerSize = 2

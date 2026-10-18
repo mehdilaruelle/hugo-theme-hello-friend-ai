@@ -71,8 +71,8 @@ article's template by section name, and the theme's article layout is
 generic page template, without reading time, date, word count, last-modified,
 sharing buttons, previous/next links, Disqus, Commento, Utterances, the
 description standfirst or the audio player. Its feed is the same as every other
-one: `layouts/list.rss.xml` serves the front page, every section, taxonomy and
-term.
+one: `layouts/rss.xml` serves the front page, every section, taxonomy and
+term. A site's own `layouts/rss.xml` or `layouts/_default/rss.xml` replaces it.
 
 `params.mainSections` does not move this. It points the footer's RSS icon and
 the 404 page at a section; it does not change which template renders an

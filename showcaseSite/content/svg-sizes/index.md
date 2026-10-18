@@ -60,3 +60,16 @@ A fence whose code shows a quoted fence, which only a quote could close:
 And a [reference link][commas], whose definition is a relative path too.
 
 [commas]: commas.svg
+
+A footnote is not a definition, and keeps its text.[^sizes]
+
+[Note]: neither is a line shaped like one, commas.svg and all.
+
+[^sizes]: Each size is read from the file itself.
+
+    The note goes on, with [the first of them](commas.svg) again.
+
+> ```
+> a fence the quote leaves open
+
+Out of the quote, [the first of them](commas.svg) once more.

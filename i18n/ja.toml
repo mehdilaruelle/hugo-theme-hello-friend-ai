@@ -157,7 +157,7 @@ other = "このセクションへのリンク"
 other = "関連記事"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Site }} の{{ .Title }}"

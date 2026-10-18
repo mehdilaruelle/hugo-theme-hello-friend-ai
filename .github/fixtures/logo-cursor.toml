@@ -4,3 +4,7 @@
   logoCursorColor     = "#67a2c9"
   logoCursorColorDark = "#f0a35e"
   logoCursorAnimate   = "2"
+
+# And a portrait width in a CSS function, which a list of units turned away.
+[params.portrait]
+  maxWidth = "clamp(80px, 20vw, 160px)"

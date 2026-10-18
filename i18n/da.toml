@@ -156,7 +156,7 @@ other = "Link til dette afsnit"
 other = "Relaterede indlæg"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} på {{ .Site }}"

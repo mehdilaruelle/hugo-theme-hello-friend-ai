@@ -156,7 +156,7 @@ other = "Tautan ke bagian ini"
 other = "Postingan terkait"
 
 
-# list.rss.xml
+# rss.xml
 #
 [feedTitle]
 other = "{{ .Title }} di {{ .Site }}"
