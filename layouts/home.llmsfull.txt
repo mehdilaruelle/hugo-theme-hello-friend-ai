@@ -20,5 +20,5 @@
 {{- range $ordered }}
 ---
 
-{{ partial "md/absolute-links.html" (dict "text" (partial "md/page.html" .) "base" .Permalink) | safeHTML }}
+{{ partial "md/absolute-links.html" (dict "text" (partial "md/page.html" .) "base" .Permalink "page" .) | safeHTML }}
 {{ end -}}

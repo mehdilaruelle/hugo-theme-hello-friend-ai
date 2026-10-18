@@ -1,26 +1,104 @@
-{{- $base := .base -}}
+{{- /* (dict "text" s "base" permalink "page" p): page-relative links made absolute as a browser
+       resolves them, code left as written. Under uglyURLs a bundle's files sit in a directory of its name. */ -}}
+{{- $base := replaceRE `[^/]*$` "" .base -}}
+{{- $bundle := $base -}}
+{{- $names := slice -}}
+{{- with .page -}}
+  {{- if and .File (in (slice "index" "_index") .File.BaseFileName) (not (hasSuffix $.base "/")) -}}
+    {{- $bundle = printf "%s/" (replaceRE `\.[^./]*$` "" $.base) -}}
+  {{- end -}}
+  {{- if ne $bundle $base -}}
+    {{- range .Resources }}{{ $names = $names | append .Name }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- /* A replacement template reads $ as a group. */ -}}
+{{- $b := replace $base "$" "$$" -}}
+{{- $bb := replace $bundle "$" "$$" -}}
+{{- $md := `[^/#?<)\s:][^)\s:]*` -}}
+{{- $def := `[^/#?<>\s:][^>\s:]*` -}}
+{{- $dq := `[^/#?"\s:][^"\s:]*` -}}
+{{- $sq := `[^/#?'\s:][^'\s:]*` -}}
+{{- $dp := `(?: {0,3}> ?)* {0,3}` -}}
 {{- $lines := slice -}}
 {{- $fence := "" -}}
+{{- $quotes := 0 -}}
+{{- $code := false -}}
+{{- $list := false -}}
+{{- $indent := 0 -}}
+{{- $blank := true -}}
 {{- range split .text "\n" -}}
   {{- $line := . -}}
+  {{- $isBlank := not (strings.TrimSpace $line) -}}
   {{- if $fence -}}
-    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})\\s*$" $line 1 -}}
-      {{- $m := index . 0 1 -}}
-      {{- if and (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
+    {{- /* Closed only at the quote depth it opened at: "> ```" in a plain fence is code. */ -}}
+    {{- with findRESubmatch "^([\\s>]*)(`{3,}|~{3,})\\s*$" $line 1 -}}
+      {{- $m := index . 0 2 -}}
+      {{- $q := len (findRE ">" (index . 0 1)) -}}
+      {{- if and (eq $q $quotes) (eq (substr $m 0 1) (substr $fence 0 1)) (ge (len $m) (len $fence)) }}{{ $fence = "" }}{{ end -}}
     {{- end -}}
   {{- else -}}
     {{- $open := "" -}}
-    {{- with findRESubmatch "^ {0,3}(`{3,}|~{3,})(.*)$" $line 1 -}}
+    {{- with findRESubmatch "^([\\s>]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1 -}}
       {{- $m := index . 0 -}}
-      {{- if not (and (hasPrefix (index $m 1) "`") (strings.Contains (index $m 2) "`")) }}{{ $open = index $m 1 }}{{ end -}}
+      {{- if not (and (hasPrefix (index $m 2) "`") (strings.Contains (index $m 3) "`")) -}}
+        {{- $open = index $m 2 -}}
+        {{- $quotes = len (findRE ">" (index $m 1)) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- /* An indented code block: four spaces past the list item's content or the margin, after a blank line. */ -}}
+    {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
+    {{- $at := cond $list $indent 0 -}}
+    {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
+    {{- if and (not $isBlank) (not $code) -}}
+      {{- with findRESubmatch "^( *)([-*+]|\\d{1,9}[.)])([ \\t]*)" $line 1 -}}
+        {{- $m := index . 0 -}}
+        {{- $gap := len (replace (index $m 3) "\t" "    ") -}}
+        {{- if and (le (len (index $m 1)) (add $at 3)) (or $gap (eq (len (index $m 0)) (len $line))) -}}
+          {{- $list = true -}}
+          {{- /* A gap of five or more is a code block's: the content starts one in. */ -}}
+          {{- $indent = add (len (index $m 1)) (len (index $m 2)) (cond (and (ge $gap 1) (le $gap 4)) $gap 1) -}}
+        {{- else if not $lead -}}
+          {{- $list = false -}}
+        {{- end -}}
+      {{- else -}}
+        {{- if not $lead }}{{ $list = false }}{{ end -}}
+      {{- end -}}
     {{- end -}}
     {{- if $open -}}
       {{- $fence = $open -}}
-    {{- else -}}
-      {{- $line = replaceRE `\]\(([^/#?<)\s:][^)\s:]*)([)\s])` (printf `](%s${1}${2}` $base) $line -}}
-      {{- $line = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $base) $line -}}
+    {{- else if not $code -}}
+      {{- /* A backtick run opens a code span only if an equal run follows; one with none is text. */ -}}
+      {{- $parts := split (replaceRE "(`+)" "\x00$1\x00" $line) "\x00" -}}
+      {{- $out := "" -}}
+      {{- $span := 0 -}}
+      {{- range $i, $p := $parts -}}
+        {{- if modBool $i 2 -}}
+          {{- if not $span -}}
+            {{- range $name := $names -}}
+              {{- $q := printf `(?:\./)?%s` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $name) -}}
+              {{- $to := print $bb (replace $name "$" "$$") -}}
+              {{- $p = replaceRE (printf `\]\(%s([?#)\s])` $q) (printf `](%s${1}` $to) $p -}}
+              {{- $p = replaceRE (printf `\]\(<%s([?#>])` $q) (printf `](<%s${1}` $to) $p -}}
+              {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)%s([?#]|>?(?:\s|$))` $dp $q) (printf `${1}%s${2}` $to) $p -}}
+              {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s([?#"'])` $q) (printf `${1}%s${2}` $to) $p -}}
+            {{- end -}}
+            {{- $p = replaceRE (printf `\]\((%s)([)\s])` $md) (printf `](%s${1}${2}` $b) $p -}}
+            {{- $p = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $b) $p -}}
+            {{- $p = replaceRE (printf `^(%s\[[^\]]+\]:[ \t]*<?)(%s)(>?(?:\s|$))` $dp $def) (printf `${1}%s${2}${3}` $b) $p -}}
+            {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*")(%s)"` $dq) (printf `${1}%s${2}"` $b) $p -}}
+            {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*')(%s)'` $sq) (printf `${1}%s${2}'` $b) $p -}}
+          {{- end -}}
+        {{- else if not $span -}}
+          {{- range after (add $i 1) $parts -}}{{- if and (not $span) (eq . $p) }}{{ $span = len $p }}{{ end -}}{{- end -}}
+        {{- else if eq (len $p) $span -}}
+          {{- $span = 0 -}}
+        {{- end -}}
+        {{- $out = print $out $p -}}
+      {{- end -}}
+      {{- $line = $out -}}
     {{- end -}}
   {{- end -}}
+  {{- $blank = $isBlank -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
 {{- return delimit $lines "\n" -}}
