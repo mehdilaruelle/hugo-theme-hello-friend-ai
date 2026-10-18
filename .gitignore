@@ -45,6 +45,7 @@ public-ai-quoted/
 public-plain/
 public-quoted/
 public-comments/
+public-utterances/
 public-quoted-zero/
 # The fixture build of enableGitInfo with no gitUrl.
 public-git/
