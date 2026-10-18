@@ -2,7 +2,8 @@
 {{- if not $q -}}
   {{- errorf "faq: needs a question, as {{< faq \"Why?\" >}} — %s" .Position -}}
 {{- end -}}
-{{- $html := .Inner | .Page.RenderString -}}
+{{- /* display block: inline, RenderString drops a one-paragraph answer's <p>. */ -}}
+{{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}

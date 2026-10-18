@@ -39,6 +39,8 @@ other = "Última atualização"
 [pagination]
 newerPosts = "Entradas mais recentes"
 olderPosts = "Entradas mais antigas"
+previousPage = "Página anterior"
+nextPage = "Próxima página"
 
 [language]
 other = "Idioma"
@@ -152,3 +154,15 @@ other = "Link para esta seção"
 #
 [relatedPosts]
 other = "Posts relacionados"
+
+
+# list.rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} em {{ .Site }}"
+
+[feedDescription]
+other = "Conteúdo recente de {{ .Title }} em {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Conteúdo recente em {{ .Site }}"
