@@ -29,8 +29,10 @@
                own (subsections have their own feeds), .Pages elsewhere. */ -}}
         {{- $pages := .Pages -}}
         {{- if .IsHome }}{{ $pages = site.RegularPages }}{{ else if .IsSection }}{{ $pages = .RegularPages }}{{ end -}}
-        {{- /* Newest first, as the lists: Hugo's default order puts weight before date. */ -}}
-        {{- $pages = where $pages.ByDate.Reverse "Permalink" "!=" "" -}}
+        {{- /* Newest first, as the lists: Hugo's default order puts weight before date.
+               A taxonomy's terms that share a date by name, as its page lists them. */ -}}
+        {{- if eq .Kind "taxonomy" }}{{ $pages = sort (sort $pages "Title") "Date" "desc" }}{{ else }}{{ $pages = $pages.ByDate.Reverse }}{{ end -}}
+        {{- $pages = where $pages "Permalink" "!=" "" -}}
         {{- /* services.rss.limit, which Hugo's internal template applies and this one did not. */ -}}
         {{- $limit := .Site.Config.Services.RSS.Limit -}}
         {{- if ge $limit 1 }}{{ $pages = first $limit $pages }}{{ end }}
