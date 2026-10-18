@@ -49,3 +49,9 @@ A paragraph's next line, four spaces in, opens no fence either:
     ```
 
 Under that, it&rsquo;s prose too.
+
+-   ```sh
+    echo it&rsquo;s code in a list item
+    ```
+
+After the list, it&rsquo;s prose.

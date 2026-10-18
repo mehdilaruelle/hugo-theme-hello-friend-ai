@@ -33,7 +33,7 @@
     {{- $at := cond $list $indent 0 -}}
     {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
     {{- $open := "" -}}
-    {{- with and (lt $lead (add $at 4)) (findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*)(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?(`{3,}|~{3,})(.*)$" $line 1) -}}
+    {{- with and (lt $lead (add $at 4)) (findRESubmatch "^((?:[ \\t]*>)*)([ \\t]*(?:(?:[-*+]|\\d{1,9}[.)])\\s+)?)(`{3,}|~{3,})(.*)$" $line 1) -}}
       {{- $m := index . 0 -}}
       {{- /* A backtick fence's info string holds no backtick. */ -}}
       {{- if not (and (hasPrefix (index $m 3) "`") (strings.Contains (index $m 4) "`")) -}}

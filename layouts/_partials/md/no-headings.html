@@ -4,7 +4,8 @@
 {{- range $n, $raw := split . "\n" -}}
   {{- $line := $raw -}}
   {{- if not (index $code $n) -}}
-    {{- /* CRLF keeps its \r after the closing **. */ -}}
+    {{- /* An empty one goes, or **** would draw a rule. CRLF keeps its \r after the closing **. */ -}}
+    {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+#+)?[ \t]*(\r?)$` `${1}` $line -}}
     {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$` `**${1}**${2}` $line -}}
   {{- end -}}
   {{- $lines = $lines | append $line -}}
