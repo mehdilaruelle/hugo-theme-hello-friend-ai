@@ -1,3 +1,0 @@
-# A home page whose body holds a fence, for llms.txt.
-[outputs]
-  home = ["HTML", "llms"]
