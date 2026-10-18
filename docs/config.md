@@ -265,8 +265,13 @@ off, and each key is emitted only when set:
 | `logoCursorDisabled` | hides the cursor |
 | `logoCursorColor` | any CSS colour |
 | `logoCursorColorDark` | the colour in dark mode, by the system or the toggle. `logoCursorColor`, or the theme's pink, stays the light one |
-| `logoCursorAnimate` | any CSS time, as the blink duration. `"0s"` stops it |
+| `logoCursorAnimate` | any CSS time, as the blink duration; a bare number is seconds. `"0s"` stops it |
 | `logoCursorPathname` | appends the current section to `logoText`, so `/posts/` reads `$ cd /home/posts`. The home page appends nothing |
+
+These values are written into the stylesheet, so each is checked first: a
+colour holding `;`, `{`, `}`, a quote or `<`, or a duration that is not one,
+warns (`css-param-invalid`) and is left out. `params.portrait.maxWidth` warns
+the same way (`portrait-width-invalid`) when it is not a CSS length.
 
 `logoCursorPathname` is filled in by the browser after the page loads, since
 the section comes from the URL being visited. The cursor stops animating on its

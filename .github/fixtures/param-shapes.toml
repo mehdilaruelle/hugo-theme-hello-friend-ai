@@ -4,3 +4,7 @@
   verification = "abc"
   [params.author]
     credentials = ["x"]
+  [params.logo]
+    logoCursorColor = "#67a2c9}body{display:none"
+  [params.portrait]
+    maxWidth = "120 px"

@@ -527,7 +527,7 @@ jobs:
         run: |
           out=$(hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in ogimage-shape verification-shape credentials-shape; do
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
 

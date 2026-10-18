@@ -19,9 +19,9 @@ second, 3840×2160 capture:
 
 | file | size |
 | --- | --- |
-| `demo.gif` | 4248 Ko |
-| `demo.mp4` | 366 Ko |
-| `demo.webm` | 290 Ko |
+| `demo.gif` | 4248 KB |
+| `demo.mp4` | 366 KB |
+| `demo.webm` | 290 KB |
 
 The `video` shortcode takes the path without an extension and emits one
 `<source>` per format, so the browser takes the first it can play:
