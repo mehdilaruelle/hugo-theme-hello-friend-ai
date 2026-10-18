@@ -1,6 +1,6 @@
 {{- /* site.Params.portrait.maxWidth as a CSS length: a bare number, quoted or
-       not, is pixels, and 0 is unset. Any unit, or a calc()/min()/max()/clamp()/var()
-       holding nothing that ends a value, a rule or the stylesheet. */ -}}
+       not, is pixels, and 0 is unset. Any unit, or one calc()/min()/max()/clamp()/var()
+       holding no url() and nothing that ends a value, a rule or the stylesheet. */ -}}
 {{- $width := "" -}}
 {{- with site.Params.portrait.maxWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}
@@ -9,7 +9,7 @@
   {{- if findRE (printf `^%s$` $num) $width -}}
     {{- $px := float $width -}}
     {{- $width = cond (gt $px 0) (printf "%vpx" $px) "" -}}
-  {{- else if not (or (findRE (printf `(?i)^%s%s$` $num $unit) $width) (and (findRE `(?i)^(?:calc|min|max|clamp|var)\(.+\)$` $width) (not (findRE `[;{}<>"'\\\r\n]|/\*` $width)))) -}}
+  {{- else if not (or (findRE (printf `(?i)^%s%s$` $num $unit) $width) (and (findRE `(?i)^(?:calc|min|max|clamp|var)\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)$` $width) (not (findRE `[;{}<>"'\\\r\n]|/\*|(?i:url)\(` $width)))) -}}
     {{- warnidf "portrait-width-invalid" "params.portrait.maxWidth: %q is not a CSS length such as 120px, 8rem or clamp(80px, 20vw, 160px), so the default width is kept." $width -}}
     {{- $width = "" -}}
   {{- end -}}
