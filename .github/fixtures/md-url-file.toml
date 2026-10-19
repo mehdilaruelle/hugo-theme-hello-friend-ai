@@ -1,0 +1,4 @@
+# The md format on every page, over a page whose url names a file.
+[outputs]
+  home = ["HTML", "llms"]
+  page = ["HTML", "md"]

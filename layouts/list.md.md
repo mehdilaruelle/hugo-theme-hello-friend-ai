@@ -1,3 +1,4 @@
+{{- partial "md/warn-url.html" . -}}
 {{- /* Children listed whole, not one pager at a time: pagination is a reading
        aid for a screen. Taxonomies by title, as in list.html. */ -}}
 {{- $children := .Pages -}}

@@ -2,9 +2,26 @@
        through Goldmark, whose typographer returns &rsquo; and its kin: right in
        the HTML the shortcode produced, noise in a file read as text. Only those
        are decoded — < > & " are markup once decoded, and a code sample inside a
-       shortcode is entitled to keep them written as entities. */ -}}
-{{- $body := .RenderShortcodes -}}
-{{- range $entity, $char := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
-  {{- $body = replace $body $entity $char -}}
+       shortcode is entitled to keep them written as entities. Code keeps
+       them all, and a leading &#43; becomes \+, not a list marker. */ -}}
+{{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
+{{- $text := .RenderShortcodes -}}
+{{- $lines := slice -}}
+{{- $code := partial "md/code-lines.html" $text -}}
+{{- range $n, $raw := split $text "\n" -}}
+  {{- $line := $raw -}}
+  {{- if not (index $code $n) -}}
+    {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
+    {{- $out := "" -}}
+    {{- range partial "md/spans.html" $line -}}
+      {{- $p := .text -}}
+      {{- if not .code -}}
+        {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
+      {{- end -}}
+      {{- $out = print $out $p -}}
+    {{- end -}}
+    {{- $line = $out -}}
+  {{- end -}}
+  {{- $lines = $lines | append $line -}}
 {{- end -}}
-{{- return $body -}}
+{{- return delimit $lines "\n" -}}
