@@ -4,9 +4,11 @@
 {{- range $n, $raw := split . "\n" -}}
   {{- $line := $raw -}}
   {{- if not (index $code $n) -}}
-    {{- /* An empty one goes, or **** would draw a rule. CRLF keeps its \r after the closing **. */ -}}
-    {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+#+)?[ \t]*(\r?)$` `${1}` $line -}}
-    {{- $line = replaceRE `^ {0,3}#{1,6}(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$` `**${1}**${2}` $line -}}
+    {{- /* One in a quote or a list item keeps its prefix. An empty one goes, or
+           **** would draw a rule. CRLF keeps its \r after the closing **. */ -}}
+    {{- $in := `^((?: {0,3}>[ \t]?)*(?: {0,3}(?:[-*+]|\d{1,9}[.)])[ \t]+)?) {0,3}#{1,6}` -}}
+    {{- $line = replaceRE (print $in `(?:[ \t]+#+)?[ \t]*(\r?)$`) `${1}${2}` $line -}}
+    {{- $line = replaceRE (print $in `(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$`) `${1}**${2}**${3}` $line -}}
   {{- end -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
