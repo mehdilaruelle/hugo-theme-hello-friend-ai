@@ -474,9 +474,11 @@ const checks = {
     for (const p of pages(dir)) {
       const html = readFileSync(p, "utf8");
       const start = html.search(/<head\b/i);
+      if (start === -1) continue;
+      const head = element(html, start, "head");
       // Hugo's alias redirects are not the theme's to dress.
-      if (start === -1 || /http-equiv="?refresh/i.test(html)) continue;
-      const icons = [...element(html, start, "head").matchAll(/<link\b[^>]*>/gi)]
+      if ([...head.matchAll(tagRe("meta"))].some((m) => (attr(m[0], "http-equiv") ?? "").toLowerCase() === "refresh")) continue;
+      const icons = [...head.matchAll(/<link\b[^>]*>/gi)]
         .map((m) => m[0]).filter((l) => /\bicon\b/.test(attr(l, "rel") ?? ""));
       if (icons.length !== 1 || attr(icons[0], "rel") !== "icon" || attr(icons[0], "href") !== "data:,")
         bad.push(`${rel(p)}: ${icons.join(" ") || "(no icon link)"}`);
