@@ -73,8 +73,9 @@ When the file is a resource — beside the page in a bundle, or under `assets/` 
 it is converted to WebP and offered at 480, 800 and 1200 pixels and at its own
 width, never wider than it is nor than `params.imageMaxWidth` (1400 by default),
 and given `width` and `height`, so nothing moves when it arrives. A 1600-pixel
-photograph no longer goes to a phone whole. An animated GIF keeps its
-animation, and an SVG is only measured.
+photograph no longer goes to a phone whole. A picture 480 pixels wide or
+narrower has nothing to shrink, so it keeps its own format and is only
+measured, as is an SVG; an animated GIF keeps its animation.
 
 Anything else is served as it was:
 

@@ -4,7 +4,10 @@
 
        The first picture of a page with no cover above it is likely the
        Largest Contentful Paint, and lazy loading would hold it back, so it is
-       fetched at once and first. Every later one stays lazy. */ -}}
+       fetched at once and first. Every later one stays lazy.
+
+       Resources are looked up in .PageInner: when a shortcode renders another
+       page's content into this one, its pictures live in that page's bundle. */ -}}
 {{- $src := .Destination -}}
 {{- $u := urls.Parse .Destination -}}
 {{- /* Looked up by its decoded path, "my%20photo.jpg" being "my photo.jpg";
@@ -19,7 +22,7 @@
   "src" $src
   "fallback" .Destination
   "alt" .PlainText
-  "page" .Page
+  "page" .PageInner
   "loading" (cond $first "eager" "lazy")
   "fetchpriority" (cond $first "high" "")
   "attrs" $attrs

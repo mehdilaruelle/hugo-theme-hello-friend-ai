@@ -196,6 +196,11 @@ const checks = {
     want(second, "loading", "lazy");
     want(second, "fetchpriority", null);
 
+    // Rendered into another page by a shortcode, still looked up in its own bundle.
+    const included = find("posts/2026/10/a-page-including-another/index.html", "The first picture");
+    if (!/\.webp$/.test(attr(included, "src") ?? "")) fail("an included picture is not served as WebP", included);
+    want(included, "width", "1200");
+
     const after = find("posts/2026/10/a-page-with-a-cover/index.html", "After the cover");
     want(after, "loading", "lazy");
     want(after, "fetchpriority", null);
