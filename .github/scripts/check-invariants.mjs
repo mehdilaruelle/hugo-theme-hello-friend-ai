@@ -208,6 +208,7 @@ const checks = {
     want(attrs, "class", "wide");
     want(attrs, "id", "hero");
     want(attrs, "data-note", "a&amp;b");
+    want(attrs, "style", "max-width:50%");
     want(attrs, "loading", "lazy");
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },

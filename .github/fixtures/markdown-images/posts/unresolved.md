@@ -18,4 +18,4 @@ Remote, untouched:
 With attributes:
 
 ![With attributes](https://example.com/attrs.png)
-{.wide #hero data-note="a&b" loading="eager"}
+{.wide #hero data-note="a&b" loading="eager" style="max-width:50%"}

@@ -117,8 +117,9 @@
   {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
 {{- end -}}
 
-{{- /* The partial's own attributes win; a class is added to. Hugo has already
-       dropped any on* handler and style from a Markdown attribute block. */ -}}
+{{- /* The partial's own attributes win; a class is added to, and a style is
+       taken when the caller passes none. Hugo has already dropped any on*
+       handler from a Markdown attribute block. */ -}}
 {{- $attrs := .attrs | default dict -}}
 {{- $class := delimit (slice (.position | default "") ($attrs.class | default "")) " " | strings.TrimSpace -}}
 {{- $own := slice "src" "srcset" "sizes" "width" "height" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
@@ -130,6 +131,6 @@
     {{- if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
     {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
     {{- with $class }} class="{{ . }}"{{ end }}
-    {{- with .style }} style="{{ . | safeCSS }}"{{ end }}
+    {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
     {{- range $k, $v := $attrs }}{{ if and $v (not (in $own (lower $k))) }}{{ printf ` %s="%s"` $k (htmlEscape (string $v)) | safeHTMLAttr }}{{ end }}{{ end }} />
 {{- end -}}
