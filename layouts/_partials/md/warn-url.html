@@ -1,0 +1,7 @@
+{{- /* A url naming a file is shared by every output format: the md copy and the HTML collide. */ -}}
+{{- with .Params.url -}}
+  {{- $url := printf "%v" . -}}
+  {{- if and (not (hasSuffix $url "/")) (path.Ext $url) ($.OutputFormats.Get "html") -}}
+    {{- warnidf "md-url-names-a-file" "%s: url %q names a file, so the md copy is written to the same path as the HTML and replaces it, or is replaced by it. Set outputs: [\"HTML\"] on the page, or end its url with a slash. See docs/config.md." $.Path $url -}}
+  {{- end -}}
+{{- end -}}

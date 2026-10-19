@@ -52,6 +52,8 @@ const unfenced = (s) => {
   let fence = "";
   let quoted = 0;
   return s.split("\n").map((line) => {
+    // Leaving the quote ends the fence.
+    if (fence && quotes(line.match(/^(?: {0,3}>)*/)[0]) < quoted) fence = "";
     if (fence) {
       const c = FENCE_CLOSE.exec(line);
       if (c && quotes(c[1]) === quoted && c[2][0] === fence[0] && c[2].length >= fence.length) fence = "";
@@ -70,7 +72,7 @@ const entities = (s) => {
     // Closed on its own line, so it carries no further: "<span>x</span>" must
     // not excuse the prose under it.
     if (tag) open = !tag[1] && !new RegExp(`</${tag[2]}\\s*>`, "i").test(line);
-    return open || tag ? line.replace(MARKUP, "") : line;
+    return open || tag ? line.replace(MARKUP, "") : outsideCode(line);
   }).join("\n");
   return prose(text).match(/&(?:[a-zA-Z][a-zA-Z0-9]*|#(?:\d+|x[0-9a-fA-F]+));/g);
 };
@@ -262,7 +264,12 @@ for (const [lang, prefix] of Object.entries(langs)) {
     .find((note) => /(?<!\\)<\/?[A-Za-z]/.test(outsideCode(note)));
   if (rawTag) fail(`${lang}: a list note carries raw HTML: ${rawTag.slice(0, 80)}`);
 
-  const links = [...mapSection(s, accepts(lang, MAP_KEYS)).matchAll(LIST_LINK)].map((m) => destination(m[1]));
+  // llmstxt.org: no heading between the quote and the file lists.
+  const map = mapSection(s, accepts(lang, MAP_KEYS));
+  const early = unfenced(s.slice(0, s.length - map.length)).match(/^#{2,6}[ \t].*$/m);
+  if (early) fail(`${lang}: llms.txt has a heading before its lists: ${early[0]}`);
+
+  const links = [...map.matchAll(LIST_LINK)].map((m) => destination(m[1]));
   // Headings but no map: none of them is one this theme writes.
   if (!links.length) fail(/^## \S/m.test(s) ? `${lang}: no list under a heading this theme generates` : `${lang}: no links`);
   for (const url of links) {
@@ -340,6 +347,11 @@ for (const f of mds) {
   if (s.includes("{{<") || s.includes("{{%")) fail(`${f}: an unrendered shortcode`);
   const found = entities(s);
   if (found) fail(`${f}: ${found.length} HTML entities, e.g. ${found[0]}`);
+  // The H1 and the quote are front-matter text and must not read as Markdown.
+  const [h1, second, third] = s.split("\n");
+  if (second?.trim()) fail(`${f}: the title runs onto a second line: ${second}`);
+  if (/[ \t]#+[ \t]*$/.test(h1) && !/\\#+[ \t]*$/.test(h1)) fail(`${f}: the title ends in a closing # sequence: ${h1}`);
+  if (/^> (?:#{1,6}|[-+*]|\d{1,9}[.)])(?:\s|$)|^> >/.test(third ?? "")) fail(`${f}: the description opens a block: ${third}`);
   // Anywhere in the file would pass on a page that merely links to the site.
   const last = s.trimEnd().split("\n").pop().trim();
   if (!last.split(/\s+/).pop().startsWith(base)) fail(`${f}: does not end with a canonical URL`);

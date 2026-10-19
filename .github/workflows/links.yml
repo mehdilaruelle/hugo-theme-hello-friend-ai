@@ -190,6 +190,24 @@ jobs:
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 
+      - name: Check the Markdown copy carries front matter and code as written
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          md=public/md-copy-edges/index.md
+          [ -f "$md" ] || { echo "  BAD  $md was not built"; exit 1; }
+          bad=0
+          for want in '# Learn C \#' '> \- a description that opens like a list' \
+                      'as written: `&rsquo;`. So does a fence:' '<p>It&rsquo;s &mdash; written as entities</p>' \
+                      '\+ this line is a paragraph, and a decoded "+" opening it would make it a' \
+                      '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
+                      'Out of the quote, it’s prose again.' '    Its second paragraph: it’s decoded as well.' \
+                      'Under it, it’s prose.' 'Under that, it’s prose too.' \
+                      '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
+            grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
+          exit "$bad"
+
       # With neither the note nor the llms-full line between them, a body
       # heading over a link list has the generated lists shape exactly.
       - name: Check llms.txt with no note and no llms-full
@@ -434,6 +452,20 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
+
+      - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          out=$(hugo --themesDir ../.. --gc --destination public-md-url \
+            --contentDir ../.github/fixtures/md-url-file \
+            --config config.toml,../.github/fixtures/md-url-file.toml 2>&1) || { echo "$out"; exit 1; }
+          grep -q 'url "/legacy/page.html" names a file' <<< "$out" || { echo "$out"; echo "  BAD  no md-url-names-a-file warning"; exit 1; }
+          echo "  the build warns that the md copy would replace the HTML"
+          [ -f public-md-url/llms.txt ] && ! grep -qx '\*\*\*\*' public-md-url/llms.txt \
+            || { cat public-md-url/llms.txt; echo "  BAD  an empty heading became a rule in llms.txt"; exit 1; }
+          for want in '> **A quoted heading**' '- **A listed heading**'; do
+            grep -qxF -- "$want" public-md-url/llms.txt || { cat public-md-url/llms.txt; echo "  BAD  no line reading: $want"; exit 1; }
+          done
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
