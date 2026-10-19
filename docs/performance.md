@@ -18,7 +18,8 @@ and a photograph is most of that. One written in Markdown, `![alt](photo.jpg)`,
 is served as the file you put there: not resized, not converted, and with no
 `width` or `height`. A large one costs mobile performance points when it is the
 Largest Contentful Paint. The `image` shortcode, the cover and the gallery do
-resize and measure theirs, see below.
+resize and measure theirs when the file is in the page bundle or `assets/`, see
+below.
 
 **Read a mobile performance score as a range.** Earlier runs put the demo's home
 page at 99, 97 and 97 and the showcase at 99, with Speed Index the part that
@@ -53,7 +54,9 @@ as the theme does. What the theme contributes is the part it controls:
   Inter moves nothing. See [The font](fonts.md).
 - **Images measured and resized**, with `width`, `height` and a `srcset`, so
   nothing reflows when a picture arrives — the `image` shortcode's, the cover's
-  and the gallery's, not yet one written in Markdown. See
+  and the gallery's, when the file is in the page bundle or `assets/`. One
+  under `static/` or on another host is served as it is, and so, for now, is
+  one written in Markdown. See
   [Where to put the portrait](content.md#where-to-put-the-portrait).
 - **KaTeX and Mermaid are opt-in per page**, so a page without a formula or a
   diagram fetches neither.
