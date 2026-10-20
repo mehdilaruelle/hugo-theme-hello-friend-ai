@@ -170,6 +170,25 @@ const checks = {
     ok("the logo reads left-to-right on an RTL page");
   },
 
+  // Every main menu entry of a page against the states wanted, "Name=page" or
+  // "Name=true"; an entry not named must carry no aria-current at all.
+  "menu-current"(page, ...want) {
+    const html = read(page);
+    const nav = [...html.matchAll(/<nav\b[^>]*>/gi)].find((m) => hasClass(m[0], "menu"));
+    if (!nav) fail(`${page} has no main menu`);
+    const got = new Map();
+    for (const m of element(html, nav.index, "nav").matchAll(/<(a|span)\b([^>]*)>([^<]*)/gi)) {
+      if (m[1].toLowerCase() === "span" && !hasClass(m[0], "dropbtn")) continue;
+      got.set(m[3].trim(), attr(m[0], "aria-current"));
+    }
+    const wanted = new Map(want.map((w) => w.split("=")));
+    for (const name of wanted.keys()) if (!got.has(name)) fail(`${page}: no menu entry named ${name}`, [...got.keys()].join(", "));
+    const bad = [...got].filter(([name, state]) => (wanted.get(name) ?? null) !== state)
+      .map(([name, state]) => `${name}: aria-current=${state}, wanted ${wanted.get(name) ?? "none"}`);
+    if (bad.length) fail(`${page}: the menu marks the wrong entries`, bad.join("\n"));
+    ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
+  },
+
   // Pictures written in Markdown, from .github/fixtures/markdown-images.
   "markdown-images"() {
     const imgs = (page) => [...read(page).matchAll(tagRe("img"))].map((m) => m[0]);

@@ -184,7 +184,11 @@ jobs:
                          '[^sizes]: Each size is read from the file itself.' \
                          '[Note]: neither is a line shaped like one, commas.svg and all.' \
                          '    The note goes on, with [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) again.' \
-                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.'; do
+                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.' \
+                         '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
+                         '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '- [ ]: commas.svg' '-     [shown]: commas.svg'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
@@ -343,6 +347,21 @@ jobs:
           [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
           exit "$bad"
 
+      - name: Check utterances follows the page's theme unless one is named
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml,../.github/fixtures/utterances-follow.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-utterances
+          post=posts/2026/01/a-video-where-a-gif-used-to-be/index.html
+          bad=0
+          grep -q 'class=utterances-follow' "public-utterances/$post" || { echo "  BAD  the default theme did not get the following mount"; bad=1; }
+          js=$(grep -o 'js/utterances[^" >]*\.js' "public-utterances/$post" | head -1)
+          grep -qs 'set-theme' "public-utterances/$js" || { echo "  BAD  the post loads no script that tells utterances of a theme change"; bad=1; }
+          grep -q 'theme=github-light' "public-comments/$post" || { echo "  BAD  a named theme lost the static client"; bad=1; }
+          [ "$bad" = 0 ] && echo "  utterances follows the page by default, and a named theme stands"
+          exit "$bad"
+
       - name: Check a quoted 0 keeps the default related limit
         working-directory: hello-friend-ai/showcaseSite
         run: |
@@ -428,6 +447,32 @@ jobs:
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/
+          check() { node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current "$@"; }
+          check en/posts/index.html Posts=page
+          check en/about/me/index.html About=true "About Me"=page
+
+      # The demos write url = "posts/", which links no page: aria-current has to
+      # match those too, and a home entry, a pageRef, a parent with no url whose
+      # child lies outside it, and an external link.
+      - name: Check the menu marks the current page and the entry holding it
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --destination public-menu-current \
+            --config config.toml,../.github/fixtures/menu-current.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-menu-current https://example.com/subpath/
+          check() { node ../.github/scripts/check-invariants.mjs public-menu-current menu-current "$@"; }
+          check index.html Home=page
+          check posts/index.html Posts=page
+          check posts/2014/03/migrate-to-hugo-from-jekyll/index.html Posts=true
+          check tags/index.html More=true Tags=page
+          check tags/go/index.html More=true Tags=true
+          check about/index.html
+          cd ../showcaseSite
+          check() { node ../.github/scripts/check-invariants.mjs public menu-current "$@"; }
+          check fr/posts/index.html Articles=page
+          check fr/about/me/index.html "À propos"=true "Qui suis-je"=page
+          check search/index.html Search=page
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first

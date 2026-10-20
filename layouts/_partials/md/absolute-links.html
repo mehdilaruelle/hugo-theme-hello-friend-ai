@@ -18,10 +18,11 @@
 {{- $def := `[^/#?<>\s:][^>\s:]*` -}}
 {{- $dq := `[^/#?"\s:][^"\s:]*` -}}
 {{- $sq := `[^/#?'\s:][^'\s:]*` -}}
-{{- $dp := `(?: {0,3}> ?)* {0,3}` -}}
-{{- /* A definition's label, not a footnote's, and what may follow its destination: a title. */ -}}
-{{- $label := `\[[^\]^][^\]]*\]:` -}}
-{{- $title := `(?:[ \t]+(?:"[^"]*"|'[^']*'|\([^)]*\)))?[ \t]*$` -}}
+{{- $dp := `(?: {0,3}> ?)* *` -}}
+{{- /* A definition's label, not a footnote's nor a task box, and what may follow its
+       destination: a title. Indented code is skipped, so any indent is a list's. */ -}}
+{{- $label := `(?:(?:[-*+]|\d{1,9}[.)])(?: {1,4}| {0,3}\t))?\[[ \t]*[^\]\s^][^\]]*\]:` -}}
+{{- $title := `(?:[ \t]+(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\((?:[^)\\]|\\.)*\)))?[ \t]*$` -}}
 {{- $lines := slice -}}
 {{- $code := partial "md/code-lines.html" .text -}}
 {{- range $n, $raw := split .text "\n" -}}

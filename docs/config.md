@@ -116,6 +116,12 @@ Translate the page it lands on too, or the menu says *Articles* and the page it
 opens is headed *Posts*. For a section that is generated rather than written,
 that means adding `content/<section>/_index.<code>.md` with a `title`.
 
+The main menu tells assistive technologies where the reader is: the entry for
+the page being shown carries `aria-current="page"`, and the entry that holds it
+`aria-current="true"` — *Posts* on an article, a parent on its child's page.
+That works for entries set by `url` as well as by `pageRef`: a `url` holds every
+page under it, except the home page's, which would otherwise hold them all.
+
 ### The language switcher
 
 `params.enableGlobalLanguageMenu` puts a globe in the header, next to the theme
@@ -306,9 +312,9 @@ Only `repository` is required: `issueTerm` defaults to `pathname` and `theme` to
 | `services.disqus.shortname` | the Disqus site name |
 | `params.commento.url` | the script URL of your Commento or [Comentario](https://comentario.app) instance |
 | `params.utterances.repository` | the public `owner/repo` holding the issues |
-| `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, an issue number, or a specific term |
+| `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, or a specific term. A number is a term too, searched for in issue titles: utterances opens a given issue only through its `issue-number` attribute, which the theme does not set |
 | `params.utterances.label` | a label put on the issues utterances opens. Optional: the attribute is omitted when unset |
-| `params.utterances.theme` | `preferred-color-scheme` (the default), `github-light`, `github-dark`, `github-dark-orange`, `icy-dark` and the rest utterances offers |
+| `params.utterances.theme` | `preferred-color-scheme` (the default), `github-light`, `github-dark`, `github-dark-orange`, `icy-dark` and the rest utterances offers. The default follows the page rather than the system: `github-light` or `github-dark` as the page is, `params.defaultTheme` and the toggle included. Any other value is used as given, whatever the page's theme |
 
 ## Footer
 
