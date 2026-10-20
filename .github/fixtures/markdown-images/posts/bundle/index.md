@@ -10,3 +10,8 @@ The first picture, encoded as a browser would write it, with a title:
 The same file again, further down:
 
 ![The second picture](<dunes photo.jpg>)
+
+At the size the writer gave:
+
+![Sized by hand](dunes%20photo.jpg)
+{width="300" height="200"}

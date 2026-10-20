@@ -6,6 +6,17 @@
        them all, and a leading &#43; becomes \+, not a list marker. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $text := .RenderShortcodes -}}
+{{- /* A picture the image hook finds in assets/ is published resized only:
+       the copy links the original, which .Permalink publishes. */ -}}
+{{- $assets := dict -}}
+{{- range findRESubmatch `!\[[^\]]*\]\(<?([^)\s>]+)` $text -}}
+  {{- $dest := index . 1 -}}
+  {{- with (try (urls.Parse (htmlUnescape $dest))).Value -}}
+    {{- if not (or .Scheme .Host .RawQuery .Fragment ($.Resources.Get .Path)) -}}
+      {{- with resources.Get .Path -}}{{- $assets = merge $assets (dict $dest .Permalink) -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- $lines := slice -}}
 {{- $code := partial "md/code-lines.html" $text -}}
 {{- range $n, $raw := split $text "\n" -}}
@@ -17,6 +28,9 @@
       {{- $p := .text -}}
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
+        {{- range $dest, $to := $assets -}}
+          {{- $p = replaceRE (printf `(!\[[^\]]*\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
+        {{- end -}}
       {{- end -}}
       {{- $out = print $out $p -}}
     {{- end -}}
