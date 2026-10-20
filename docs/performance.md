@@ -14,12 +14,13 @@ desktop:
 Measured on 30 September 2026 with Lighthouse 13, on these URLs.
 
 **These are home pages, not articles.** An article is scored on what it carries,
-and a photograph is most of that. One written in Markdown, `![alt](photo.jpg)`,
-is served as the file you put there: not resized, not converted, and with no
-`width` or `height`. A large one costs mobile performance points when it is the
-Largest Contentful Paint. The `image` shortcode, the cover and the gallery do
-resize and measure theirs when the file is in the page bundle or `assets/`, see
-below.
+and a photograph is most of that. The theme resizes and measures it when the
+file is in the page bundle or `assets/`, whether it is written in Markdown,
+`![alt](photo.jpg)`, or comes from the `image` shortcode, the cover or the
+gallery, see below. A file under `static/` or on another host is served as you
+put it there: not resized, not converted, and with no `width` or `height`. A
+large one costs mobile performance points when it is the Largest Contentful
+Paint.
 
 **Read a mobile performance score as a range.** Earlier runs put the demo's home
 page at 99, 97 and 97 and the showcase at 99, with Speed Index the part that
@@ -53,10 +54,10 @@ as the theme does. What the theme contributes is the part it controls:
 - **A metric-matched fallback font, one face per weight**, so the swap to
   Inter moves nothing. See [The font](fonts.md).
 - **Images measured and resized**, with `width`, `height` and a `srcset`, so
-  nothing reflows when a picture arrives — the `image` shortcode's, the cover's
-  and the gallery's, when the file is in the page bundle or `assets/`. One
-  under `static/` or on another host is served as it is, and so, for now, is
-  one written in Markdown. See
+  nothing reflows when a picture arrives — one written in Markdown, the
+  `image` shortcode's, the cover's and the gallery's, when the file is in the
+  page bundle or `assets/`. One under `static/` or on another host is served
+  as it is. See [Pictures in Markdown](content.md#pictures-in-markdown) and
   [Where to put the portrait](content.md#where-to-put-the-portrait).
 - **KaTeX and Mermaid are opt-in per page**, so a page without a formula or a
   diagram fetches neither.
