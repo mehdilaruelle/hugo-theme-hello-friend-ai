@@ -184,7 +184,11 @@ jobs:
                          '[^sizes]: Each size is read from the file itself.' \
                          '[Note]: neither is a line shaped like one, commas.svg and all.' \
                          '    The note goes on, with [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) again.' \
-                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.'; do
+                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.' \
+                         '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
+                         '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '- [ ]: commas.svg' '-     [shown]: commas.svg'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
