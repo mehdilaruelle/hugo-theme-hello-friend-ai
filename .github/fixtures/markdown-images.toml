@@ -1,0 +1,10 @@
+# Pictures written in Markdown, which neither demo has. The image stands alone
+# so the attribute block below it reaches the img rather than a paragraph.
+
+# An include shortcode, to render the bundle's pictures inside another page.
+layoutDir = "../.github/fixtures/markdown-images-layouts"
+
+[markup.goldmark.parser]
+  wrapStandAloneImageWithinParagraph = false
+  [markup.goldmark.parser.attribute]
+    block = true

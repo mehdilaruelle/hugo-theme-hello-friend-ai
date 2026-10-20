@@ -512,6 +512,17 @@ jobs:
             grep -qxF -- "$want" public-md-url/llms.txt || { cat public-md-url/llms.txt; echo "  BAD  no line reading: $want"; exit 1; }
           done
 
+      # Neither demo writes a picture in Markdown, so the render hook is only built here.
+      # No link check: the fixture's unresolved pictures point nowhere on purpose.
+      - name: Check pictures written in Markdown are resized and measured
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-markdown-images \
+            --contentDir ../.github/fixtures/markdown-images \
+            --config config.toml,../.github/fixtures/markdown-images.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
         working-directory: hello-friend-ai/exampleSite

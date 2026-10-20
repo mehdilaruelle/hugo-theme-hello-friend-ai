@@ -1,0 +1,2 @@
+{{- /* The usual way a site renders one page's content into another. */ -}}
+{{- with site.GetPage (.Get 0) }}{{ .RenderShortcodes }}{{ end -}}

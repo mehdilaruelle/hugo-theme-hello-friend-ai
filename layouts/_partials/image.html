@@ -2,7 +2,8 @@
        page bundle, or assets/. A file under static/ is not one, so it goes out
        whole and unmeasured, as does a remote one, which is never fetched.
        Takes src, alt, position, style, page, loading, fetchpriority, maxWidth,
-       sizes, fill. */ -}}
+       sizes, fill, and from render-image.html fallback, the url written when
+       src resolves to no resource, and attrs, more attributes to carry. */ -}}
 
 {{- $src := .src -}}
 {{- $alt := .alt | default "" -}}
@@ -110,9 +111,18 @@
 {{- $url := $src -}}
 {{- with $rendered -}}
   {{- $url = .RelPermalink -}}
+{{- else with .fallback -}}
+  {{- $url = . -}}
 {{- else -}}
   {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
 {{- end -}}
+
+{{- /* The partial's own attributes win; a class is added to, and a style is
+       taken when the caller passes none. Hugo has already dropped any on*
+       handler from a Markdown attribute block. */ -}}
+{{- $attrs := .attrs | default dict -}}
+{{- $class := delimit (slice (.position | default "") ($attrs.class | default "")) " " | strings.TrimSpace -}}
+{{- $own := slice "src" "srcset" "sizes" "width" "height" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
 
 {{- if $src -}}
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
@@ -120,6 +130,7 @@
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
     {{- if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
     {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
-    {{- with .position }} class="{{ . }}"{{ end }}
-    {{- with .style }} style="{{ . | safeCSS }}"{{ end }} />
+    {{- with $class }} class="{{ . }}"{{ end }}
+    {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
+    {{- range $k, $v := $attrs }}{{ if and $v (not (in $own (lower $k))) }}{{ printf ` %s="%s"` $k (htmlEscape (string $v)) | safeHTMLAttr }}{{ end }}{{ end }} />
 {{- end -}}

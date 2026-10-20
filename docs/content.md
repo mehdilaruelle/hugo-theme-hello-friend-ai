@@ -60,6 +60,48 @@ has one, in all four of its languages. The
 [default demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 has none, so the two sites show the front page with it and without.
 
+## Pictures in Markdown
+
+A picture written the plain way goes through the same code as the `image`
+shortcode:
+
+```markdown
+![A dune at dusk](dune.jpg "Optional title")
+```
+
+When the file is a resource — beside the page in a bundle, or under `assets/` —
+it is converted to WebP and offered at 480, 800 and 1200 pixels and at its own
+width, never wider than it is nor than `params.imageMaxWidth` (1400 by default),
+and given `width` and `height`, so nothing moves when it arrives. A 1600-pixel
+photograph no longer goes to a phone whole. A picture 480 pixels wide or
+narrower has nothing to shrink, so it keeps its own format and is only
+measured, as is an SVG; an animated GIF keeps its animation.
+
+Anything else is served as it was:
+
+```text
+![…](dune.jpg)            in the page bundle: resized, converted, measured
+![…](img/dune.jpg)        found in assets/img/: resized, converted, measured
+![…](/img/dune.jpg)       a file under static/: served as written, unmeasured
+![…](dune.jpg)            beside a page that is not a bundle: as written
+![…](https://…)           remote: as written, never fetched
+```
+
+A url with a query or a fragment is also left as written: it names no resource.
+
+The first picture of a page that has no cover is fetched at once and ahead of
+the rest, since it is likely the largest thing on screen; every later one is
+lazy. A cover takes that place when there is one.
+
+The title becomes the `title` attribute. With
+`markup.goldmark.parser.attribute.block` on, a picture standing alone takes an
+attribute block, `{.wide #hero}`, and keeps it; attributes the theme writes
+itself, such as `loading` or `width`, keep the theme's value; a `style` is kept.
+Hugo drops any `on…` handler from the block before the theme sees it.
+
+To keep Hugo's own rendering, put a `layouts/_markup/render-image.html` of
+your own in the site; it replaces the theme's.
+
 ## Built-in shortcodes
 
 Of course you are able to use all default shortcodes from hugo (https://gohugo.io/content-management/shortcodes/).
