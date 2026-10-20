@@ -622,6 +622,13 @@ jobs:
             --config config.toml,../.github/fixtures/favicon-static-dir.toml
           node ../.github/scripts/check-invariants.mjs public-static-dir favicons
 
+      # The demos ship no favicon, which is the shape that made the browser ask for one.
+      - name: Check a site with no favicon links the empty icon
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs exampleSite/public favicon-none
+          node .github/scripts/check-invariants.mjs showcaseSite/public favicon-none
+
       - name: Check a wrong-shaped param warns instead of aborting the build
         working-directory: hello-friend-ai/exampleSite
         run: |

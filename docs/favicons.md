@@ -23,6 +23,29 @@ from the HTML at all — they are reached through the two files that name them,
 which RealFaviconGenerator generates alongside the images. Ship those two files
 too, or the three images are dead weight.
 
+## A site with no favicon
+
+A browser that finds no icon linked asks for `/favicon.ico` anyway, and a site
+without one answers with a 404, an error in the console. So when the theme links
+neither `favicon.ico` nor a PNG icon, it links an empty one instead:
+
+```html
+<link rel="icon" href="data:,">
+```
+
+That is no request at all, and the tab shows the browser's default icon, as it
+did before.
+
+Two things to know:
+
+- A `favicon.ico` the theme cannot see is no longer asked for either. If yours
+  is in a `staticDir` other than `static/`, or in another theme's
+  `themes/<name>/static`, name that directory in `params.favicon.staticDir` and
+  it is linked as usual.
+- A Content-Security-Policy with an `img-src` that leaves out `data:` blocks the
+  empty icon, and Firefox reports that in the console. Ship a favicon, or allow
+  `data:` there.
+
 ## Colours
 
 Two of the tags carry a colour, and neither is guessed:

@@ -10,13 +10,21 @@
   (dict "file" "safari-pinned-tab.svg" "rel" "mask-icon" "color" .Site.Params.favicon.mask)
   (dict "file" "favicon.ico" "rel" "shortcut icon")
 -}}
+{{- $icon := false -}}
 {{- range $icons }}
 {{- $file := .file -}}
 {{- $found := false -}}
 {{- range $dirs }}{{ if fileExists (path.Join . $file) }}{{ $found = true }}{{ end }}{{ end -}}
 {{- if $found }}
     <link rel="{{ .rel }}"{{ with .type }} type="{{ . }}"{{ end }}{{ with .sizes }} sizes="{{ . }}"{{ end }} href="{{ .file | relURL }}"{{ with .color }} color="{{ . }}"{{ end }}>
+{{- if in (slice "icon" "shortcut icon") .rel }}{{ $icon = true }}{{ end -}}
 {{- end }}
+{{- end }}
+{{- /* With no icon linked, a browser asks for /favicon.ico anyway, and a site
+       that has none answers 404, an error in the console. An empty data: URL
+       is an icon that costs no request. */ -}}
+{{- if not $icon }}
+    <link rel="icon" href="data:,">
 {{- end }}
 {{- /* Only when set: an empty content asserts the colour is blank. */ -}}
 {{- with .Site.Params.favicon.msapplication }}

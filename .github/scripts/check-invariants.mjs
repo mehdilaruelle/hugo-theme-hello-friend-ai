@@ -527,10 +527,31 @@ const checks = {
       for (const [k, v] of Object.entries(attrs))
         if (attr(hit, k) !== v) fail(`${file}: ${k} is not ${v}`, hit);
     }
+    const empty = links.find((l) => attr(l, "href") === "data:,");
+    if (empty) fail("the empty icon is linked although the site ships favicons", empty);
     const metas = [...html.matchAll(/<meta\b[^>]*>/gi)].map((m) => m[0]);
     const tile = metas.find((m) => attr(m, "name") === "msapplication-TileColor");
     if (attr(tile ?? "", "content") !== "#1b1c1d") fail("msapplication-TileColor is not #1b1c1d", tile ?? "(none)");
     ok("every favicon the site ships is linked, with its attributes");
+  },
+
+  // A site with no favicon: one empty icon, so the browser asks for no /favicon.ico.
+  "favicon-none"() {
+    const bad = [];
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      const start = html.search(/<head\b/i);
+      if (start === -1) continue;
+      const head = element(html, start, "head");
+      // Hugo's alias redirects are not the theme's to dress.
+      if ([...head.matchAll(tagRe("meta"))].some((m) => (attr(m[0], "http-equiv") ?? "").toLowerCase() === "refresh")) continue;
+      const icons = [...head.matchAll(/<link\b[^>]*>/gi)]
+        .map((m) => m[0]).filter((l) => /\bicon\b/.test(attr(l, "rel") ?? ""));
+      if (icons.length !== 1 || attr(icons[0], "rel") !== "icon" || attr(icons[0], "href") !== "data:,")
+        bad.push(`${rel(p)}: ${icons.join(" ") || "(no icon link)"}`);
+    }
+    if (bad.length) fail("a page without exactly the one empty icon", bad.slice(0, 3).join("\n"));
+    ok("every page links the empty icon, so no /favicon.ico is requested");
   },
 
   // params.social as a table: the build survives and the handle is read.
