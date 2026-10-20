@@ -6,9 +6,9 @@
 
 [![Hello Friend AI](https://raw.githubusercontent.com/mehdilaruelle/hugo-theme-hello-friend-ai/master/images/screenshot.png)](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/)
 
-**100 in every PageSpeed Insights category**, performance included, on both
-demo sites, on mobile and on desktop, with every option in the theme switched on
-at once.
+**100 in every PageSpeed Insights category**, performance included, on the home
+pages of both demo sites, on mobile and on desktop, with every option in the
+theme switched on at once.
 [The four reports →](docs/performance.md)
 
 > **This is a fork.** All the credit for the theme goes to
@@ -87,7 +87,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - A `gallery` shortcode: a page bundle's pictures as a grid of thumbnails, see [Built-in shortcodes](docs/content.md#gallery)
 - Front page content from `content/_index.md`, see [Front page content](docs/content.md#front-page-content)
 - JSON-LD structured data, breadcrumbs and a complete `hreflang` set, see [SEO](docs/seo.md)
-- 100 in every PageSpeed Insights category on both demo sites, mobile and desktop, see [Performance](docs/performance.md)
+- 100 in every PageSpeed Insights category on the home pages of both demo sites, mobile and desktop, see [Performance](docs/performance.md)
 - Optional `llms.txt`, `llms-full.txt` and a Markdown copy of every page, list pages included, see [llms.txt](docs/config.md#llmstxt)
 - A declarative AI crawler policy: refuse training without refusing citation, see [AI crawlers](docs/config.md#ai-crawlers)
 - Per-page AI control: `noai` to keep one page out of the text outputs, and a licence that travels with the text, see [Keeping a page out of things](docs/config.md#keeping-a-page-out-of-things)
