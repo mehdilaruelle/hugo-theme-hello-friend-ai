@@ -343,6 +343,21 @@ jobs:
           [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
           exit "$bad"
 
+      - name: Check utterances follows the page's theme unless one is named
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml,../.github/fixtures/utterances-follow.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-utterances
+          post=posts/2026/01/a-video-where-a-gif-used-to-be/index.html
+          bad=0
+          grep -q 'class=utterances-follow' "public-utterances/$post" || { echo "  BAD  the default theme did not get the following mount"; bad=1; }
+          js=$(grep -o 'js/utterances[^" >]*\.js' "public-utterances/$post" | head -1)
+          grep -qs 'set-theme' "public-utterances/$js" || { echo "  BAD  the post loads no script that tells utterances of a theme change"; bad=1; }
+          grep -q 'theme=github-light' "public-comments/$post" || { echo "  BAD  a named theme lost the static client"; bad=1; }
+          [ "$bad" = 0 ] && echo "  utterances follows the page by default, and a named theme stands"
+          exit "$bad"
+
       - name: Check a quoted 0 keeps the default related limit
         working-directory: hello-friend-ai/showcaseSite
         run: |
