@@ -94,8 +94,9 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 
 ## Requirements
 
-- **Hugo extended**, version **0.158.0 or newer** (tested against 0.164.0). The
-  extended edition is required because the theme compiles SCSS.
+- **Hugo**, version **0.158.0 or newer** (tested against 0.164.0). Either
+  edition will do: the standard build compiles the stylesheet too, through
+  Dart Sass.
 - **[Dart Sass](https://sass-lang.com/install/)** — required.
 
 The stylesheet is written in the Sass module system (`@use`), which only Dart

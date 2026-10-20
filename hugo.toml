@@ -22,3 +22,11 @@
 
 [params]
   mainSections = ["posts"]
+
+# What the theme needs of Hugo, so a site that cannot build it is told at
+# startup rather than part way through. Dart Sass is needed as well and is not
+# declarable here: it is a separate binary, which either edition of Hugo drives
+# just as well, so head.html reports a missing one instead.
+[module]
+  [module.hugoVersion]
+    min = "0.158.0"
