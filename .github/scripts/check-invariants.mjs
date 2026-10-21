@@ -207,6 +207,7 @@ const checks = {
     want(first, "loading", "eager");
     want(first, "fetchpriority", "high");
     const second = find(bundle, "The second picture");
+    if (!/\.webp$/.test(attr(second, "src") ?? "")) fail("<path with a space> not served as WebP", second);
     want(second, "loading", "lazy");
     want(second, "fetchpriority", null);
 
