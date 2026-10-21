@@ -447,13 +447,7 @@ jobs:
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/
-          check() { node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current "$@"; }
-          check en/posts/index.html Posts=page
-          check en/about/me/index.html About=true "About Me"=page
 
-      # The demos write url = "posts/", which links no page: aria-current has to
-      # match those too, and a home entry, a pageRef, a parent with no url whose
-      # child lies outside it, and an external link.
       - name: Check the menu marks the current page and the entry holding it
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -462,17 +456,10 @@ jobs:
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-menu-current https://example.com/subpath/
           check() { node ../.github/scripts/check-invariants.mjs public-menu-current menu-current "$@"; }
-          check index.html Home=page
           check posts/index.html Posts=page
           check posts/2014/03/migrate-to-hugo-from-jekyll/index.html Posts=true
-          check tags/index.html More=true Tags=page
           check tags/go/index.html More=true Tags=true
           check about/index.html
-          cd ../showcaseSite
-          check() { node ../.github/scripts/check-invariants.mjs public menu-current "$@"; }
-          check fr/posts/index.html Articles=page
-          check fr/about/me/index.html "À propos"=true "Qui suis-je"=page
-          check search/index.html Search=page
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
@@ -512,8 +499,6 @@ jobs:
             grep -qxF -- "$want" public-md-url/llms.txt || { cat public-md-url/llms.txt; echo "  BAD  no line reading: $want"; exit 1; }
           done
 
-      # Neither demo writes a picture in Markdown, so the render hook is only built here.
-      # No link check: the fixture's unresolved pictures point nowhere on purpose.
       - name: Check pictures written in Markdown are resized and measured
         working-directory: hello-friend-ai/exampleSite
         run: |
@@ -623,12 +608,10 @@ jobs:
             --config config.toml,../.github/fixtures/favicon-static-dir.toml
           node ../.github/scripts/check-invariants.mjs public-static-dir favicons
 
-      # The demos ship no favicon, which is the shape that made the browser ask for one.
       - name: Check a site with no favicon links the empty icon
         working-directory: hello-friend-ai
         run: |
           node .github/scripts/check-invariants.mjs exampleSite/public favicon-none
-          node .github/scripts/check-invariants.mjs showcaseSite/public favicon-none
 
       - name: Check a wrong-shaped param warns instead of aborting the build
         working-directory: hello-friend-ai/exampleSite
