@@ -32,7 +32,7 @@
            than filtered with where, because the rule is noindex.html's and a
            where clause can only read a param. */}}
     {{- $alternates := slice }}
-    {{- range .AllTranslations }}
+    {{- range where .AllTranslations "Params.build.render" "!=" "link" }}
     {{- if not (partial "noindex.html" .) }}{{ $alternates = $alternates | append . }}{{ end }}
     {{- end }}
     {{- if gt (len $alternates) 1 }}
