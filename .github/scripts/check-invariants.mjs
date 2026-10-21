@@ -189,8 +189,7 @@ const checks = {
     ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
   },
 
-  // A page's series blocks against the ones wanted, each "Name=One|*Two|Three"
-  // with the parts in order and the current one starred. No argument: no block.
+  // Each wanted block as "Name=One|*Two|Three", the current part starred.
   series(page, ...want) {
     const html = read(page);
     const got = [...html.matchAll(/<nav\b[^>]*>/gi)].filter((m) => hasClass(m[0], "series")).map((m) => {
@@ -713,7 +712,6 @@ const checks = {
       ["copy-done", "background-header", 4.5],
       ["copy-failed", "background-header", 4.5],
       ["color-secondary", "background", 4.5],
-      // Body text and links on a filled box: the buttons, the series block.
       ["color", "background-secondary", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],

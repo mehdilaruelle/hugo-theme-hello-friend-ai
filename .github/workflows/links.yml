@@ -523,11 +523,6 @@ jobs:
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
 
-      # Both demos have a series, so the block is in the link checks above; this
-      # walks the edges: order by date over file name and title, two series on
-      # one page, a series of one, a part with no page, and the switch off, as a
-      # table and as a bare value set from the environment. No link check: the
-      # demo menu points at pages the fixture does not have.
       - name: Check a post shows where it sits in its series
         working-directory: hello-friend-ai/exampleSite
         run: |

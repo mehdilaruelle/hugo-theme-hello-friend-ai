@@ -1,23 +1,7 @@
-{{- /*
-Where this article sits in each series it belongs to, and the way to the other
-parts. Takes the page.
-
-  A series is a term of the `series` taxonomy, so a site without one gets
-  nothing. Parts run oldest first, as a series is written; a part with no
-  page of its own is left out: build.render never leaves it no permalink,
-  and link leaves it one that nothing is written to.
-  A series of one has nowhere else to go, and shows nothing.
-
-  Closed by default: one line under the title says where the reader is, and
-  the list is a click away rather than pushing the article down the screen.
-*/ -}}
-{{- $on := true -}}
-{{- if reflect.IsMap site.Params.series -}}
-  {{- if isset site.Params.series "enable" }}{{ $on = partial "switch.html" site.Params.series.enable }}{{ end -}}
-{{- else if isset site.Params "series" -}}
-  {{- $on = partial "switch.html" site.Params.series -}}
-{{- end -}}
-{{- if $on -}}
+{{- /* Where this article sits in each of its series, oldest part first; parts with no page (build.render never or link) are left out. */ -}}
+{{- $on := site.Params.series -}}
+{{- if reflect.IsMap $on }}{{ $on = cond (isset $on "enable") $on.enable true }}{{ end -}}
+{{- if or (not (isset site.Params "series")) (partial "switch.html" $on) -}}
   {{- $page := . -}}
   {{- range .GetTerms "series" -}}
     {{- $parts := where (where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
