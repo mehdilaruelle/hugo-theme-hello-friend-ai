@@ -166,3 +166,19 @@ other = "Konten terbaru dari {{ .Title }} di {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Konten terbaru di {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "Catatan"
+
+[alertTip]
+other = "Tips"
+
+[alertImportant]
+other = "Penting"
+
+[alertWarning]
+other = "Peringatan"
+
+[alertCaution]
+other = "Perhatian"

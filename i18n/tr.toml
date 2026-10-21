@@ -166,3 +166,19 @@ other = "Son içerikler: {{ .Title }} | {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Son içerikler | {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "Not"
+
+[alertTip]
+other = "İpucu"
+
+[alertImportant]
+other = "Önemli"
+
+[alertWarning]
+other = "Uyarı"
+
+[alertCaution]
+other = "Dikkat"

@@ -237,6 +237,63 @@ const checks = {
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },
 
+  // GitHub-style alerts, from .github/fixtures/alerts.
+  alerts() {
+    const page = "posts/2026/10/every-kind-of-alert/index.html";
+    const html = read(page);
+    const found = [];
+    for (const name of ["div", "details"]) {
+      for (const m of html.matchAll(tagRe(name))) {
+        if (!hasClass(m[0], "alert")) continue;
+        const inner = element(html, m.index + m[0].length, name);
+        const head = [...inner.matchAll(/<(p|summary)\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi)].find((t) => hasClass(t[0], "alert-title"));
+        if (!head) fail(`${page}: an alert with no title`, m[0]);
+        const title = element(inner, head.index, head[1]);
+        if (!/<span\b[^>]*aria-hidden=("?)true\1[^>]*><svg\b/i.test(title)) fail(`${page}: an alert's icon is not hidden from assistive technology`, title);
+        found.push({ tag: m[0], name, title: text(title), titleHtml: title, inner, at: m.index });
+      }
+    }
+    found.sort((a, b) => a.at - b.at);
+    const pick = (type, title) =>
+      found.find((a) => hasClass(a.tag, `alert-${type}`) && a.title === title) ??
+      fail(`${page}: no alert-${type} titled "${title}"`, found.map((a) => `${a.tag} ${a.title}`).join("\n"));
+
+    for (const [type, title] of [["note", "Note"], ["tip", "Tip"], ["important", "Important"], ["warning", "Warning"], ["caution", "Caution"]]) {
+      const a = pick(type, title);
+      if (a.name !== "div") fail(`alert-${type} is a ${a.name}, wanted a div: no sign was written`, a.tag);
+    }
+    if (!/<em>own<\/em>/.test(pick("tip", "Your own title").titleHtml)) fail("a written title lost its Markdown");
+    const folded = pick("warning", "Folded");
+    if (folded.name !== "details" || /\sopen(?=[\s>])/i.test(folded.tag)) fail("[!WARNING]- is not a closed details", folded.tag);
+    const open = found.find((a) => a.name === "details" && hasClass(a.tag, "alert-note"));
+    if (!open || !/\sopen(?=[\s>])/i.test(open.tag)) fail("[!NOTE]+ is not an open details", open?.tag);
+    if (!hasClass(pick("danger", "Danger").tag, "alert")) fail("an unknown type lost the alert class");
+    const nested = found.find((a) => hasClass(a.tag, "alert-important") && /<ul\b/i.test(a.inner));
+    if (!nested || !/class=("?)code-block\1/.test(nested.inner)) fail("a list and a code block inside an alert did not render inside it");
+    if (found.length !== 11) fail(`${page}: ${found.length} alerts, wanted 11`, found.map((a) => a.tag).join("\n"));
+
+    // The titles are not headings, so the contents list only the three h2s.
+    const nav = html.search(/id=("?)TableOfContents\1/);
+    if (nav === -1) fail(`${page} has no table of contents`);
+    const toc = element(html, nav, "nav");
+    const entries = [...toc.matchAll(/<a\b[^>]*>([^<]*)<\/a>/g)].map((m) => m[1]);
+    if (entries.join("|") !== "The five|Titles and folding|Not alerts") fail("an alert title reached the table of contents", entries.join("\n"));
+
+    // Every other blockquote is left as it was.
+    const quotes = [...html.matchAll(tagRe("blockquote"))].map((m) => m[0]);
+    if (quotes.length !== 3) fail(`${quotes.length} blockquotes, wanted the 3 that are not alerts`, quotes.join("\n"));
+    const pulled = quotes.find((q) => hasClass(q, "pulled"));
+    if (!pulled || attr(pulled, "id") !== "quoted") fail("a blockquote lost its attribute block", quotes.join("\n"));
+    if (/\[!\w+\]/.test(text(element(html, html.indexOf("post-content"), "article")))) fail("an alert marker was printed as text");
+
+    // The Markdown copy keeps the source, markers and all.
+    const md = read(page.replace(/index\.html$/, "index.md"));
+    for (const line of ["> [!NOTE]", "> [!TIP] Your *own* title", "> [!WARNING]- Folded", "> [!NOTE]+", "> [!DANGER]"]) {
+      if (!md.split("\n").includes(line)) fail(`the Markdown copy has no line reading: ${line}`);
+    }
+    ok("alerts are drawn with their titles, folded on a sign, kept out of the contents and as written in the Markdown copy");
+  },
+
   // #272
   submenu(page) {
     const html = read(page);
@@ -685,6 +742,8 @@ const checks = {
       ["color-secondary", "background", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],
+      // Each colours its alert's title, in text.
+      ...["note", "tip", "important", "warning", "caution"].map((t) => [`alert-${t}`, "background", 4.5]),
     ];
     const bad = [];
     for (const scheme of ["light", "dark"]) {

@@ -181,3 +181,19 @@ other = "أحدث المحتوى في {{ .Title }} على {{ .Site }}"
 
 [feedDescriptionSite]
 other = "أحدث المحتوى على {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "ملاحظة"
+
+[alertTip]
+other = "تلميح"
+
+[alertImportant]
+other = "مهم"
+
+[alertWarning]
+other = "تحذير"
+
+[alertCaution]
+other = "احذر"

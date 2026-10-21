@@ -167,3 +167,19 @@ other = "{{ .Site }} の{{ .Title }}の新着"
 
 [feedDescriptionSite]
 other = "{{ .Site }} の新着"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "注記"
+
+[alertTip]
+other = "ヒント"
+
+[alertImportant]
+other = "重要"
+
+[alertWarning]
+other = "警告"
+
+[alertCaution]
+other = "注意"

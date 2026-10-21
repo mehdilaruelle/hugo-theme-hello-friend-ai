@@ -170,3 +170,19 @@ other = "Новые материалы: {{ .Title }} — {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Новые материалы — {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "Примечание"
+
+[alertTip]
+other = "Совет"
+
+[alertImportant]
+other = "Важно"
+
+[alertWarning]
+other = "Предупреждение"
+
+[alertCaution]
+other = "Осторожно"

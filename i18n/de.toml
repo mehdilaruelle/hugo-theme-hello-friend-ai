@@ -166,3 +166,19 @@ other = "Neueste Inhalte in {{ .Title }} auf {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Neueste Inhalte auf {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "Hinweis"
+
+[alertTip]
+other = "Tipp"
+
+[alertImportant]
+other = "Wichtig"
+
+[alertWarning]
+other = "Warnung"
+
+[alertCaution]
+other = "Achtung"

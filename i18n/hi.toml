@@ -166,3 +166,19 @@ other = "{{ .Site }} पर {{ .Title }} की हाल की सामग्
 
 [feedDescriptionSite]
 other = "{{ .Site }} पर हाल की सामग्री"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "टिप्पणी"
+
+[alertTip]
+other = "सुझाव"
+
+[alertImportant]
+other = "महत्वपूर्ण"
+
+[alertWarning]
+other = "चेतावनी"
+
+[alertCaution]
+other = "सावधानी"

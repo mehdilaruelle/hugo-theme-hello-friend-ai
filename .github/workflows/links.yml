@@ -139,7 +139,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public copy-label
 
-      - name: Check the focus ring and the status colours meet their contrast
+      - name: Check the focus ring, the status and the alert colours meet their contrast
         working-directory: hello-friend-ai
         run: |
           node .github/scripts/check-invariants.mjs exampleSite/public contrast
@@ -522,6 +522,17 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+
+      # The exampleSite writes no alert. No link check: the fixture has none of
+      # the pages the exampleSite's menu links to.
+      - name: Check GitHub-style alerts are drawn, and every other blockquote left alone
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-alerts \
+            --contentDir ../.github/fixtures/alerts \
+            --config config.toml,../.github/fixtures/alerts.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-invariants.mjs public-alerts alerts
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
