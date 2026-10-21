@@ -88,9 +88,10 @@ Anything else is served as it was:
 ```
 
 A url with a query or a fragment is also left as written: it names no resource.
-A `width` or `height` given in an attribute block is kept, in place of the
-measured pair. In the Markdown copy, a picture from `assets/` links its
-original, which is then published beside the resized ones.
+A `width` or `height` in pixels given in an attribute block is kept, in place
+of the measured pair; given alone, the other follows the picture's ratio. In
+the Markdown copy, a picture from `assets/` links its original, which is then
+published beside the resized ones.
 
 The first picture of a page that has no cover is fetched at once and ahead of
 the rest, since it is likely the largest thing on screen; every later one is

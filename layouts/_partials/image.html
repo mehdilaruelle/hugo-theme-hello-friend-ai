@@ -130,21 +130,43 @@
        handler from a Markdown attribute block. */ -}}
 {{- $attrs := .attrs | default dict -}}
 {{- $class := delimit (slice (.position | default "") ($attrs.class | default "")) " " | strings.TrimSpace -}}
-{{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
-{{- /* A width or height the caller gives is the display size: it replaces the
-       measured pair, as a sizes it gives replaces the theme's. */ -}}
-{{- $sized := or $attrs.width $attrs.height -}}
-{{- if not $sized -}}{{- $own = $own | append "width" "height" -}}{{- end -}}
+{{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" "width" "height" "sizes" -}}
+{{- $width := 0 -}}
+{{- $height := 0 -}}
+{{- if $measurable -}}
+  {{- $width = $rendered.Width -}}
+  {{- $height = $rendered.Height -}}
+{{- else if $svgWidth -}}
+  {{- $width = $svgWidth -}}
+  {{- $height = $svgHeight -}}
+{{- end -}}
+{{- /* A width or height in pixels the caller gives is the display size: the
+       other side follows the measured ratio, as a sizes it gives replaces the
+       theme's. width="50%" is no HTML: the measured pair stays. */ -}}
+{{- $given := dict -}}
+{{- range $side := slice "width" "height" -}}
+  {{- with index $attrs $side -}}
+    {{- if findRE `^[0-9]+$` (string .) -}}{{- $given = merge $given (dict $side (int (float .))) -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if and $given.width $given.height -}}
+  {{- $width = $given.width -}}
+  {{- $height = $given.height -}}
+{{- else if $given.width -}}
+  {{- if $width -}}{{- $height = int (math.Round (div (mul $given.width $height) (float $width))) -}}{{- end -}}
+  {{- $width = $given.width -}}
+{{- else if $given.height -}}
+  {{- if $height -}}{{- $width = int (math.Round (div (mul $given.height $width) (float $height))) -}}{{- end -}}
+  {{- $height = $given.height -}}
+{{- end -}}
 {{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
-{{- $own = $own | append "sizes" -}}
 
 {{- if $src -}}
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
     {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
-    {{- if $sized }}
-    {{- else if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
-    {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
+    {{- with $width }} width="{{ . }}"{{ end }}
+    {{- with $height }} height="{{ . }}"{{ end }} alt="{{ $alt | plainify }}"
     {{- with $class }} class="{{ . }}"{{ end }}
     {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
     {{- range $k, $v := $attrs }}{{ if and $v (not (in $own (lower $k))) }}{{ printf ` %s="%s"` $k (htmlEscape (string $v)) | safeHTMLAttr }}{{ end }}{{ end }} />

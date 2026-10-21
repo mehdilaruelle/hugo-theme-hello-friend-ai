@@ -9,8 +9,9 @@
        Resources are looked up in .PageInner: when a shortcode renders another
        page's content into this one, its pictures live in that page's bundle. */ -}}
 {{- /* Goldmark hands the destination with its entities, the title with its
-       backslash escapes and entities, and the plain text with its escapes. */ -}}
-{{- $dest := htmlUnescape .Destination -}}
+       backslash escapes and entities, and the plain text with its escapes and
+       its numeric entities. */ -}}
+{{- $dest := partial "unescape-entities.html" .Destination -}}
 {{- $unescape := "\\\\([!-/:-@\\[-`{-~])" -}}
 {{- $src := $dest -}}
 {{- $asWritten := false -}}
@@ -28,13 +29,13 @@
 {{- /* Ordinal starts again in every RenderString: a shortcode rendering its
        inner Markdown, faq.html, sets "renderString" around it. */ -}}
 {{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) (not (.Page.Store.Get "renderString")) -}}
-{{- $title := .Title | replaceRE $unescape "$1" | htmlUnescape -}}
+{{- $title := partial "unescape-entities.html" (.Title | replaceRE $unescape "$1") -}}
 {{- $attrs := merge (.Attributes | default dict) (cond (ne $title "") (dict "title" $title) dict) -}}
 {{- partial "image.html" (dict
   "src" $src
   "fallback" $dest
   "asWritten" $asWritten
-  "alt" (.PlainText | replaceRE $unescape "$1" | htmlEscape)
+  "alt" (.PlainText | replaceRE $unescape "$1" | htmlEscape | replaceRE "&amp;(#[0-9]{1,7};|#[xX][0-9a-fA-F]{1,6};)" "&$1")
   "page" .PageInner
   "loading" (cond $first "eager" "lazy")
   "fetchpriority" (cond $first "high" "")

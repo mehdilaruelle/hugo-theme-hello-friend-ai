@@ -25,3 +25,8 @@ assetDir = "../.github/fixtures/markdown-images-assets"
     name   = "Café"
     url    = "café/"
     weight = 10
+  # A part of that page, never current.
+  [[menu.main]]
+    name   = "More"
+    url    = "café/#more"
+    weight = 20

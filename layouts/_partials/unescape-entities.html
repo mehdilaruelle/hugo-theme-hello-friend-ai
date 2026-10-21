@@ -1,0 +1,11 @@
+{{- /* Decodes the entities a Markdown writer closes with ";". htmlUnescape also
+       takes HTML's legacy ones without it, and "?a=1&region=eu" is no "®".
+       An escaped & goes last, so "&amp;copy;" ends as "&copy;". */ -}}
+{{- $text := . -}}
+{{- $found := uniq (findRE `&(?:#[0-9]{1,7}|#[xX][0-9a-fA-F]{1,6}|[a-zA-Z][a-zA-Z0-9]{1,31});` $text) -}}
+{{- range $amp := slice false true -}}
+  {{- range $found -}}
+    {{- if eq $amp (eq (htmlUnescape .) "&") -}}{{- $text = replace $text . (htmlUnescape .) -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $text -}}

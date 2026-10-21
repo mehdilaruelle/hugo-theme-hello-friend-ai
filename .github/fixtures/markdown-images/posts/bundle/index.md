@@ -15,3 +15,8 @@ At the size the writer gave:
 
 ![Sized by hand](dunes%20photo.jpg)
 {width="300" height="200"}
+
+At a width alone, the height following:
+
+![Width only](dunes%20photo.jpg)
+{width="300"}

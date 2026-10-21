@@ -239,6 +239,9 @@ const checks = {
     const sized = find(bundle, "Sized by hand");
     want(sized, "width", "300");
     want(sized, "height", "200");
+    const widthOnly = find(bundle, "Width only");
+    want(widthOnly, "width", "300");
+    want(widthOnly, "height", "200");
 
     // Escapes and entities read as Markdown, a url that does not parse served as
     // written, and a picture inside a shortcode's answer not taken for the first.
@@ -247,6 +250,10 @@ const checks = {
     find(hard, "<b> in code");
     want(find(hard, "An entity"), "src", "https://example.com/q.png?a=1&amp;b=2");
     want(find(hard, "A percent"), "src", "100%25.png");
+    const query = find(hard, "A query");
+    want(query, "src", "https://example.com/q2.png?country=fr&amp;region=eu");
+    want(query, "title", "Rain ¬ snow, &amp;not snow");
+    find(hard, "A sign &#169; &#233;"); // as the minifier writes "© é"
     const answer = find(hard, "In an answer");
     want(answer, "loading", "lazy");
     want(answer, "fetchpriority", null);
