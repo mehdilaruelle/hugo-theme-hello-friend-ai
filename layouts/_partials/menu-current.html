@@ -1,12 +1,4 @@
-{{- /* The aria-current of a main menu entry: "page" on the entry of the page
-       being rendered, "true" on one that holds it, "" elsewhere.
-
-       IsMenuCurrent and HasMenuCurrent only know entries linked to a page, and
-       the demos and the README write url = "posts/", which links none. So the
-       resolved url is compared too, trailing slash aside, and holds every page
-       under it. The home url holds every page, so it is only ever "page".
-       A parent holds what any of its children holds. Both sides are compared
-       decoded, as relLangURL leaves "catégorie/" and RelPermalink escapes it. */ -}}
+{{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "". */ -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
