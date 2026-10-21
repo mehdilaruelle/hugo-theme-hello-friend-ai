@@ -61,7 +61,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 | --- | --- |
 | [Installing](docs/install.md) | as a Hugo Module, upgrading from an older name, where articles go |
 | [Configuration](docs/config.md) | every option the theme reads, site-wide and per page |
-| [Writing content](docs/content.md) | the portrait, front page content, shortcodes, code highlighting, audio |
+| [Writing content](docs/content.md) | the portrait, front page content, pictures in Markdown, alerts, shortcodes, code highlighting, audio |
 | [SEO](docs/seo.md) | canonical URLs, `hreflang`, JSON-LD and what feeds it |
 | [Performance](docs/performance.md) | the Lighthouse reports, and what the theme does for the score |
 | [The font](docs/fonts.md) | Inter, and the fallback faces that keep the swap from moving the page |
@@ -85,6 +85,7 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 - Support for [Plausible](https://plausible.io) (thanks to [@Joffcom](https://github.com/Joffcom))
 - Support for [utterances](https://utteranc.es/) comment system
 - A `gallery` shortcode: a page bundle's pictures as a grid of thumbnails, see [Built-in shortcodes](docs/content.md#gallery)
+- GitHub-style alerts, `> [!NOTE]` and its four siblings, titled in the page's language and folded on request, see [Alerts](docs/content.md#alerts)
 - Front page content from `content/_index.md`, see [Front page content](docs/content.md#front-page-content)
 - JSON-LD structured data, breadcrumbs and a complete `hreflang` set, see [SEO](docs/seo.md)
 - 100 in every PageSpeed Insights category on the home pages of both demo sites, mobile and desktop, see [Performance](docs/performance.md)

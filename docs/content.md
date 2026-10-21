@@ -105,6 +105,51 @@ Hugo drops any `on…` handler from the block before the theme sees it.
 To keep Hugo's own rendering, put a `layouts/_markup/render-image.html` of
 your own in the site; it replaces the theme's.
 
+## Alerts
+
+GitHub's alert syntax is drawn as a callout: a coloured edge, an icon and a
+title.
+
+```markdown
+> [!NOTE]
+> Worth knowing, even when skimming.
+```
+
+There are five, each with its own colour and icon: `[!NOTE]`, `[!TIP]`,
+`[!IMPORTANT]`, `[!WARNING]` and `[!CAUTION]`. The marker is not case
+sensitive. The title is written in the page's language, in all 21 that the
+theme translates, and words after the marker replace it, Markdown included:
+
+```markdown
+> [!WARNING] Before you *upgrade*
+> Back up the site first.
+```
+
+A `-` or a `+` right after the marker folds the alert into a `<details>`,
+closed or open, which opens on its title without JavaScript:
+
+```markdown
+> [!TIP]- The long way round
+> Hidden until the title is clicked.
+```
+
+Hugo accepts any word as a type, so `[!DANGER]` or Obsidian's other callouts
+build too. The theme does not know them: they get the neutral colour, the
+note's icon, the word as their title, and a class of their own,
+`alert-danger`, for a stylesheet of yours to colour.
+
+The title is a paragraph, not a heading, so it stays out of the table of
+contents; the icon is hidden from screen readers, which read the title. The
+colours are tokens, `--alert-note` to `--alert-caution`, each 4.5:1 or more on
+the page in both schemes, and the edge follows the direction of the language.
+
+Every other blockquote renders as it did. The Markdown copy and `llms-full.txt`
+keep the alert as you wrote it, marker and all, which is how GitHub and most
+readers of Markdown expect it.
+
+To keep Hugo's own rendering, put a `layouts/_markup/render-blockquote.html` of
+your own in the site; it replaces the theme's.
+
 ## Built-in shortcodes
 
 Of course you are able to use all default shortcodes from hugo (https://gohugo.io/content-management/shortcodes/).

@@ -1,0 +1,32 @@
+{{- /* GitHub alerts (`> [!NOTE]`, `[!TIP]-` folded); other blockquotes as Hugo writes them. */ -}}
+{{- $class := .Attributes.class -}}
+{{- $attrs := "" -}}
+{{- range $k, $v := .Attributes -}}
+  {{- if ne $k "class" }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
+{{- end -}}
+{{- if eq .Type "alert" -}}
+  {{- $type := .AlertType -}}
+  {{- $icon := index (dict "tip" "lightbulb" "important" "message-alert" "warning" "alert-triangle" "caution" "alert-octagon") $type | default "info" -}}
+  {{- $title := .AlertTitle -}}
+  {{- if not $title -}}
+    {{- $title = partial "i18n.html" (dict "key" (printf "alert%s" (title $type)) "fallback" (humanize $type)) | htmlEscape -}}
+  {{- end -}}
+  {{- $class = delimit (slice "alert" (printf "alert-%s" $type) ($class | default "")) " " | strings.TrimSpace -}}
+  {{- $head := printf `<span class="alert-icon" aria-hidden="true">%s</span>%s` (partial "icon.html" (dict "name" $icon)) $title -}}
+  {{- if .AlertSign -}}
+<details class="{{ $class }}"{{ $attrs | safeHTMLAttr }}{{ if eq .AlertSign "+" }} open{{ end }}>
+<summary class="alert-title">{{ $head | safeHTML }}</summary>
+{{ .Text }}
+</details>
+  {{- else -}}
+<div class="{{ $class }}"{{ $attrs | safeHTMLAttr }}>
+<p class="alert-title">{{ $head | safeHTML }}</p>
+{{ .Text }}
+</div>
+  {{- end }}
+{{ else if .Attributes -}}
+<blockquote{{ with $class }} class="{{ . }}"{{ end }}{{ $attrs | safeHTMLAttr }}>{{ .Text }}</blockquote>
+{{ else -}}
+<blockquote>
+{{ .Text }}</blockquote>
+{{ end -}}

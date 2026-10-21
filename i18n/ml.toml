@@ -166,3 +166,19 @@ other = "{{ .Site }}: {{ .Title }} — പുതിയ ഉള്ളടക്ക�
 
 [feedDescriptionSite]
 other = "{{ .Site }}: പുതിയ ഉള്ളടക്കം"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "കുറിപ്പ്"
+
+[alertTip]
+other = "നുറുങ്ങ്"
+
+[alertImportant]
+other = "പ്രധാനം"
+
+[alertWarning]
+other = "മുന്നറിയിപ്പ്"
+
+[alertCaution]
+other = "ജാഗ്രത"

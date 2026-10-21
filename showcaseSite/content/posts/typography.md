@@ -47,6 +47,26 @@ a thing this theme once got wrong in two selectors at the same time.
 
 > A theme should look like itself out of the box, not like a feature list.
 
+## Alerts
+
+GitHub's syntax, `> [!NOTE]` and its four siblings, titled in the page's
+language. A sign after the marker folds one away:
+
+> [!NOTE]
+> Worth knowing, even when skimming.
+
+> [!TIP]
+> A better way to do it.
+
+> [!IMPORTANT]
+> Needed to get it right.
+
+> [!WARNING]
+> Needs attention now.
+
+> [!CAUTION]- Read before upgrading
+> Has consequences.
+
 ## Lists
 
 1. Ordered, for steps that happen in order

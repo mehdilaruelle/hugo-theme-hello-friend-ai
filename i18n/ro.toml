@@ -169,3 +169,19 @@ other = "Conținut recent din {{ .Title }} pe {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Conținut recent pe {{ .Site }}"
+
+# _markup/render-blockquote.html: the title of a GitHub-style alert
+[alertNote]
+other = "Notă"
+
+[alertTip]
+other = "Sfat"
+
+[alertImportant]
+other = "Important"
+
+[alertWarning]
+other = "Avertisment"
+
+[alertCaution]
+other = "Atenție"

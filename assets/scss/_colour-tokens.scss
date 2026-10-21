@@ -25,6 +25,12 @@ $colour-tokens: (
   "copy-failed":           (#c9302c, #e06c69),
   // Edge of a text field: 3:1 or more against the page and its fill (WCAG 1.4.11).
   "field-border-color":    (#858585, #8a8a94),
+  // GitHub's alert colours, 4.5:1 or more on the page.
+  "alert-note":            (#0969da, #4493f8),
+  "alert-tip":             (#1a7f37, #3fb950),
+  "alert-important":       (#8250df, #ab7df8),
+  "alert-warning":         (#9a6700, #d29922),
+  "alert-caution":         (#cf222e, #f85149),
 );
 
 @mixin colour-tokens($theme) {
