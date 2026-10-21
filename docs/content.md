@@ -99,7 +99,7 @@ lazy. A cover takes that place when there is one.
 The title becomes the `title` attribute. With
 `markup.goldmark.parser.attribute.block` on, a picture standing alone takes an
 attribute block, `{.wide #hero}`, and keeps it; attributes the theme writes
-itself, such as `loading` or `width`, keep the theme's value; a `style` is kept.
+itself, such as `loading` or `srcset`, keep the theme's value; a `style` is kept.
 Hugo drops any `on…` handler from the block before the theme sees it.
 
 To keep Hugo's own rendering, put a `layouts/_markup/render-image.html` of

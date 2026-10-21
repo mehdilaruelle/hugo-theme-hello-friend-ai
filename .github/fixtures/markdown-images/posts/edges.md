@@ -11,6 +11,6 @@ date: 2026-10-05
 
 ![A percent](100%.png)
 
-![From assets](img/example.png)
+![From assets](<img/an example.png>)
 
 {{< faq "Which picture comes first?" >}}Not this one: ![In an answer](https://example.com/answer.png){{< /faq >}}

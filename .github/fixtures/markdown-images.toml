@@ -7,6 +7,9 @@ ignoreLogs = ["image-resize-failed"]
 # An include shortcode, to render the bundle's pictures inside another page.
 layoutDir = "../.github/fixtures/markdown-images-layouts"
 
+# A picture in assets/ whose name holds a space.
+assetDir = "../.github/fixtures/markdown-images-assets"
+
 [markup.goldmark.parser]
   wrapStandAloneImageWithinParagraph = false
   [markup.goldmark.parser.attribute]

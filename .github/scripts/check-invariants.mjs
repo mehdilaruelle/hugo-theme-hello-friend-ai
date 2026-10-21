@@ -254,8 +254,8 @@ const checks = {
     // From assets/, the md copy links the original, which is published.
     if (!/\.webp$/.test(attr(find(hard, "From assets"), "src") ?? "")) fail("a picture from assets/ is not served as WebP");
     const md = read("posts/2026/10/pictures-written-the-hard-way/index.md");
-    if (!md.includes("![From assets](https://example.com/subpath/img/example.png)")) fail("the md copy does not link the assets/ original", md);
-    if (!existsSync(join(dir, "img/example.png"))) fail("the assets/ original the md copy links is not published");
+    if (!md.includes("![From assets](<https://example.com/subpath/img/an%20example.png>)")) fail("the md copy does not link the assets/ original", md);
+    if (!existsSync(join(dir, "img/an example.png"))) fail("the assets/ original the md copy links is not published");
 
     // A file that cannot be decoded is served whole rather than failing the build.
     const cut = find("posts/2026/10/a-picture-that-cannot-be-decoded/index.html", "Cut short");

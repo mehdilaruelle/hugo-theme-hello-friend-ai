@@ -9,8 +9,8 @@
 {{- /* A picture the image hook finds in assets/ is published resized only:
        the copy links the original, which .Permalink publishes. */ -}}
 {{- $assets := dict -}}
-{{- range findRESubmatch `!\[[^\]]*\]\(<?([^)\s>]+)` $text -}}
-  {{- $dest := index . 1 -}}
+{{- range findRESubmatch `!\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
+  {{- $dest := or (index . 1) (index . 2) -}}
   {{- with (try (urls.Parse (htmlUnescape $dest))).Value -}}
     {{- if not (or .Scheme .Host .RawQuery .Fragment ($.Resources.Get .Path)) -}}
       {{- with resources.Get .Path -}}{{- $assets = merge $assets (dict $dest .Permalink) -}}{{- end -}}
