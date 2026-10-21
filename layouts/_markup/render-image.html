@@ -1,23 +1,17 @@
 {{- /* A picture written in Markdown goes through image.html like the
-       shortcode's: resized, converted and measured when it resolves as a
-       resource, served as written when it does not, a remote one untouched.
-
-       The first picture of a page with no cover above it is likely the
-       Largest Contentful Paint, and lazy loading would hold it back, so it is
-       fetched at once and first. Every later one stays lazy.
-
-       Resources are looked up in .PageInner: when a shortcode renders another
-       page's content into this one, its pictures live in that page's bundle. */ -}}
-{{- /* Goldmark hands the destination with its entities, the title with its
-       backslash escapes and entities, and the plain text with its escapes and
-       its numeric entities. */ -}}
-{{- $dest := partial "unescape-entities.html" .Destination -}}
+       shortcode's. The first picture of a page with no cover is likely the
+       Largest Contentful Paint, so it is fetched at once; the rest are lazy.
+       Resources are looked up in .PageInner, the bundle of an included page. */ -}}
+{{- /* Goldmark leaves entities in the destination and the title, numeric ones
+       in the plain text, and backslash escapes in both. Only entities closed
+       by ";" are decoded: htmlUnescape alone reads "?a=1&region=eu" as "®". */ -}}
+{{- $entity := "&amp;(#[0-9]{1,7};|#[xX][0-9a-fA-F]{1,6};|[a-zA-Z][a-zA-Z0-9]{1,31};)" -}}
 {{- $unescape := "\\\\([!-/:-@\\[-`{-~])" -}}
+{{- $dest := .Destination | replaceRE "&" "&amp;" | replaceRE $entity "&$1" | htmlUnescape -}}
 {{- $src := $dest -}}
 {{- $asWritten := false -}}
-{{- /* Looked up by its decoded path, "my%20photo.jpg" being "my photo.jpg";
-       a query or a fragment names no resource, so the url stays as written,
-       as does one that does not parse, "100%.png". */ -}}
+{{- /* Looked up by its decoded path; a url with a query or a fragment, or one
+       that does not parse, "100%.png", stays as written. */ -}}
 {{- with try (urls.Parse $dest) -}}
   {{- if .Err -}}
     {{- $asWritten = true -}}
@@ -26,10 +20,9 @@
   {{- end -}}
 {{- end -}}
 {{- $cover := and (eq (printf "%T" .Page.Params.cover) "string") .Page.Params.cover -}}
-{{- /* Ordinal starts again in every RenderString: a shortcode rendering its
-       inner Markdown, faq.html, sets "renderString" around it. */ -}}
+{{- /* Ordinal restarts in every RenderString: faq.html flags its own. */ -}}
 {{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) (not (.Page.Store.Get "renderString")) -}}
-{{- $title := partial "unescape-entities.html" (.Title | replaceRE $unescape "$1") -}}
+{{- $title := .Title | replaceRE $unescape "$1" | replaceRE "&" "&amp;" | replaceRE $entity "&$1" | htmlUnescape -}}
 {{- $attrs := merge (.Attributes | default dict) (cond (ne $title "") (dict "title" $title) dict) -}}
 {{- partial "image.html" (dict
   "src" $src

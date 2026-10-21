@@ -133,32 +133,17 @@
 {{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" "width" "height" "sizes" -}}
 {{- $width := 0 -}}
 {{- $height := 0 -}}
-{{- if $measurable -}}
-  {{- $width = $rendered.Width -}}
-  {{- $height = $rendered.Height -}}
-{{- else if $svgWidth -}}
-  {{- $width = $svgWidth -}}
-  {{- $height = $svgHeight -}}
-{{- end -}}
-{{- /* A width or height in pixels the caller gives is the display size: the
-       other side follows the measured ratio, as a sizes it gives replaces the
-       theme's. width="50%" is no HTML: the measured pair stays. */ -}}
-{{- $given := dict -}}
-{{- range $side := slice "width" "height" -}}
-  {{- with index $attrs $side -}}
-    {{- if findRE `^[0-9]+$` (string .) -}}{{- $given = merge $given (dict $side (int (float .))) -}}{{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- if and $given.width $given.height -}}
-  {{- $width = $given.width -}}
-  {{- $height = $given.height -}}
-{{- else if $given.width -}}
-  {{- if $width -}}{{- $height = int (math.Round (div (mul $given.width $height) (float $width))) -}}{{- end -}}
-  {{- $width = $given.width -}}
-{{- else if $given.height -}}
-  {{- if $height -}}{{- $width = int (math.Round (div (mul $given.height $width) (float $height))) -}}{{- end -}}
-  {{- $height = $given.height -}}
-{{- end -}}
+{{- if $measurable -}}{{- $width = $rendered.Width -}}{{- $height = $rendered.Height -}}
+{{- else if $svgWidth -}}{{- $width = $svgWidth -}}{{- $height = $svgHeight -}}{{- end -}}
+{{- /* A width or height in pixels the caller gives wins; alone, the other
+       follows the ratio. */ -}}
+{{- $w := 0 -}}
+{{- $h := 0 -}}
+{{- with findRE `^[0-9]+$` (string ($attrs.width | default "")) -}}{{- $w = int (float (index . 0)) -}}{{- end -}}
+{{- with findRE `^[0-9]+$` (string ($attrs.height | default "")) -}}{{- $h = int (float (index . 0)) -}}{{- end -}}
+{{- if and $w (not $h) $width -}}{{- $h = int (math.Round (div (mul $w $height) (float $width))) -}}{{- end -}}
+{{- if and $h (not $w) $height -}}{{- $w = int (math.Round (div (mul $h $width) (float $height))) -}}{{- end -}}
+{{- if or $w $h -}}{{- $width = $w -}}{{- $height = $h -}}{{- end -}}
 {{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
 
 {{- if $src -}}

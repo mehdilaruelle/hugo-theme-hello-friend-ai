@@ -7,7 +7,7 @@
        under it. The home url holds every page, so it is only ever "page".
        A parent holds what any of its children holds. Both sides are compared
        decoded, as relLangURL leaves "catégorie/" and RelPermalink escapes it.
-       A url with a query or a fragment names a part of a page: never compared. */ -}}
+       A url with a query or a fragment is not compared. */ -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
