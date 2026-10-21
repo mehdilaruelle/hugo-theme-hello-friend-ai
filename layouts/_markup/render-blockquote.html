@@ -1,45 +1,17 @@
-{{- /* GitHub's alerts, `> [!NOTE]` and its four siblings, drawn as a callout:
-       a coloured edge, an icon and a title. The title is a paragraph, not a
-       heading, so it stays out of the table of contents. A sign after the
-       marker, `[!TIP]-` or `[!TIP]+`, folds the alert into a <details>,
-       closed or open.
-
-       Hugo reads any word as a type, Obsidian's `[!danger]` included. One the
-       theme does not know gets the neutral style, its own word as the title
-       and its own class, alert-<type>, for a site to colour.
-
-       Every other blockquote is written as Hugo writes it without a hook, the
-       newline after the tag only when it carries no attributes. Those reach
-       the hook as a map, so they come out in alphabetical order rather than
-       in the order written; nothing else differs. */ -}}
+{{- /* GitHub alerts (`> [!NOTE]`, `[!TIP]-` folded); other blockquotes as Hugo writes them. */ -}}
+{{- $class := .Attributes.class -}}
+{{- $attrs := "" -}}
+{{- range $k, $v := .Attributes -}}
+  {{- if ne $k "class" }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
+{{- end -}}
 {{- if eq .Type "alert" -}}
   {{- $type := .AlertType -}}
-  {{- $known := dict
-    "note"      (dict "icon" "info"           "key" "alertNote"      "fallback" "Note")
-    "tip"       (dict "icon" "lightbulb"      "key" "alertTip"       "fallback" "Tip")
-    "important" (dict "icon" "message-alert"  "key" "alertImportant" "fallback" "Important")
-    "warning"   (dict "icon" "alert-triangle" "key" "alertWarning"   "fallback" "Warning")
-    "caution"   (dict "icon" "alert-octagon"  "key" "alertCaution"   "fallback" "Caution")
-  -}}
-  {{- $kind := index $known $type -}}
-  {{- $icon := "info" -}}
-  {{- with $kind }}{{ $icon = .icon }}{{ end -}}
-  {{- /* A written title is Markdown Hugo has already rendered; the others are
-         text, a site's own translation included. */ -}}
-  {{- $title := "" -}}
-  {{- with .AlertTitle -}}
-    {{- $title = . -}}
-  {{- else with $kind -}}
-    {{- $title = partial "i18n.html" (dict "key" .key "fallback" .fallback) | htmlEscape -}}
-  {{- else -}}
-    {{- $title = humanize $type | htmlEscape -}}
+  {{- $icon := index (dict "tip" "lightbulb" "important" "message-alert" "warning" "alert-triangle" "caution" "alert-octagon") $type | default "info" -}}
+  {{- $title := .AlertTitle -}}
+  {{- if not $title -}}
+    {{- $title = partial "i18n.html" (dict "key" (printf "alert%s" (title $type)) "fallback" (humanize $type)) | htmlEscape -}}
   {{- end -}}
-  {{- $class := printf "alert alert-%s" $type -}}
-  {{- with $.Attributes.class }}{{ $class = printf "%s %s" $class . }}{{ end -}}
-  {{- $attrs := "" -}}
-  {{- range $k, $v := $.Attributes -}}
-    {{- if ne $k "class" }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
-  {{- end -}}
+  {{- $class = delimit (slice "alert" (printf "alert-%s" $type) ($class | default "")) " " | strings.TrimSpace -}}
   {{- $head := printf `<span class="alert-icon" aria-hidden="true">%s</span>%s` (partial "icon.html" (dict "name" $icon)) $title -}}
   {{- if .AlertSign -}}
 <details class="{{ $class }}"{{ $attrs | safeHTMLAttr }}{{ if eq .AlertSign "+" }} open{{ end }}>
@@ -52,13 +24,9 @@
 {{ .Text }}
 </div>
   {{- end }}
+{{ else if .Attributes -}}
+<blockquote{{ with $class }} class="{{ . }}"{{ end }}{{ $attrs | safeHTMLAttr }}>{{ .Text }}</blockquote>
 {{ else -}}
-  {{- if .Attributes -}}
-    {{- $attrs := "" -}}
-    {{- range $k, $v := .Attributes }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
-<blockquote{{ $attrs | safeHTMLAttr }}>{{ .Text }}</blockquote>
-  {{- else -}}
 <blockquote>
 {{ .Text }}</blockquote>
-  {{- end }}
 {{ end -}}

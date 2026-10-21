@@ -523,8 +523,6 @@ jobs:
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
 
-      # The exampleSite writes no alert. No link check: the fixture has none of
-      # the pages the exampleSite's menu links to.
       - name: Check GitHub-style alerts are drawn, and every other blockquote left alone
         working-directory: hello-friend-ai/exampleSite
         run: |

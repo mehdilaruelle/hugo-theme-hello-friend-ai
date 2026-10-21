@@ -1,6 +1,3 @@
-# GitHub-style alerts, which the exampleSite does not write. The attribute block
-# reaches a blockquote only with this on; the md output is the Markdown copy,
-# which has to keep the marker as written.
 [markup.goldmark.parser.attribute]
   block = true
 

@@ -272,21 +272,18 @@ const checks = {
     if (!nested || !/class=("?)code-block\1/.test(nested.inner)) fail("a list and a code block inside an alert did not render inside it");
     if (found.length !== 11) fail(`${page}: ${found.length} alerts, wanted 11`, found.map((a) => a.tag).join("\n"));
 
-    // The titles are not headings, so the contents list only the three h2s.
     const nav = html.search(/id=("?)TableOfContents\1/);
     if (nav === -1) fail(`${page} has no table of contents`);
     const toc = element(html, nav, "nav");
     const entries = [...toc.matchAll(/<a\b[^>]*>([^<]*)<\/a>/g)].map((m) => m[1]);
     if (entries.join("|") !== "The five|Titles and folding|Not alerts") fail("an alert title reached the table of contents", entries.join("\n"));
 
-    // Every other blockquote is left as it was.
     const quotes = [...html.matchAll(tagRe("blockquote"))].map((m) => m[0]);
     if (quotes.length !== 3) fail(`${quotes.length} blockquotes, wanted the 3 that are not alerts`, quotes.join("\n"));
     const pulled = quotes.find((q) => hasClass(q, "pulled"));
     if (!pulled || attr(pulled, "id") !== "quoted") fail("a blockquote lost its attribute block", quotes.join("\n"));
     if (/\[!\w+\]/.test(text(element(html, html.indexOf("post-content"), "article")))) fail("an alert marker was printed as text");
 
-    // The Markdown copy keeps the source, markers and all.
     const md = read(page.replace(/index\.html$/, "index.md"));
     for (const line of ["> [!NOTE]", "> [!TIP] Your *own* title", "> [!WARNING]- Folded", "> [!NOTE]+", "> [!DANGER]"]) {
       if (!md.split("\n").includes(line)) fail(`the Markdown copy has no line reading: ${line}`);
@@ -742,7 +739,6 @@ const checks = {
       ["color-secondary", "background", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],
-      // Each colours its alert's title, in text.
       ...["note", "tip", "important", "warning", "caution"].map((t) => [`alert-${t}`, "background", 4.5]),
     ];
     const bad = [];
