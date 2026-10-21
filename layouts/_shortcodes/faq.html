@@ -3,7 +3,10 @@
   {{- errorf "faq: needs a question, as {{< faq \"Why?\" >}} — %s" .Position -}}
 {{- end -}}
 {{- /* display block: inline, RenderString drops a one-paragraph answer's <p>. */ -}}
+{{- /* "renderString": the image hook's first picture is the page's, not the answer's. */ -}}
+{{- .Page.Store.Set "renderString" true -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
+{{- .Page.Store.Delete "renderString" -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}

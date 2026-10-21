@@ -234,6 +234,33 @@ const checks = {
     want(attrs, "data-note", "a&amp;b");
     want(attrs, "style", "max-width:50%");
     want(attrs, "loading", "lazy");
+
+    // A writer's own size wins over the measured one.
+    const sized = find(bundle, "Sized by hand");
+    want(sized, "width", "300");
+    want(sized, "height", "200");
+
+    // Escapes and entities read as Markdown, a url that does not parse served as
+    // written, and a picture inside a shortcode's answer not taken for the first.
+    const hard = "posts/2026/10/pictures-written-the-hard-way/index.html";
+    want(find(hard, "A *starred* alt"), "title", 'Say "hi" & go');
+    find(hard, "<b> in code");
+    want(find(hard, "An entity"), "src", "https://example.com/q.png?a=1&amp;b=2");
+    want(find(hard, "A percent"), "src", "100%25.png");
+    const answer = find(hard, "In an answer");
+    want(answer, "loading", "lazy");
+    want(answer, "fetchpriority", null);
+
+    // From assets/, the md copy links the original, which is published.
+    if (!/\.webp$/.test(attr(find(hard, "From assets"), "src") ?? "")) fail("a picture from assets/ is not served as WebP");
+    const md = read("posts/2026/10/pictures-written-the-hard-way/index.md");
+    if (!md.includes("![From assets](<https://example.com/subpath/img/an%20example.png>)")) fail("the md copy does not link the assets/ original", md);
+    if (!existsSync(join(dir, "img/an example.png"))) fail("the assets/ original the md copy links is not published");
+
+    // A file that cannot be decoded is served whole rather than failing the build.
+    const cut = find("posts/2026/10/a-picture-that-cannot-be-decoded/index.html", "Cut short");
+    if (!/\/cut\.jpg$/.test(attr(cut, "src") ?? "")) fail("an undecodable picture is not served whole", cut);
+    want(cut, "srcset", null);
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },
 

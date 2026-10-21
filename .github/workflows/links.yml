@@ -522,6 +522,7 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
 
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
