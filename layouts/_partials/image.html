@@ -141,8 +141,8 @@
 {{- $h := 0 -}}
 {{- with findRE `^[0-9]+$` (string ($attrs.width | default "")) -}}{{- $w = int (float (index . 0)) -}}{{- end -}}
 {{- with findRE `^[0-9]+$` (string ($attrs.height | default "")) -}}{{- $h = int (float (index . 0)) -}}{{- end -}}
-{{- if and $w (not $h) $width -}}{{- $h = int (math.Round (div (mul $w $height) (float $width))) -}}{{- end -}}
-{{- if and $h (not $w) $height -}}{{- $w = int (math.Round (div (mul $h $width) (float $height))) -}}{{- end -}}
+{{- if and $w (not $h) $width -}}{{- $h = int (math.Max 1 (math.Round (div (mul $w $height) (float $width)))) -}}{{- end -}}
+{{- if and $h (not $w) $height -}}{{- $w = int (math.Max 1 (math.Round (div (mul $h $width) (float $height)))) -}}{{- end -}}
 {{- if or $w $h -}}{{- $width = $w -}}{{- $height = $h -}}{{- end -}}
 {{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
 
