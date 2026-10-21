@@ -31,6 +31,8 @@
           <div class="post-excerpt">{{ . }}</div>
         {{ end }}
 
+        {{- partial "series.html" . }}
+
         {{ partial "post-cover.html" . }}
 
         {{- partial "toc.html" . }}

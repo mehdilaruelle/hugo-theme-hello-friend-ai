@@ -1,0 +1,3 @@
+# The series block switched off, in the table form docs/config.md gives.
+[params.series]
+  enable = false

@@ -1,0 +1,46 @@
+{{- /*
+Where this article sits in each series it belongs to, and the way to the other
+parts. Takes the page.
+
+  A series is a term of the `series` taxonomy, so a site without one gets
+  nothing. Parts run oldest first, as a series is written; a part with no
+  page of its own (build.render never) is left out, as the pager leaves it.
+  A series of one has nowhere else to go, and shows nothing.
+
+  Closed by default: one line under the title says where the reader is, and
+  the list is a click away rather than pushing the article down the screen.
+*/ -}}
+{{- $on := true -}}
+{{- if reflect.IsMap site.Params.series -}}
+  {{- if isset site.Params.series "enable" }}{{ $on = partial "switch.html" site.Params.series.enable }}{{ end -}}
+{{- else if isset site.Params "series" -}}
+  {{- $on = partial "switch.html" site.Params.series -}}
+{{- end -}}
+{{- if $on -}}
+  {{- $page := . -}}
+  {{- range .GetTerms "series" -}}
+    {{- $parts := where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "" -}}
+    {{- if gt (len $parts) 1 -}}
+      {{- $part := 0 -}}
+      {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
+      {{- $name := partial "title-plain.html" . -}}
+      {{- $id := printf "hf-series-%s" (anchorize $name) -}}
+      <nav class="series" aria-labelledby="{{ $id }}">
+        <details>
+          <summary id="{{ $id }}">{{ partial "i18n.html" (dict "key" "seriesPart" "args" (dict "Part" $part "Total" (len $parts) "Series" $name) "fallback" (printf "Part %d of %d in %s" $part (len $parts) $name)) }}</summary>
+          <ol class="series__list">
+            {{- range $parts }}
+            <li>
+              {{- if .Eq $page -}}
+              <span aria-current="page">{{ partial "title-plain.html" . }}</span>
+              {{- else -}}
+              <a href="{{ .Permalink }}">{{ partial "title-plain.html" . }}</a>
+              {{- end -}}
+            </li>
+            {{- end }}
+          </ol>
+        </details>
+      </nav>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

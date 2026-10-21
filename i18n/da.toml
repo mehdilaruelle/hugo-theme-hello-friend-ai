@@ -166,3 +166,6 @@ other = "Seneste indhold i {{ .Title }} på {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Seneste indhold på {{ .Site }}"
+
+[seriesPart]
+other = "Del {{ .Part }} af {{ .Total }} i serien {{ .Series }}"

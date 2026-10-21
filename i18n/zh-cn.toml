@@ -166,3 +166,6 @@ other = "{{ .Site }} 上{{ .Title }}的最新内容"
 
 [feedDescriptionSite]
 other = "{{ .Site }} 的最新内容"
+
+[seriesPart]
+other = "“{{ .Series }}”系列第 {{ .Part }} 篇，共 {{ .Total }} 篇"

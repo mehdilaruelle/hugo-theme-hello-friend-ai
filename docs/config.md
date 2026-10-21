@@ -627,6 +627,45 @@ pagerSize: 2
 change which pages a list holds, override that partial rather than passing
 another collection.
 
+## Series
+
+An article written in parts says which part it is, under its title, and the
+line opens onto the list of all of them, in the order they were published, the
+one being read marked rather than linked. A reader who lands on part three from
+a search finds parts one and two without going back to the list.
+
+A series is a term of the `series` taxonomy, so a site has to declare it, as
+the exampleSite does:
+
+```toml
+[taxonomies]
+  tag      = "tags"
+  category = "categories"
+  series   = "series"
+```
+
+and an article names the series it belongs to:
+
+```yaml
+series: ["Hugo 101"]
+```
+
+Nothing to switch on. A series of one shows nothing, since there is nowhere
+else to go; an article in two series shows two blocks; a part built with
+`render: never` is left out, as it has no page to link to. A site whose
+taxonomy is called something else gets no block: the theme reads `series`.
+
+```toml
+[params]
+  [params.series]
+    enable = false   # removes the block everywhere
+```
+
+`series = false` on its own, in place of the table, turns it off too.
+
+The block is navigation, so the Markdown copy of an article leaves it out, as
+it leaves out the related posts and the previous/next links.
+
 ## Related posts
 
 Every article ends with a list of the posts closest to it, so a reader has
@@ -949,7 +988,7 @@ The site switches read the same way — `enableThumbnails`, `enableListExcerpts`
 `enableReadingTime`, `enableSharingButtons`, `enableThemeToggle`,
 `enableGlobalLanguageMenu` and `disableReadOtherPosts`, the footer's `author`,
 `copyright`, `rss` and `trademark`, the logo's `logoCursorDisabled` and
-`logoCursorPathname`, and `related.enable`. Each honours the quoted spelling of
+`logoCursorPathname`, `related.enable` and `series.enable`. Each honours the quoted spelling of
 a boolean — `trademark` too, though any other text it is given still prints.
 
 The search page is kept out the same way, without being asked. A page with

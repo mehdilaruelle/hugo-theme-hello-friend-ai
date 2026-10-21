@@ -523,6 +523,31 @@ jobs:
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
 
+      # Both demos have a series, so the block is in the link checks above; this
+      # walks the edges: order by date over file name and title, two series on
+      # one page, a series of one, a part with no page, and the switch off, as a
+      # table and as a bare value set from the environment. No link check: the
+      # demo menu points at pages the fixture does not have.
+      - name: Check a post shows where it sits in its series
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series \
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/"
+          check() { node ../.github/scripts/check-invariants.mjs public-series series "$@"; }
+          check posts/2026/10/setting-out/index.html "The Tour=*Setting out|Halfway|Wrapping up"
+          check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "Asides=*Halfway|A detour"
+          check posts/2026/10/wrapping-up/index.html "The Tour=Setting out|Halfway|*Wrapping up"
+          check posts/2026/10/a-detour/index.html "Asides=Halfway|*A detour"
+          check posts/2026/10/on-its-own/index.html
+          check posts/2026/10/in-no-series/index.html
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
+            --config config.toml,../.github/fixtures/series-off.toml
+          node ../.github/scripts/check-invariants.mjs public-series-off series posts/2026/10/halfway/index.html
+          HUGO_PARAMS_SERIES=false hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-quoted \
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-invariants.mjs public-series-quoted series posts/2026/10/halfway/index.html
+
       # The documented escape hatch, built here so CI has walked it.
       - name: Check robots.txt with the documented crawlers override
         working-directory: hello-friend-ai/exampleSite

@@ -189,6 +189,36 @@ const checks = {
     ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
   },
 
+  // A page's series blocks against the ones wanted, each "Name=One|*Two|Three"
+  // with the parts in order and the current one starred. No argument: no block.
+  series(page, ...want) {
+    const html = read(page);
+    const got = [...html.matchAll(/<nav\b[^>]*>/gi)].filter((m) => hasClass(m[0], "series")).map((m) => {
+      const block = element(html, m.index, "nav");
+      const summary = block.match(/<summary\b[^>]*>([^<]*)<\/summary>/i)
+        ?? fail(`${page}: a series block with no summary`, block);
+      if (attr(m[0], "aria-labelledby") !== attr(summary[0], "id"))
+        fail(`${page}: a series block is not labelled by its summary`, block);
+      const parts = [...block.matchAll(/<li>\s*<(a|span)\b([^>]*)>([^<]*)<\/\1>\s*<\/li>/gi)].map((li) => {
+        const here = li[1].toLowerCase() === "span";
+        if (here !== (attr(li[0], "aria-current") === "page"))
+          fail(`${page}: a part is ${here ? "not a link but not" : "a link and"} marked current`, li[0]);
+        return (here ? "*" : "") + li[3].trim();
+      });
+      return { summary: summary[1].trim(), parts };
+    });
+    if (got.length !== want.length)
+      fail(`${page}: ${got.length} series block(s), wanted ${want.length}`, got.map((g) => g.summary).join("\n"));
+    want.forEach((w, i) => {
+      const [name, list] = w.split("=");
+      const parts = list.split("|");
+      const summary = `Part ${parts.findIndex((p) => p.startsWith("*")) + 1} of ${parts.length} in ${name}`;
+      if (got[i].summary !== summary) fail(`${page}: the summary reads "${got[i].summary}", wanted "${summary}"`);
+      if (got[i].parts.join("|") !== list) fail(`${page}: ${name} lists ${got[i].parts.join("|")}, wanted ${list}`);
+    });
+    ok(`${page}: ${want.length ? want.join(", ") : "no series block"}`);
+  },
+
   // Pictures written in Markdown, from .github/fixtures/markdown-images.
   "markdown-images"() {
     const imgs = (page) => [...read(page).matchAll(tagRe("img"))].map((m) => m[0]);
@@ -683,6 +713,8 @@ const checks = {
       ["copy-done", "background-header", 4.5],
       ["copy-failed", "background-header", 4.5],
       ["color-secondary", "background", 4.5],
+      // Body text and links on a filled box: the buttons, the series block.
+      ["color", "background-secondary", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],
     ];
