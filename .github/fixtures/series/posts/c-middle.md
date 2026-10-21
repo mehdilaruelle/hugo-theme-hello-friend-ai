@@ -1,7 +1,7 @@
 ---
 title: "Halfway"
 date: 2026-10-02
-series: ["The Tour", "Asides"]
+series: ["The Tour"]
 ---
 
-In two series at once, so it carries two blocks.
+The middle part.
