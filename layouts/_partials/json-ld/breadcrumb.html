@@ -7,7 +7,7 @@
   {{- $items := slice -}}
   {{- $i := 0 -}}
   {{- /* Google wants a URL on every crumb but the last; an unrendered ancestor has none. */ -}}
-  {{- range where $.Ancestors.Reverse "Permalink" "!=" "" -}}
+  {{- range where (where $.Ancestors.Reverse "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
     {{- $i = add $i 1 -}}
     {{- $name := "" -}}
     {{- if .IsHome -}}

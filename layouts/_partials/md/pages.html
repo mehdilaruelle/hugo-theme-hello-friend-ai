@@ -2,7 +2,7 @@
        with where, because the rule is in noai.html and where cannot call a
        partial. */ -}}
 {{- $out := slice -}}
-{{- range . -}}
+{{- range where . "Params.build.render" "!=" "link" -}}
   {{- if and .Permalink (not (partial "md/noai.html" .)) -}}{{- $out = $out | append . -}}{{- end -}}
 {{- end -}}
 {{- return $out -}}
