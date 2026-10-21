@@ -527,9 +527,7 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: |
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-alerts \
-            --contentDir ../.github/fixtures/alerts \
-            --config config.toml,../.github/fixtures/alerts.toml \
-            --baseURL "https://example.com/subpath/"
+            --contentDir ../.github/fixtures/alerts --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-alerts alerts
 
       # The documented escape hatch, built here so CI has walked it.

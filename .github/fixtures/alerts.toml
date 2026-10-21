@@ -1,5 +1,0 @@
-[markup.goldmark.parser.attribute]
-  block = true
-
-[outputs]
-  page = ["HTML", "md"]
