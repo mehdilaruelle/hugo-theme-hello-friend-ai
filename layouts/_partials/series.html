@@ -4,7 +4,8 @@ parts. Takes the page.
 
   A series is a term of the `series` taxonomy, so a site without one gets
   nothing. Parts run oldest first, as a series is written; a part with no
-  page of its own (build.render never) is left out, as the pager leaves it.
+  page of its own is left out: build.render never leaves it no permalink,
+  and link leaves it one that nothing is written to.
   A series of one has nowhere else to go, and shows nothing.
 
   Closed by default: one line under the title says where the reader is, and
@@ -19,7 +20,7 @@ parts. Takes the page.
 {{- if $on -}}
   {{- $page := . -}}
   {{- range .GetTerms "series" -}}
-    {{- $parts := where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "" -}}
+    {{- $parts := where (where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
     {{- if gt (len $parts) 1 -}}
       {{- $part := 0 -}}
       {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}

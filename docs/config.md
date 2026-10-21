@@ -652,7 +652,7 @@ series: ["Hugo 101"]
 
 Nothing to switch on. A series of one shows nothing, since there is nowhere
 else to go; an article in two series shows two blocks; a part built with
-`render: never` is left out, as it has no page to link to. A site whose
+`render: never` or `render: link` is left out, as it has no page to link to. A site whose
 taxonomy is called something else gets no block: the theme reads `series`.
 
 ```toml
