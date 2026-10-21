@@ -130,21 +130,28 @@
        handler from a Markdown attribute block. */ -}}
 {{- $attrs := .attrs | default dict -}}
 {{- $class := delimit (slice (.position | default "") ($attrs.class | default "")) " " | strings.TrimSpace -}}
-{{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
-{{- /* A width or height the caller gives is the display size: it replaces the
-       measured pair, as a sizes it gives replaces the theme's. */ -}}
-{{- $sized := or $attrs.width $attrs.height -}}
-{{- if not $sized -}}{{- $own = $own | append "width" "height" -}}{{- end -}}
+{{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" "width" "height" "sizes" -}}
+{{- $width := 0 -}}
+{{- $height := 0 -}}
+{{- if $measurable -}}{{- $width = $rendered.Width -}}{{- $height = $rendered.Height -}}
+{{- else if $svgWidth -}}{{- $width = $svgWidth -}}{{- $height = $svgHeight -}}{{- end -}}
+{{- /* A width or height in pixels the caller gives wins; alone, the other
+       follows the ratio. */ -}}
+{{- $w := 0 -}}
+{{- $h := 0 -}}
+{{- with findRE `^[0-9]+$` (string ($attrs.width | default "")) -}}{{- $w = int (float (index . 0)) -}}{{- end -}}
+{{- with findRE `^[0-9]+$` (string ($attrs.height | default "")) -}}{{- $h = int (float (index . 0)) -}}{{- end -}}
+{{- if and $w (not $h) $width -}}{{- $h = int (math.Max 1 (math.Round (div (mul $w $height) (float $width)))) -}}{{- end -}}
+{{- if and $h (not $w) $height -}}{{- $w = int (math.Max 1 (math.Round (div (mul $h $width) (float $height)))) -}}{{- end -}}
+{{- if or $w $h -}}{{- $width = $w -}}{{- $height = $h -}}{{- end -}}
 {{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
-{{- $own = $own | append "sizes" -}}
 
 {{- if $src -}}
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
     {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
-    {{- if $sized }}
-    {{- else if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
-    {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
+    {{- with $width }} width="{{ . }}"{{ end }}
+    {{- with $height }} height="{{ . }}"{{ end }} alt="{{ $alt | plainify }}"
     {{- with $class }} class="{{ . }}"{{ end }}
     {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
     {{- range $k, $v := $attrs }}{{ if and $v (not (in $own (lower $k))) }}{{ printf ` %s="%s"` $k (htmlEscape (string $v)) | safeHTMLAttr }}{{ end }}{{ end }} />

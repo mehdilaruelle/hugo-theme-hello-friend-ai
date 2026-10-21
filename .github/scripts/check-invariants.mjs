@@ -245,7 +245,8 @@ const checks = {
     const hard = "posts/2026/10/pictures-written-the-hard-way/index.html";
     want(find(hard, "A *starred* alt"), "title", 'Say "hi" & go');
     find(hard, "<b> in code");
-    want(find(hard, "An entity"), "src", "https://example.com/q.png?a=1&amp;b=2");
+    want(find(hard, "An entity"), "src", "https://example.com/q.png?a=1&amp;b=2&amp;region=eu");
+    find(hard, "A sign &#169; &#233;"); // as the minifier writes "© é"
     want(find(hard, "A percent"), "src", "100%25.png");
     const answer = find(hard, "In an answer");
     want(answer, "loading", "lazy");
