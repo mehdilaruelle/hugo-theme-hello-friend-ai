@@ -170,3 +170,6 @@ other = "Новые материалы: {{ .Title }} — {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Новые материалы — {{ .Site }}"
+
+[seriesPart]
+other = "Часть {{ .Part }} из {{ .Total }} в серии «{{ .Series }}»"

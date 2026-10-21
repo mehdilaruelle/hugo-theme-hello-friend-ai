@@ -166,3 +166,6 @@ other = "Contegnuu noeuv de {{ .Title }} su {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Contegnuu noeuv su {{ .Site }}"
+
+[seriesPart]
+other = "Part {{ .Part }} de {{ .Total }} de la serie {{ .Series }}"

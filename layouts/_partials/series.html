@@ -1,0 +1,31 @@
+{{- /* Where this article sits in each of its series, oldest part first; parts with no page (build.render never or link) are left out. */ -}}
+{{- $on := site.Params.series -}}
+{{- if reflect.IsMap $on }}{{ $on = cond (isset $on "enable") $on.enable true }}{{ end -}}
+{{- if or (not (isset site.Params "series")) (partial "switch.html" $on) -}}
+  {{- $page := . -}}
+  {{- range .GetTerms "series" -}}
+    {{- $parts := where (where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
+    {{- if gt (len $parts) 1 -}}
+      {{- $part := 0 -}}
+      {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
+      {{- $name := partial "title-plain.html" . -}}
+      {{- $id := printf "hf-series-%s" (anchorize $name) -}}
+      <nav class="series" aria-labelledby="{{ $id }}">
+        <details>
+          <summary id="{{ $id }}">{{ partial "i18n.html" (dict "key" "seriesPart" "args" (dict "Part" $part "Total" (len $parts) "Series" $name) "fallback" (printf "Part %d of %d in %s" $part (len $parts) $name)) }}</summary>
+          <ol class="series__list">
+            {{- range $parts }}
+            <li>
+              {{- if .Eq $page -}}
+              <span aria-current="page">{{ partial "title-plain.html" . }}</span>
+              {{- else -}}
+              <a href="{{ .Permalink }}">{{ partial "title-plain.html" . }}</a>
+              {{- end -}}
+            </li>
+            {{- end }}
+          </ol>
+        </details>
+      </nav>
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

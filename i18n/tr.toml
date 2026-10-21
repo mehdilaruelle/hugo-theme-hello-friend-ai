@@ -166,3 +166,6 @@ other = "Son içerikler: {{ .Title }} | {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Son içerikler | {{ .Site }}"
+
+[seriesPart]
+other = "{{ .Series }} serisi, bölüm {{ .Part }}/{{ .Total }}"
