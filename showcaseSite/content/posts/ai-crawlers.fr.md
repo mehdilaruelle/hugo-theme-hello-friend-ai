@@ -50,8 +50,9 @@ proposition de Cloudflare, pas une norme, et elle tient sur une ligne.
 Deux choses qu'elle ne fait pas. `robots.txt` est une requête : ce qui la
 respecte la respecte, le reste relève du CDN. Et la séparation ne vaut que ce que
 valent les jetons : `Google-Extended` couvre à la fois l'entraînement de Gemini
-et l'ancrage de ses réponses, donc `train = false` coûte l'encadré de réponse de
-Google quoi que dise `cite`.
+et l'ancrage de ses réponses, donc `train = false` coûte les réponses ancrées de
+Gemini quoi que dise `cite`. La recherche Google et ses AI Overviews n'en
+dépendent pas : elles passent par `Googlebot`.
 
 L'autre moitié de la question, c'est `llms.txt`, qui dit comment lire le site
 plutôt que qui en a le droit. Ce site en publie un, et une copie Markdown de

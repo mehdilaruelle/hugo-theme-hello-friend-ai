@@ -1317,10 +1317,13 @@ rather than a lock.
 
 And the split is only as clean as the tokens allow. `Google-Extended` governs
 both training Gemini and grounding its answers in your pages, and Google
-publishes no second token for the two, so `train = false` costs you the Google
-answer box whatever `cite` says. It stays in the training list because that is
-what people mean when they refuse training — but the promise of this feature is
-one token short of complete, and it is better said here than discovered later.
+publishes no second token for the two, so `train = false` costs you Gemini's
+grounded answers — in the Gemini app and on Vertex AI — whatever `cite` says.
+Google Search and its AI Overviews are not part of it: they come from
+`Googlebot`, which this list leaves alone. It stays in the training list
+because that is what people mean when they refuse training — but the promise of
+this feature is one token short of complete, and it is better said here than
+discovered later.
 
 Both are worth having anyway. A policy that is ignored by some is still the
 difference between having said no and never having been asked.

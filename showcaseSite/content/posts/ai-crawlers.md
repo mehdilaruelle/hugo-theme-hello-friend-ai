@@ -50,7 +50,9 @@ standard, and one line long.
 Two things it does not do. `robots.txt` is a request — what honours it, honours
 it, and the rest is a matter for the CDN. And the split is only as clean as the
 tokens allow: `Google-Extended` covers both training Gemini and grounding its
-answers, so `train = false` costs the Google answer box whatever `cite` says.
+answers, so `train = false` costs Gemini's grounded answers whatever `cite`
+says. Google Search and its AI Overviews are untouched: they run on
+`Googlebot`.
 
 The other half of the question is `llms.txt`, which says how to read the site
 rather than who may. This site emits one, and a Markdown copy of every page

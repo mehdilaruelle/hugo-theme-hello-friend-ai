@@ -9,7 +9,8 @@ train:
   - ClaudeBot             # Anthropic
   - CCBot                 # Common Crawl, whose archives train most of the rest
   # Covers training Gemini and grounding its answers, with no second token to
-  # separate them, so refusing training costs the Google answer box too.
+  # separate them, so refusing training costs Gemini's grounded answers too (the
+  # Gemini app, Vertex AI). Not Search or its AI Overviews: those are Googlebot.
   - Google-Extended       # A token only; Googlebot itself is search
   - Applebot-Extended     # Apple Intelligence. A token only; Applebot is search
   - meta-externalagent    # Meta
