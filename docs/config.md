@@ -1226,10 +1226,13 @@ Neither is emitted when unset, here as everywhere else in the theme.
 
 `llms.txt` says *how* to read the site. This says *who* may — and the question
 worth asking is not "AI yes or no" but what the fetch is for. A training
-crawler reads the site once and the text ends up inside a model, unattributed.
-A retrieval crawler reads it to answer somebody's question now, and the answer
-carries a link back. Most people who want a policy want to refuse the first and
-keep the second, so this is two switches rather than one:
+crawler collects the site and the text ends up inside a model, unattributed.
+A retrieval crawler reads it to answer questions with it, and the answer can
+carry a link back. Some index ahead of time, like a search engine
+(`OAI-SearchBot`, `Claude-SearchBot`, `PerplexityBot`); others fetch a page
+because somebody has just asked about it (`ChatGPT-User`, `Claude-User`). Most
+people who want a policy want to refuse the first and keep the second, so this
+is two switches rather than one:
 
 ```toml
 [params.ai]
@@ -1310,6 +1313,12 @@ compare the groups with the signal.
 `robots.txt` is a request. What honours it, honours it; the rest is a matter
 for the CDN, and no theme can change that.
 
+That holds most for `cite = false`. The fetchers that act for a user are the
+least bound by the file: for `ChatGPT-User`, [OpenAI says][openai-bots] that
+robots.txt rules "may not apply", and [Perplexity says][perplexity-bots] that
+`Perplexity-User` "generally ignores robots.txt rules". Refusing citation keeps
+the indexes out; a page somebody pastes into a chat may still be read.
+
 `Content-Signal` is a [Cloudflare proposal][content-signals] from September
 2025, added to several million domains at once, and not a standard. It costs
 one line, and it is worth saying plainly that it is a declaration of intent
@@ -1326,3 +1335,5 @@ Both are worth having anyway. A policy that is ignored by some is still the
 difference between having said no and never having been asked.
 
 [content-signals]: https://searchengineland.com/cloudflare-content-signals-462538
+[openai-bots]: https://developers.openai.com/api/docs/bots
+[perplexity-bots]: https://docs.perplexity.ai/guides/bots
