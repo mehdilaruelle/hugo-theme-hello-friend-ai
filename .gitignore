@@ -37,8 +37,10 @@ Temporary Items
 # customize Headers whiteout touch git submodule.
 layouts/_partials/extra-head.html
 
-# Hugo build output and caches, the CI fixture builds included
-public*/
+# Hugo build output, fixture builds included; anchored so content/publications/ stays tracked.
+/public*/
+exampleSite/public*/
+showcaseSite/public*/
 # The copy of exampleSite a site override is layered over. Anchored:
 # .github/fixtures/site-overrides/ is tracked.
 /site-overrides/
