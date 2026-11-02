@@ -5,20 +5,29 @@
        the demos and the README write url = "posts/", which links none. So the
        resolved url is compared too, trailing slash aside, and holds every page
        under it. The home url holds every page, so it is only ever "page".
-       A parent holds what any of its children holds. */ -}}
+       A parent holds what any of its children holds. Both sides are compared
+       decoded, as relLangURL leaves "catégorie/" and RelPermalink escapes it. */ -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
-{{- $here := strings.TrimSuffix "/" $page.RelPermalink -}}
+{{- $here := $page.RelPermalink -}}
+{{- with (try (urls.Parse $here)).Value }}{{ $here = .Path }}{{ end -}}
+{{- $here = strings.TrimSuffix "/" $here -}}
 {{- $url := "" -}}
+{{- $local := false -}}
 {{- if $entry.URL -}}
-  {{- $url = strings.TrimSuffix "/" (partial "menu-url.html" $entry) -}}
+  {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
+    {{- if not (or .Scheme .Host) -}}
+      {{- $url = strings.TrimSuffix "/" .Path -}}
+      {{- $local = true -}}
+    {{- end -}}
+  {{- end -}}
 {{- end -}}
-{{- if or ($page.IsMenuCurrent "main" $entry) (and $entry.URL (eq $url $here)) -}}
+{{- if or ($page.IsMenuCurrent "main" $entry) (and $local (eq $url $here)) -}}
   {{- $state = "page" -}}
 {{- else if $page.HasMenuCurrent "main" $entry -}}
   {{- $state = "true" -}}
-{{- else if and $entry.URL (ne $url (strings.TrimSuffix "/" site.Home.RelPermalink)) (hasPrefix $here (printf "%s/" $url)) -}}
+{{- else if and $local (ne $url (strings.TrimSuffix "/" (urls.Parse site.Home.RelPermalink).Path)) (hasPrefix $here (printf "%s/" $url)) -}}
   {{- $state = "true" -}}
 {{- else -}}
   {{- range $entry.Children -}}

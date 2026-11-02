@@ -1,10 +1,27 @@
 # Pictures written in Markdown, which neither demo has. The image stands alone
 # so the attribute block below it reaches the img rather than a paragraph.
 
+# A file that cannot be decoded is served whole, with a warning.
+ignoreLogs = ["image-resize-failed"]
+
 # An include shortcode, to render the bundle's pictures inside another page.
 layoutDir = "../.github/fixtures/markdown-images-layouts"
+
+# A picture in assets/ whose name holds a space.
+assetDir = "../.github/fixtures/markdown-images-assets"
 
 [markup.goldmark.parser]
   wrapStandAloneImageWithinParagraph = false
   [markup.goldmark.parser.attribute]
     block = true
+
+# The md copy, which links a picture from assets/ to its published original.
+[outputs]
+  page = ["HTML", "md"]
+
+# A menu url that RelPermalink escapes.
+[menu]
+  [[menu.main]]
+    name   = "Café"
+    url    = "café/"
+    weight = 10

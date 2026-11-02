@@ -171,6 +171,9 @@ other = "Новые материалы: {{ .Title }} — {{ .Site }}"
 [feedDescriptionSite]
 other = "Новые материалы — {{ .Site }}"
 
+[seriesPart]
+other = "Часть {{ .Part }} из {{ .Total }} в серии «{{ .Series }}»"
+
 # _markup/render-blockquote.html: the title of a GitHub-style alert
 [alertNote]
 other = "Примечание"

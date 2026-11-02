@@ -82,12 +82,15 @@ Anything else is served as it was:
 ```text
 ![…](dune.jpg)            in the page bundle: resized, converted, measured
 ![…](img/dune.jpg)        found in assets/img/: resized, converted, measured
-![…](/img/dune.jpg)       a file under static/: served as written, unmeasured
+![…](/img/dune.jpg)       assets/img/ first, as above; else static/: as written
 ![…](dune.jpg)            beside a page that is not a bundle: as written
 ![…](https://…)           remote: as written, never fetched
 ```
 
 A url with a query or a fragment is also left as written: it names no resource.
+A `width` or `height` given in an attribute block is kept, in place of the
+measured pair. In the Markdown copy, a picture from `assets/` links its
+original, which is then published beside the resized ones.
 
 The first picture of a page that has no cover is fetched at once and ahead of
 the rest, since it is likely the largest thing on screen; every later one is
@@ -96,7 +99,7 @@ lazy. A cover takes that place when there is one.
 The title becomes the `title` attribute. With
 `markup.goldmark.parser.attribute.block` on, a picture standing alone takes an
 attribute block, `{.wide #hero}`, and keeps it; attributes the theme writes
-itself, such as `loading` or `width`, keep the theme's value; a `style` is kept.
+itself, such as `loading` or `srcset`, keep the theme's value; a `style` is kept.
 Hugo drops any `on…` handler from the block before the theme sees it.
 
 To keep Hugo's own rendering, put a `layouts/_markup/render-image.html` of

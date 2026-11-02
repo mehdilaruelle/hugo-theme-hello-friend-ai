@@ -522,6 +522,20 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
+
+      - name: Check a post shows where it sits in its series
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series \
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/"
+          check() { node ../.github/scripts/check-invariants.mjs public-series series "$@"; }
+          check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up"
+          check posts/2026/10/on-its-own/index.html
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
+            --config config.toml,../.github/fixtures/series-off.toml
+          node ../.github/scripts/check-invariants.mjs public-series-off series posts/2026/10/halfway/index.html
 
       - name: Check GitHub-style alerts are drawn, and every other blockquote left alone
         working-directory: hello-friend-ai/exampleSite

@@ -12,5 +12,13 @@
       {{ end }}
 */ -}}
 
-{{- $parsed := urls.Parse . -}}
-{{- return or (ne $parsed.Scheme "") (ne $parsed.Host "") -}}
+{{- /* One that does not parse, "https://x/100%.png", is read by its shape. */ -}}
+{{- $remote := false -}}
+{{- with try (urls.Parse .) -}}
+  {{- if .Err -}}
+    {{- $remote = gt (len (findRE `^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|//)` $ 1)) 0 -}}
+  {{- else -}}
+    {{- $remote = or (ne .Value.Scheme "") (ne .Value.Host "") -}}
+  {{- end -}}
+{{- end -}}
+{{- return $remote -}}

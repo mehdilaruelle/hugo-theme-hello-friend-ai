@@ -170,6 +170,9 @@ other = "Conținut recent din {{ .Title }} pe {{ .Site }}"
 [feedDescriptionSite]
 other = "Conținut recent pe {{ .Site }}"
 
+[seriesPart]
+other = "Partea {{ .Part }} din {{ .Total }} din seria {{ .Series }}"
+
 # _markup/render-blockquote.html: the title of a GitHub-style alert
 [alertNote]
 other = "Notă"

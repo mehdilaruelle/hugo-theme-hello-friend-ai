@@ -167,6 +167,9 @@ other = "Contenuti recenti di {{ .Title }} su {{ .Site }}"
 [feedDescriptionSite]
 other = "Contenuti recenti su {{ .Site }}"
 
+[seriesPart]
+other = "Parte {{ .Part }} di {{ .Total }} della serie {{ .Series }}"
+
 # _markup/render-blockquote.html: the title of a GitHub-style alert
 [alertNote]
 other = "Nota"

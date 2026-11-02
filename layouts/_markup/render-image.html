@@ -8,20 +8,33 @@
 
        Resources are looked up in .PageInner: when a shortcode renders another
        page's content into this one, its pictures live in that page's bundle. */ -}}
-{{- $src := .Destination -}}
-{{- $u := urls.Parse .Destination -}}
+{{- /* Goldmark hands the destination with its entities, the title with its
+       backslash escapes and entities, and the plain text with its escapes. */ -}}
+{{- $dest := htmlUnescape .Destination -}}
+{{- $unescape := "\\\\([!-/:-@\\[-`{-~])" -}}
+{{- $src := $dest -}}
+{{- $asWritten := false -}}
 {{- /* Looked up by its decoded path, "my%20photo.jpg" being "my photo.jpg";
-       a query or a fragment names no resource, so the url stays as written. */ -}}
-{{- if and (not (partial "is-remote.html" .Destination)) (not $u.RawQuery) (not $u.Fragment) -}}
-  {{- $src = $u.Path -}}
+       a query or a fragment names no resource, so the url stays as written,
+       as does one that does not parse, "100%.png". */ -}}
+{{- with try (urls.Parse $dest) -}}
+  {{- if .Err -}}
+    {{- $asWritten = true -}}
+  {{- else if and (not (partial "is-remote.html" $dest)) (not .Value.RawQuery) (not .Value.Fragment) -}}
+    {{- $src = .Value.Path -}}
+  {{- end -}}
 {{- end -}}
 {{- $cover := and (eq (printf "%T" .Page.Params.cover) "string") .Page.Params.cover -}}
-{{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) -}}
-{{- $attrs := merge (.Attributes | default dict) (cond (ne .Title "") (dict "title" .Title) dict) -}}
+{{- /* Ordinal starts again in every RenderString: a shortcode rendering its
+       inner Markdown, faq.html, sets "renderString" around it. */ -}}
+{{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) (not (.Page.Store.Get "renderString")) -}}
+{{- $title := .Title | replaceRE $unescape "$1" | htmlUnescape -}}
+{{- $attrs := merge (.Attributes | default dict) (cond (ne $title "") (dict "title" $title) dict) -}}
 {{- partial "image.html" (dict
   "src" $src
-  "fallback" .Destination
-  "alt" .PlainText
+  "fallback" $dest
+  "asWritten" $asWritten
+  "alt" (.PlainText | replaceRE $unescape "$1" | htmlEscape)
   "page" .PageInner
   "loading" (cond $first "eager" "lazy")
   "fetchpriority" (cond $first "high" "")

@@ -167,6 +167,9 @@ other = "{{ .Site }}: {{ .Title }} — പുതിയ ഉള്ളടക്ക�
 [feedDescriptionSite]
 other = "{{ .Site }}: പുതിയ ഉള്ളടക്കം"
 
+[seriesPart]
+other = "{{ .Series }} പരമ്പരയിലെ {{ .Total }} ഭാഗങ്ങളിൽ {{ .Part }}-ാം ഭാഗം"
+
 # _markup/render-blockquote.html: the title of a GitHub-style alert
 [alertNote]
 other = "കുറിപ്പ്"

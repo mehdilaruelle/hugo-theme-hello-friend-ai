@@ -63,6 +63,8 @@ public-seo-shapes/
 public-shapes/
 public-logo-images/
 public-logo-inline/
+public-menu-current/
+public-markdown-images/
 # The fixture build of a site override, and the copy of exampleSite it
 # is layered over. Anchored: .github/fixtures/site-overrides/ is tracked.
 public-social-map/

@@ -3,7 +3,8 @@
        whole and unmeasured, as does a remote one, which is never fetched.
        Takes src, alt, position, style, page, loading, fetchpriority, maxWidth,
        sizes, fill, and from render-image.html fallback, the url written when
-       src resolves to no resource, and attrs, more attributes to carry. */ -}}
+       src resolves to no resource, asWritten, to look none up, and attrs, more
+       attributes to carry. */ -}}
 
 {{- $src := .src -}}
 {{- $alt := .alt | default "" -}}
@@ -18,7 +19,7 @@
   {{- if not (strings.HasSuffix . "%") -}}{{- $measure = . -}}{{- end -}}
 {{- end -}}
 {{- $sizes := .sizes | default site.Params.imageSizes | default (printf "(max-width: %s) 100vw, %s" $measure $measure) -}}
-{{- $remote := partial "is-remote.html" $src -}}
+{{- $remote := or .asWritten (partial "is-remote.html" $src) -}}
 
 {{- $img := "" -}}
 {{- if not $remote -}}
@@ -100,11 +101,16 @@
     {{- $srcset = slice -}}
   {{- else -}}
     {{- range $offered -}}
-      {{- $copy := $img.Resize (printf "%dx q85 webp" .) -}}
-      {{- $srcset = $srcset | append (printf "%s %dw" $copy.RelPermalink $copy.Width) -}}
-      {{- if eq . $ceiling -}}{{- $rendered = $copy -}}{{- end -}}
+      {{- $copy := try ($img.Resize (printf "%dx q85 webp" .)) -}}
+      {{- with $copy.Err -}}
+        {{- warnidf "image-resize-failed" "image.html: %s could not be resized and is served whole (%s)" $src . -}}
+        {{- $srcset = slice -}}
+        {{- break -}}
+      {{- end -}}
+      {{- $srcset = $srcset | append (printf "%s %dw" $copy.Value.RelPermalink $copy.Value.Width) -}}
+      {{- if eq . $ceiling -}}{{- $rendered = $copy.Value -}}{{- end -}}
     {{- end -}}
-    {{- if eq (len $offered) 1 -}}{{- $srcset = slice -}}{{- end -}}
+    {{- if le (len $srcset) 1 -}}{{- $srcset = slice -}}{{- end -}}
   {{- end -}}
 {{- end -}}
 
@@ -113,6 +119,8 @@
   {{- $url = .RelPermalink -}}
 {{- else with .fallback -}}
   {{- $url = . -}}
+  {{- /* A % that escapes nothing, "100%.png", is one itself. */ -}}
+  {{- if $.asWritten -}}{{- $url = replace . "%" "%25" | replaceRE "%25([0-9A-Fa-f]{2})" "%$1" -}}{{- end -}}
 {{- else -}}
   {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
 {{- end -}}
@@ -122,13 +130,20 @@
        handler from a Markdown attribute block. */ -}}
 {{- $attrs := .attrs | default dict -}}
 {{- $class := delimit (slice (.position | default "") ($attrs.class | default "")) " " | strings.TrimSpace -}}
-{{- $own := slice "src" "srcset" "sizes" "width" "height" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
+{{- $own := slice "src" "srcset" "loading" "decoding" "fetchpriority" "alt" "class" "style" -}}
+{{- /* A width or height the caller gives is the display size: it replaces the
+       measured pair, as a sizes it gives replaces the theme's. */ -}}
+{{- $sized := or $attrs.width $attrs.height -}}
+{{- if not $sized -}}{{- $own = $own | append "width" "height" -}}{{- end -}}
+{{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
+{{- $own = $own | append "sizes" -}}
 
 {{- if $src -}}
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
     {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
-    {{- if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
+    {{- if $sized }}
+    {{- else if $measurable }} width="{{ $rendered.Width }}" height="{{ $rendered.Height }}"
     {{- else if $svgWidth }} width="{{ $svgWidth }}" height="{{ $svgHeight }}"{{ end }} alt="{{ $alt | plainify }}"
     {{- with $class }} class="{{ . }}"{{ end }}
     {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
