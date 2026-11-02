@@ -24,9 +24,7 @@
 {{ .Text }}
 </div>
   {{- end }}
-{{ else if .Attributes -}}
-<blockquote{{ with $class }} class="{{ . }}"{{ end }}{{ $attrs | safeHTMLAttr }}>{{ .Text }}</blockquote>
 {{ else -}}
-<blockquote>
+<blockquote{{ with $class }} class="{{ . }}"{{ end }}{{ $attrs | safeHTMLAttr }}>
 {{ .Text }}</blockquote>
 {{ end -}}

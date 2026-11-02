@@ -293,21 +293,22 @@ const checks = {
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },
 
-  // GitHub-style alerts, from .github/fixtures/alerts.
-  alerts() {
-    const page = "posts/2026/10/every-kind-of-alert/index.html";
+  // GitHub-style alerts, from the demo article on them.
+  alerts(page) {
     const html = read(page);
     const got = [...html.matchAll(/<(div|details)\b[^>]*>/gi)].filter((m) => hasClass(m[0], "alert")).map((m) => {
       const block = element(html, m.index, m[1]);
       const head = [...block.matchAll(/<(p|summary)\b[^>]*>/gi)].find((t) => hasClass(t[0], "alert-title"));
       const type = (attr(m[0], "class") ?? "").match(/alert-(\w+)/)?.[1];
-      return `${m[1]}.${type}:${head ? text(element(block, head.index, head[1])) : ""}`;
+      const open = /\sopen(?=[\s>])/i.test(m[0]) ? "[open]" : "";
+      return `${m[1]}${open}.${type}:${head ? text(element(block, head.index, head[1])) : ""}`;
     });
     const want = ["div.note:Note", "div.tip:Tip", "div.important:Important", "div.warning:Warning",
-      "div.caution:Caution", "div.tip:Your own title", "details.warning:Folded"];
+      "div.caution:Caution", "div.warning:Before you upgrade", "details.tip:The long way round",
+      "details[open].note:Open to begin with", "div.important:Important", "div.danger:Danger", "div.tip:Tip"];
     if (got.join("|") !== want.join("|")) fail(`${page}: the alerts read`, got.join("\n"));
     if ([...html.matchAll(tagRe("blockquote"))].length !== 1) fail(`${page}: a plain blockquote was not left alone`);
-    ok("each alert gets its type and title, a sign folds it, and a plain blockquote stays one");
+    ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
   },
 
   // #272
