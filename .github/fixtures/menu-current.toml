@@ -1,6 +1,3 @@
-# Menu shapes neither demo has, for aria-current: a home entry, a pageRef, a
-# parent with no url whose child lies outside it, and an external link.
-# The array replaces the exampleSite's main menu rather than adding to it.
 [menu]
   [[menu.main]]
     identifier = "home"

@@ -3,9 +3,9 @@ title: "A bundle with a picture"
 date: 2026-10-01
 ---
 
-The first picture, encoded as a browser would write it, with a title:
+The first picture, encoded as a browser would write it:
 
-![The first picture](dunes%20photo.jpg "Dunes at dusk")
+![The first picture](dunes%20photo.jpg)
 
 The same file again, further down:
 

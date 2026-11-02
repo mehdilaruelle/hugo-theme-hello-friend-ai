@@ -20,9 +20,7 @@
 {{- if in (slice "icon" "shortcut icon") .rel }}{{ $icon = true }}{{ end -}}
 {{- end }}
 {{- end }}
-{{- /* With no icon linked, a browser asks for /favicon.ico anyway, and a site
-       that has none answers 404, an error in the console. An empty data: URL
-       is an icon that costs no request. */ -}}
+{{- /* Without one, the browser requests /favicon.ico. */ -}}
 {{- if not $icon }}
     <link rel="icon" href="data:,">
 {{- end }}
