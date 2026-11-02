@@ -166,3 +166,6 @@ other = "{{ .Site }}: {{ .Title }} — പുതിയ ഉള്ളടക്ക�
 
 [feedDescriptionSite]
 other = "{{ .Site }}: പുതിയ ഉള്ളടക്കം"
+
+[seriesPart]
+other = "{{ .Series }} പരമ്പരയിലെ {{ .Total }} ഭാഗങ്ങളിൽ {{ .Part }}-ാം ഭാഗം"

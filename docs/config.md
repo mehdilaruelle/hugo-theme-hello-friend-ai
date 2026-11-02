@@ -627,6 +627,45 @@ pagerSize: 2
 change which pages a list holds, override that partial rather than passing
 another collection.
 
+## Series
+
+An article written in parts says which part it is, under its title, and the
+line opens onto the list of all of them, in the order they were published, the
+one being read marked rather than linked. A reader who lands on part three from
+a search finds parts one and two without going back to the list.
+
+A series is a term of the `series` taxonomy, so a site has to declare it, as
+the exampleSite does:
+
+```toml
+[taxonomies]
+  tag      = "tags"
+  category = "categories"
+  series   = "series"
+```
+
+and an article names the series it belongs to:
+
+```yaml
+series: ["Hugo 101"]
+```
+
+Nothing to switch on. A series of one shows nothing, since there is nowhere
+else to go; an article in two series shows two blocks; a part built with
+`render: never` or `render: link` is left out, as it has no page to link to. A site whose
+taxonomy is called something else gets no block: the theme reads `series`.
+
+```toml
+[params]
+  [params.series]
+    enable = false   # removes the block everywhere
+```
+
+`series = false` on its own, in place of the table, turns it off too.
+
+The block is navigation, so the Markdown copy of an article leaves it out, as
+it leaves out the related posts and the previous/next links.
+
 ## Related posts
 
 Every article ends with a list of the posts closest to it, so a reader has
@@ -949,7 +988,7 @@ The site switches read the same way — `enableThumbnails`, `enableListExcerpts`
 `enableReadingTime`, `enableSharingButtons`, `enableThemeToggle`,
 `enableGlobalLanguageMenu` and `disableReadOtherPosts`, the footer's `author`,
 `copyright`, `rss` and `trademark`, the logo's `logoCursorDisabled` and
-`logoCursorPathname`, and `related.enable`. Each honours the quoted spelling of
+`logoCursorPathname`, `related.enable` and `series.enable`. Each honours the quoted spelling of
 a boolean — `trademark` too, though any other text it is given still prints.
 
 The search page is kept out the same way, without being asked. A page with
@@ -1226,10 +1265,13 @@ Neither is emitted when unset, here as everywhere else in the theme.
 
 `llms.txt` says *how* to read the site. This says *who* may — and the question
 worth asking is not "AI yes or no" but what the fetch is for. A training
-crawler reads the site once and the text ends up inside a model, unattributed.
-A retrieval crawler reads it to answer somebody's question now, and the answer
-carries a link back. Most people who want a policy want to refuse the first and
-keep the second, so this is two switches rather than one:
+crawler collects the site and the text ends up inside a model, unattributed.
+A retrieval crawler reads it to answer questions with it, and the answer can
+carry a link back. Some index ahead of time, like a search engine
+(`OAI-SearchBot`, `Claude-SearchBot`, `PerplexityBot`); others fetch a page
+because somebody has just asked about it (`ChatGPT-User`, `Claude-User`). Most
+people who want a policy want to refuse the first and keep the second, so this
+is two switches rather than one:
 
 ```toml
 [params.ai]
@@ -1310,6 +1352,12 @@ compare the groups with the signal.
 `robots.txt` is a request. What honours it, honours it; the rest is a matter
 for the CDN, and no theme can change that.
 
+That holds most for `cite = false`. The fetchers that act for a user are the
+least bound by the file: for `ChatGPT-User`, [OpenAI says][openai-bots] that
+robots.txt rules "may not apply", and [Perplexity says][perplexity-bots] that
+`Perplexity-User` "generally ignores robots.txt rules". Refusing citation keeps
+the indexes out; a page somebody pastes into a chat may still be read.
+
 `Content-Signal` is a [Cloudflare proposal][content-signals] from September
 2025, added to several million domains at once, and not a standard. It costs
 one line, and it is worth saying plainly that it is a declaration of intent
@@ -1326,3 +1374,5 @@ Both are worth having anyway. A policy that is ignored by some is still the
 difference between having said no and never having been asked.
 
 [content-signals]: https://searchengineland.com/cloudflare-content-signals-462538
+[openai-bots]: https://developers.openai.com/api/docs/bots
+[perplexity-bots]: https://docs.perplexity.ai/guides/bots

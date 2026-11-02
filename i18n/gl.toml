@@ -166,3 +166,6 @@ other = "Contido recente de {{ .Title }} en {{ .Site }}"
 
 [feedDescriptionSite]
 other = "Contido recente en {{ .Site }}"
+
+[seriesPart]
+other = "Parte {{ .Part }} de {{ .Total }} da serie {{ .Series }}"

@@ -7,7 +7,9 @@ date: 2026-10-05
 
 ![`<b>` in code](https://example.com/code.png)
 
-![An entity](https://example.com/q.png?a=1&amp;b=2)
+![An entity](https://example.com/q.png?a=1&amp;b=2&region=eu)
+
+![A sign &#169; &#xE9;](https://example.com/sign.png)
 
 ![A percent](100%.png)
 

@@ -1,6 +1,8 @@
 {{- /* Markdown pictures through image.html; the first one of a page with no cover is fetched first. */ -}}
-{{- $dest := htmlUnescape .Destination -}}
+{{- /* Only entities closed by ";" are decoded: htmlUnescape alone reads "?a=1&region=eu" as "®". */ -}}
+{{- $entity := "&amp;(#[0-9]{1,7};|#[xX][0-9a-fA-F]{1,6};|[a-zA-Z][a-zA-Z0-9]{1,31};)" -}}
 {{- $unescape := "\\\\([!-/:-@\\[-`{-~])" -}}
+{{- $dest := .Destination | replaceRE "&" "&amp;" | replaceRE $entity "&$1" | htmlUnescape -}}
 {{- $src := $dest -}}
 {{- $asWritten := false -}}
 {{- with try (urls.Parse $dest) -}}
@@ -12,13 +14,13 @@
 {{- end -}}
 {{- $cover := and (eq (printf "%T" .Page.Params.cover) "string") .Page.Params.cover -}}
 {{- $first := and (eq .Ordinal 0) .Page.IsPage (not $cover) (not (.Page.Store.Get "renderString")) -}}
-{{- $title := .Title | replaceRE $unescape "$1" | htmlUnescape -}}
+{{- $title := .Title | replaceRE $unescape "$1" | replaceRE "&" "&amp;" | replaceRE $entity "&$1" | htmlUnescape -}}
 {{- $attrs := merge (.Attributes | default dict) (cond (ne $title "") (dict "title" $title) dict) -}}
 {{- partial "image.html" (dict
   "src" $src
   "fallback" $dest
   "asWritten" $asWritten
-  "alt" (.PlainText | replaceRE $unescape "$1" | htmlEscape)
+  "alt" (.PlainText | replaceRE $unescape "$1" | htmlEscape | replaceRE "&amp;(#[0-9]{1,7};|#[xX][0-9a-fA-F]{1,6};)" "&$1")
   "page" .PageInner
   "loading" (cond $first "eager" "lazy")
   "fetchpriority" (cond $first "high" "")

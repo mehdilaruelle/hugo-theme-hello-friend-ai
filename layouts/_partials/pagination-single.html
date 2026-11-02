@@ -1,6 +1,6 @@
 {{- /* By date, as the lists: NextInSection puts weight before date. Pages.Next
        steps toward the front, the newer side of a newest-first list. */ -}}
-{{- $pages := where .CurrentSection.RegularPages.ByDate.Reverse "Permalink" "!=" "" -}}
+{{- $pages := where (where .CurrentSection.RegularPages.ByDate.Reverse "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
 {{- $newer := $pages.Next . | default "" -}}
 {{- $older := $pages.Prev . | default "" -}}
 {{ if and (not (partial "switch.html" $.Site.Params.DisableReadOtherPosts)) (or $newer $older) }}

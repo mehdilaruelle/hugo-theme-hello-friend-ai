@@ -1,4 +1,5 @@
-{{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "". */ -}}
+{{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "".
+       The decoded url is compared too, trailing slash aside: url = "posts/" links no page. */ -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
@@ -9,7 +10,7 @@
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
-    {{- if not (or .Scheme .Host) -}}
+    {{- if not (or .Scheme .Host .RawQuery .Fragment) -}}
       {{- $url = strings.TrimSuffix "/" .Path -}}
       {{- $local = true -}}
     {{- end -}}

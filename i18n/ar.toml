@@ -181,3 +181,6 @@ other = "أحدث المحتوى في {{ .Title }} على {{ .Site }}"
 
 [feedDescriptionSite]
 other = "أحدث المحتوى على {{ .Site }}"
+
+[seriesPart]
+other = "الجزء {{ .Part }} من {{ .Total }} في سلسلة {{ .Series }}"

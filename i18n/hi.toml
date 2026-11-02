@@ -166,3 +166,6 @@ other = "{{ .Site }} पर {{ .Title }} की हाल की सामग्
 
 [feedDescriptionSite]
 other = "{{ .Site }} पर हाल की सामग्री"
+
+[seriesPart]
+other = "{{ .Series }} शृंखला का भाग {{ .Part }} ({{ .Total }} में से)"

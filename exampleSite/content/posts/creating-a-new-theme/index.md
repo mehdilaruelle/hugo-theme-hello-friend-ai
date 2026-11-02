@@ -10,6 +10,12 @@ series = ["Hugo 101"]
   name = "Michael Henderson"
 +++
 
+![Ridges of sand at dusk, the sun setting behind them](dunes.jpg)
+
+The picture above is written in Markdown and sits beside this page in its
+bundle, so the theme serves it resized, as WebP, with its width and height.
+It is 1600 pixels wide, the size a camera or a phone hands you; it was drawn,
+not photographed.
 
 ## Introduction
 
