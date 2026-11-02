@@ -6,7 +6,8 @@
        resolved url is compared too, trailing slash aside, and holds every page
        under it. The home url holds every page, so it is only ever "page".
        A parent holds what any of its children holds. Both sides are compared
-       decoded, as relLangURL leaves "catégorie/" and RelPermalink escapes it. */ -}}
+       decoded, as relLangURL leaves "catégorie/" and RelPermalink escapes it.
+       A url with a query or a fragment is not compared. */ -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
@@ -17,7 +18,7 @@
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
-    {{- if not (or .Scheme .Host) -}}
+    {{- if not (or .Scheme .Host .RawQuery .Fragment) -}}
       {{- $url = strings.TrimSuffix "/" .Path -}}
       {{- $local = true -}}
     {{- end -}}

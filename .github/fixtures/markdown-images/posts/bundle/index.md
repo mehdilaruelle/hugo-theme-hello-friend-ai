@@ -11,7 +11,7 @@ The same file again, further down:
 
 ![The second picture](<dunes photo.jpg>)
 
-At the size the writer gave:
+At the width the writer gave, the height following:
 
 ![Sized by hand](dunes%20photo.jpg)
-{width="300" height="200"}
+{width="300"}
