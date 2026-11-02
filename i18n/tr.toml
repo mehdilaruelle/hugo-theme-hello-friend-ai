@@ -170,7 +170,7 @@ other = "Son içerikler | {{ .Site }}"
 [seriesPart]
 other = "{{ .Series }} serisi, bölüm {{ .Part }}/{{ .Total }}"
 
-# _markup/render-blockquote.html: the title of a GitHub-style alert
+# _markup/render-blockquote.html
 [alertNote]
 other = "Not"
 

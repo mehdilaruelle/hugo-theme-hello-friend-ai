@@ -185,7 +185,7 @@ other = "أحدث المحتوى على {{ .Site }}"
 [seriesPart]
 other = "الجزء {{ .Part }} من {{ .Total }} في سلسلة {{ .Series }}"
 
-# _markup/render-blockquote.html: the title of a GitHub-style alert
+# _markup/render-blockquote.html
 [alertNote]
 other = "ملاحظة"
 

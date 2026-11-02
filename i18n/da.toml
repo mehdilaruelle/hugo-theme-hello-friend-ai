@@ -170,7 +170,7 @@ other = "Seneste indhold på {{ .Site }}"
 [seriesPart]
 other = "Del {{ .Part }} af {{ .Total }} i serien {{ .Series }}"
 
-# _markup/render-blockquote.html: the title of a GitHub-style alert
+# _markup/render-blockquote.html
 [alertNote]
 other = "Bemærk"
 

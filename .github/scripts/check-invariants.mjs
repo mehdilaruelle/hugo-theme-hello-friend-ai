@@ -293,7 +293,6 @@ const checks = {
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },
 
-  // GitHub-style alerts, from the demo article on them.
   alerts(page) {
     const html = read(page);
     const got = [...html.matchAll(/<(div|details)\b[^>]*>/gi)].filter((m) => hasClass(m[0], "alert")).map((m) => {

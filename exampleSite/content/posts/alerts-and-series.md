@@ -6,8 +6,6 @@ type = ["posts","post"]
 toc = true
 tags = ["hugo", "markdown"]
 categories = ["Development"]
-# The same file is in both demo sites. Each has only one of these series, so
-# each shows one block: a series of one has nowhere else to go.
 series = ["Hugo 101", "Showcase"]
 [author]
   name = "Hugo Authors"

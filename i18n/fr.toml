@@ -169,7 +169,7 @@ other = "Contenu récent sur {{ .Site }}"
 [seriesPart]
 other = "Partie {{ .Part }} sur {{ .Total }} de la série {{ .Series }}"
 
-# _markup/render-blockquote.html: the title of a GitHub-style alert
+# _markup/render-blockquote.html
 [alertNote]
 other = "Remarque"
 
