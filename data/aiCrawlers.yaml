@@ -23,8 +23,9 @@ train:
   - AI2Bot                # Allen Institute for AI
   - ImagesiftBot
 
-# Read to answer a question, with a link back. Refusing these takes the site
-# out of the answer too.
+# Read to answer a question, with a link back. Some index ahead of time, the
+# *-User ones fetch because somebody just asked. Refusing these takes the site
+# out of the answer too, though ChatGPT-User and Perplexity-User may not check.
 cite:
   - OAI-SearchBot         # OpenAI's index for search answers
   - ChatGPT-User          # fetched because somebody asked ChatGPT about a URL
