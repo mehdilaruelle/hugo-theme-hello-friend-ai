@@ -7,7 +7,7 @@
 {{- if eq .Type "alert" -}}
   {{- $type := .AlertType -}}
   {{- $icon := index (dict "tip" "lightbulb" "important" "message-alert" "warning" "alert-triangle" "caution" "alert-octagon") $type | default "info" -}}
-  {{- $title := .AlertTitle -}}
+  {{- $title := .AlertTitle | replaceRE `\s*<br\s*/?>\s*$` "" -}}
   {{- if not $title -}}
     {{- $title = partial "i18n.html" (dict "key" (printf "alert%s" (title $type)) "fallback" (humanize $type)) | htmlEscape -}}
   {{- end -}}
