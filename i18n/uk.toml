@@ -173,3 +173,19 @@ other = "Нові матеріали — {{ .Site }}"
 
 [seriesPart]
 other = "Частина {{ .Part }} з {{ .Total }} у серії «{{ .Series }}»"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Примітка"
+
+[alertTip]
+other = "Порада"
+
+[alertImportant]
+other = "Важливо"
+
+[alertWarning]
+other = "Попередження"
+
+[alertCaution]
+other = "Обережно"

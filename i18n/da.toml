@@ -169,3 +169,19 @@ other = "Seneste indhold på {{ .Site }}"
 
 [seriesPart]
 other = "Del {{ .Part }} af {{ .Total }} i serien {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Bemærk"
+
+[alertTip]
+other = "Tip"
+
+[alertImportant]
+other = "Vigtigt"
+
+[alertWarning]
+other = "Advarsel"
+
+[alertCaution]
+other = "Forsigtig"

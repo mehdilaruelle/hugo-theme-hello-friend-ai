@@ -169,3 +169,19 @@ other = "{{ .Site }}: പുതിയ ഉള്ളടക്കം"
 
 [seriesPart]
 other = "{{ .Series }} പരമ്പരയിലെ {{ .Total }} ഭാഗങ്ങളിൽ {{ .Part }}-ാം ഭാഗം"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "കുറിപ്പ്"
+
+[alertTip]
+other = "നുറുങ്ങ്"
+
+[alertImportant]
+other = "പ്രധാനം"
+
+[alertWarning]
+other = "മുന്നറിയിപ്പ്"
+
+[alertCaution]
+other = "ജാഗ്രത"

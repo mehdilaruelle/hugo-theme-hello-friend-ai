@@ -184,3 +184,19 @@ other = "أحدث المحتوى على {{ .Site }}"
 
 [seriesPart]
 other = "الجزء {{ .Part }} من {{ .Total }} في سلسلة {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "ملاحظة"
+
+[alertTip]
+other = "تلميح"
+
+[alertImportant]
+other = "مهم"
+
+[alertWarning]
+other = "تحذير"
+
+[alertCaution]
+other = "احذر"

@@ -172,3 +172,19 @@ other = "Conținut recent pe {{ .Site }}"
 
 [seriesPart]
 other = "Partea {{ .Part }} din {{ .Total }} din seria {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Notă"
+
+[alertTip]
+other = "Sfat"
+
+[alertImportant]
+other = "Important"
+
+[alertWarning]
+other = "Avertisment"
+
+[alertCaution]
+other = "Atenție"

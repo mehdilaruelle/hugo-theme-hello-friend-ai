@@ -51,6 +51,10 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: node ../.github/scripts/check-links.mjs public https://example.com/subpath/
 
+      - name: Check GitHub-style alerts are drawn, and every other blockquote left alone
+        working-directory: hello-friend-ai/exampleSite
+        run: node ../.github/scripts/check-invariants.mjs public alerts posts/2026/11/alerts-and-the-series-this-post-belongs-to/index.html
+
       # The showcase is where the options the default demo leaves off get
       # exercised — covers, thumbnails, the background image. Those are exactly
       # the paths that have gone wrong under a subpath before.
@@ -139,7 +143,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public copy-label
 
-      - name: Check the focus ring and the status colours meet their contrast
+      - name: Check the focus ring, the status and the alert colours meet their contrast
         working-directory: hello-friend-ai
         run: |
           node .github/scripts/check-invariants.mjs exampleSite/public contrast

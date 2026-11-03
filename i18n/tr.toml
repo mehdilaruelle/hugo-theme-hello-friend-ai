@@ -169,3 +169,19 @@ other = "Son içerikler | {{ .Site }}"
 
 [seriesPart]
 other = "{{ .Series }} serisi, bölüm {{ .Part }}/{{ .Total }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Not"
+
+[alertTip]
+other = "İpucu"
+
+[alertImportant]
+other = "Önemli"
+
+[alertWarning]
+other = "Uyarı"
+
+[alertCaution]
+other = "Dikkat"

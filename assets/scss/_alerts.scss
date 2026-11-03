@@ -1,0 +1,41 @@
+.alert {
+  --alert-color: var(--color-secondary);
+  border-inline-start: 3px solid var(--alert-color);
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+@each $type in note, tip, important, warning, caution {
+  .alert-#{$type} {
+    --alert-color: var(--alert-#{$type});
+  }
+}
+
+.alert-title {
+  color: var(--alert-color);
+  font-weight: 600;
+  margin: 0 0 0.5em;
+}
+
+summary.alert-title {
+  cursor: pointer;
+}
+
+details.alert:not([open]) > summary.alert-title {
+  margin-bottom: 0;
+}
+
+.alert-icon svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  margin-inline-end: 0.4em;
+}

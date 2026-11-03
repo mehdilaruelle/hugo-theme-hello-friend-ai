@@ -280,6 +280,23 @@ const checks = {
     ok("Markdown pictures are resized and measured, the first fetched first, the rest as written");
   },
 
+  alerts(page) {
+    const html = read(page);
+    const got = [...html.matchAll(/<(div|details)\b[^>]*>/gi)].filter((m) => hasClass(m[0], "alert")).map((m) => {
+      const block = element(html, m.index, m[1]);
+      const head = [...block.matchAll(/<(p|summary)\b[^>]*>/gi)].find((t) => hasClass(t[0], "alert-title"));
+      const type = (attr(m[0], "class") ?? "").match(/alert-(\w+)/)?.[1];
+      const open = /\sopen(?=[\s>])/i.test(m[0]) ? "[open]" : "";
+      return `${m[1]}${open}.${type}:${head ? text(element(block, head.index, head[1])) : ""}`;
+    });
+    const want = ["div.note:Note", "div.tip:Tip", "div.important:Important", "div.warning:Warning",
+      "div.caution:Caution", "div.warning:Before you upgrade", "details.tip:The long way round",
+      "details[open].note:Open to begin with", "div.important:Important", "div.danger:Danger", "div.tip:Tip"];
+    if (got.join("|") !== want.join("|")) fail(`${page}: the alerts read`, got.join("\n"));
+    if ([...html.matchAll(tagRe("blockquote"))].length !== 1) fail(`${page}: a plain blockquote was not left alone`);
+    ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
+  },
+
   // #272
   submenu(page) {
     const html = read(page);
@@ -719,6 +736,7 @@ const checks = {
       ["color", "background-secondary", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],
+      ...["note", "tip", "important", "warning", "caution"].map((t) => [`alert-${t}`, "background", 4.5]),
     ];
     const bad = [];
     for (const scheme of ["light", "dark"]) {

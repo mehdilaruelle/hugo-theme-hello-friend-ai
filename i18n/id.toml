@@ -169,3 +169,19 @@ other = "Konten terbaru di {{ .Site }}"
 
 [seriesPart]
 other = "Bagian {{ .Part }} dari {{ .Total }} dalam seri {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Catatan"
+
+[alertTip]
+other = "Tips"
+
+[alertImportant]
+other = "Penting"
+
+[alertWarning]
+other = "Peringatan"
+
+[alertCaution]
+other = "Perhatian"

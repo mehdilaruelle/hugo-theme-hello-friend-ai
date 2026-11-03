@@ -169,3 +169,19 @@ other = "{{ .Site }} पर हाल की सामग्री"
 
 [seriesPart]
 other = "{{ .Series }} शृंखला का भाग {{ .Part }} ({{ .Total }} में से)"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "टिप्पणी"
+
+[alertTip]
+other = "सुझाव"
+
+[alertImportant]
+other = "महत्वपूर्ण"
+
+[alertWarning]
+other = "चेतावनी"
+
+[alertCaution]
+other = "सावधानी"

@@ -168,3 +168,19 @@ other = "Recent content on {{ .Site }}"
 
 [seriesPart]
 other = "Part {{ .Part }} of {{ .Total }} in {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Note"
+
+[alertTip]
+other = "Tip"
+
+[alertImportant]
+other = "Important"
+
+[alertWarning]
+other = "Warning"
+
+[alertCaution]
+other = "Caution"

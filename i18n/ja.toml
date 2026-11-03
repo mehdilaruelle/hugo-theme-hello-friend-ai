@@ -170,3 +170,19 @@ other = "{{ .Site }} の新着"
 
 [seriesPart]
 other = "シリーズ「{{ .Series }}」第{{ .Part }}回（全{{ .Total }}回）"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "注記"
+
+[alertTip]
+other = "ヒント"
+
+[alertImportant]
+other = "重要"
+
+[alertWarning]
+other = "警告"
+
+[alertCaution]
+other = "注意"

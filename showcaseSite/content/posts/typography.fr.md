@@ -48,6 +48,26 @@ thème a un jour raté sur deux sélecteurs à la fois.
 > Un thème doit ressembler à lui-même à l'installation, pas à une liste de
 > fonctionnalités.
 
+## Les alertes
+
+La syntaxe de GitHub, `> [!NOTE]` et ses quatre sœurs, titrées dans la langue
+de la page. Un signe après le marqueur en replie une :
+
+> [!NOTE]
+> Bon à savoir, même en lecture rapide.
+
+> [!TIP]
+> Une meilleure façon de faire.
+
+> [!IMPORTANT]
+> Nécessaire pour y arriver.
+
+> [!WARNING]
+> Demande de l'attention tout de suite.
+
+> [!CAUTION]- À lire avant la mise à jour
+> A des conséquences.
+
 ## Les listes
 
 1. Ordonnée, pour des étapes qui se suivent
