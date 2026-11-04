@@ -1,5 +1,8 @@
 {{- $url := .URL -}}
-{{- if not .Page -}}
+{{- /* A url with a scheme or a host is used as Hugo hands it over: relLangURL put
+       the language in front of https://example.com/fr/posts/ as if it were a
+       path, giving /fr/fr/posts/. */ -}}
+{{- if and (not .Page) (not (partial "is-remote.html" $url)) -}}
   {{- /* Hugo already put the baseURL path in front of a leading-slash url, and relLangURL
          would put the language before that path: taken off first, as for "posts/". */ -}}
   {{- $root := printf "%s/" (strings.TrimSuffix "/" (urls.Parse site.BaseURL).Path) -}}

@@ -446,6 +446,9 @@ jobs:
             --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
             --baseURL "https://example.com/subpath/showcase/"
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
+          # Two absolute urls in the French menu: neither gets the language put in
+          # front again, and the English home is not the French one's current page.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html
           cd ../exampleSite
           hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
@@ -464,6 +467,19 @@ jobs:
           check posts/2014/03/migrate-to-hugo-from-jekyll/index.html Posts=true
           check tags/go/index.html More=true Tags=true
           check about/index.html
+          # Under uglyURLs a list page is tags/index.html and a menu url /tags/:
+          # Home read as holding every page, and no section was ever "page".
+          HUGO_UGLYURLS=true hugo --themesDir ../.. --gc --minify --destination public-menu-ugly \
+            --config config.toml,../.github/fixtures/menu-current.toml \
+            --baseURL "https://example.com/subpath/"
+          ugly() { node ../.github/scripts/check-invariants.mjs public-menu-ugly menu-current "$@"; }
+          ugly index.html Home=page
+          ugly tags/index.html More=true Tags=page
+          ugly posts/index.html Posts=page
+          ugly posts/2014/03/migrate-to-hugo-from-jekyll.html Posts=true
+          ugly tags/go.html More=true Tags=true
+          # More holds two entries, which the demos' submenus never do.
+          node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first

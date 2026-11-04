@@ -1,17 +1,20 @@
 {{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "".
-       The decoded url is compared too, trailing slash aside: url = "posts/" links no page. */ -}}
+       The decoded url is compared too, trailing slash aside: url = "posts/" links no page.
+       So is index.html: under uglyURLs a list page is /tags/index.html and the home
+       page /index.html, while a menu url says /tags/ and /. */ -}}
+{{- $trim := `(?:/index\.html|/)$` -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
 {{- $here := $page.RelPermalink -}}
 {{- with (try (urls.Parse $here)).Value }}{{ $here = .Path }}{{ end -}}
-{{- $here = strings.TrimSuffix "/" $here -}}
+{{- $here = replaceRE $trim "" $here -}}
 {{- $url := "" -}}
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
     {{- if not (or .Scheme .Host .RawQuery .Fragment) -}}
-      {{- $url = strings.TrimSuffix "/" .Path -}}
+      {{- $url = replaceRE $trim "" .Path -}}
       {{- $local = true -}}
     {{- end -}}
   {{- end -}}
@@ -20,7 +23,7 @@
   {{- $state = "page" -}}
 {{- else if $page.HasMenuCurrent "main" $entry -}}
   {{- $state = "true" -}}
-{{- else if and $local (ne $url (strings.TrimSuffix "/" (urls.Parse site.Home.RelPermalink).Path)) (hasPrefix $here (printf "%s/" $url)) -}}
+{{- else if and $local (ne $url (replaceRE $trim "" (urls.Parse site.Home.RelPermalink).Path)) (hasPrefix $here (printf "%s/" $url)) -}}
   {{- $state = "true" -}}
 {{- else -}}
   {{- range $entry.Children -}}

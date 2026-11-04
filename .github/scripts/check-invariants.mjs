@@ -188,6 +188,18 @@ const checks = {
     ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
   },
 
+  // A submenu panel with more than one entry, and Escape on a desktop.
+  "submenu-panel"() {
+    const all = css();
+    if (!rules(all, ".submenu .dropdown-content a").some((b) => /(^|;)\s*margin:\s*0(px)?\s*(;|$)/.test(b)))
+      fail("the submenu's links keep .menu a's margin, so all but the last stop short of the panel");
+    if (!rules(all, ".submenu .dropdown.dropdown--dismissed .dropdown-content").some((b) => declares(b, "display", "none")))
+      fail("no rule hides a submenu Escape dismissed");
+    const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
+    if (!js.includes("dropdown--dismissed")) fail("no script dismisses a submenu on Escape");
+    ok("every submenu link spans the panel, and Escape closes a panel hover or focus opened");
+  },
+
   // Each wanted block as "Name=One|*Two|Three", the current part starred.
   series(page, ...want) {
     const html = read(page);

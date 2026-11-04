@@ -46,6 +46,18 @@
       name       = "Recherche"
       url        = "/search/"
       weight     = 30
+    # Absolute: used as given, never through relLangURL, which made the first
+    # /fr/fr/posts/ and the second the French home, marked as the current page.
+    [[languages.fr.menu.main]]
+      identifier = "all-posts"
+      name       = "Tous les articles"
+      url        = "https://example.com/subpath/showcase/fr/posts/"
+      weight     = 40
+    [[languages.fr.menu.main]]
+      identifier = "english"
+      name       = "English"
+      url        = "https://example.com/subpath/showcase/"
+      weight     = 50
 
 [languages.ja.menu]
     [[languages.ja.menu.main]]
