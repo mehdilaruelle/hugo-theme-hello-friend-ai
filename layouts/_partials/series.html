@@ -3,13 +3,13 @@
 {{- if reflect.IsMap $on }}{{ $on = cond (isset $on "enable") $on.enable true }}{{ end -}}
 {{- if or (not (isset site.Params "series")) (partial "switch.html" $on) -}}
   {{- $page := . -}}
-  {{- range .GetTerms "series" -}}
+  {{- range $n, $term := .GetTerms "series" -}}
     {{- $parts := where (where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
-    {{- if gt (len $parts) 1 -}}
-      {{- $part := 0 -}}
-      {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
+    {{- $part := 0 -}}
+    {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
+    {{- if and $part (gt (len $parts) 1) -}}
       {{- $name := partial "title-plain.html" . -}}
-      {{- $id := printf "hf-series-%s" (anchorize $name) -}}
+      {{- $id := printf "hf-series-%d-%s" $n (anchorize $name) -}}
       <nav class="series" aria-labelledby="{{ $id }}">
         <details>
           <summary id="{{ $id }}">{{ partial "i18n.html" (dict "key" "seriesPart" "args" (dict "Part" $part "Total" (len $parts) "Series" $name) "fallback" (printf "Part %d of %d in %s" $part (len $parts) $name)) }}</summary>

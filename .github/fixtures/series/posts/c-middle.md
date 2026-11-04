@@ -1,7 +1,7 @@
 ---
 title: "Halfway"
 date: 2026-10-02
-series: ["The Tour"]
+series: ["The Tour", "The Tour!"]
 ---
 
 The middle part.

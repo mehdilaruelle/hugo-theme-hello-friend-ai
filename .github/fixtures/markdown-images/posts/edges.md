@@ -16,3 +16,6 @@ date: 2026-10-05
 ![From assets](<img/an example.png>)
 
 {{< faq "Which picture comes first?" >}}Not this one: ![In an answer](https://example.com/answer.png){{< /faq >}}
+
+> A quote with a list attribute.
+{data-x=[1,2]}

@@ -2,14 +2,14 @@
 {{- $class := .Attributes.class -}}
 {{- $attrs := "" -}}
 {{- range $k, $v := .Attributes -}}
-  {{- if ne $k "class" }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
+  {{- if and (ne $k "class") (not (reflect.IsSlice $v)) }}{{ $attrs = printf `%s %s="%s"` $attrs $k (htmlEscape (string $v)) }}{{ end -}}
 {{- end -}}
 {{- if eq .Type "alert" -}}
   {{- $type := .AlertType -}}
   {{- $icon := index (dict "tip" "lightbulb" "important" "message-alert" "warning" "alert-triangle" "caution" "alert-octagon") $type | default "info" -}}
   {{- $title := .AlertTitle | replaceRE `\s*<br\s*/?>\s*$` "" -}}
   {{- if not $title -}}
-    {{- $title = partial "i18n.html" (dict "key" (printf "alert%s" (title $type)) "fallback" (humanize $type)) | htmlEscape -}}
+    {{- $title = partial "i18n.html" (dict "key" (printf "alert%s" (strings.FirstUpper $type)) "fallback" (humanize $type)) | htmlEscape -}}
   {{- end -}}
   {{- $class = delimit (slice "alert" (printf "alert-%s" $type) ($class | default "")) " " | strings.TrimSpace -}}
   {{- $head := printf `<span class="alert-icon" aria-hidden="true">%s</span>%s` (partial "icon.html" (dict "name" $icon)) $title -}}

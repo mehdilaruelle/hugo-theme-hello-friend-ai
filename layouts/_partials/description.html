@@ -21,14 +21,14 @@
          enableMissingTranslationPlaceholders on, a missing key renders
          "[i18n] key" rather than the empty string, so the test below never
          fires and the placeholder is what gets published. */ -}}
-  {{- $description = partial "i18n.html" (dict "key" (printf "taxonomyDescription%s" (title .Data.Singular)) "fallback" "") -}}
+  {{- $description = partial "i18n.html" (dict "key" (printf "taxonomyDescription%s" (strings.FirstUpper .Data.Singular)) "fallback" "") -}}
   {{- if not $description -}}
     {{- $description = partial "i18n.html" (dict "key" "taxonomyDescription" "fallback" "") -}}
   {{- end -}}
 {{- else if and (eq .Kind "term") (not .Summary) -}}
   {{- /* .Data.Singular is Hugo's own word for the taxonomy, so it is English
          whatever the page is written in. One string per taxonomy instead. */ -}}
-  {{- $description = partial "i18n.html" (dict "key" (printf "termDescription%s" (title .Data.Singular)) "args" (dict "Term" .Data.Term) "fallback" "") -}}
+  {{- $description = partial "i18n.html" (dict "key" (printf "termDescription%s" (strings.FirstUpper .Data.Singular)) "args" (dict "Term" .Data.Term) "fallback" "") -}}
   {{- if not $description -}}
     {{- $description = partial "i18n.html" (dict "key" "termDescription" "args" (dict "Term" .Data.Term) "fallback" "") -}}
   {{- end -}}
