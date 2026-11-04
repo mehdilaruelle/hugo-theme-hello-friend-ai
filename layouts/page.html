@@ -2,10 +2,10 @@
     <div class="content">
         <main id="hf-main" class="post">
 
-            {{ if .IsTranslated }}
+            {{ with where (where .Translations "Permalink" "!=" "") "Params.build.render" "!=" "link" }}
                 <div class="post-info">
                     {{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
-                    {{ range .Translations }}
+                    {{ range . }}
                         {{ partial "translation-link.html" . }}
                     {{ end }}
                 </div>
