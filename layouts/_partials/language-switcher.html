@@ -23,7 +23,7 @@
         {{- range hugo.Sites }}
             {{- $lang := .Language -}}
             {{- $url := .Home.Permalink -}}
-            {{- range $page.AllTranslations -}}
+            {{- range where (where $page.AllTranslations "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
                 {{- if eq .Language.Lang $lang.Lang -}}{{ $url = .Permalink }}{{- end -}}
             {{- end -}}
             {{- $name := $lang.Label | default (upper $lang.Lang) -}}

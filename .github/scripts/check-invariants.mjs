@@ -218,13 +218,19 @@ const checks = {
       const count = read("series/index.html").match(new RegExp(`>${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</span>\\s*<span class="?post-day"?>(\\d+)`))?.[1];
       if (count !== String(parts.length)) fail(`series/: ${name} counts ${count}, wanted ${parts.length}`);
     });
-    // og:see_also names other parts too, so only pages that were built.
+    // og:see_also and related posts name other pages, so only ones that were built.
     const canonical = [...html.matchAll(tagRe("link"))].map((m) => m[0]).find((t) => attr(t, "rel") === "canonical");
     const base = attr(canonical, "href").slice(0, -page.replace(/index\.html$/, "").length);
+    const seen = new Set();
     for (const m of html.matchAll(tagRe("meta"))) {
       const url = attr(m[0], "property") === "og:see_also" && attr(m[0], "content");
+      if (url && seen.has(url)) fail(`${page}: og:see_also names ${url} twice`);
+      if (url) seen.add(url);
       if (url && !existsSync(join(dir, url.slice(base.length), "index.html"))) fail(`${page}: og:see_also names ${url}, which was not built`);
     }
+    const related = html.match(/<aside\b[^>]*\brelated\b[^>]*>[\s\S]*?<\/aside>/i)?.[0] ?? "";
+    for (const [, url] of related.matchAll(/href="?([^"\s>]+)/g))
+      if (!existsSync(join(dir, url.slice(base.length), "index.html"))) fail(`${page}: a related post links ${url}, which was not built`);
     ok(`${page}: ${want.length ? want.join(", ") : "no series block"}`);
   },
 
