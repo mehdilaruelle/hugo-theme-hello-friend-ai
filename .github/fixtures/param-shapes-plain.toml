@@ -1,0 +1,25 @@
+# Params the theme reads as a table (a list for social), written as a plain
+# value the way other themes take them: logo = "img/logo.png". Each has to
+# warn, not abort. A sibling of param-shapes.toml, since one TOML file cannot
+# hold both [params.logo] and logo = "...". Built on its own, with its own
+# content: a page param named build that is not a table, and a list of
+# authors. Two languages, so a translation carrying the param is built too.
+baseURL = "https://example.com/subpath/"
+title   = "Param shapes"
+theme   = "hello-friend-ai"
+defaultContentLanguage = "en"
+
+[params]
+  logo       = "img/logo.png"
+  portrait   = "img/me.jpg"
+  social     = "https://example.com/jane"
+  commento   = "https://comments.example.org/js/commento.js"
+  utterances = "owner/repo"
+  footer     = true
+  favicon    = "/favicon.png"
+  author     = "Jane"
+
+[languages.en]
+  weight = 1
+[languages.fr]
+  weight = 2

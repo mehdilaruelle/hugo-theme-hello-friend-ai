@@ -1,5 +1,6 @@
+{{- $logo := partialCached "param-table.html" "logo" "logo" -}}
 {{- $home := .Site.Home.RelPermalink -}}
-{{- with .Site.Params.Logo.LogoHomeLink -}}
+{{- with $logo.LogoHomeLink -}}
   {{- /* Local, it is joined to this language's home, not to the base URL. */ -}}
   {{- if partial "is-remote.html" . -}}
     {{- $home = . -}}
@@ -9,8 +10,7 @@
 {{- end }}
 <a href="{{ $home }}">
     <div class="logo">
-        {{ with .Site.Params.Logo.path }}
-            {{- $logo := site.Params.Logo -}}
+        {{ with $logo.path }}
             {{- $alt := $logo.alt | default site.Title -}}
             {{- /* With pathDark, CSS shows one of two pictures; lazy, so the
                    hidden one is never fetched. */ -}}
@@ -60,15 +60,15 @@
               {{- end -}}
             {{- end -}}
         {{ else }}
-            <span class="logo__mark" aria-hidden="true">{{ with .Site.Params.Logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>
+            <span class="logo__mark" aria-hidden="true">{{ with $logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>
             {{- /* Where this site starts, for menu.js: location.pathname
                    alone would take a deployment prefix for a section.
                    Home.RelPermalink carries the prefix and the language
                    directory together. */ -}}
-            {{- $cursorPath := partial "switch.html" .Site.Params.Logo.logoCursorPathname -}}
+            {{- $cursorPath := partial "switch.html" $logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>
-                {{ with .Site.Params.Logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
+                {{ with $logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
             <span class="logo__cursor">
             </span>
         {{ end }}

@@ -1,6 +1,12 @@
-{{- /* The table entries of params.social (passed in); anything else is skipped. */ -}}
+{{- /* The table entries of params.social (passed in); anything else is skipped.
+       A list or a table of tables; a plain value cannot be ranged over (a
+       string ends the build), so it warns and yields nothing. */ -}}
 {{- $out := slice -}}
-{{- range . -}}
-  {{- if reflect.IsMap . -}}{{- $out = $out | append . -}}{{- end -}}
+{{- if or (reflect.IsSlice .) (reflect.IsMap .) -}}
+  {{- range . -}}
+    {{- if reflect.IsMap . -}}{{- $out = $out | append . -}}{{- end -}}
+  {{- end -}}
+{{- else if . -}}
+  {{- warnidf "social-shape" "params.social: expected a list such as [[params.social]] entries with name and url, got a %T. Ignored." . -}}
 {{- end -}}
 {{- return $out -}}

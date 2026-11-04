@@ -1,0 +1,24 @@
+{{- /*
+  site.Params.<name> when it is a table, else an empty one. Called with the
+  param's name, lowercased.
+
+  Several params are tables the theme reads keys out of (params.logo.logoText,
+  params.footer.copyright…), and reading a key out of a string, a list or a
+  boolean is a template error that ends the build. Other themes write some of
+  them as a plain value (logo = "img/logo.png"), so a site switching to this
+  one can bring that shape along. Warned and ignored instead, like
+  params.verification in head.html: the site still builds, as if the param
+  were unset, and the warning says what was expected.
+
+  false or an empty string reads as unset, silently.
+
+  Called through partialCached, so the warning is printed once per build.
+*/ -}}
+{{- $value := index site.Params . -}}
+{{- $table := dict -}}
+{{- if reflect.IsMap $value -}}
+  {{- $table = $value -}}
+{{- else if $value -}}
+  {{- warnidf (printf "%s-shape" .) "params.%s: expected a table such as [params.%s], got a %T. Ignored." . . $value -}}
+{{- end -}}
+{{- return $table -}}

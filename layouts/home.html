@@ -25,10 +25,11 @@
                 {{- if findRE `^[0-9]+(\.[0-9]+)?px$` $width -}}
                   {{- $cap = int (mul (float (replaceRE "px$" "" $width)) 2) -}}
                 {{- end -}}
-                {{- with .Site.Params.Portrait.Path }}
+                {{- $portrait := partialCached "param-table.html" "portrait" "portrait" -}}
+                {{- with $portrait.Path }}
                 {{ partial "image.html" (dict
                   "src" .
-                  "alt" $.Site.Params.Portrait.Alt
+                  "alt" $portrait.Alt
                   "position" "circle portrait"
                   "loading" "eager"
                   "fetchpriority" "high"

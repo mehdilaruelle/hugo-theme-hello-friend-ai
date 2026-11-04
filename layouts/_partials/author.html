@@ -1,9 +1,20 @@
-{{- /* The page's author name, else the site's; "" when there is none. A string
-       or a map with a name key. Not cond: .name fails on a string. */ -}}
+{{- /* The page's author name, else the site's; "" when there is none. A string,
+       a map with a name key, or a list of either: other themes take
+       author: ["Ann", "Bob"], printed as Go's [Ann Bob] if left as is, so a
+       list is joined with commas. json-ld.html reads the list itself, for one
+       Person per name. Not cond: .name fails on a string. */ -}}
 {{- $author := (partial "site-author.html" .).name -}}
 {{- with .Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $author = .name -}}
+  {{- else if reflect.IsSlice . -}}
+    {{- $names := slice -}}
+    {{- range . -}}
+      {{- $name := . -}}
+      {{- if reflect.IsMap . }}{{ $name = .name }}{{ end -}}
+      {{- with $name }}{{ $names = $names | append (printf "%v" .) }}{{ end -}}
+    {{- end -}}
+    {{- $author = delimit $names ", " -}}
   {{- else -}}
     {{- $author = . -}}
   {{- end -}}

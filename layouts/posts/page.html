@@ -96,6 +96,8 @@
 
       {{ partial "related.html" . }}
 
+      {{- $commentoParams := partialCached "param-table.html" "commento" "commento" }}
+      {{- $utterances := partialCached "param-table.html" "utterances" "utterances" }}
       {{ if .Site.Config.Services.Disqus.Shortname }}
         {{ if partial "comments-on.html" . }}
           {{- /* Hugo's embedded partial builds the embed URL in JavaScript, so
@@ -108,39 +110,39 @@
         {{ end }}
       {{ end }}
 
-      {{ if and .Site.Params.Commento.Url (partial "comments-on.html" .) }}
+      {{ if and $commentoParams.Url (partial "comments-on.html" .) }}
         {{- /* A Commento instance is wherever the site put it, so the origin
                comes out of the configured URL -- keeping its scheme, or none
                at all, for the reason is-remote.html gives. */ -}}
-        {{- $commento := urls.Parse .Site.Params.Commento.Url -}}
+        {{- $commento := urls.Parse $commentoParams.Url -}}
         {{- with $commento.Host }}
           {{- $origin := printf "//%s" . -}}
           {{- with $commento.Scheme }}{{ $origin = printf "%s:%s" . $origin }}{{ end -}}
         <link rel="preconnect" href="{{ $origin }}">
         {{- end }}
-        <script defer src="{{ .Site.Params.Commento.Url }}" data-id-root="hf-commento"></script>
+        <script defer src="{{ $commentoParams.Url }}" data-id-root="hf-commento"></script>
         <div id="hf-commento"></div>
       {{ end }}
 
-      {{ if and .Site.Params.Utterances.Repository (partial "comments-on.html" .) }}
+      {{ if and $utterances.Repository (partial "comments-on.html" .) }}
       {{- /* The client may be added by a script, which the preload scanner
              cannot see. crossorigin, as the client is fetched. */ -}}
       <link rel="preconnect" href="https://utteranc.es" crossorigin>
-      {{- $theme := .Site.Params.Utterances.Theme | default "preferred-color-scheme" }}
+      {{- $theme := $utterances.Theme | default "preferred-color-scheme" }}
       {{- if eq $theme "preferred-color-scheme" }}
       <div class="utterances-follow"
-           data-repo="{{ .Site.Params.Utterances.Repository }}"
-           {{ if .Site.Params.Utterances.Label }}data-label="{{ .Site.Params.Utterances.Label }}"{{ end }}
-           data-issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"></div>
+           data-repo="{{ $utterances.Repository }}"
+           {{ if $utterances.Label }}data-label="{{ $utterances.Label }}"{{ end }}
+           data-issue-term="{{ $utterances.IssueTerm | default "pathname" }}"></div>
       {{- /* Not in the bundle, which a site's javascript.html can replace. */ -}}
       {{- with resources.Get "js/utterances.js" | resources.Minify | resources.Fingerprint "sha512" }}
       <script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
       {{- end }}
       {{- else }}
       <script src="https://utteranc.es/client.js"
-              repo="{{ .Site.Params.Utterances.Repository }}"
-              {{ if .Site.Params.Utterances.Label }}label="{{ .Site.Params.Utterances.Label }}"{{ end }}
-              issue-term="{{ .Site.Params.Utterances.IssueTerm | default "pathname" }}"
+              repo="{{ $utterances.Repository }}"
+              {{ if $utterances.Label }}label="{{ $utterances.Label }}"{{ end }}
+              issue-term="{{ $utterances.IssueTerm | default "pathname" }}"
               theme="{{ $theme }}"
               crossorigin="anonymous"
               async>

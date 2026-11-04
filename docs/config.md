@@ -946,7 +946,7 @@ theme's `layouts/_partials/footer.html` in your site's `layouts/_partials/`:
 | `comments` | set to `false` to hide the comments on that page — Disqus, Commento and utterances alike. Quoted values count, so `"false"` and `"0"` read the same way |
 | `description` | overrides the summary in `<meta name="description">` and Open Graph |
 | `pagerSize` | on a section, taxonomy or term page (`_index.md`, or a `cascade`): how many entries each pager of that list holds, in place of `[pagination] pagerSize` |
-| `author` | overrides the site author for that page |
+| `author` | overrides the site author for that page. A list (`author: ["Ann", "Bob"]`) names each of them: joined with commas in `<meta name="author">`, one `Person` each in the JSON-LD |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 
 `audio` takes a list, or a single file written on its own:
