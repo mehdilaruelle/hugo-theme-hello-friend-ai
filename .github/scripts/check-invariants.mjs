@@ -207,12 +207,16 @@ const checks = {
     });
     if (got.length !== want.length)
       fail(`${page}: ${got.length} series block(s), wanted ${want.length}`, got.map((g) => g.summary).join("\n"));
+    const ids = [...html.matchAll(/<summary\b[^>]*>/gi)].map((m) => attr(m[0], "id")).filter(Boolean);
+    if (new Set(ids).size !== ids.length) fail(`${page}: two series blocks share an id`, ids.join(" "));
     want.forEach((w, i) => {
       const [name, list] = w.split("=");
       const parts = list.split("|");
       const summary = `Part ${parts.findIndex((p) => p.startsWith("*")) + 1} of ${parts.length} in ${name}`;
       if (got[i].summary !== summary) fail(`${page}: the summary reads "${got[i].summary}", wanted "${summary}"`);
       if (got[i].parts.join("|") !== list) fail(`${page}: ${name} lists ${got[i].parts.join("|")}, wanted ${list}`);
+      const count = read("series/index.html").match(new RegExp(`>${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</span>\\s*<span class="?post-day"?>(\\d+)`))?.[1];
+      if (count !== String(parts.length)) fail(`series/: ${name} counts ${count}, wanted ${parts.length}`);
     });
     ok(`${page}: ${want.length ? want.join(", ") : "no series block"}`);
   },
