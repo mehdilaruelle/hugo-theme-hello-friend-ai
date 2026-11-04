@@ -74,6 +74,17 @@
     closeMenu();
   });
 
+  // Tabbing out of the panel leaves it, the way a click outside does: the
+  // panel covers the top of the page, and focus moving on beneath it would be
+  // out of sight. The trigger is not outside: it sits just before the panel.
+  menu &&
+    menu.addEventListener("focusout", (event) => {
+      if (!isMobile()) return;
+      const next = event.relatedTarget;
+      if (!next || menu.contains(next) || (menuTrigger && menuTrigger.contains(next))) return;
+      closeMenu();
+    });
+
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || !isMobile()) return;
     if (!menu || menu.classList.contains("hidden")) return;
