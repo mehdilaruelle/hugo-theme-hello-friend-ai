@@ -16,8 +16,17 @@ const ENTITY = /^&(?:#[0-9]+|#[xX][0-9a-fA-F]+|lt|gt|amp|quot|apos);/;
 const ATTRS = new RegExp(`^(?:\\s+${NAME}\\s*=\\s*("[^"<]*"|'[^'<]*'))*\\s*$`);
 const ONE_ATTR = new RegExp(`${NAME}\\s*=\\s*("[^"<]*"|'[^'<]*')`, "g");
 
+// Forbidden in XML 1.0 even as a character reference: one makes the whole
+// document unreadable, and a scanner looking only at markup lets it through.
+const NOT_XML = /[\x00-\x08\x0B\x0C\x0E-\x1F\uFFFE\uFFFF]/;
+
 function scan(s) {
   const bad = [];
+  const ctl = s.search(NOT_XML);
+  if (ctl !== -1) {
+    const code = s.codePointAt(ctl).toString(16).toUpperCase().padStart(4, "0");
+    bad.push(`line ${s.slice(0, ctl).split("\n").length}: U+${code}, a character XML forbids`);
+  }
   const stack = [];
   const at = (i) => {
     const line = s.slice(0, i).split("\n").length;
