@@ -214,6 +214,13 @@ const checks = {
       if (got[i].summary !== summary) fail(`${page}: the summary reads "${got[i].summary}", wanted "${summary}"`);
       if (got[i].parts.join("|") !== list) fail(`${page}: ${name} lists ${got[i].parts.join("|")}, wanted ${list}`);
     });
+    // og:see_also names other parts too, so only pages that were built.
+    const canonical = [...html.matchAll(tagRe("link"))].map((m) => m[0]).find((t) => attr(t, "rel") === "canonical");
+    const base = attr(canonical, "href").slice(0, -page.replace(/index\.html$/, "").length);
+    for (const m of html.matchAll(tagRe("meta"))) {
+      const url = attr(m[0], "property") === "og:see_also" && attr(m[0], "content");
+      if (url && !existsSync(join(dir, url.slice(base.length), "index.html"))) fail(`${page}: og:see_also names ${url}, which was not built`);
+    }
     ok(`${page}: ${want.length ? want.join(", ") : "no series block"}`);
   },
 
