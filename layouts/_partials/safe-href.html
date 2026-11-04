@@ -1,0 +1,26 @@
+{{- /*
+  A URL the site wrote, ready for an href: the social links, the menu and the
+  logo. Returns "" for one that is refused.
+
+  html/template trusts only http, https and mailto in an href, and writes
+  #ZgotmplZ for any other scheme. That broke xmpp:, matrix:, sgnl:, tel: and
+  every other scheme a contact link is made of, while the theme ships icons
+  for xmpp, matrix and signal. These URLs come from the site's own config, so
+  instead of an allow-list that would break the next one, only the schemes
+  that run code where they are opened are refused, with a warning:
+  javascript:, vbscript: and data:. A browser ignores tabs, newlines and
+  leading spaces in a scheme ("java	script:"), so they are dropped before it is
+  read. Everything else is marked safe; a URL with no scheme is a path, and is
+  returned as the string it was.
+*/ -}}
+{{- $url := printf "%v" . -}}
+{{- $out := $url -}}
+{{- with findRESubmatch `^([a-zA-Z][a-zA-Z0-9+.-]*):` (replaceRE `[\x00-\x20]` "" $url) 1 -}}
+  {{- if in (slice "javascript" "vbscript" "data") (lower (index . 0 1)) -}}
+    {{- warnidf "url-scheme-refused" "%q: a link that runs code when it is followed is not written. Use an http(s) URL." $url -}}
+    {{- $out = "" -}}
+  {{- else -}}
+    {{- $out = safeURL $url -}}
+  {{- end -}}
+{{- end -}}
+{{- return $out -}}

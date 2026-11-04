@@ -8,3 +8,21 @@
     logoCursorColor = "#67a2c9}body{display:none"
   [params.portrait]
     maxWidth = "120 px"
+
+# Schemes html/template does not trust: each became href="#ZgotmplZ". They
+# have to be written as given, and javascript: left out with a warning.
+[[params.social]]
+  name = "xmpp"
+  url  = "xmpp:jane@example.com"
+[[params.social]]
+  name = "matrix"
+  url  = "matrix:u/jane:example.com"
+[[params.social]]
+  name = "signal"
+  url  = "sgnl://signal.me/#p/+33123456789"
+[[params.social]]
+  name = "github"
+  url  = "javascript:alert(1)"
+[[menu.main]]
+  name = "Call"
+  url  = "tel:+33123456789"
