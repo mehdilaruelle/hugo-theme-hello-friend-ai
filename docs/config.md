@@ -297,6 +297,7 @@ handshake.
 
 [params.commento]
   url = "https://commento.example.com/js/commento.js"
+  # Comentario 3: url = "https://comments.example.com/comentario.js"
 
 [params.utterances]
   repository = "owner/repo"
@@ -311,6 +312,7 @@ Only `repository` is required: `issueTerm` defaults to `pathname` and `theme` to
 | --- | --- |
 | `services.disqus.shortname` | the Disqus site name |
 | `params.commento.url` | the script URL of your Commento or [Comentario](https://comentario.app) instance |
+| `params.commento.provider` | `commento` or `comentario`. Optional: a script named `comentario.js`, the one Comentario 3 serves, is read as Comentario, anything else as Commento. Comentario 3 is a web component, so the theme writes `<comentario-comments></comentario-comments>` for it, and Commento's `<div>` otherwise. Set `commento` for a Comentario 2 instance, which still takes the `<div>` |
 | `params.utterances.repository` | the public `owner/repo` holding the issues |
 | `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, or a specific term. A number is a term too, searched for in issue titles: utterances opens a given issue only through its `issue-number` attribute, which the theme does not set |
 | `params.utterances.label` | a label put on the issues utterances opens. Optional: the attribute is omitted when unset |
