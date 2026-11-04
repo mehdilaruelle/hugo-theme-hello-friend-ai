@@ -262,6 +262,30 @@ em, i, strong {
   background: $light-background-secondary;
 }
 
+// Maths reads left to right whatever language surrounds it, as code does.
+// KaTeX lays a formula out with inline boxes and sets no direction, so on an
+// RTL page a^2 + b^2 = c^2 came out as 2c = 2b + 2a, and an integral's sign
+// ended up on the right. isolate, so the RTL sentence around an inline
+// formula keeps its own order.
+.katex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+// A display formula wider than the column scrolls in its own box, as a code
+// block or a table does, instead of making the whole page scroll sideways on
+// a phone. Under html: katex.min.css loads after this stylesheet and sets
+// .katex-display's margin, so the bare class would lose to it.
+html .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  // Limits and tall delimiters reach past the line box, and overflow-y would
+  // clip them by a few pixels: room for them, taken back from the margin so
+  // the spacing around the formula stays what KaTeX gives it (1em).
+  padding-block: 0.5em;
+  margin-block: 0.5em;
+}
+
 pre {
   margin: 10px auto;
 

@@ -726,6 +726,17 @@ const checks = {
     ok("the language label is placed by the copy button's measured width");
   },
 
+  // KaTeX sets no direction and no overflow: both have to come from the theme.
+  math() {
+    const css1 = css();
+    if (!rules(css1, ".katex").some((b) => /direction:\s*ltr/.test(b) && /unicode-bidi:\s*isolate/.test(b)))
+      fail("no .katex rule keeps a formula left to right on an RTL page", rules(css1, ".katex").map((b) => `.katex{${b}}`).join("\n") || "(no .katex rule)");
+    // Under html, to outweigh katex.min.css, which loads later and sets the margin.
+    if (!rules(css1, "html .katex-display").some((b) => /overflow-x:\s*auto/.test(b) && /margin-block:/.test(b)))
+      fail("no html .katex-display rule scrolls a wide formula in its own box", rules(css1, "html .katex-display").map((b) => `html .katex-display{${b}}`).join("\n") || "(no html .katex-display rule)");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
+  },
+
   // Colours a static scan never sees in use (focus ring, script-written status and
   // dates), read from each scheme's compiled tokens so a site's own are checked too.
   contrast() {

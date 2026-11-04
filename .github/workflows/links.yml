@@ -118,7 +118,9 @@ jobs:
       # quietly became prose.
       - name: Check the maths survived Markdown
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-math.mjs public
+        run: |
+          node ../.github/scripts/check-math.mjs public
+          node ../.github/scripts/check-invariants.mjs public math
 
       # width and height on the element fix the used height, so a rule that
       # narrows the box stretches the picture unless height is released. The
