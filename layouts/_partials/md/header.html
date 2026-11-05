@@ -6,7 +6,7 @@
 > {{ partial "md/inline.html" (dict "text" (partial "md/plain.html" (dict "text" .)) "as" "quote") | safeHTML }}
 {{ end }}
 {{- $note := "" }}{{ if .note }}{{ with site.Params.llmsNote }}{{ $note = partial "flatten.html" . }}{{ end }}{{ end }}
-{{- $body := partial "md/body.html" .page | strings.TrimSpace }}
+{{- $body := partial "md/body.html" .page }}
 {{- $parts := slice $body $note }}
 {{- if .llms }}{{ $parts = slice $note .after (partial "md/no-headings.html" $body) }}{{ end }}
 {{- range $parts }}{{ with . }}

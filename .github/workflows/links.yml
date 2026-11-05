@@ -213,6 +213,14 @@ jobs:
                       '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
             grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
           done
+          md=public/llms-links/text-edges/index.md
+          grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
+          grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }
+          awk '/<details class="faq">/,/<\/details>/' "$md" | sed '$d' | grep -qx '' \
+            && { echo "  BAD  a blank line inside the faq ends its HTML block"; bad=1; }
+          grep -A1 -x 'hugo server' public/llms-full.txt | grep -qx '```' || { echo "  BAD  a fence left open swallows llms-full.txt"; bad=1; }
+          grep -B1 -F 'llms.txt と同じ順序です' public/ja/llms-full.txt | head -1 | grep -qx '' \
+            || { echo "  BAD  the truncation notice is glued to the line above"; bad=1; }
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
           exit "$bad"
 

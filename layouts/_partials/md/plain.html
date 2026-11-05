@@ -1,6 +1,7 @@
 {{- $t := .text -}}
 {{- if .html -}}
-  {{- $t = partial "flatten.html" $t -}}
+  {{- /* Text, not Markdown: __init__ is not bold, \[a\](b) not a link. */ -}}
+  {{- $t = partial "flatten.html" $t | replaceRE "([\\\\`*_\\[\\]])" "\\$1" -}}
 {{- else -}}
   {{- $t = $t | replaceRE `\s+` " " | strings.TrimSpace -}}
 {{- end -}}
