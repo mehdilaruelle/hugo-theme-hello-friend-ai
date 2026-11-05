@@ -193,5 +193,5 @@
 {{- end -}}
 
 {{- partial "json-ld/breadcrumb.html" . -}}
-{{- /* list.html shows a section's FAQ on its first pager only. */ -}}
+{{- /* As list.html: the FAQ is on the first pager only. */ -}}
 {{- if eq (partial "canonical.html" .).pager 1 }}{{ partial "json-ld/faq.html" . }}{{ end -}}
