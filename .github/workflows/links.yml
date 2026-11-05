@@ -511,6 +511,13 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          # A portrait width in %, which sizes cannot take: it wrote sizes="50%".
+          HUGO_PARAMS_PORTRAIT_PATH="img/an example.png" HUGO_PARAMS_PORTRAIT_MAXWIDTH="50%" \
+            hugo --themesDir ../.. --gc --minify --destination public-portrait \
+            --contentDir ../.github/fixtures/markdown-images \
+            --config config.toml,../.github/fixtures/markdown-images.toml
+          grep -q 'class="circle portrait"' public-portrait/index.html && ! grep -q 'sizes=50%' public-portrait/index.html \
+            || { echo "  BAD  the portrait has an invalid sizes"; exit 1; }
           node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
 
       - name: Check a post shows where it sits in its series
