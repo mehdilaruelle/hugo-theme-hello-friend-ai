@@ -6,11 +6,8 @@
        them all, and a leading &#43; becomes \+, not a list marker. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $text := .RenderShortcodes -}}
-{{- /* Destinations the HTML rewrites, so the copy links the same file:
-       - a picture the image hook finds in assets/, published resized only:
-         the copy links the original;
-       - on a multilingual site, a link Hugo's embedded link hook resolves to
-         a page or a file ("/about/", "../other.md", "notes.txt"), as it does. */ -}}
+{{- /* Links the HTML rewrites, so the copy points to the same file: assets/
+       pictures, and the link hook's page and file links when multilingual. */ -}}
 {{- $assets := dict -}}
 {{- range findRESubmatch `(?:^|[^\\])(!?)\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
   {{- $image := eq (index . 1) "!" -}}
@@ -19,7 +16,6 @@
     {{- $u := . -}}
     {{- $to := "" -}}
     {{- if or .Scheme .Host (not .Path) -}}
-      {{- /* Remote, or a fragment: as written. */ -}}
     {{- else if $image -}}
       {{- if not (or .RawQuery .Fragment ($.Resources.Get .Path)) }}{{ with resources.Get .Path }}{{ $to = .Permalink }}{{ end }}{{ end -}}
     {{- else if hugo.IsMultilingual -}}

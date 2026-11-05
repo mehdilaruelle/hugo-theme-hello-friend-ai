@@ -3,5 +3,5 @@
 # the working tree the way eol=lf would.
 * text=auto
 
-# CRLF on purpose: llms-full.txt has to resolve its link definition all the same.
+# CRLF on purpose: the link definition must still resolve.
 showcaseSite/content/llms-links/escapes.md -text
