@@ -448,7 +448,9 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
           # Two absolute urls in the French menu: neither gets the language put in
           # front again, and the English home is not the French one's current page.
-          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html "Tous les articles" English
+          # On this host, an absolute url is current like a relative one.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/posts/index.html Articles=page "Tous les articles=page" English
           cd ../exampleSite
           hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \

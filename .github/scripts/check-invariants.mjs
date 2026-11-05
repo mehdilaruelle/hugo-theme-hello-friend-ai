@@ -196,7 +196,7 @@ const checks = {
     if (!rules(all, ".submenu .dropdown.dropdown--dismissed .dropdown-content").some((b) => declares(b, "display", "none")))
       fail("no rule hides a submenu Escape dismissed");
     const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
-    if (!js.includes("dropdown--dismissed")) fail("no script dismisses a submenu on Escape");
+    if (!/classList\.add\(["']dropdown--dismissed["']\)/.test(js)) fail("no script dismisses a submenu on Escape");
     ok("every submenu link spans the panel, and Escape closes a panel hover or focus opened");
   },
 

@@ -176,6 +176,11 @@
       white-space: normal;
     }
 
+    // An Escape on desktop does not survive a resize to the phone menu.
+    .dropdown.dropdown--dismissed .dropdown-content {
+      display: block;
+    }
+
     .dropdown-content a {
       padding: 12px 0;
       padding-inline-start: 16px;

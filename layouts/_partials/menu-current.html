@@ -2,6 +2,7 @@
        The decoded url is compared too, without a trailing slash or the index.html of
        uglyURLs: url = "posts/" links no page. */ -}}
 {{- $trim := `(?:/index\.html|/)$` -}}
+{{- $site := urls.Parse site.BaseURL -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
@@ -12,7 +13,8 @@
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
-    {{- if not (or .Scheme .Host .RawQuery .Fragment) -}}
+    {{- /* An absolute url on this site's host is compared by its path too. */ -}}
+    {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (eq .Host $site.Host)) -}}
       {{- $url = replaceRE $trim "" .Path -}}
       {{- $local = true -}}
     {{- end -}}
@@ -22,7 +24,8 @@
   {{- $state = "page" -}}
 {{- else if $page.HasMenuCurrent "main" $entry -}}
   {{- $state = "true" -}}
-{{- else if and $local (ne $url (replaceRE $trim "" (urls.Parse site.Home.RelPermalink).Path)) (hasPrefix $here (printf "%s/" $url)) -}}
+{{- /* A home, this language's or the site's, holds every page: not an ancestor. */ -}}
+{{- else if and $local (not (in (slice (replaceRE $trim "" (urls.Parse site.Home.RelPermalink).Path) (replaceRE $trim "" $site.Path)) $url)) (hasPrefix $here (printf "%s/" $url)) -}}
   {{- $state = "true" -}}
 {{- else -}}
   {{- range $entry.Children -}}
