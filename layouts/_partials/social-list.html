@@ -1,6 +1,5 @@
 {{- /* The table entries of params.social (passed in); anything else is skipped.
-       A list or a table of tables; a plain value cannot be ranged over (a
-       string ends the build), so it warns and yields nothing. */ -}}
+       A plain value cannot be ranged over: it warns and yields nothing. */ -}}
 {{- $out := slice -}}
 {{- if or (reflect.IsSlice .) (reflect.IsMap .) -}}
   {{- range . -}}
