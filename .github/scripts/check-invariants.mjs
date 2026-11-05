@@ -326,6 +326,21 @@ const checks = {
     ok("a submenu label follows the writing direction on a phone");
   },
 
+  // The phone header: Tab order, spacing, and the menu without JavaScript.
+  header(page) {
+    const html = read(page);
+    const trigger = html.search(/<button\b[^>]*\bclass="?menu-trigger\b/);
+    const nav = html.search(/<nav\b[^>]*\bclass="?menu\b/);
+    if (trigger === -1 || nav === -1) fail(`${page}: no menu trigger or no menu to compare`);
+    else if (nav < trigger) fail(`${page}: the menu comes before its trigger, so Tab from the trigger skips the open panel`);
+    const all = css();
+    if (!rules(all, ".header__right").some((b) => declares(b, "gap", "10px")))
+      fail("no .header__right rule spaces the phone row with a gap");
+    if (!rules(all, ".menu:not(.menu--ready)").some((b) => declares(b, "position", "static")))
+      fail("without JavaScript, the phone menu is not in the flow of the header");
+    ok("the trigger precedes the menu, the phone row has a gap, and the no-JS menu is in the flow");
+  },
+
   // A strict style-src refuses the attribute; params-css.html writes the rule.
   "cursor-default"() {
     const styled = [];

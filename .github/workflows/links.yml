@@ -572,6 +572,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: |
           node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
+          node ../.github/scripts/check-invariants.mjs public header ar/index.html
 
       - name: Check every gallery thumbnail is a named link to a square
         working-directory: hello-friend-ai/showcaseSite
