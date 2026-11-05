@@ -245,8 +245,7 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public toc
 
       # Valid markup either way, so nothing else notices it.
-      # The font preload stayed absolute under relativeURLs (fetched twice), and
-      # with no home page the Person and article:author had an empty URL.
+      # relativeURLs: a relative font preload; no home: Person and article:author keep a URL.
       - name: Check head URLs under relativeURLs and with no home page
         working-directory: hello-friend-ai/exampleSite
         run: |
