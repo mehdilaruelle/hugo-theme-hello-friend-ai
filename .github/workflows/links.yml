@@ -527,6 +527,13 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          # The card names the cover, not the file its name matches as a glob.
+          f=public-markdown-images/posts/2026/10/a-cover-named-like-a-glob/index.html
+          for want in '<meta property="og:image" content="https://example.com/subpath/posts/2026/10/a-cover-named-like-a-glob/photo%20%5B1%5D.jpg">' \
+                      '<meta property="og:image:width" content="1200">'; do
+            grep -qF "$want" "$f" || { grep -o '<meta property="og:image[^>]*>' "$f"; echo "  BAD  no $want"; exit 1; }
+          done
+          echo "  a glob-like cover name is the card's picture"
           node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
 
       - name: Check a post shows where it sits in its series
