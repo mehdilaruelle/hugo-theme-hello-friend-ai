@@ -24,17 +24,11 @@
   let index = null;
   let loading = null;
 
-  // Accents are a spelling detail, not a distinction the reader is making:
-  // "resume" should find "résumé". NFD splits a letter from its accent, and
-  // the range strips the marks that are now their own characters: Latin and
-  // the rest of U+0300-U+036F, and the Arabic harakat (U+064B-U+065F), the
-  // superscript alef (U+0670) and the tatweel (U+0640), which Arabic is mostly
-  // typed without -- "تتكون" has to find "تتكوّن".
-  //
-  // A kana's voicing mark is not an accent: "ジ" is not "シ", yet NFD split it
-  // into "シ" + U+3099, so "シ" found every "ジ". Those pairs are put back
-  // together. Hangul stays split into its letters, so that "가" still finds "각",
-  // as "ga" finds "gak".
+  // Accents are a spelling detail: "resume" finds "résumé", "تتكون" finds
+  // "تتكوّن". NFD splits the marks off, the range strips Latin ones and the
+  // Arabic harakat, superscript alef and tatweel. A kana's voicing mark is
+  // not an accent ("シ" is not "ジ"), so those pairs are recomposed; Hangul stays
+  // split, so "가" still finds "각".
   function fold(s) {
     return (s || "")
       .toLowerCase()

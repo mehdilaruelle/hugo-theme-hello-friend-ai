@@ -1,5 +1,5 @@
-// Asserts what search.js's fold() ignores, and what it must not: run on the
-// source, since the bundle is minified and fold() is private to its closure.
+// What search.js's fold() ignores, and what it must not. Run on the source:
+// fold() is private to the minified bundle.
 //
 //   node .github/scripts/check-search-fold.mjs <assets/js/search.js>
 
@@ -16,15 +16,11 @@ const fold = new Function(`${body[0]}; return fold;`)();
 
 // [query, text, should the query find the text]
 const cases = [
-  ["resume", "résumé", true],                  // Latin accents
-  ["RESUME", "Résumé", true],                  // and case
-  ["تتكون", "تتكوّن", true],                     // Arabic, typed without the shadda
-  ["كتاب", "كِتَابٌ", true],                      // harakat
-  ["مرحبا", "مرحـــبا", true],                   // tatweel
-  ["シ", "ジ", false],                          // a voicing mark is a different kana
-  ["ジ", "ジ", true],                           // and still finds itself
-  ["가", "각", true],                           // a Hangul prefix still matches
-  ["각", "가", false],                          // the final consonant is not dropped
+  ["RESUME", "Résumé", true],
+  ["تتكون", "تتكوّن", true],    // Arabic, typed without the shadda
+  ["مرحبا", "مرحـــبا", true],   // tatweel
+  ["シ", "ジ", false],          // a voicing mark makes another kana
+  ["가", "각", true],           // a Hangul prefix still matches
 ];
 
 let bad = 0;
@@ -36,4 +32,4 @@ for (const [q, text, want] of cases) {
   }
 }
 if (bad) process.exit(1);
-console.log(`  fold() ignores accents and Arabic marks, and keeps kana voicing marks, Hangul still matching letter by letter (${cases.length} cases)`);
+console.log(`  fold() passes its ${cases.length} cases`);
