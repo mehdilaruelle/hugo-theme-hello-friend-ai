@@ -1,7 +1,6 @@
 {{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "".
-       The decoded url is compared too, trailing slash aside: url = "posts/" links no page.
-       So is index.html: under uglyURLs a list page is /tags/index.html and the home
-       page /index.html, while a menu url says /tags/ and /. */ -}}
+       The decoded url is compared too, without a trailing slash or the index.html of
+       uglyURLs: url = "posts/" links no page. */ -}}
 {{- $trim := `(?:/index\.html|/)$` -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}

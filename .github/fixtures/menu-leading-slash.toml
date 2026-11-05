@@ -46,8 +46,7 @@
       name       = "Recherche"
       url        = "/search/"
       weight     = 30
-    # Absolute: used as given, never through relLangURL, which made the first
-    # /fr/fr/posts/ and the second the French home, marked as the current page.
+    # Absolute urls, which relLangURL prefixed with /fr/ a second time.
     [[languages.fr.menu.main]]
       identifier = "all-posts"
       name       = "Tous les articles"

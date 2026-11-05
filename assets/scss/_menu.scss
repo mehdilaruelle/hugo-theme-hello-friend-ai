@@ -123,9 +123,7 @@
 
   .dropdown-content a {
     padding: 12px 20px;
-    // .menu a spaces top-level links with a margin and takes it off the last of
-    // type, which a top-level link always is, alone in its li. Here the links
-    // are siblings, so every one but the last stopped 15px short of the panel.
+    // .menu a's margin, which :last-of-type only clears on the last sibling.
     margin: 0;
     text-decoration: none;
     display: block;
@@ -160,8 +158,7 @@
     display: block;
   }
 
-  // Escape closes a panel hover or focus opened (WCAG 1.4.13): menu.js adds the
-  // class, and the next hover or focus from outside takes it off.
+  // Set by menu.js on Escape.
   .dropdown.dropdown--dismissed .dropdown-content {
     display: none;
   }

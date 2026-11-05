@@ -191,7 +191,7 @@ const checks = {
   // A submenu panel with more than one entry, and Escape on a desktop.
   "submenu-panel"() {
     const all = css();
-    if (!rules(all, ".submenu .dropdown-content a").some((b) => /(^|;)\s*margin:\s*0(px)?\s*(;|$)/.test(b)))
+    if (!rules(all, ".submenu .dropdown-content a").some((b) => declares(b, "margin", "0")))
       fail("the submenu's links keep .menu a's margin, so all but the last stop short of the panel");
     if (!rules(all, ".submenu .dropdown.dropdown--dismissed .dropdown-content").some((b) => declares(b, "display", "none")))
       fail("no rule hides a submenu Escape dismissed");

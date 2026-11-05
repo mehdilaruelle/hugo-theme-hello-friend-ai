@@ -108,30 +108,20 @@
     });
   }
 
-  // On a desktop a submenu opens on hover and on focus, and content shown that
-  // way has to be dismissable without moving the pointer or the focus (WCAG
-  // 1.4.13). Escape hides the open one; a new hover or a focus arriving from
-  // outside it shows it again.
+  // Escape hides a desktop submenu opened by hover or focus (WCAG 1.4.13);
+  // a new hover, or focus from outside, shows it again.
   document.querySelectorAll(".submenu .dropdown").forEach((dropdown) => {
-    dropdown.addEventListener("mouseenter", () => dropdown.classList.remove("dropdown--dismissed"));
-    dropdown.addEventListener("focusin", (event) => {
-      if (!event.relatedTarget || !dropdown.contains(event.relatedTarget)) {
-        dropdown.classList.remove("dropdown--dismissed");
-      }
-    });
+    const show = () => dropdown.classList.remove("dropdown--dismissed");
+    dropdown.addEventListener("mouseenter", show);
+    dropdown.addEventListener("focusin", (e) => dropdown.contains(e.relatedTarget) || show());
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape" || isMobile()) return;
-    document.querySelectorAll(".submenu .dropdown").forEach((dropdown) => {
-      const focused = dropdown.contains(document.activeElement);
-      if (!focused && !dropdown.matches(":hover")) return;
+    document.querySelectorAll(".submenu .dropdown:hover, .submenu .dropdown:focus-within").forEach((dropdown) => {
       dropdown.classList.add("dropdown--dismissed");
-      // Focus would otherwise be left inside a hidden panel.
-      if (focused && !document.activeElement.classList.contains("dropbtn")) {
-        const button = dropdown.querySelector(".dropbtn");
-        if (button) button.focus();
-      }
+      const button = dropdown.querySelector(".dropbtn");
+      if (button && dropdown.contains(document.activeElement)) button.focus();
     });
   });
 })();
