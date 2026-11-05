@@ -13,7 +13,7 @@
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
-    {{- /* An absolute url on this site's host is compared by its path too. */ -}}
+    {{- /* Same host: compared by path. */ -}}
     {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (eq .Host $site.Host)) -}}
       {{- $url = replaceRE $trim "" .Path -}}
       {{- $local = true -}}
@@ -24,7 +24,7 @@
   {{- $state = "page" -}}
 {{- else if $page.HasMenuCurrent "main" $entry -}}
   {{- $state = "true" -}}
-{{- /* A home, this language's or the site's, holds every page: not an ancestor. */ -}}
+{{- /* A home is never an ancestor. */ -}}
 {{- else if and $local (not (in (slice (replaceRE $trim "" (urls.Parse site.Home.RelPermalink).Path) (replaceRE $trim "" $site.Path)) $url)) (hasPrefix $here (printf "%s/" $url)) -}}
   {{- $state = "true" -}}
 {{- else -}}

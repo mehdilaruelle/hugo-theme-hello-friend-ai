@@ -108,8 +108,7 @@
     });
   }
 
-  // Escape hides a desktop submenu opened by hover or focus (WCAG 1.4.13);
-  // a new hover, or focus from outside, shows it again.
+  // Escape hides a hovered or focused desktop submenu (WCAG 1.4.13).
   document.querySelectorAll(".submenu .dropdown").forEach((dropdown) => {
     const show = () => dropdown.classList.remove("dropdown--dismissed");
     dropdown.addEventListener("mouseenter", show);

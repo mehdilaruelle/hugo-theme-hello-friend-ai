@@ -123,7 +123,7 @@
 
   .dropdown-content a {
     padding: 12px 20px;
-    // .menu a's margin, which :last-of-type only clears on the last sibling.
+    // Drop .menu a's margin on every entry, not just the last.
     margin: 0;
     text-decoration: none;
     display: block;
@@ -176,7 +176,7 @@
       white-space: normal;
     }
 
-    // An Escape on desktop does not survive a resize to the phone menu.
+    // Desktop Escape does not hide the phone menu.
     .dropdown.dropdown--dismissed .dropdown-content {
       display: block;
     }

@@ -188,7 +188,7 @@ const checks = {
     ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
   },
 
-  // A submenu panel with more than one entry, and Escape on a desktop.
+  // Submenu links fill the panel; Escape hides it on desktop.
   "submenu-panel"() {
     const all = css();
     if (!rules(all, ".submenu .dropdown-content a").some((b) => declares(b, "margin", "0")))

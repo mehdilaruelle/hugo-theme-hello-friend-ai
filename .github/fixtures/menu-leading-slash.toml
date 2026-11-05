@@ -46,7 +46,7 @@
       name       = "Recherche"
       url        = "/search/"
       weight     = 30
-    # Absolute urls, which relLangURL prefixed with /fr/ a second time.
+    # Absolute urls: no second /fr/.
     [[languages.fr.menu.main]]
       identifier = "all-posts"
       name       = "Tous les articles"
