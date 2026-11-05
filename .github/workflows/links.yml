@@ -247,12 +247,14 @@ jobs:
       # Valid markup either way, so nothing else notices it.
       # relativeURLs: a relative font preload; no home: Person and article:author keep a URL.
       - name: Check head URLs under relativeURLs and with no home page
-        working-directory: hello-friend-ai/exampleSite
+        working-directory: hello-friend-ai/showcaseSite
         run: |
-          HUGO_RELATIVEURLS=true HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify --destination public-relative
-          f=public-relative/about/index.html
-          [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "$f")" = 0 ] \
-            || { echo "  BAD  an absolute font preload, or an empty author URL, or no page"; exit 1; }
+          HUGO_RELATIVEURLS=true HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml --destination public-relative
+          for f in about/index.html kept-out-quoted/index.html; do
+            [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
+              || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
+          done
           echo "  head URLs are relative or complete"
 
       - name: Check no empty post-info is rendered
