@@ -203,7 +203,8 @@
 {{- end }}
 
 {{- if $.Site.Params.plausibleDataDomain }}
-    <script defer data-domain="{{ .Site.Params.plausibleDataDomain }}" src="{{ .Site.Params.plausibleScriptSource }}"></script>
+    {{- /* Unset, src="" loaded nothing, silently. */}}
+    <script defer data-domain="{{ .Site.Params.plausibleDataDomain }}" src="{{ .Site.Params.plausibleScriptSource | default "https://plausible.io/js/script.js" }}"></script>
 {{- end}}
 
 

@@ -639,6 +639,8 @@ jobs:
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
+          grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
+            || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
