@@ -13,8 +13,7 @@
   {{- $ordered = first $limit $ordered -}}
 {{- end -}}
 {{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true) }}
-{{- /* A blank line first, or the notice continues the paragraph above.
-       Kept, not Count: a Count key sends i18n looking for a plural form. */}}
+{{- /* A blank line first, or it joins the paragraph above. Kept, not Count: i18n reads Count as a plural. */}}
 {{- if lt (len $ordered) $total }}
 
 {{ partial "i18n.html" (dict "key" "llmsFullTruncated" "args" (dict "Kept" (len $ordered) "Total" $total) "fallback" (printf "%d of %d pages, in the order llms.txt lists them." (len $ordered) $total)) }}

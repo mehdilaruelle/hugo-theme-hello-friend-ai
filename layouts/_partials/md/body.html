@@ -40,8 +40,7 @@
 {{- end -}}
 {{- /* Blank lines trimmed, not spaces: a first line's indent makes it code. */ -}}
 {{- $body := delimit $lines "\n" | replaceRE `^(?:[ \t]*\r?\n)+` "" | strings.TrimRight " \t\r\n" -}}
-{{- /* A fence left open at the end is closed, as CommonMark does: it would
-       swallow everything after it in llms-full.txt. */ -}}
+{{- /* Close an open fence, or it swallows the rest of llms-full.txt. */ -}}
 {{- $flags := partial "md/code-lines.html" (print $body "\n") -}}
 {{- if index $flags (sub (len $flags) 1) -}}
   {{- with findRE "(?m)^[ \t>]*(?:`{3,}|~{3,})" $body -}}
