@@ -101,7 +101,7 @@
 {{- $height := 0 -}}
 {{- if $measurable -}}{{- $width = $rendered.Width -}}{{- $height = $rendered.Height -}}
 {{- else if $svgWidth -}}{{- $width = $svgWidth -}}{{- $height = $svgHeight -}}{{- end -}}
-{{- /* A pixel width or height the caller gives ("300", "300px") wins; alone, the other follows the ratio. */ -}}
+{{- /* A caller's pixel width or height wins; alone, the other follows the ratio. */ -}}
 {{- $px := `^\s*([0-9]+(?:\.[0-9]+)?)\s*(?:px)?\s*$` -}}
 {{- $w := 0 -}}
 {{- $h := 0 -}}

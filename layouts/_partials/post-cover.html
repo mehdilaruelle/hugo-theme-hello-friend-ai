@@ -1,7 +1,7 @@
 {{ $cover := partial "string-param.html" (dict "value" .Params.Cover "name" "cover") }}
 {{ if $cover }}
   <figure class="post-cover">
-    {{- /* The cover box of _single.scss, 60px wider than the text. */}}
+    {{- /* _single.scss: 60px wider than the text. */}}
     {{- $text := partial "content-width.html" . | default "800px" }}
     {{- if strings.HasSuffix $text "%" }}{{ $text = "800px" }}{{ end }}
     {{ partial "image.html" (dict "src" $cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high" "sizes" (printf "min(calc(%s + 60px), calc(100vw - 40px))" $text)) }}

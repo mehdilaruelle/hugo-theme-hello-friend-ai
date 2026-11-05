@@ -428,7 +428,7 @@ const checks = {
     if (!set.some((b) => declares(b, "--content-width", want)))
       fail(`--content-width:${want} is not in the stylesheet`, set.map((b) => `:root{${b}}`).join("\n") || "(no rule)");
     const sizes = `(max-width: ${want}) 100vw, ${want}`;
-    // A post cover is 60px wider than the column.
+    // Covers are 60px wider than the column.
     const cover = `min(calc(${want} + 60px), calc(100vw - 40px))`;
     const off = [];
     let seen = 0;

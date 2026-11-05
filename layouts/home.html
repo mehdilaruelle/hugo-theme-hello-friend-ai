@@ -25,7 +25,7 @@
                 {{- if findRE `^[0-9]+(\.[0-9]+)?px$` $width -}}
                   {{- $cap = int (mul (float (replaceRE "px$" "" $width)) 2) -}}
                 {{- end -}}
-                {{- /* sizes takes no % or var(): those fall back to the column. */ -}}
+                {{- /* sizes takes no % or var(). */ -}}
                 {{- $sizes := cond (findRE `%|var\(` $width) "" $width -}}
                 {{- with .Site.Params.Portrait.Path }}
                 {{ partial "image.html" (dict
