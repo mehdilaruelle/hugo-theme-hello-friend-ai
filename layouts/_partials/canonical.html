@@ -17,11 +17,20 @@ The URL this page names as its own, and which pager of a list it is. Returns
 {{- $prev := "" -}}
 {{- $next := "" -}}
 {{- if in (slice "section" "taxonomy" "term") .Kind -}}
+  {{- /* Rebased on .Permalink, the only one canonifyURLs leaves its subpath. */ -}}
+  {{- $relDir := replaceRE `[^/]*$` "" .RelPermalink -}}
+  {{- $absDir := replaceRE `[^/]*$` "" .Permalink -}}
   {{- with partial "paginator.html" . -}}
-    {{- $canonical = .URL | absURL -}}
+    {{- $abs := dict -}}
+    {{- range $k, $p := dict "url" . "prev" .Prev "next" .Next -}}
+      {{- with $p -}}
+        {{- $abs = merge $abs (dict $k (cond (hasPrefix .URL $relDir) (printf "%s%s" $absDir (strings.TrimPrefix $relDir .URL)) (absURL .URL))) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $canonical = $abs.url -}}
     {{- $pager = .PageNumber -}}
-    {{- with .Prev }}{{ $prev = .URL | absURL }}{{ end -}}
-    {{- with .Next }}{{ $next = .URL | absURL }}{{ end -}}
+    {{- $prev = $abs.prev | default "" -}}
+    {{- $next = $abs.next | default "" -}}
   {{- end -}}
 {{- end -}}
 {{- return dict "url" $canonical "pager" $pager "prev" $prev "next" $next -}}

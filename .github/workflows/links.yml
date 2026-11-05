@@ -506,6 +506,11 @@ jobs:
           for pager in tags/index.html tags/page/2/index.html; do
             node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager "$pager" "Previous page" "Next page"
           done
+          # canonifyURLs: pager canonicals and prev/next keep the subpath.
+          HUGO_CANONIFYURLS=true hugo --themesDir ../.. --gc --destination public-pagers-canon \
+            --config config.toml,../.github/fixtures/pager-size-three.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-pagers-canon https://example.com/subpath/
 
       # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
       - name: Check the SEO invariants on the shapes the demos lack
