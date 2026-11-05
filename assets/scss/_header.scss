@@ -16,9 +16,7 @@
 
     @media #{$media-size-phone} {
       flex-direction: row-reverse;
-      // Reversed, the margin-inline-start the trigger and the switcher carry
-      // for the desktop row lands on their outer side: the globe and the theme
-      // toggle touched. A gap spaces them whichever way the row runs.
+      // Reversed, the desktop margins land on the outer side: use a gap.
       gap: 10px;
 
       > .menu-trigger,

@@ -20,11 +20,7 @@
                         aria-label="{{ partial "i18n.html" (dict "key" "toggleMenu" "fallback" "Menu") }}">
                     {{ partial "icon.html" (dict "name" "menu") }}
                 </button>
-                {{- /* After the button, not before: the panel opens below it, and
-                       Tab from the button has to go into the panel rather than
-                       past it. On a phone the panel is positioned and the
-                       button is the visible control; on a desktop the button is
-                       display: none. Either way nothing moves on screen. */}}
+                {{- /* After the button, so Tab goes from it into the panel. */}}
                 {{ partial "menu.html" . }}
             {{- end }}
 

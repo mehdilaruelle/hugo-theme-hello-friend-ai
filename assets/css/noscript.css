@@ -1,10 +1,6 @@
-/* Without JavaScript the phone menu cannot be opened or closed: menu.js wires
-   the trigger up. So it is shown, but in the flow of the header rather than as
-   the panel it is with the script, which is positioned over the page and would
-   cover the top of every page for good. The trigger, which can do nothing, is
-   hidden. */
+/* Without JavaScript the phone menu cannot be toggled: show it in the header's
+   flow, not over the page, and hide the dead trigger. */
 @media (max-width: 684px) {
-  /* The logo stays level with the icons, not with the middle of the menu. */
   .header__inner {
     align-items: flex-start;
   }

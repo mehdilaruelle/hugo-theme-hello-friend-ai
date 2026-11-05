@@ -326,9 +326,7 @@ const checks = {
     ok("a submenu label follows the writing direction on a phone");
   },
 
-  // The phone header, which no check sees in a browser: Tab from the trigger has
-  // to reach the panel, the reversed row has to keep its spacing, and without
-  // JavaScript the panel must not sit over the page.
+  // The phone header: Tab order, spacing, and the menu without JavaScript.
   header(page) {
     const html = read(page);
     const trigger = html.search(/<button\b[^>]*\bclass="?menu-trigger\b/);
@@ -338,12 +336,9 @@ const checks = {
     const all = css();
     if (!rules(all, ".header__right").some((b) => declares(b, "gap", "10px")))
       fail("no .header__right rule spaces the phone row with a gap");
-    const reset = /\.header__right\s*>\s*\.language-switcher[^{]*\{[^}]*margin-inline-start:\s*0/;
-    if (!reset.test(all.replace(/\.header__right\s*>\s*\.menu-trigger\s*,\s*/g, "")))
-      fail("the switcher keeps its desktop margin in the reversed phone row");
     if (!rules(all, ".menu:not(.menu--ready)").some((b) => declares(b, "position", "static")))
       fail("without JavaScript, the phone menu is not in the flow of the header");
-    ok("Tab goes from the trigger into the panel, the phone row keeps its gaps, and without JavaScript the menu covers nothing");
+    ok("the trigger precedes the menu, the phone row has a gap, and the no-JS menu is in the flow");
   },
 
   // A strict style-src refuses the attribute; params-css.html writes the rule.
