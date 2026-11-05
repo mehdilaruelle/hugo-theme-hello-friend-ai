@@ -1,10 +1,12 @@
 # Params in a shape the theme does not read: each has to warn, not abort.
 [params]
   ogImage      = ["a.png"]
+  defaultTheme = "sepia"
   verification = "abc"
   [params.author]
     credentials = ["x"]
   [params.logo]
     logoCursorColor = "#67a2c9}body{display:none"
+    logoCursorAnimate = 0   # a number: with read it as unset
   [params.portrait]
     maxWidth = "120 px"

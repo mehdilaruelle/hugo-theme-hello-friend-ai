@@ -636,9 +636,11 @@ jobs:
         run: |
           out=$(hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid default-theme-value; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
+          ! grep -q 'data-theme=' public-shapes/index.html || { echo "  BAD  an unknown defaultTheme was written"; exit 1; }
+          grep -q 'logo__cursor{animation-duration:0s}' public-shapes/main-*.css || { echo "  BAD  logoCursorAnimate = 0 was ignored"; exit 1; }
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite

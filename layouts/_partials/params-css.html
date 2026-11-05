@@ -11,8 +11,9 @@
     {{- $cursor = printf "%sbackground-color:%s;" $cursor . -}}
   {{- end -}}
 {{- end -}}
-{{- with site.Params.Logo.logoCursorAnimate -}}
-  {{- with partial "css-param.html" (dict "value" . "name" "params.logo.logoCursorAnimate" "kind" "time") -}}
+{{- /* isset, not with: 0 is a duration, and stops the cursor. */ -}}
+{{- if isset (site.Params.Logo | default dict) "logocursoranimate" -}}
+  {{- with partial "css-param.html" (dict "value" site.Params.Logo.logoCursorAnimate "name" "params.logo.logoCursorAnimate" "kind" "time") -}}
     {{- $cursor = printf "%sanimation-duration:%s;" $cursor . -}}
   {{- end -}}
 {{- end -}}
