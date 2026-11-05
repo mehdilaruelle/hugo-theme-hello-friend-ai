@@ -17,8 +17,7 @@ The URL this page names as its own, and which pager of a list it is. Returns
 {{- $prev := "" -}}
 {{- $next := "" -}}
 {{- if in (slice "section" "taxonomy" "term") .Kind -}}
-  {{- /* Pager URLs are rebased on the page's own: under canonifyURLs .URL and
-         .RelPermalink drop the baseURL path, and only .Permalink keeps it. */ -}}
+  {{- /* Rebased on .Permalink, the only one canonifyURLs leaves its subpath. */ -}}
   {{- $relDir := replaceRE `[^/]*$` "" .RelPermalink -}}
   {{- $absDir := replaceRE `[^/]*$` "" .Permalink -}}
   {{- with partial "paginator.html" . -}}

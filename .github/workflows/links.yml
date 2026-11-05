@@ -476,7 +476,7 @@ jobs:
           for pager in tags/index.html tags/page/2/index.html; do
             node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager "$pager" "Previous page" "Next page"
           done
-          # canonifyURLs dropped the subpath from pager canonicals and prev/next.
+          # canonifyURLs: pager canonicals and prev/next keep the subpath.
           HUGO_CANONIFYURLS=true hugo --themesDir ../.. --gc --destination public-pagers-canon \
             --config config.toml,../.github/fixtures/pager-size-three.toml \
             --baseURL "https://example.com/subpath/"
