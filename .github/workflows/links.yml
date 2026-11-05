@@ -499,6 +499,8 @@ jobs:
             --contentDir ../.github/fixtures/seo-shapes \
             --config config.toml,../.github/fixtures/seo-shapes.toml
           node ../.github/scripts/check-seo.mjs public-seo-shapes
+          # posts/control-characters.md holds bytes XML forbids.
+          node ../.github/scripts/check-feeds.mjs public-seo-shapes
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
