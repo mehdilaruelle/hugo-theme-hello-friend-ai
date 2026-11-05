@@ -255,7 +255,7 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: |
           HUGO_COPYRIGHT="" hugo --themesDir ../.. --gc --minify --destination public-no-copyright
-          ! grep -q '<span></span>' public-no-copyright/index.html || { echo "  BAD  an empty footer entry"; exit 1; }
+          [ "$(grep -c '<span></span>' public-no-copyright/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
           echo "  no empty footer entry"
 
       - name: Check no HTML entity reaches the reader as text
