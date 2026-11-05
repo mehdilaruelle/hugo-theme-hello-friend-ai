@@ -28,7 +28,7 @@
   const readStoredTheme = () => withStorage((s) => s.getItem("theme"));
   const storeTheme = (theme) => withStorage((s) => s.setItem("theme", theme));
   const forgetTheme = () => withStorage((s) => s.removeItem("theme"));
-  // The choice made on this page, for when storage is blocked.
+  // This page's choice, if storage is blocked.
   let picked = null;
 
   function applyTheme(theme) {
@@ -85,7 +85,7 @@
     });
 
     detectOSColorTheme();
-    // A page restored by Back, or another tab, may hold an older choice.
+    // Back or another tab may hold an older choice.
     window.addEventListener("pageshow", (e) => e.persisted && detectOSColorTheme());
     window.addEventListener("storage", (e) => (e.key === "theme" || e.key === null) && detectOSColorTheme());
   } else {
