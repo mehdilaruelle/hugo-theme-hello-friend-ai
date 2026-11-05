@@ -250,14 +250,6 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public post-info
 
-      # footer.copyright with no site copyright wrote an empty <span>.
-      - name: Check no empty footer entry is rendered
-        working-directory: hello-friend-ai/exampleSite
-        run: |
-          HUGO_COPYRIGHT="" hugo --themesDir ../.. --gc --minify --destination public-no-copyright
-          [ "$(grep -c '<span></span>' public-no-copyright/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
-          echo "  no empty footer entry"
-
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
         run: |
@@ -642,11 +634,13 @@ jobs:
       - name: Check a wrong-shaped param warns instead of aborting the build
         working-directory: hello-friend-ai/exampleSite
         run: |
-          out=$(hugo --themesDir ../.. --gc --destination public-shapes \
+          # No site copyright as well: footer.copyright wrote an empty <span>.
+          out=$(HUGO_COPYRIGHT="" hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
+          [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
