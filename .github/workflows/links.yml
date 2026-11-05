@@ -589,8 +589,8 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
           grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
             || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
-          # uglyURLs: the logo linked /subpath/index.html/, and "/#top" became %23top.
-          HUGO_UGLYURLS=true HUGO_PARAMS_LOGO_LOGOHOMELINK="/#top" hugo --themesDir ../.. --gc --minify \
+          # uglyURLs: the logo linked /subpath/index.html/, and "#top" became %23top.
+          HUGO_UGLYURLS=true HUGO_PARAMS_LOGO_LOGOHOMELINK="#top" hugo --themesDir ../.. --gc --minify \
             --destination public-logo-ugly --config config.toml,../.github/fixtures/menu-current.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-links.mjs public-logo-ugly https://example.com/subpath/

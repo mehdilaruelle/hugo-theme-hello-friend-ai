@@ -8,7 +8,8 @@
     // data-base: subpath plus language directory, encoded like
     // location.pathname (/café/ is /caf%C3%A9/ there).
     const base = new URL(logo.dataset.base || "/", window.location.href).pathname;
-    const path = window.location.pathname;
+    // Under uglyURLs the home is .../index.html: no section.
+    const path = window.location.pathname.replace(/\/index\.html$/, "/");
     const rest = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\//, "");
     const section = rest.split("/").filter(Boolean)[0] || "";
     let text = section;

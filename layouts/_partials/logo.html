@@ -8,7 +8,8 @@
     {{- $home = . -}}
   {{- else -}}
     {{- with (try (urls.Parse .)).Value -}}
-      {{- $home = urls.JoinPath $base .EscapedPath -}}
+      {{- $home = $base -}}
+      {{- with .EscapedPath }}{{ $home = urls.JoinPath $base . }}{{ end -}}
       {{- with .RawQuery }}{{ $home = printf "%s?%s" $home . }}{{ end -}}
       {{- with .EscapedFragment }}{{ $home = printf "%s#%s" $home . }}{{ end -}}
     {{- end -}}
