@@ -7,7 +7,7 @@
 {{- with site.Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $jobTitle = .jobTitle -}}
-    {{- $personDescription = .description -}}
+    {{- with .description }}{{ $personDescription = . | plainify | htmlUnescape }}{{ end -}}
     {{- with .knowsAbout -}}
       {{- $knowsAbout = . -}}
     {{- end -}}
