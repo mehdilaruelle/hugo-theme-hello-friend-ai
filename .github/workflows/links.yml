@@ -250,6 +250,14 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public post-info
 
+      # footer.copyright with no site copyright wrote an empty <span>.
+      - name: Check no empty footer entry is rendered
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          HUGO_COPYRIGHT="" hugo --themesDir ../.. --gc --minify --destination public-no-copyright
+          ! grep -q '<span></span>' public-no-copyright/index.html || { echo "  BAD  an empty footer entry"; exit 1; }
+          echo "  no empty footer entry"
+
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
         run: |
