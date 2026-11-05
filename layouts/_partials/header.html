@@ -5,7 +5,6 @@
         <div class="header__right">
             {{- /* .main, not .Site.Menus: that is the map of every menu. */ -}}
             {{- if .Site.Menus.main }}
-                {{ partial "menu.html" . }}
                 {{- /* A button, not a span. Below the phone breakpoint the menu
                        is display: none and this is the only way to it, so a
                        control no keyboard can reach and no screen reader can
@@ -21,6 +20,8 @@
                         aria-label="{{ partial "i18n.html" (dict "key" "toggleMenu" "fallback" "Menu") }}">
                     {{ partial "icon.html" (dict "name" "menu") }}
                 </button>
+                {{- /* After the button, so Tab goes from it into the panel. */}}
+                {{ partial "menu.html" . }}
             {{- end }}
 
             {{- if partial "switch.html" .Site.Params.EnableThemeToggle }}

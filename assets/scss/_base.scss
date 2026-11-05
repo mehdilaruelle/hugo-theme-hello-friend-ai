@@ -262,6 +262,23 @@ em, i, strong {
   background: $light-background-secondary;
 }
 
+// Maths reads left to right, as code does: KaTeX sets no direction, so an RTL
+// page reversed it (2c = 2b + 2a).
+.katex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+// A wide formula scrolls in its own box, not the page. Under html to beat
+// katex.min.css, which loads later and sets the margin.
+html .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  // Room for limits overflow-y would clip, taken from the 1em margin.
+  padding-block: 0.5em;
+  margin-block: 0.5em;
+}
+
 pre {
   margin: 10px auto;
 

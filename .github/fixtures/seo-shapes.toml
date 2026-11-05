@@ -1,6 +1,10 @@
 # So the h1 renders the emoji code in posts/shipping.md.
 enableEmoji = true
 
+# Markup in a description: plain text in the JSON-LD too.
+[params]
+  description = "Notes on <em>DevOps</em> &amp; SRE"
+
 # A stray % (also in posts/percent.md) must not end the build.
 [[params.social]]
   name = "mastodon"
