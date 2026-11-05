@@ -24,14 +24,17 @@
   let index = null;
   let loading = null;
 
-  // Accents are a spelling detail, not a distinction the reader is making:
-  // "resume" should find "résumé". NFD splits a letter from its accent, and
-  // the range strips the accents that are now their own characters.
+  // Accents are a spelling detail: "resume" finds "résumé", "تتكون" finds
+  // "تتكوّن". NFD splits the marks off, the range strips Latin ones and the
+  // Arabic harakat, hamza (often left untyped), superscript alef and tatweel. A kana's voicing mark is
+  // not an accent ("シ" is not "ジ"), so those pairs are recomposed; Hangul stays
+  // split, so "가" still finds "각".
   function fold(s) {
     return (s || "")
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "");
+      .replace(/[\u0300-\u036f\u0640\u064b-\u065f\u0670]/g, "")
+      .replace(/[\u3040-\u30ff][\u3099\u309a]/g, (kana) => kana.normalize("NFC"));
   }
 
   function load() {

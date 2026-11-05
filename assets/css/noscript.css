@@ -1,5 +1,28 @@
+/* Without JavaScript the phone menu cannot be toggled: show it in the header's
+   flow, not over the page, and hide the dead trigger. */
 @media (max-width: 684px) {
+  .header__inner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  /* A long label wraps the group under the logo, not the logo away. */
+  .header__right {
+    flex-wrap: wrap;
+    max-width: 100%;
+    margin-inline-start: auto;
+  }
+
   .menu:not(.menu--ready) {
     display: block;
+    position: static;
+    flex-basis: 100%;
+    order: 1;
+    padding: 10px 0 0;
+    overflow-wrap: anywhere;
+  }
+
+  .menu-trigger {
+    display: none;
   }
 }

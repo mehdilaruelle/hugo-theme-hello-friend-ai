@@ -13,14 +13,7 @@
 
 {{- $img := "" -}}
 {{- if not $remote -}}
-  {{- /* Get first: GetMatch reads "x [1].jpg" as a glob. */ -}}
-  {{- with $page.Resources.Get $src -}}
-    {{- $img = . -}}
-  {{- else with $page.Resources.GetMatch $src -}}
-    {{- $img = . -}}
-  {{- else -}}
-    {{- with resources.Get $src -}}{{- $img = . -}}{{- end -}}
-  {{- end -}}
+  {{- $img = partial "find-resource.html" (dict "page" $page "src" $src) -}}
 {{- end -}}
 
 {{- $maxWidth := int (float (.maxWidth | default site.Params.imageMaxWidth | default 0)) -}}
