@@ -1,21 +1,5 @@
-{{- /*
-  The resource a local image path names: the page's own file, else one under
-  assets/. "" when neither has it. Called with (dict "page" . "src" "...").
-
-  Get first, then GetMatch: GetMatch reads its argument as a glob, so
-  "photo [1].png" matches "photo 1.png", or nothing. The picture on the page
-  (image.html) and the one on its social card (social-image.html) both come
-  from here, so the two cannot name different files again.
-*/ -}}
-{{- $found := "" -}}
-{{- with .page -}}
-  {{- with .Resources.Get $.src -}}
-    {{- $found = . -}}
-  {{- else with .Resources.GetMatch $.src -}}
-    {{- $found = . -}}
-  {{- end -}}
-{{- end -}}
-{{- if not $found -}}
-  {{- with resources.Get .src -}}{{- $found = . -}}{{- end -}}
-{{- end -}}
-{{- return $found -}}
+{{- /* The resource a local path names: the page's, else under assets/; "" if
+       none. Get before GetMatch, which reads "photo [1].png" as a glob. */ -}}
+{{- $r := "" -}}
+{{- with .page }}{{ $r = or (.Resources.Get $.src) (.Resources.GetMatch $.src) }}{{ end -}}
+{{- return or $r (resources.Get .src) "" -}}
