@@ -4,7 +4,7 @@
        a list inside the h1 and lost its "1.". The same goes for a rule ("---"),
        a code fence ("```" with no closing run) and a link reference definition
        ("[a]: /b"), which rendered as an hr, a code block or nothing at all. */ -}}
-{{- /* $ too: with passthrough on, "($$) or ($$$$)" became a block of maths. */ -}}
+{{- /* $ too, or passthrough reads "($$)" as maths. */ -}}
 {{- $t := partial "escape-lt.html" (dict "text" (strings.TrimLeft " \t" .text) "with" .with "dollar" true) -}}
 {{- $t = replaceRE `^(\d{1,9})([.)])(\s|$)` `${1}\${2}${3}` $t -}}
 {{- $t = replaceRE `^([#>+*-])(\s|$)` `\${1}${2}` $t -}}
