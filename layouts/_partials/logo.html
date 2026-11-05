@@ -1,9 +1,8 @@
-{{- /* The home's directory: under uglyURLs the home is /sub/index.html. */ -}}
+{{- /* The home's directory (uglyURLs: /sub/index.html). */ -}}
 {{- $base := replaceRE `[^/]*$` "" .Site.Home.RelPermalink -}}
 {{- $home := .Site.Home.RelPermalink -}}
 {{- with .Site.Params.Logo.LogoHomeLink -}}
-  {{- /* Local, it is joined to this language's home. Only the path: JoinPath
-         encodes ? and #. */ -}}
+  {{- /* Local: joined to the home, path only (JoinPath encodes ? and #). */ -}}
   {{- if partial "is-remote.html" . -}}
     {{- $home = . -}}
   {{- else -}}
