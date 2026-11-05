@@ -25,7 +25,7 @@
 {{- $authorNode := dict -}}
 {{- with $author -}}
   {{- $authorNode = cond $guest (dict "@type" "Person" "name" .) $person -}}
-  {{- /* Several names are several people, not one person called "Ann, Bob". */ -}}
+  {{- /* One Person per name. */ -}}
   {{- if and $guest (reflect.IsSlice $.Params.author) -}}
     {{- $authorNode = slice -}}
     {{- range $.Params.author -}}

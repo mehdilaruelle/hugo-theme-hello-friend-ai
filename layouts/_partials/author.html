@@ -1,5 +1,4 @@
-{{- /* The page's author name, else the site's; "" when there is none. A string,
-       a map with a name key, or a list of either, joined with commas.
+{{- /* Page author, else site author, else "": a string, a {name} map or a list.
        Not cond: .name fails on a string. */ -}}
 {{- $author := (partial "site-author.html" .).name -}}
 {{- with .Params.author -}}

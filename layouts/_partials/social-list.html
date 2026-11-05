@@ -1,5 +1,4 @@
-{{- /* The table entries of params.social (passed in); anything else is skipped.
-       A plain value cannot be ranged over: it warns and yields nothing. */ -}}
+{{- /* The table entries of params.social; a plain value warns. */ -}}
 {{- $out := slice -}}
 {{- if or (reflect.IsSlice .) (reflect.IsMap .) -}}
   {{- range . -}}

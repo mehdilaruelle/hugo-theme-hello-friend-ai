@@ -1,6 +1,4 @@
-# Table params written as plain values (logo = "img/logo.png"): each has to
-# warn, not abort. Apart from param-shapes.toml, which holds [params.logo].
-# Its content has a page param build that is not a table, and an author list.
+# Table params as plain values (logo = "img/logo.png"): warn, not abort.
 baseURL = "https://example.com/subpath/"
 title   = "Param shapes"
 theme   = "hello-friend-ai"

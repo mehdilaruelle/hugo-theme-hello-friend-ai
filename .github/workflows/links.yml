@@ -651,8 +651,7 @@ jobs:
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
-          # A table param written as a plain value, and a page param named
-          # build that is not a table: built on their own, see the fixture.
+          # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
             --config ../.github/fixtures/param-shapes-plain.toml \
             --contentDir ../.github/fixtures/param-shapes-plain 2>&1) || { echo "$out"; exit 1; }

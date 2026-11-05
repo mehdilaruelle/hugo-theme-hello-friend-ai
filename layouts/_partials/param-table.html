@@ -1,6 +1,4 @@
-{{- /* site.Params.<name> (lowercased) if it is a table, else an empty one.
-       A plain value (logo = "img/logo.png", as other themes take it) ended
-       the build; it now warns once (partialCached) and reads as unset. */ -}}
+{{- /* site.Params.<name> if a table, else empty: a plain value warns once. */ -}}
 {{- $value := index site.Params . -}}
 {{- $table := dict -}}
 {{- if reflect.IsMap $value -}}
