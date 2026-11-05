@@ -63,7 +63,7 @@ other = "نسخ"
 other = "تم النسخ"
 
 [copyCodeFailed]
-other = "اضغط Ctrl+C"
+other = "انسخه يدويًا"
 
 # Search
 #

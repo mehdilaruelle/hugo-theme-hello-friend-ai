@@ -61,7 +61,7 @@ other = "複製"
 other = "已複製"
 
 [copyCodeFailed]
-other = "請按 Ctrl+C"
+other = "請手動複製"
 
 # Search
 #

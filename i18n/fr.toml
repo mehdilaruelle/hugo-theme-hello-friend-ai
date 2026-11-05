@@ -52,7 +52,7 @@ other = "Copier"
 other = "Copié"
 
 [copyCodeFailed]
-other = "Faites Ctrl+C"
+other = "Copiez à la main"
 
 # Search
 #

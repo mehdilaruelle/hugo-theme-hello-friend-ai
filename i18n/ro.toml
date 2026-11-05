@@ -64,7 +64,7 @@ other = "Copiază"
 other = "Copiat"
 
 [copyCodeFailed]
-other = "Apasă Ctrl+C"
+other = "Copiază manual"
 
 # Search
 #
