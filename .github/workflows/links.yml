@@ -483,7 +483,9 @@ jobs:
           check tags/go/index.html More=true Tags=true
           check about/index.html
           # uglyURLs: a list page is tags/index.html, its menu url /tags/.
-          HUGO_UGLYURLS=true hugo --themesDir ../.. --gc --minify --destination public-menu-ugly \
+          # The logo: no /index.html/ link, and "#top" stays as given.
+          HUGO_UGLYURLS=true HUGO_PARAMS_LOGO_LOGOHOMELINK="#top" \
+            hugo --themesDir ../.. --gc --minify --destination public-menu-ugly \
             --config config.toml,../.github/fixtures/menu-current.toml \
             --baseURL "https://example.com/subpath/"
           ugly() { node ../.github/scripts/check-invariants.mjs public-menu-ugly menu-current "$@"; }
@@ -492,6 +494,9 @@ jobs:
           ugly posts/index.html Posts=page
           ugly posts/2014/03/migrate-to-hugo-from-jekyll.html Posts=true
           ugly tags/go.html More=true Tags=true
+          node ../.github/scripts/check-links.mjs public-menu-ugly https://example.com/subpath/
+          grep -q '<a href=/subpath/#top>' public-menu-ugly/posts/index.html \
+            || { echo "  BAD  the logo does not link /subpath/#top"; exit 1; }
           # More has two entries, unlike the demos' submenus.
           node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
 
@@ -629,13 +634,6 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
           grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
             || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
-          # uglyURLs: no /index.html/ link, and "#top" stays as given.
-          HUGO_UGLYURLS=true HUGO_PARAMS_LOGO_LOGOHOMELINK="#top" hugo --themesDir ../.. --gc --minify \
-            --destination public-logo-ugly --config config.toml,../.github/fixtures/menu-current.toml \
-            --baseURL "https://example.com/subpath/"
-          node ../.github/scripts/check-links.mjs public-logo-ugly https://example.com/subpath/
-          grep -q '<a href=/subpath/#top>' public-logo-ugly/posts/index.html \
-            || { echo "  BAD  the logo does not link /subpath/#top"; exit 1; }
 
       # Built on the showcase, which holds the logo files.
       - name: Check a logo with a dark variant, and an inlined one
