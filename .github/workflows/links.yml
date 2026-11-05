@@ -349,8 +349,7 @@ jobs:
             [ "$(count "$m" "$off_quoted")" = 0 ] || { echo "  BAD  $m is on under comments: \"false\""; bad=1; }
           done
           [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
-          # Commento takes a <div> to fill, Comentario 3 a web component: told
-          # apart by the script's name. The same page, with each.
+          # Commento fills a <div>, Comentario 3 a web component.
           [ "$(count 'data-id-root' "$on")" = 1 ] && [ "$(count '<comentario-comments>' "$on")" = 0 ] \
             || { echo "  BAD  a Commento script does not get exactly the Commento markup"; bad=1; }
           HUGO_PARAMS_COMMENTO_URL="https://comments.example.org/comentario.js" \
@@ -359,7 +358,7 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-comentario > /dev/null
           f=public-comentario/posts/2026/01/a-video-where-a-gif-used-to-be/index.html
           [ "$(count '<comentario-comments></comentario-comments>' "$f")" = 1 ] && [ "$(count 'data-id-root' "$f")" = 0 ] \
-            || { echo "  BAD  a comentario.js script does not get one <comentario-comments> and no data-id-root"; bad=1; }
+            || { echo "  BAD  comentario.js does not get one <comentario-comments> and no data-id-root"; bad=1; }
           [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
           exit "$bad"
 

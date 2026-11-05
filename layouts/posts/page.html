@@ -118,17 +118,9 @@
           {{- with $commento.Scheme }}{{ $origin = printf "%s:%s" . $origin }}{{ end -}}
         <link rel="preconnect" href="{{ $origin }}">
         {{- end }}
-        {{- /* Comentario 3 is a web component: its script draws into a
-               <comentario-comments> element and ignores the <div> Commento
-               (and Comentario 2) fill, so with Commento's markup it drew
-               nothing. Told apart by params.commento.provider, else by the
-               script's name: Comentario 3 serves comentario.js, Commento
-               js/commento.js. */ -}}
-        {{- $provider := lower (.Site.Params.Commento.provider | default "") -}}
-        {{- if not $provider -}}
-          {{- $provider = cond (eq (lower (path.Base (replaceRE `[?#].*$` "" .Site.Params.Commento.Url))) "comentario.js") "comentario" "commento" -}}
-        {{- end }}
-        {{- if eq $provider "comentario" }}
+        {{- /* Comentario 3 (comentario.js) draws into a web component, not
+               the <div> Commento fills. */ -}}
+        {{- if strings.HasSuffix (lower (replaceRE `[?#].*$` "" .Site.Params.Commento.Url)) "comentario.js" }}
         <script defer src="{{ .Site.Params.Commento.Url }}"></script>
         <comentario-comments></comentario-comments>
         {{- else }}
