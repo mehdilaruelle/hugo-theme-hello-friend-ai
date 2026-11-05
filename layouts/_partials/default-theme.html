@@ -1,5 +1,4 @@
-{{- /* params.defaultTheme as "dark", "light" or "" (follow the system). Any
-       other value matched no CSS rule and left the toggle's state wrong. */ -}}
+{{- /* params.defaultTheme as "dark", "light" or "" (system); anything else is "". */ -}}
 {{- $theme := lower (printf "%v" (site.Params.defaultTheme | default "")) -}}
 {{- if not (in (slice "dark" "light" "" "auto" "system") $theme) -}}
   {{- warnidf "default-theme-value" "params.defaultTheme: %q is not \"dark\" or \"light\", so the page follows the system." site.Params.defaultTheme -}}
