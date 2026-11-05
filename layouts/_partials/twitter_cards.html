@@ -40,7 +40,7 @@
         {{- /* The last segment is the handle; a host has a dot, a handle never. */ -}}
         {{- $candidate := "" -}}
         {{- with partial "parse-url.html" $url }}{{ $candidate = path.Base (strings.TrimSuffix "/" .Path) }}{{ end -}}
-        {{- if not (strings.Contains $candidate ".") -}}
+        {{- if and $candidate (not (strings.Contains $candidate ".")) -}}
           {{- $handle = $candidate -}}
         {{- end -}}
       {{- end -}}
