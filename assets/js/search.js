@@ -26,7 +26,7 @@
 
   // Accents are a spelling detail: "resume" finds "résumé", "تتكون" finds
   // "تتكوّن". NFD splits the marks off, the range strips Latin ones and the
-  // Arabic harakat, superscript alef and tatweel. A kana's voicing mark is
+  // Arabic harakat, hamza (often left untyped), superscript alef and tatweel. A kana's voicing mark is
   // not an accent ("シ" is not "ジ"), so those pairs are recomposed; Hangul stays
   // split, so "가" still finds "각".
   function fold(s) {

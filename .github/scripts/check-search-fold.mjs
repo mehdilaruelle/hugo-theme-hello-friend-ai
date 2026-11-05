@@ -19,6 +19,8 @@ const cases = [
   ["RESUME", "Résumé", true],
   ["تتكون", "تتكوّن", true],    // Arabic, typed without the shadda
   ["مرحبا", "مرحـــبا", true],   // tatweel
+  ["سال", "سأل", true],         // hamza, as Arabic search usually folds it
+  ["هذا", "هٰذا", true],         // superscript alef
   ["シ", "ジ", false],          // a voicing mark makes another kana
   ["가", "각", true],           // a Hangul prefix still matches
 ];
