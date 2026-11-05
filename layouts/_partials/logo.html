@@ -1,10 +1,17 @@
+{{- /* The home's directory: under uglyURLs the home is /sub/index.html. */ -}}
+{{- $base := replaceRE `[^/]*$` "" .Site.Home.RelPermalink -}}
 {{- $home := .Site.Home.RelPermalink -}}
 {{- with .Site.Params.Logo.LogoHomeLink -}}
-  {{- /* Local, it is joined to this language's home, not to the base URL. */ -}}
+  {{- /* Local, it is joined to this language's home. Only the path: JoinPath
+         encodes ? and #. */ -}}
   {{- if partial "is-remote.html" . -}}
     {{- $home = . -}}
   {{- else -}}
-    {{- $home = urls.JoinPath $home . -}}
+    {{- with (try (urls.Parse .)).Value -}}
+      {{- $home = urls.JoinPath $base .EscapedPath -}}
+      {{- with .RawQuery }}{{ $home = printf "%s?%s" $home . }}{{ end -}}
+      {{- with .EscapedFragment }}{{ $home = printf "%s#%s" $home . }}{{ end -}}
+    {{- end -}}
   {{- end -}}
 {{- end }}
 <a href="{{ $home }}">
@@ -67,7 +74,7 @@
                    directory together. */ -}}
             {{- $cursorPath := partial "switch.html" .Site.Params.Logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
-                  {{- if $cursorPath }} data-base="{{ site.Home.RelPermalink }}"{{ end }}>
+                  {{- if $cursorPath }} data-base="{{ $base }}"{{ end }}>
                 {{ with .Site.Params.Logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
             <span class="logo__cursor">
             </span>
