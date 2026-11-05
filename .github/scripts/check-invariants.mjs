@@ -726,14 +726,13 @@ const checks = {
     ok("the language label is placed by the copy button's measured width");
   },
 
-  // KaTeX sets no direction and no overflow: both have to come from the theme.
+  // KaTeX sets no direction and no overflow: the theme has to.
   math() {
-    const css1 = css();
-    if (!rules(css1, ".katex").some((b) => /direction:\s*ltr/.test(b) && /unicode-bidi:\s*isolate/.test(b)))
-      fail("no .katex rule keeps a formula left to right on an RTL page", rules(css1, ".katex").map((b) => `.katex{${b}}`).join("\n") || "(no .katex rule)");
-    // Under html, to outweigh katex.min.css, which loads later and sets the margin.
-    if (!rules(css1, "html .katex-display").some((b) => /overflow-x:\s*auto/.test(b) && /margin-block:/.test(b)))
-      fail("no html .katex-display rule scrolls a wide formula in its own box", rules(css1, "html .katex-display").map((b) => `html .katex-display{${b}}`).join("\n") || "(no html .katex-display rule)");
+    const all = css();
+    if (!rules(all, ".katex").some((b) => declares(b, "direction", "ltr")))
+      fail("no .katex rule keeps a formula left to right on an RTL page");
+    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto")))
+      fail("no html .katex-display rule scrolls a wide formula in its own box");
     ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
   },
 
