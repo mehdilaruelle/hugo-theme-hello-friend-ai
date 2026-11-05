@@ -14,7 +14,7 @@
     {{- end -}}
   {{- end -}}
 {{- end }}
-<a href="{{ $home }}">
+<a href="{{ partial "safe-href.html" $home }}">
     <div class="logo">
         {{ with .Site.Params.Logo.path }}
             {{- $logo := site.Params.Logo -}}

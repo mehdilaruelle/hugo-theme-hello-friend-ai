@@ -297,6 +297,7 @@ handshake.
 
 [params.commento]
   url = "https://commento.example.com/js/commento.js"
+  # Comentario 3: url = "https://comments.example.com/comentario.js"
 
 [params.utterances]
   repository = "owner/repo"
@@ -310,7 +311,7 @@ Only `repository` is required: `issueTerm` defaults to `pathname` and `theme` to
 | key | what it does |
 | --- | --- |
 | `services.disqus.shortname` | the Disqus site name |
-| `params.commento.url` | the script URL of your Commento or [Comentario](https://comentario.app) instance |
+| `params.commento.url` | the script URL of your Commento or [Comentario](https://comentario.app) instance. A script named `comentario.js` (Comentario 3) gets `<comentario-comments>`, any other Commento's `<div>` |
 | `params.utterances.repository` | the public `owner/repo` holding the issues |
 | `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, or a specific term. A number is a term too, searched for in issue titles: utterances opens a given issue only through its `issue-number` attribute, which the theme does not set |
 | `params.utterances.label` | a label put on the issues utterances opens. Optional: the attribute is omitted when unset |
@@ -888,7 +889,7 @@ with one entry per network:
 | key | what it does |
 | --- | --- |
 | `name` | which icon to draw, matched case-insensitively and trimmed. See [docs/svgs.md](svgs.md) for the names the theme has |
-| `url` | where the link goes |
+| `url` | where the link goes, with any scheme (`xmpp:`, `matrix:`, `tel:`…) except `javascript:`, `vbscript:` and `data:`, dropped with a warning. Menu `url`s and `logoHomeLink` follow the same rule |
 | `newTab` | open the link in a new tab. **Default `false`**: the link replaces the page, and the visitor's back button still works. Quoted values count — `"false"` is off, like the boolean |
 | `rel` | extra `rel` tokens, added after the `me noopener` the theme always writes |
 | `label` | what the link is called, for a screen reader and for the tooltip. Defaults to the network's own spelling — see below |
@@ -1093,7 +1094,8 @@ browser over that array.
 Every word typed has to appear somewhere in the page — two words narrow the
 result rather than widening it. Case is ignored, and so are accents: *resume*
 finds *résumé*, because a reader searching for a word is not making that
-distinction. A hit in the title counts for more than one in the body, and a
+distinction. So are Arabic vowel marks, hamza and the tatweel; a kana's voicing mark is
+not: *シ* does not find *ジ*. A hit in the title counts for more than one in the body, and a
 hit in a tag for more than that; ties are broken by date, newest first.
 
 Each language gets its own index and searches only itself.

@@ -123,6 +123,8 @@
 
   .dropdown-content a {
     padding: 12px 20px;
+    // Drop .menu a's margin on every entry, not just the last.
+    margin: 0;
     text-decoration: none;
     display: block;
     text-align: start;
@@ -156,6 +158,11 @@
     display: block;
   }
 
+  // Set by menu.js on Escape.
+  .dropdown.dropdown--dismissed .dropdown-content {
+    display: none;
+  }
+
   // A floating panel opens past the right-aligned mobile menu, and
   // :focus-within never fires on a parent that is a link: a tap activates it.
   @media #{$media-size-phone} {
@@ -167,6 +174,11 @@
       display: block;
       position: static;
       white-space: normal;
+    }
+
+    // Desktop Escape does not hide the phone menu.
+    .dropdown.dropdown--dismissed .dropdown-content {
+      display: block;
     }
 
     .dropdown-content a {
