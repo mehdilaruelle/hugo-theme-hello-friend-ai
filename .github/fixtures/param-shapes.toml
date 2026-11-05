@@ -9,8 +9,7 @@
   [params.portrait]
     maxWidth = "120 px"
 
-# Schemes html/template does not trust: each became href="#ZgotmplZ". They
-# have to be written as given, and javascript: left out with a warning.
+# Schemes html/template turned into #ZgotmplZ; javascript: must be dropped.
 [[params.social]]
   name = "xmpp"
   url  = "xmpp:jane@example.com"

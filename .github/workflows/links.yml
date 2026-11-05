@@ -642,7 +642,7 @@ jobs:
           done
           ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
           node ../.github/scripts/check-markup.mjs public-shapes
-          echo "  a contact scheme is written as given, and javascript: left out"
+          echo "  contact schemes as given, javascript: dropped"
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done

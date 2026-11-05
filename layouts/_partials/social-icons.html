@@ -25,10 +25,8 @@
        named. See that file for why humanize alone was not enough. */ -}}
 {{- $name := lower (trim (.name | default "") " \t\r\n") -}}
 {{- with $label }}{{ else }}{{- $label = or (index hugo.Data.socialNames $name) (humanize .name) -}}{{- end -}}
-{{- /* xmpp:, matrix:, sgnl: and the rest, which html/template would turn
-       into #ZgotmplZ. A refused one (javascript:) is left out. */ -}}
-{{- $href := "" -}}
-{{- with .url }}{{ $href = partial "safe-href.html" . }}{{ end -}}
+{{- /* A refused url (javascript:) leaves the entry out. */ -}}
+{{- $href := partial "safe-href.html" (.url | default "") -}}
 {{- if or $href (not .url) -}}
     &nbsp; <a href="{{ $href }}"{{ if $newTab }} target="_blank"{{ end }} rel="me noopener{{ with .rel }} {{ . }}{{ end }}" title="{{ $label }}" aria-label="{{ $label }}">{{- /* The icon is decoration: the anchor is already named above, and
        announcing the glyph as well would say everything twice. Hidden on a
