@@ -573,7 +573,7 @@ jobs:
         run: |
           node .github/scripts/check-invariants.mjs showcaseSite/public content-width 960px
           node .github/scripts/check-invariants.mjs exampleSite/public content-width
-          # The fallback faces cover Inter's scripts only, or they rescale Arabic for good.
+          # Fallback faces cover Inter's scripts only, so Arabic is not rescaled.
           grep -q 'font-family:inter fallback;[^}]*unicode-range:' showcaseSite/public/main-*.css \
             || { echo "  BAD  an Inter fallback face with no unicode-range"; exit 1; }
 

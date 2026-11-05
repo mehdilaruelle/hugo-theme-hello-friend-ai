@@ -73,8 +73,7 @@
       {{- with .weight -}}
         {{- $weight = printf "font-weight:%s;" . -}}
       {{- end -}}
-      {{- /* Inter's scripts only: the metrics were measured for them, and
-             would otherwise rescale every other script (Arabic) for good. */ -}}
+      {{- /* Inter's scripts only: its metrics would rescale others (Arabic). */ -}}
       {{- $range := "U+0000-052F,U+1C80-1C8A,U+1D00-1FFF,U+2000-23FF,U+2423,U+2460-27FF,U+2B06-2B1C,U+2C60-2C7F,U+2DE0-2E18,U+A640-A69F,U+A720-A7FF,U+FE20-FE2F,U+FEFF,U+FFFD" -}}
       {{- $css = printf "%s@font-face{font-family:\"Inter fallback\";%ssrc:%s;size-adjust:%s;ascent-override:%s;descent-override:%s;line-gap-override:%s;unicode-range:%s}" $css $weight (delimit $src ",") $sizeAdjust $ascent $descent $lineGap $range -}}
     {{- end -}}
