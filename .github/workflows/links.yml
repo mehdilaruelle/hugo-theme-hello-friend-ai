@@ -522,6 +522,10 @@ jobs:
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
+          # A tag only a render: link page carries: not listed, noindex, not in the sitemap.
+          p=public-series
+          ! grep -q 'never-written' $p/tags/index.html $p/sitemap.xml || { echo "  BAD  an empty term is listed"; exit 1; }
+          grep -q '<meta name=robots content="noindex' $p/tags/never-written/index.html || { echo "  BAD  an empty term is indexable"; exit 1; }
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
             --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
             --config config.toml,../.github/fixtures/series-off.toml

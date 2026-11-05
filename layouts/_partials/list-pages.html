@@ -4,4 +4,10 @@
 {{- /* Newest first: Hugo's default order puts weight before date. */ -}}
 {{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- else -}}{{- $pages = $pages.ByDate.Reverse -}}{{- end -}}
 {{- $pages = where (where $pages "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
+{{- /* A term all of whose pages were filtered out has nothing to list. */ -}}
+{{- if eq $.Kind "taxonomy" -}}
+  {{- $kept := slice -}}
+  {{- range $pages }}{{ if partial "list-pages.html" . }}{{ $kept = $kept | append .Permalink }}{{ end }}{{ end -}}
+  {{- $pages = where $pages "Permalink" "in" $kept -}}
+{{- end -}}
 {{- return $pages -}}
