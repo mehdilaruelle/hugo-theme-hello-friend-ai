@@ -120,7 +120,7 @@
         {{- end }}
         {{- /* Comentario 3 (comentario.js) draws into a web component, not
                the <div> Commento fills. */ -}}
-        {{- if strings.HasSuffix (lower (replaceRE `[?#].*$` "" .Site.Params.Commento.Url)) "comentario.js" }}
+        {{- if eq (lower (path.Base $commento.Path)) "comentario.js" }}
         <script defer src="{{ .Site.Params.Commento.Url }}"></script>
         <comentario-comments></comentario-comments>
         {{- else }}

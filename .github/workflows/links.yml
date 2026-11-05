@@ -358,7 +358,8 @@ jobs:
             --baseURL "https://example.com/subpath/showcase/" --destination public-comentario > /dev/null
           f=public-comentario/posts/2026/01/a-video-where-a-gif-used-to-be/index.html
           [ "$(count '<comentario-comments></comentario-comments>' "$f")" = 1 ] && [ "$(count 'data-id-root' "$f")" = 0 ] \
-            || { echo "  BAD  comentario.js does not get one <comentario-comments> and no data-id-root"; bad=1; }
+            && [ "$(count 'comments.example.org/comentario.js' "$f")" = 1 ] \
+            || { echo "  BAD  comentario.js does not get its script, one <comentario-comments> and no data-id-root"; bad=1; }
           [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
           exit "$bad"
 
