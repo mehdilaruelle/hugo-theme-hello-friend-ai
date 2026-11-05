@@ -889,7 +889,7 @@ with one entry per network:
 | key | what it does |
 | --- | --- |
 | `name` | which icon to draw, matched case-insensitively and trimmed. See [docs/svgs.md](svgs.md) for the names the theme has |
-| `url` | where the link goes |
+| `url` | where the link goes, with any scheme (`xmpp:`, `matrix:`, `tel:`…) except `javascript:`, `vbscript:` and `data:`, dropped with a warning. Menu `url`s and `logoHomeLink` follow the same rule |
 | `newTab` | open the link in a new tab. **Default `false`**: the link replaces the page, and the visitor's back button still works. Quoted values count — `"false"` is off, like the boolean |
 | `rel` | extra `rel` tokens, added after the `me noopener` the theme always writes |
 | `label` | what the link is called, for a screen reader and for the tooltip. Defaults to the network's own spelling — see below |

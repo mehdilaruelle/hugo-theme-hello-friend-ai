@@ -651,7 +651,14 @@ jobs:
         run: |
           out=$(hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
+          for want in 'href="xmpp:jane@example.com"' 'href="matrix:u/jane:example.com"' \
+                      'href="sgnl://signal.me/#p/&#43;33123456789"' 'href="tel:&#43;33123456789"'; do
+            grep -qF "$want" public-shapes/index.html || { echo "  BAD  no $want"; exit 1; }
+          done
+          ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
+          node ../.github/scripts/check-markup.mjs public-shapes
+          echo "  contact schemes as given, javascript: dropped"
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
 
