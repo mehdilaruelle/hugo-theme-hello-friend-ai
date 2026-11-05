@@ -1,25 +1,6 @@
-{{- /*
-  urls.Parse, for a URL as a site writes it. Returns the parsed URL, or "" for
-  one that cannot be read at all.
-
-  urls.Parse ends the build on a % that starts no escape, and a file name with
-  a percent sign in it is ordinary: cover: "img/50%off.png". Such a % is read
-  as itself, escaped to %25, which is the address the file is published at;
-  the escapes that are valid are kept as written. Anything still unparsable
-  ("http://[::1") gives "", and each caller decides what that means.
-*/ -}}
-{{- $raw := printf "%v" . -}}
+{{- /* urls.Parse, or "" if unparsable. A % that starts no escape
+       ("img/50%off.png") reads as itself (%25) instead of ending the build. */ -}}
+{{- $s := replace (replaceRE `%([0-9A-Fa-f]{2})` "\x00$1" (printf "%v" .)) "%" "%25" -}}
 {{- $u := "" -}}
-{{- with try (urls.Parse $raw) -}}
-  {{- if .Err -}}
-    {{- /* \x00 cannot be in a URL, so it can hold a valid escape's place. */ -}}
-    {{- $fixed := replace (replaceRE `%([0-9A-Fa-f]{2})` "\x00$1" $raw) "%" "%25" -}}
-    {{- $fixed = replace $fixed "\x00" "%" -}}
-    {{- with try (urls.Parse $fixed) -}}
-      {{- if not .Err }}{{ $u = .Value }}{{ end -}}
-    {{- end -}}
-  {{- else -}}
-    {{- $u = .Value -}}
-  {{- end -}}
-{{- end -}}
+{{- with try (urls.Parse (replace $s "\x00" "%")) }}{{ if not .Err }}{{ $u = .Value }}{{ end }}{{ end -}}
 {{- return $u -}}

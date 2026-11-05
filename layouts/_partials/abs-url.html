@@ -1,6 +1,5 @@
 {{- /* Joins a local path to the base URL (keeping the subpath absURL drops).
-       The query and fragment are split off first: JoinPath would encode ? and #.
-       One parse-url.html cannot read at all is returned as written. */ -}}
+       The query and fragment are split off first: JoinPath would encode ? and #. */ -}}
 {{- $url := printf "%v" . -}}
 {{- if not (partial "is-remote.html" $url) -}}
   {{- with partial "parse-url.html" $url -}}

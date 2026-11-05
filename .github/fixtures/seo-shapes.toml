@@ -1,8 +1,7 @@
 # So the h1 renders the emoji code in posts/shipping.md.
 enableEmoji = true
 
-# A % that starts no escape, which urls.Parse refuses: the pictures and the
-# audio of posts/percent, and this profile URL, each ended the build.
+# A stray % (here and in posts/percent.md) ended the build in urls.Parse.
 [[params.social]]
   name = "mastodon"
   url  = "https://mastodon.example/@jane%zz"
