@@ -488,7 +488,7 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
-          # A stray % used to end the build in urls.Parse.
+          # A stray % must not end the build.
           f=public-seo-shapes/posts/2026/10/half-price-a-file-name-with-a-percent-sign/index.html
           for want in '<meta property="og:image" content="https://example.com/img/50%25off.png">' \
                       '<source src=https://example.com/audio/50%25off.mp3>'; do

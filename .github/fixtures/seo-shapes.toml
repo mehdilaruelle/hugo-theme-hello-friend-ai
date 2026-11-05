@@ -1,7 +1,7 @@
 # So the h1 renders the emoji code in posts/shipping.md.
 enableEmoji = true
 
-# A stray % (here and in posts/percent.md) ended the build in urls.Parse.
+# A stray % (also in posts/percent.md) must not end the build.
 [[params.social]]
   name = "mastodon"
   url  = "https://mastodon.example/@jane%zz"
