@@ -65,7 +65,7 @@
 	       author, whose profile this is not. */ -}}
 	{{- $author := partial "author.html" . }}
 	{{- if and $author (eq $author (partial "site-author.html" .).name) }}
-		<meta property="article:author" content="{{ site.Home.Permalink }}">
+		<meta property="article:author" content="{{ site.Home.Permalink | default site.BaseURL }}">
 	{{- end }}
 	{{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
 	{{- with .PublishDate }}

@@ -245,6 +245,20 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public toc
 
       # Valid markup either way, so nothing else notices it.
+      # The font preload stayed absolute under relativeURLs (fetched twice), and
+      # with no home page the Person and article:author had an empty URL.
+      - name: Check head URLs under relativeURLs and with no home page
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          HUGO_RELATIVEURLS=true hugo --themesDir ../.. --gc --minify --destination public-relative
+          ! grep -q 'rel=preload href=https://example.com' public-relative/index.html \
+            || { echo "  BAD  an absolute font preload under relativeURLs"; exit 1; }
+          HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify --destination public-no-home
+          f=public-no-home/posts/2014/03/migrate-to-hugo-from-jekyll/index.html
+          ! grep -qE '"url":""|"@id":"#person"|article:author content=""' "$f" \
+            || { echo "  BAD  an empty author URL with no home page"; exit 1; }
+          echo "  head URLs are relative or complete"
+
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
