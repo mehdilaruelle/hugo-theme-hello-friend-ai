@@ -19,7 +19,8 @@
   }
 }
 
-.alert-title {
+// Children only: > [!TITLE] makes a container .alert-title.
+.alert > .alert-title {
   color: var(--alert-color);
   font-weight: 600;
   margin: 0 0 0.5em;
@@ -33,7 +34,7 @@ details.alert:not([open]) > summary.alert-title {
   margin-bottom: 0;
 }
 
-.alert-icon svg {
+.alert-title > .alert-icon svg {
   width: 1em;
   height: 1em;
   vertical-align: -0.125em;

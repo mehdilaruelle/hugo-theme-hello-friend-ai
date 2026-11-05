@@ -311,6 +311,9 @@ const checks = {
       "details[open].note:Open to begin with", "div.important:Important", "div.danger:Danger", "div.tip:Tip"];
     if (got.join("|") !== want.join("|")) fail(`${page}: the alerts read`, got.join("\n"));
     if ([...html.matchAll(tagRe("blockquote"))].length !== 1) fail(`${page}: a plain blockquote was not left alone`);
+    // > [!TITLE] and > [!ICON] give the container these class names.
+    for (const sel of [".alert-title", ".alert-icon svg"])
+      if (rules(css(), sel).length) fail(`a bare ${sel} rule styles an alert whose type is its name`);
     ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
   },
 
