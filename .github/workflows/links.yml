@@ -488,6 +488,8 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
+          node ../.github/scripts/check-invariants.mjs public-seo-shapes title-plain \
+            posts/2026/10/cheap-or-dear/index.html 'Cheap ($$) or dear ($$$$)?'
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite
