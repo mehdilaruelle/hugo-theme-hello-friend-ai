@@ -26,9 +26,9 @@
   }
 
   const readStoredTheme = () => withStorage((s) => s.getItem("theme"));
-  const storeTheme = (theme) => withStorage((s) => s.setItem("theme", theme));
+  const storeTheme = (theme) => withStorage((s) => (s.setItem("theme", theme), true));
   const forgetTheme = () => withStorage((s) => s.removeItem("theme"));
-  // This page's choice, if storage is blocked.
+  // This page's choice, kept only when storing it failed.
   let picked = null;
 
   function applyTheme(theme) {
@@ -46,7 +46,7 @@
 
   // Read on every call: a choice made since page load has to win.
   function detectOSColorTheme() {
-    const chosen = readStoredTheme() || picked;
+    const chosen = picked || readStoredTheme();
 
     if (chosen === "dark" || chosen === "light") {
       applyTheme(chosen);
@@ -65,8 +65,7 @@
         ? "light"
         : "dark";
 
-    picked = next;
-    storeTheme(next);
+    picked = storeTheme(next) ? null : next;
     applyTheme(next);
   }
 
