@@ -582,10 +582,17 @@ jobs:
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
-          # A tag on render: link pages only: unlisted, noindex, not in the sitemap.
+          # A tag on render: link pages only: unlisted, noindex, not in the sitemap;
+          # one with a page of its own, or with a listed post, stays.
           p=public-series
-          ! grep -q 'never-written' $p/tags/index.html $p/sitemap.xml || { echo "  BAD  an empty term is listed"; exit 1; }
+          for f in tags/index.html tags/index.xml sitemap.xml; do
+            [ -f $p/$f ] && ! grep -q 'never-written' $p/$f || { echo "  BAD  an empty term is listed in $f"; exit 1; }
+            grep -q 'tags/described/' $p/$f || { echo "  BAD  a described term is missing from $f"; exit 1; }
+          done
           grep -q '<meta name=robots content="noindex' $p/tags/never-written/index.html || { echo "  BAD  an empty term is indexable"; exit 1; }
+          for t in described tour; do
+            [ -f $p/tags/$t/index.html ] && ! grep -q 'name=robots content="noindex' $p/tags/$t/index.html || { echo "  BAD  the $t term is not indexable"; exit 1; }
+          done
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
             --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
             --config config.toml,../.github/fixtures/series-off.toml

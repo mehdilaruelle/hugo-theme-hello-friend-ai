@@ -2,7 +2,7 @@
 {{- /* Children listed whole, not one pager at a time: pagination is a reading
        aid for a screen. Taxonomies by title, as in list.html. */ -}}
 {{- $children := .Pages -}}
-{{- if eq .Kind "taxonomy" -}}{{- $children = .Pages.ByTitle -}}{{- end -}}
+{{- if eq .Kind "taxonomy" -}}{{- $children = partial "list-pages.html" . -}}{{- end -}}
 {{- $children = partial "md/pages.html" $children -}}
 {{- $desc := cond (and (not .Description) .Summary) "" (partial "description.html" .) -}}
 {{ partial "md/header.html" (dict "page" . "title" (partial "title.html" .) "desc" $desc) }}
