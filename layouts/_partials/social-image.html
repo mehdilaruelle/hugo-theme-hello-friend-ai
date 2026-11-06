@@ -63,7 +63,7 @@
 {{- with $img -}}
   {{- $url = . -}}
   {{- if not (partial "is-remote.html" $url) -}}
-    {{- with or ($.Resources.GetMatch $url) (resources.Get $url) -}}
+    {{- with partial "find-resource.html" (dict "page" $ "src" $url) -}}
       {{- $url = .Permalink -}}
       {{- if reflect.IsImageResourceWithMeta . -}}
         {{- if gt .Width 0 -}}

@@ -1,6 +1,7 @@
 # Params in a shape the theme does not read: each has to warn, not abort.
 [params]
   ogImage      = ["a.png"]
+  plausibleDataDomain = "example.org"   # without its script: src="" before
   verification = "abc"
   [params.author]
     credentials = ["x"]
@@ -8,3 +9,20 @@
     logoCursorColor = "#67a2c9}body{display:none"
   [params.portrait]
     maxWidth = "120 px"
+
+# Schemes html/template turned into #ZgotmplZ; javascript: must be dropped.
+[[params.social]]
+  name = "xmpp"
+  url  = "xmpp:jane@example.com"
+[[params.social]]
+  name = "matrix"
+  url  = "matrix:u/jane:example.com"
+[[params.social]]
+  name = "signal"
+  url  = "sgnl://signal.me/#p/+33123456789"
+[[params.social]]
+  name = "github"
+  url  = "javascript:alert(1)"
+[[menu.main]]
+  name = "Call"
+  url  = "tel:+33123456789"

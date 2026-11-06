@@ -1,9 +1,17 @@
-{{- /* The page's author name, else the site's; "" when there is none. A string
-       or a map with a name key. Not cond: .name fails on a string. */ -}}
+{{- /* Page author, else site author, else "": a string, a {name} map or a list.
+       Not cond: .name fails on a string. */ -}}
 {{- $author := (partial "site-author.html" .).name -}}
 {{- with .Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $author = .name -}}
+  {{- else if reflect.IsSlice . -}}
+    {{- $names := slice -}}
+    {{- range . -}}
+      {{- $name := . -}}
+      {{- if reflect.IsMap . }}{{ $name = .name }}{{ end -}}
+      {{- with $name }}{{ $names = $names | append (printf "%v" .) }}{{ end -}}
+    {{- end -}}
+    {{- $author = delimit $names ", " -}}
   {{- else -}}
     {{- $author = . -}}
   {{- end -}}

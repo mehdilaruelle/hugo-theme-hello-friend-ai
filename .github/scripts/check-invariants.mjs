@@ -188,6 +188,18 @@ const checks = {
     ok(`${page}: ${want.length ? want.join(", ") : "no entry is current"}`);
   },
 
+  // Submenu links fill the panel; Escape hides it on desktop.
+  "submenu-panel"() {
+    const all = css();
+    if (!rules(all, ".submenu .dropdown-content a").some((b) => declares(b, "margin", "0")))
+      fail("the submenu's links keep .menu a's margin, so all but the last stop short of the panel");
+    if (!rules(all, ".submenu .dropdown.dropdown--dismissed .dropdown-content").some((b) => declares(b, "display", "none")))
+      fail("no rule hides a submenu Escape dismissed");
+    const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).join("\n");
+    if (!/classList\.add\(["']dropdown--dismissed["']\)/.test(js)) fail("no script dismisses a submenu on Escape");
+    ok("every submenu link spans the panel, and Escape closes a panel hover or focus opened");
+  },
+
   // Each wanted block as "Name=One|*Two|Three", the current part starred.
   series(page, ...want) {
     const html = read(page);
@@ -324,6 +336,21 @@ const checks = {
       fail("the phone menu block does not set text-align:start",
            bodies.map((b) => `.menu__inner{${b}}`).join("\n") || "(no stacked .menu__inner rule)");
     ok("a submenu label follows the writing direction on a phone");
+  },
+
+  // The phone header: Tab order, spacing, and the menu without JavaScript.
+  header(page) {
+    const html = read(page);
+    const trigger = html.search(/<button\b[^>]*\bclass="?menu-trigger\b/);
+    const nav = html.search(/<nav\b[^>]*\bclass="?menu\b/);
+    if (trigger === -1 || nav === -1) fail(`${page}: no menu trigger or no menu to compare`);
+    else if (nav < trigger) fail(`${page}: the menu comes before its trigger, so Tab from the trigger skips the open panel`);
+    const all = css();
+    if (!rules(all, ".header__right").some((b) => declares(b, "gap", "10px")))
+      fail("no .header__right rule spaces the phone row with a gap");
+    if (!rules(all, ".menu:not(.menu--ready)").some((b) => declares(b, "position", "static")))
+      fail("without JavaScript, the phone menu is not in the flow of the header");
+    ok("the trigger precedes the menu, the phone row has a gap, and the no-JS menu is in the flow");
   },
 
   // A strict style-src refuses the attribute; params-css.html writes the rule.
@@ -724,6 +751,16 @@ const checks = {
     if (!/\.style\.setProperty\(\s*["']--copy-code-width["']\s*,[^)]*\.offsetWidth\b/.test(js))
       fail("no script sets --copy-code-width from the button's measured width");
     ok("the language label is placed by the copy button's measured width");
+  },
+
+  // KaTeX sets no direction and no overflow: the theme has to.
+  math() {
+    const all = css();
+    if (!rules(all, ".katex").some((b) => declares(b, "direction", "ltr") && declares(b, "unicode-bidi", "isolate")))
+      fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
+    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && b.includes("padding-block")))
+      fail("no html .katex-display rule scrolls a wide formula in its own box, with room for its limits");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
   },
 
   // Colours a static scan never sees in use (focus ring, script-written status and

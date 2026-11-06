@@ -2,16 +2,17 @@
        head.html rather than written as style attributes, which a strict
        style-src refuses. */ -}}
 {{- $css := slice -}}
+{{- $logo := partialCached "param-table.html" "logo" "logo" -}}
 {{- $cursor := "" -}}
-{{- if partial "switch.html" site.Params.Logo.logoCursorDisabled -}}
+{{- if partial "switch.html" $logo.logoCursorDisabled -}}
   {{- $cursor = "visibility:hidden;" -}}
 {{- end -}}
-{{- with site.Params.Logo.logoCursorColor -}}
+{{- with $logo.logoCursorColor -}}
   {{- with partial "css-param.html" (dict "value" . "name" "params.logo.logoCursorColor" "kind" "colour") -}}
     {{- $cursor = printf "%sbackground-color:%s;" $cursor . -}}
   {{- end -}}
 {{- end -}}
-{{- with site.Params.Logo.logoCursorAnimate -}}
+{{- with $logo.logoCursorAnimate -}}
   {{- with partial "css-param.html" (dict "value" . "name" "params.logo.logoCursorAnimate" "kind" "time") -}}
     {{- $cursor = printf "%sanimation-duration:%s;" $cursor . -}}
   {{- end -}}
@@ -20,7 +21,7 @@
   {{- $css = $css | append (printf ".logo__cursor{%s}" .) -}}
 {{- end -}}
 {{- /* Dark by the system (unless toggled light) or by the toggle. */ -}}
-{{- with site.Params.Logo.logoCursorColorDark -}}
+{{- with $logo.logoCursorColorDark -}}
   {{- with partial "css-param.html" (dict "value" . "name" "params.logo.logoCursorColorDark" "kind" "colour") -}}
     {{- $dark := printf ".logo__cursor{background-color:%s}" . -}}
     {{- $css = $css | append (printf "@media (prefers-color-scheme:dark){:root:not([data-theme=light]) %s}:root[data-theme=dark] %s" $dark $dark) -}}
