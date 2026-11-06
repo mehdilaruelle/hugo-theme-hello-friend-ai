@@ -12,8 +12,11 @@ The summary keeps `__init__` and `*args` as text.
     # line three
 {{< /faq >}}
 
-A fence left open at the end:
+A fence left open at the end, right after a closed one:
 
-```sh
+```
+first block
+```
+~~~sh
 hugo server
-~~~
+```
