@@ -25,8 +25,8 @@
                 {{- if findRE `^[0-9]+(\.[0-9]+)?px$` $width -}}
                   {{- $cap = int (mul (float (replaceRE "px$" "" $width)) 2) -}}
                 {{- end -}}
-                {{- /* sizes takes no % or var(). */ -}}
-                {{- $sizes := cond (findRE `%|var\(` $width) "" $width -}}
+                {{- /* sizes takes no var(), and no %: read as vw, its upper bound. */ -}}
+                {{- $sizes := cond (findRE `var\(` $width) "" (replaceRE "%$" "vw" $width) -}}
                 {{- $portrait := partialCached "param-table.html" "portrait" "portrait" -}}
                 {{- with $portrait.Path }}
                 {{ partial "image.html" (dict

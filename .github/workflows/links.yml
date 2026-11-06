@@ -564,12 +564,12 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
-          # A % portrait width must not reach sizes.
+          # A % portrait width reaches sizes as vw.
           HUGO_PARAMS_PORTRAIT_PATH="img/an example.png" HUGO_PARAMS_PORTRAIT_MAXWIDTH="50%" \
             hugo --themesDir ../.. --gc --minify --destination public-portrait \
             --contentDir ../.github/fixtures/markdown-images \
             --config config.toml,../.github/fixtures/markdown-images.toml
-          grep -q 'class="circle portrait"' public-portrait/index.html && ! grep -q 'sizes=50%' public-portrait/index.html \
+          grep -q 'class="circle portrait"' public-portrait/index.html && grep -q 'sizes=50vw' public-portrait/index.html \
             || { echo "  BAD  the portrait has an invalid sizes"; exit 1; }
           # The card names the cover, not the file its name matches as a glob.
           f=public-markdown-images/posts/2026/10/a-cover-named-like-a-glob/index.html
