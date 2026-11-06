@@ -2,9 +2,10 @@
        The query and fragment are split off first: JoinPath would encode ? and #. */ -}}
 {{- $url := printf "%v" . -}}
 {{- if not (partial "is-remote.html" $url) -}}
-  {{- $u := urls.Parse $url -}}
-  {{- $url = urls.JoinPath site.BaseURL $u.EscapedPath -}}
-  {{- with $u.RawQuery }}{{ $url = printf "%s?%s" $url . }}{{ end -}}
-  {{- with $u.EscapedFragment }}{{ $url = printf "%s#%s" $url . }}{{ end -}}
+  {{- with partial "parse-url.html" $url -}}
+    {{- $url = urls.JoinPath site.BaseURL .EscapedPath -}}
+    {{- with .RawQuery }}{{ $url = printf "%s?%s" $url . }}{{ end -}}
+    {{- with .EscapedFragment }}{{ $url = printf "%s#%s" $url . }}{{ end -}}
+  {{- end -}}
 {{- end -}}
 {{- return $url -}}

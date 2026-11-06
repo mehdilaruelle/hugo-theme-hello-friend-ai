@@ -107,4 +107,20 @@
       if (summary) summary.focus();
     });
   }
+
+  // Escape hides a hovered or focused desktop submenu (WCAG 1.4.13).
+  document.querySelectorAll(".submenu .dropdown").forEach((dropdown) => {
+    const show = () => dropdown.classList.remove("dropdown--dismissed");
+    dropdown.addEventListener("mouseenter", show);
+    dropdown.addEventListener("focusin", (e) => dropdown.contains(e.relatedTarget) || show());
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || isMobile()) return;
+    document.querySelectorAll(".submenu .dropdown:hover, .submenu .dropdown:focus-within").forEach((dropdown) => {
+      dropdown.classList.add("dropdown--dismissed");
+      const button = dropdown.querySelector(".dropbtn");
+      if (button && dropdown.contains(document.activeElement)) button.focus();
+    });
+  });
 })();

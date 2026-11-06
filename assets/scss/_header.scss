@@ -16,6 +16,13 @@
 
     @media #{$media-size-phone} {
       flex-direction: row-reverse;
+      // Reversed, the desktop margins land on the outer side: use a gap.
+      gap: 10px;
+
+      > .menu-trigger,
+      > .language-switcher {
+        margin-inline-start: 0;
+      }
     }
   }
 
