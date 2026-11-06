@@ -5,9 +5,10 @@
   if (!logo) return;
 
   window.addEventListener("load", () => {
-    // data-base: subpath plus language directory.
-    const base = logo.dataset.base || "/";
-    const path = window.location.pathname;
+    // Encoded like location.pathname (/caf%C3%A9/).
+    const base = new URL(logo.dataset.base || "/", window.location.href).pathname;
+    // uglyURLs: the home is .../index.html.
+    const path = window.location.pathname.replace(/\/index\.html$/, "/");
     const rest = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\//, "");
     const section = rest.split("/").filter(Boolean)[0] || "";
     let text = section;
