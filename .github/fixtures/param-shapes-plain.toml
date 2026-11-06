@@ -1,0 +1,20 @@
+# Table params as plain values (logo = "img/logo.png"): warn, not abort.
+baseURL = "https://example.com/subpath/"
+title   = "Param shapes"
+theme   = "hello-friend-ai"
+defaultContentLanguage = "en"
+
+[params]
+  logo       = "img/logo.png"
+  portrait   = "img/me.jpg"
+  social     = "https://example.com/jane"
+  commento   = "https://comments.example.org/js/commento.js"
+  utterances = "owner/repo"
+  footer     = true
+  favicon    = "/favicon.png"
+  author     = "Jane"
+
+[languages.en]
+  weight = 1
+[languages.fr]
+  weight = 2
