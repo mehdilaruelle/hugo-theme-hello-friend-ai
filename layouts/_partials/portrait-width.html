@@ -2,7 +2,7 @@
        not, is pixels, and 0 is unset. Any unit, or one calc()/min()/max()/clamp()/var()
        holding no url() and nothing that ends a value, a rule or the stylesheet. */ -}}
 {{- $width := "" -}}
-{{- with site.Params.portrait.maxWidth -}}
+{{- with (partialCached "param-table.html" "portrait" "portrait").maxWidth -}}
   {{- $width = printf "%v" . | strings.TrimSpace -}}
   {{- $num := `(?:[0-9]+(?:\.[0-9]+)?|\.[0-9]+)` -}}
   {{- $unit := `(?:px|r?em|r?ex|r?ch|r?lh|r?cap|r?ic|[sld]?v(?:w|h|i|b|min|max)|cq(?:w|h|i|b|min|max)|pt|pc|cm|mm|q|in|%)` -}}

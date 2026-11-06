@@ -1,0 +1,9 @@
+{{- /* site.Params.<name> if a table, else empty: a plain value warns once. */ -}}
+{{- $value := index site.Params . -}}
+{{- $table := dict -}}
+{{- if reflect.IsMap $value -}}
+  {{- $table = $value -}}
+{{- else if $value -}}
+  {{- warnidf (printf "%s-shape" .) "params.%s: expected a table such as [params.%s], got a %T. Ignored." . . $value -}}
+{{- end -}}
+{{- return $table -}}

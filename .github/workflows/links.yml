@@ -711,6 +711,25 @@ jobs:
           grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
             || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
           [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
+          # Plain-value table params, and a page param build that is not a table.
+          out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
+            --config ../.github/fixtures/param-shapes-plain.toml \
+            --contentDir ../.github/fixtures/param-shapes-plain 2>&1) || { echo "$out"; exit 1; }
+          for id in logo-shape portrait-shape social-shape commento-shape utterances-shape footer-shape favicon-shape; do
+            grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
+          done
+          p=public-shapes-plain
+          for want in posts/build-string/index.html posts/build-number/index.html fr/posts/build-number/index.html; do
+            [ -f "$p/$want" ] || { echo "  BAD  $want was not built"; exit 1; }
+          done
+          grep -q 'build-string/' "$p/posts/index.html" || { echo "  BAD  a post with params.build is not listed"; exit 1; }
+          grep -q 'build-number/' "$p/fr/posts/index.html" || { echo "  BAD  a translation with params.build is not listed"; exit 1; }
+          echo "  a page param named build is built and listed, in either language"
+          f="$p/posts/build-string/index.html"
+          grep -qF '<meta name="author" content="Ann, Bob"' "$f" || { echo "  BAD  a list of authors is not joined"; exit 1; }
+          grep -qF '"author":[{"@type":"Person","name":"Ann"},{"@type":"Person","name":"Bob"}]' "$f" \
+            || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
+          echo "  a list of authors names each of them"
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
