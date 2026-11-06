@@ -16,3 +16,4 @@ A fence left open at the end:
 
 ```sh
 hugo server
+~~~

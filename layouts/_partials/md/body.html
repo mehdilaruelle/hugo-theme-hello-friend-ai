@@ -43,8 +43,18 @@
 {{- /* Close an open fence, or it swallows the rest of llms-full.txt. */ -}}
 {{- $flags := partial "md/code-lines.html" (print $body "\n") -}}
 {{- if index $flags (sub (len $flags) 1) -}}
-  {{- with findRE "(?m)^[ \t>]*(?:`{3,}|~{3,})" $body -}}
-    {{- $body = printf "%s\n%s" $body (replaceRE `^[ \t>]*` "" (index . (sub (len .) 1))) -}}
+  {{- /* The last code run's first line opens it: the closer repeats its marker
+         and container (quote, list item). Indented code needs none. */ -}}
+  {{- $close := "" -}}
+  {{- range $i, $l := split $body "\n" -}}
+    {{- if and (index $flags $i) (or (eq $i 0) (not (index $flags (sub $i 1)))) -}}
+      {{- $close = "" -}}
+      {{- with findRESubmatch `^([ \t>]*)((?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})` $l 1 -}}
+        {{- $m := index . 0 -}}
+        {{- $close = print (index $m 1) (strings.Repeat (len (index $m 2)) " ") (index $m 3) -}}
+      {{- end -}}
+    {{- end -}}
   {{- end -}}
+  {{- with $close }}{{ $body = printf "%s\n%s" $body . }}{{ end -}}
 {{- end -}}
 {{- return $body -}}
