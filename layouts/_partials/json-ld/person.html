@@ -51,7 +51,8 @@
 
 {{- $person := dict "@type" "Person" -}}
 {{- with $siteAuthor -}}
-  {{- $person = merge $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink) "name" . "url" site.Home.Permalink) -}}
+  {{- /* The base URL if the home kind is disabled. */ -}}
+  {{- $person = merge $person (dict "@id" (printf "%s#person" (hugo.Sites.Default.Home.Permalink | default hugo.Sites.Default.BaseURL)) "name" . "url" (site.Home.Permalink | default site.BaseURL)) -}}
 {{- end -}}
 {{- with $jobTitle -}}
   {{- $person = merge $person (dict "jobTitle" .) -}}
