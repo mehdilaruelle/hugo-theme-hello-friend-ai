@@ -12,9 +12,12 @@
 
 (function () {
   const themeToggle = document.querySelector(".theme-toggle");
-  // params.defaultTheme, as rendered. theme-init.js replaces it only when a
-  // stored choice exists, and this is read only when none does.
-  const defaultTheme = document.documentElement.getAttribute("data-theme");
+  // params.defaultTheme, as served: theme-init.js keeps it aside when it
+  // applies a stored choice.
+  const root = document.documentElement;
+  const defaultTheme = root.getAttribute(
+    root.hasAttribute("data-default-theme") ? "data-default-theme" : "data-theme",
+  );
 
   // localStorage can throw (privacy modes); treat that as no storage.
   function withStorage(use) {
@@ -32,7 +35,7 @@
   let picked = null;
 
   function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
+    root.setAttribute("data-theme", theme);
     // The button is labelled "Dark theme" and pressed when the dark theme is on,
     // so a screen reader announces the state rather than a label that changes
     // under the reader every time it is used. Set here rather than in
@@ -61,7 +64,7 @@
 
   function switchTheme() {
     const next =
-      document.documentElement.getAttribute("data-theme") === "dark"
+      root.getAttribute("data-theme") === "dark"
         ? "light"
         : "dark";
 
@@ -86,7 +89,13 @@
     detectOSColorTheme();
     // Back or another tab may hold an older choice.
     window.addEventListener("pageshow", (e) => e.persisted && detectOSColorTheme());
-    window.addEventListener("storage", (e) => (e.key === "theme" || e.key === null) && detectOSColorTheme());
+    // An event means storage works again: its value replaces this page's.
+    window.addEventListener("storage", (e) => {
+      if (e.key === "theme" || e.key === null) {
+        picked = null;
+        detectOSColorTheme();
+      }
+    });
   } else {
     forgetTheme();
   }
