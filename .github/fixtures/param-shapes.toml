@@ -2,6 +2,7 @@
 [params]
   ogImage      = ["a.png"]
   defaultTheme = "sepia"
+  plausibleDataDomain = "example.org"   # without its script: src="" before
   verification = "abc"
   [params.author]
     credentials = ["x"]
@@ -10,3 +11,20 @@
     logoCursorAnimate = 0   # a number: with read it as unset
   [params.portrait]
     maxWidth = "120 px"
+
+# Schemes html/template turned into #ZgotmplZ; javascript: must be dropped.
+[[params.social]]
+  name = "xmpp"
+  url  = "xmpp:jane@example.com"
+[[params.social]]
+  name = "matrix"
+  url  = "matrix:u/jane:example.com"
+[[params.social]]
+  name = "signal"
+  url  = "sgnl://signal.me/#p/+33123456789"
+[[params.social]]
+  name = "github"
+  url  = "javascript:alert(1)"
+[[menu.main]]
+  name = "Call"
+  url  = "tel:+33123456789"

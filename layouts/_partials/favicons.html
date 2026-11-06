@@ -1,13 +1,14 @@
 {{- /* A link is written only for a file present in one of the static
        directories params.favicon.staticDir names: fileExists cannot see the
        site's staticDir setting. */ -}}
-{{- $dirs := partial "as-list.html" (.Site.Params.favicon.staticDir | default "static") -}}
+{{- $favicon := partialCached "param-table.html" "favicon" "favicon" -}}
+{{- $dirs := partial "as-list.html" ($favicon.staticDir | default "static") -}}
 {{- $icons := slice
   (dict "file" "apple-touch-icon.png" "rel" "apple-touch-icon" "sizes" "180x180")
   (dict "file" "favicon-32x32.png" "rel" "icon" "type" "image/png" "sizes" "32x32")
   (dict "file" "favicon-16x16.png" "rel" "icon" "type" "image/png" "sizes" "16x16")
   (dict "file" "site.webmanifest" "rel" "manifest")
-  (dict "file" "safari-pinned-tab.svg" "rel" "mask-icon" "color" .Site.Params.favicon.mask)
+  (dict "file" "safari-pinned-tab.svg" "rel" "mask-icon" "color" $favicon.mask)
   (dict "file" "favicon.ico" "rel" "shortcut icon")
 -}}
 {{- $icon := false -}}
@@ -25,6 +26,6 @@
     <link rel="icon" href="data:,">
 {{- end }}
 {{- /* Only when set: an empty content asserts the colour is blank. */ -}}
-{{- with .Site.Params.favicon.msapplication }}
+{{- with $favicon.msapplication }}
     <meta name="msapplication-TileColor" content="{{ . }}">
 {{- end }}
