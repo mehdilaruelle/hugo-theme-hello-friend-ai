@@ -707,6 +707,8 @@ jobs:
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
+          grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
+            || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
           # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
             --config ../.github/fixtures/param-shapes-plain.toml \

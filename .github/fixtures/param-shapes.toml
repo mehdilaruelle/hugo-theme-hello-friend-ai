@@ -1,6 +1,7 @@
 # Params in a shape the theme does not read: each has to warn, not abort.
 [params]
   ogImage      = ["a.png"]
+  plausibleDataDomain = "example.org"   # without its script: src="" before
   verification = "abc"
   [params.author]
     credentials = ["x"]
