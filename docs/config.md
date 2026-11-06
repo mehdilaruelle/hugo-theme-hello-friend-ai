@@ -500,7 +500,7 @@ property in a stylesheet listed in `customCSS`:
 | `--color-strong` | text on a mid-tone ground: the table header, the hovered scrollbar |
 | `--control-border-color` | the frame of the copy button and the code-language label |
 | `--field-border-color` | the edge of the search field |
-| `--focus-ring` | the keyboard focus outline |
+| `--focus-ring` | the keyboard focus outline of the theme toggle, the menu button, the language switcher, the copy button and scrollable tables |
 | `--copy-done` / `--copy-failed` | the copy button's status text |
 | `--alert-note` … `--alert-caution` | the five alert types' accent: `note`, `tip`, `important`, `warning`, `caution` |
 
@@ -1129,8 +1129,8 @@ which is `JSON` on the same key — names both rather than one after the other:
 
 It appears at `/llms.txt`, one per language, because a model reading the
 French site should be handed French. With `defaultContentLanguageInSubdir = true`
-every language is in its own directory, `/en/llms.txt` included, and nothing is
-written at the root.
+every language is in its own directory under the base URL, `en/llms.txt`
+included, and nothing is written at its root.
 
 The summary under the heading is the one the front page already gives a search
 engine: its own `description`, then `params.homeSubtitle`, then
