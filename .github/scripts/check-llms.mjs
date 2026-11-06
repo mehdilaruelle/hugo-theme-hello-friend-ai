@@ -88,8 +88,8 @@ const destination = (raw) => {
 };
 
 // A title carrying a ] is escaped to \], which a class stopping at the first ]
-// never reads past.
-const LINK = /\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
+// never reads past. An escaped [ opens no link.
+const LINK = /(?<!(?<!\\)(?:\\\\)*\\)\[(?:\\.|[^\\\]])*\]\(([^)]+)\)/g;
 const LIST_LINK = /^- \[(?:\\.|[^\\\]])*\]\(([^)]+)\)/gm;
 const mdLinks = (s) => [...s.matchAll(LINK)].map((m) => destination(m[1]));
 // A footnote is not a definition, nor is a label followed by prose.

@@ -194,6 +194,7 @@ jobs:
                          '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
                          '- [ ]: commas.svg' '-     [shown]: commas.svg' \
                          'Literal text, not a link: \[text\](commas.svg).' \
+                         'Nor this one: \[text](commas.svg).' \
                          '[n]: https://example.com/subpath/showcase/llms-links/escapes/../../svg-sizes/commas.svg'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
