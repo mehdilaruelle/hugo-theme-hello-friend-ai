@@ -49,7 +49,7 @@
     "inLanguage" .Language.Lang
   -}}
   {{- with .Description | default site.Params.description -}}
-    {{- $data = merge $data (dict "description" .) -}}
+    {{- $data = merge $data (dict "description" (. | plainify | htmlUnescape)) -}}
   {{- end -}}
   {{- with $author -}}
     {{- $data = merge $data (dict "author" $authorNode) -}}
@@ -204,4 +204,5 @@
 {{- end -}}
 
 {{- partial "json-ld/breadcrumb.html" . -}}
-{{- partial "json-ld/faq.html" . -}}
+{{- /* As list.html: the FAQ is on the first pager only. */ -}}
+{{- if eq (partial "canonical.html" .).pager 1 }}{{ partial "json-ld/faq.html" . }}{{ end -}}

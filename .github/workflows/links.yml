@@ -118,7 +118,9 @@ jobs:
       # quietly became prose.
       - name: Check the maths survived Markdown
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-math.mjs public
+        run: |
+          node ../.github/scripts/check-math.mjs public
+          node ../.github/scripts/check-invariants.mjs public math
 
       # width and height on the element fix the used height, so a rule that
       # narrows the box stretches the picture unless height is released. The
@@ -458,6 +460,10 @@ jobs:
             --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
             --baseURL "https://example.com/subpath/showcase/"
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
+          # Absolute urls: no second /fr/; the English home is not current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html "Tous les articles" English
+          # A same-host absolute url can be current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/posts/index.html Articles=page "Tous les articles=page" English
           cd ../exampleSite
           hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
@@ -476,6 +482,18 @@ jobs:
           check posts/2014/03/migrate-to-hugo-from-jekyll/index.html Posts=true
           check tags/go/index.html More=true Tags=true
           check about/index.html
+          # uglyURLs: a list page is tags/index.html, its menu url /tags/.
+          HUGO_UGLYURLS=true hugo --themesDir ../.. --gc --minify --destination public-menu-ugly \
+            --config config.toml,../.github/fixtures/menu-current.toml \
+            --baseURL "https://example.com/subpath/"
+          ugly() { node ../.github/scripts/check-invariants.mjs public-menu-ugly menu-current "$@"; }
+          ugly index.html Home=page
+          ugly tags/index.html More=true Tags=page
+          ugly posts/index.html Posts=page
+          ugly posts/2014/03/migrate-to-hugo-from-jekyll.html Posts=true
+          ugly tags/go.html More=true Tags=true
+          # More has two entries, unlike the demos' submenus.
+          node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
@@ -488,6 +506,11 @@ jobs:
           for pager in tags/index.html tags/page/2/index.html; do
             node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager "$pager" "Previous page" "Next page"
           done
+          # canonifyURLs: pager canonicals and prev/next keep the subpath.
+          HUGO_CANONIFYURLS=true hugo --themesDir ../.. --gc --destination public-pagers-canon \
+            --config config.toml,../.github/fixtures/pager-size-three.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-pagers-canon https://example.com/subpath/
 
       # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
       - name: Check the SEO invariants on the shapes the demos lack
@@ -497,9 +520,22 @@ jobs:
             --contentDir ../.github/fixtures/seo-shapes \
             --config config.toml,../.github/fixtures/seo-shapes.toml
           node ../.github/scripts/check-seo.mjs public-seo-shapes
+          # posts/control-characters.md holds bytes XML forbids.
+          node ../.github/scripts/check-feeds.mjs public-seo-shapes
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
+          grep -qF '"description":"Notes on DevOps \u0026 SRE"' public-seo-shapes/index.html \
+            || { echo "  BAD  markup in params.description reached the JSON-LD"; exit 1; }
+          # A stray % must not end the build.
+          f=public-seo-shapes/posts/2026/10/half-price-a-file-name-with-a-percent-sign/index.html
+          for want in '<meta property="og:image" content="https://example.com/img/50%25off.png">' \
+                      '<source src=https://example.com/audio/50%25off.mp3>'; do
+            grep -qF "$want" "$f" || { echo "  BAD  no $want"; exit 1; }
+          done
+          grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
+            || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
+          echo "  a stray % reads as itself"
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite
@@ -523,6 +559,13 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          # The card names the cover, not the file its name matches as a glob.
+          f=public-markdown-images/posts/2026/10/a-cover-named-like-a-glob/index.html
+          for want in '<meta property="og:image" content="https://example.com/subpath/posts/2026/10/a-cover-named-like-a-glob/photo%20%5B1%5D.jpg">' \
+                      '<meta property="og:image:width" content="1200">'; do
+            grep -qF "$want" "$f" || { grep -o '<meta property="og:image[^>]*>' "$f"; echo "  BAD  no $want"; exit 1; }
+          done
+          echo "  a glob-like cover name is the card's picture"
           node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
 
       - name: Check a post shows where it sits in its series
@@ -570,6 +613,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: |
           node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
+          node ../.github/scripts/check-invariants.mjs public header ar/index.html
 
       - name: Check every gallery thumbnail is a named link to a square
         working-directory: hello-friend-ai/showcaseSite
@@ -648,7 +692,14 @@ jobs:
         run: |
           out=$(hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid; do
+          for want in 'href="xmpp:jane@example.com"' 'href="matrix:u/jane:example.com"' \
+                      'href="sgnl://signal.me/#p/&#43;33123456789"' 'href="tel:&#43;33123456789"'; do
+            grep -qF "$want" public-shapes/index.html || { echo "  BAD  no $want"; exit 1; }
+          done
+          ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
+          node ../.github/scripts/check-markup.mjs public-shapes
+          echo "  contact schemes as given, javascript: dropped"
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
           # Plain-value table params, and a page param build that is not a table.

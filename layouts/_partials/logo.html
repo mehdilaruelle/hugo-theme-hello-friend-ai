@@ -8,7 +8,7 @@
     {{- $home = urls.JoinPath $home . -}}
   {{- end -}}
 {{- end }}
-<a href="{{ $home }}">
+<a href="{{ partial "safe-href.html" $home }}">
     <div class="logo">
         {{ with $logo.path }}
             {{- $alt := $logo.alt | default site.Title -}}

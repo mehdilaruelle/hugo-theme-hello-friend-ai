@@ -50,6 +50,10 @@ jobs:
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
 
+      # On the source: the bundle is minified and fold() is private to it.
+      - name: Check what search ignores, and what it does not
+        run: node .github/scripts/check-search-fold.mjs assets/js/search.js
+
       # links.yml proves the switches it lists; this finds the ones it does not.
       - name: Check every switch is read through switch.html
         run: node .github/scripts/check-switches.mjs .
