@@ -27,10 +27,11 @@
                 {{- end -}}
                 {{- /* sizes takes no % or var(). */ -}}
                 {{- $sizes := cond (findRE `%|var\(` $width) "" $width -}}
-                {{- with .Site.Params.Portrait.Path }}
+                {{- $portrait := partialCached "param-table.html" "portrait" "portrait" -}}
+                {{- with $portrait.Path }}
                 {{ partial "image.html" (dict
                   "src" .
-                  "alt" $.Site.Params.Portrait.Alt
+                  "alt" $portrait.Alt
                   "position" "circle portrait"
                   "loading" "eager"
                   "fetchpriority" "high"

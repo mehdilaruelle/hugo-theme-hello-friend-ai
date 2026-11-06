@@ -7,7 +7,7 @@
 {{- with site.Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $jobTitle = .jobTitle -}}
-    {{- $personDescription = .description -}}
+    {{- with .description }}{{ $personDescription = . | plainify | htmlUnescape }}{{ end -}}
     {{- with .knowsAbout -}}
       {{- $knowsAbout = . -}}
     {{- end -}}
@@ -42,8 +42,8 @@
 {{- range partial "social-list.html" site.Params.social -}}
   {{- $name := lower (.name | default "") -}}
   {{- with .url -}}
-    {{- $u := urls.Parse . -}}
-    {{- if and (in (slice "http" "https") $u.Scheme) $u.Host (not (in (slice "rss" "email") $name)) -}}
+    {{- $u := partial "parse-url.html" . -}}
+    {{- if and $u (in (slice "http" "https") $u.Scheme) $u.Host (not (in (slice "rss" "email") $name)) -}}
       {{- $sameAs = $sameAs | append . -}}
     {{- end -}}
   {{- end -}}
@@ -66,7 +66,7 @@
   {{- $person = merge $person (dict "hasCredential" .) -}}
 {{- end -}}
 {{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
-{{- with site.Params.portrait.path -}}
+{{- with (partialCached "param-table.html" "portrait" "portrait").path -}}
   {{- $portrait := partial "abs-url.html" . -}}
   {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}

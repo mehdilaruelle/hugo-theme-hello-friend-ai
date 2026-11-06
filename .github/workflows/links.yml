@@ -460,6 +460,10 @@ jobs:
             --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
             --baseURL "https://example.com/subpath/showcase/"
           node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
+          # Absolute urls: no second /fr/; the English home is not current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html "Tous les articles" English
+          # A same-host absolute url can be current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/posts/index.html Articles=page "Tous les articles=page" English
           cd ../exampleSite
           hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
@@ -478,6 +482,23 @@ jobs:
           check posts/2014/03/migrate-to-hugo-from-jekyll/index.html Posts=true
           check tags/go/index.html More=true Tags=true
           check about/index.html
+          # uglyURLs: a list page is tags/index.html, its menu url /tags/.
+          # The logo: no /index.html/ link, and "#top" stays as given.
+          HUGO_UGLYURLS=true HUGO_PARAMS_LOGO_LOGOHOMELINK="#top" \
+            hugo --themesDir ../.. --gc --minify --destination public-menu-ugly \
+            --config config.toml,../.github/fixtures/menu-current.toml \
+            --baseURL "https://example.com/subpath/"
+          ugly() { node ../.github/scripts/check-invariants.mjs public-menu-ugly menu-current "$@"; }
+          ugly index.html Home=page
+          ugly tags/index.html More=true Tags=page
+          ugly posts/index.html Posts=page
+          ugly posts/2014/03/migrate-to-hugo-from-jekyll.html Posts=true
+          ugly tags/go.html More=true Tags=true
+          node ../.github/scripts/check-links.mjs public-menu-ugly https://example.com/subpath/
+          grep -q '<a href=/subpath/#top>' public-menu-ugly/posts/index.html \
+            || { echo "  BAD  the logo does not link /subpath/#top"; exit 1; }
+          # More has two entries, unlike the demos' submenus.
+          node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
@@ -490,6 +511,11 @@ jobs:
           for pager in tags/index.html tags/page/2/index.html; do
             node ../.github/scripts/check-invariants.mjs public-pagers taxonomy-pager "$pager" "Previous page" "Next page"
           done
+          # canonifyURLs: pager canonicals and prev/next keep the subpath.
+          HUGO_CANONIFYURLS=true hugo --themesDir ../.. --gc --destination public-pagers-canon \
+            --config config.toml,../.github/fixtures/pager-size-three.toml \
+            --baseURL "https://example.com/subpath/"
+          node ../.github/scripts/check-links.mjs public-pagers-canon https://example.com/subpath/
 
       # Shapes neither demo has: an unrendered section, a ProfilePage section, an emoji title.
       - name: Check the SEO invariants on the shapes the demos lack
@@ -504,6 +530,17 @@ jobs:
           grep -q '"@type":"ProfilePage"' public-seo-shapes/about/index.html \
             || { echo "  BAD  about/_index.md asked for ProfilePage and is not one"; exit 1; }
           echo "  a ProfilePage section is described as one"
+          grep -qF '"description":"Notes on DevOps \u0026 SRE"' public-seo-shapes/index.html \
+            || { echo "  BAD  markup in params.description reached the JSON-LD"; exit 1; }
+          # A stray % must not end the build.
+          f=public-seo-shapes/posts/2026/10/half-price-a-file-name-with-a-percent-sign/index.html
+          for want in '<meta property="og:image" content="https://example.com/img/50%25off.png">' \
+                      '<source src=https://example.com/audio/50%25off.mp3>'; do
+            grep -qF "$want" "$f" || { echo "  BAD  no $want"; exit 1; }
+          done
+          grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
+            || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
+          echo "  a stray % reads as itself"
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite
@@ -665,7 +702,8 @@ jobs:
       - name: Check a wrong-shaped param warns instead of aborting the build
         working-directory: hello-friend-ai/exampleSite
         run: |
-          out=$(hugo --themesDir ../.. --gc --destination public-shapes \
+          # No copyright either: no empty <span>.
+          out=$(HUGO_COPYRIGHT="" hugo --themesDir ../.. --gc --destination public-shapes \
             --config config.toml,../.github/fixtures/param-shapes.toml 2>&1) || { echo "$out"; exit 1; }
           for want in 'href="xmpp:jane@example.com"' 'href="matrix:u/jane:example.com"' \
                       'href="sgnl://signal.me/#p/&#43;33123456789"' 'href="tel:&#43;33123456789"'; do
@@ -677,6 +715,28 @@ jobs:
           for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
+          grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
+            || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
+          [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
+          # Plain-value table params, and a page param build that is not a table.
+          out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
+            --config ../.github/fixtures/param-shapes-plain.toml \
+            --contentDir ../.github/fixtures/param-shapes-plain 2>&1) || { echo "$out"; exit 1; }
+          for id in logo-shape portrait-shape social-shape commento-shape utterances-shape footer-shape favicon-shape; do
+            grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
+          done
+          p=public-shapes-plain
+          for want in posts/build-string/index.html posts/build-number/index.html fr/posts/build-number/index.html; do
+            [ -f "$p/$want" ] || { echo "  BAD  $want was not built"; exit 1; }
+          done
+          grep -q 'build-string/' "$p/posts/index.html" || { echo "  BAD  a post with params.build is not listed"; exit 1; }
+          grep -q 'build-number/' "$p/fr/posts/index.html" || { echo "  BAD  a translation with params.build is not listed"; exit 1; }
+          echo "  a page param named build is built and listed, in either language"
+          f="$p/posts/build-string/index.html"
+          grep -qF '<meta name="author" content="Ann, Bob"' "$f" || { echo "  BAD  a list of authors is not joined"; exit 1; }
+          grep -qF '"author":[{"@type":"Person","name":"Ann"},{"@type":"Person","name":"Bob"}]' "$f" \
+            || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
+          echo "  a list of authors names each of them"
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite

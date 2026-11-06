@@ -1,17 +1,21 @@
 {{- /* aria-current of a main menu entry: "page", "true" when it holds the page, or "".
-       The decoded url is compared too, trailing slash aside: url = "posts/" links no page. */ -}}
+       The decoded url is compared too, without a trailing slash or the index.html of
+       uglyURLs: url = "posts/" links no page. */ -}}
+{{- $trim := `(?:/index\.html|/)$` -}}
+{{- $site := urls.Parse site.BaseURL -}}
 {{- $page := .page -}}
 {{- $entry := .entry -}}
 {{- $state := "" -}}
 {{- $here := $page.RelPermalink -}}
 {{- with (try (urls.Parse $here)).Value }}{{ $here = .Path }}{{ end -}}
-{{- $here = strings.TrimSuffix "/" $here -}}
+{{- $here = replaceRE $trim "" $here -}}
 {{- $url := "" -}}
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
-    {{- if not (or .Scheme .Host .RawQuery .Fragment) -}}
-      {{- $url = strings.TrimSuffix "/" .Path -}}
+    {{- /* Same host: compared by path. */ -}}
+    {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (eq .Host $site.Host)) -}}
+      {{- $url = replaceRE $trim "" .Path -}}
       {{- $local = true -}}
     {{- end -}}
   {{- end -}}
@@ -20,7 +24,8 @@
   {{- $state = "page" -}}
 {{- else if $page.HasMenuCurrent "main" $entry -}}
   {{- $state = "true" -}}
-{{- else if and $local (ne $url (strings.TrimSuffix "/" (urls.Parse site.Home.RelPermalink).Path)) (hasPrefix $here (printf "%s/" $url)) -}}
+{{- /* A home is never an ancestor. */ -}}
+{{- else if and $local (not (in (slice (replaceRE $trim "" (urls.Parse site.Home.RelPermalink).Path) (replaceRE $trim "" $site.Path)) $url)) (hasPrefix $here (printf "%s/" $url)) -}}
   {{- $state = "true" -}}
 {{- else -}}
   {{- range $entry.Children -}}

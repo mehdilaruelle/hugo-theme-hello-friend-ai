@@ -1,0 +1,5 @@
+{{- /* urls.Parse, or "" if unparsable; a stray % reads as %25. */ -}}
+{{- $s := replace (replaceRE `%([0-9A-Fa-f]{2})` "\x00$1" (printf "%v" .)) "%" "%25" -}}
+{{- $u := "" -}}
+{{- with try (urls.Parse (replace $s "\x00" "%")) }}{{ if not .Err }}{{ $u = .Value }}{{ end }}{{ end -}}
+{{- return $u -}}

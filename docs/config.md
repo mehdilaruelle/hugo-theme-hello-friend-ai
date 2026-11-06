@@ -760,7 +760,7 @@ templates.
 | `mainSections` | which section the footer's RSS icon and the 404 page point at. Defaults to `posts`, set by the theme: left to Hugo, it would be whichever section holds the most pages. It does **not** decide which template renders an article: those resolve by section name, so articles belong in `content/posts/`. Naming a section the theme has no `layouts/<section>/page.html` (or `single.html`) for warns at build time — see [Where articles go](install.md#where-articles-go); silence it with `ignoreLogs = ['mainsections-no-article-template-<section>']` |
 | `customCSS` / `customJS` | extra files to load, each a path under `static/` or a remote URL. `customCSS` can set the theme's colours, see [Colours](#colours) |
 | `gitUrl` | prefix for the commit link under an article — the hash is appended to it, so it ends in `/commit/` or the like. Needs `enableGitInfo = true` at the root. Optional: with `enableGitInfo` on and no `gitUrl`, the hash is shown as plain text rather than linked |
-| `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics; both are required |
+| `plausibleDataDomain` / `plausibleScriptSource` | [Plausible](https://plausible.io) analytics, on when `plausibleDataDomain` is set. The script defaults to `https://plausible.io/js/script.js`; set `plausibleScriptSource` for a self-hosted instance |
 | `llmsNote` | a line addressed to whatever reads `llms.txt`, printed under the summary. A page can set its own, see [Front matter](#front-matter) |
 | `license` / `creditText` | the terms of reuse, carried in every article's `BlogPosting`. A page can override either |
 | `llmsFullLimit` | how many pages `llms-full.txt` carries. Unset or `0` publishes every one |
@@ -947,7 +947,7 @@ theme's `layouts/_partials/footer.html` in your site's `layouts/_partials/`:
 | `comments` | set to `false` to hide the comments on that page — Disqus, Commento and utterances alike. Quoted values count, so `"false"` and `"0"` read the same way |
 | `description` | overrides the summary in `<meta name="description">` and Open Graph |
 | `pagerSize` | on a section, taxonomy or term page (`_index.md`, or a `cascade`): how many entries each pager of that list holds, in place of `[pagination] pagerSize` |
-| `author` | overrides the site author for that page |
+| `author` | overrides the site author for that page. A list (`author: ["Ann", "Bob"]`) names each of them: joined with commas in `<meta name="author">`, one `Person` each in the JSON-LD of a dated page |
 | `twitter` | that page's author's handle, as `twitter:creator` on the card. The site's own account is `params.social`, above |
 
 `audio` takes a list, or a single file written on its own:
