@@ -527,6 +527,15 @@ jobs:
           echo "  a ProfilePage section is described as one"
           grep -qF '"description":"Notes on DevOps \u0026 SRE"' public-seo-shapes/index.html \
             || { echo "  BAD  markup in params.description reached the JSON-LD"; exit 1; }
+          # A stray % must not end the build.
+          f=public-seo-shapes/posts/2026/10/half-price-a-file-name-with-a-percent-sign/index.html
+          for want in '<meta property="og:image" content="https://example.com/img/50%25off.png">' \
+                      '<source src=https://example.com/audio/50%25off.mp3>'; do
+            grep -qF "$want" "$f" || { echo "  BAD  no $want"; exit 1; }
+          done
+          grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
+            || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
+          echo "  a stray % reads as itself"
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite

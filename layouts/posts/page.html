@@ -112,8 +112,8 @@
         {{- /* A Commento instance is wherever the site put it, so the origin
                comes out of the configured URL -- keeping its scheme, or none
                at all, for the reason is-remote.html gives. */ -}}
-        {{- $commento := urls.Parse .Site.Params.Commento.Url -}}
-        {{- with $commento.Host }}
+        {{- $commento := partial "parse-url.html" .Site.Params.Commento.Url -}}
+        {{- with and $commento $commento.Host }}
           {{- $origin := printf "//%s" . -}}
           {{- with $commento.Scheme }}{{ $origin = printf "%s:%s" . $origin }}{{ end -}}
         <link rel="preconnect" href="{{ $origin }}">
