@@ -457,9 +457,10 @@ to allow `script-src 'unsafe-inline'`.
 
 ## Default color scheme
 
-`params.defaultTheme` accepts `"dark"` or `"light"`, in any case. Unset, the theme
-follows the visitor's operating system preference, which is the previous
-behaviour; any other value does the same, with a warning.
+`params.defaultTheme` accepts `"dark"` or `"light"`, in any case. Unset, empty,
+`"auto"` or `"system"`, the theme follows the visitor's operating system
+preference, which is the previous behaviour; any other value does the same,
+with a warning.
 
 The value is rendered server-side onto `<html>`, so the page arrives in the
 right scheme rather than switching once JavaScript runs. A visitor who picks a
