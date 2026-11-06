@@ -3,7 +3,7 @@
   <figure class="post-cover">
     {{- /* _single.scss: 60px wider than the text; a % read as vw, its upper bound. */}}
     {{- $text := partial "content-width.html" . | default "800px" | replaceRE "%$" "vw" }}
-    {{ partial "image.html" (dict "src" $cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high" "sizes" (printf "min(calc(%s + 60px), calc(100vw - 40px))" $text)) }}
+    {{ partial "image.html" (dict "src" $cover "alt" (partial "title-plain.html" . | htmlEscape) "page" . "loading" "eager" "fetchpriority" "high" "sizes" (site.Params.imageSizes | default (printf "min(calc(%s + 60px), calc(100vw - 40px))" $text))) }}
 
     {{ if .Params.CoverCaption }}
       <figcaption class="center">{{ .Params.CoverCaption | markdownify }}</figcaption>
