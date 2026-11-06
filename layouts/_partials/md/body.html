@@ -43,10 +43,11 @@
 {{- /* Close an open fence, or it swallows the rest of llms-full.txt. */ -}}
 {{- $flags := partial "md/code-lines.html" (print $body "\n") -}}
 {{- if index $flags (sub (len $flags) 1) -}}
-  {{- /* Replay the fences of the last code run: an opener sets the closer, with
-         its marker and container (quote, list item); its closer clears it.
-         Indented code needs none. */ -}}
+  {{- /* Replay the last code run's fences: an opener sets the closer (its
+         marker, quote prefix and list indent); a closer at its quote depth
+         clears it. Indented code needs none. */ -}}
   {{- $open := "" -}}
+  {{- $quotes := 0 -}}
   {{- $close := "" -}}
   {{- range $i, $l := split $body "\n" -}}
     {{- if not (index $flags $i) -}}
@@ -56,10 +57,12 @@
       {{- with findRESubmatch `^([ \t>]*)((?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})(.*)$` $l 1 -}}
         {{- $m := index . 0 -}}
         {{- $f := index $m 3 -}}
+        {{- $q := len (findRE ">" (index $m 1)) -}}
         {{- if not $open -}}
           {{- $open = $f -}}
+          {{- $quotes = $q -}}
           {{- $close = print (index $m 1) (strings.Repeat (len (index $m 2)) " ") $f -}}
-        {{- else if and (eq (substr $f 0 1) (substr $open 0 1)) (ge (len $f) (len $open)) (not (strings.TrimSpace (index $m 4))) -}}
+        {{- else if and (eq $q $quotes) (eq (substr $f 0 1) (substr $open 0 1)) (ge (len $f) (len $open)) (not (strings.TrimSpace (index $m 4))) -}}
           {{- $open = "" -}}
           {{- $close = "" -}}
         {{- end -}}

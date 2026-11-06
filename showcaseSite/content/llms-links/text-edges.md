@@ -18,5 +18,6 @@ A fence left open at the end, right after a closed one:
 first block
 ```
 ~~~sh
+> ~~~
 hugo server
 ```
