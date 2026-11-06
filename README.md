@@ -27,31 +27,34 @@ This theme was highly inspired by the [hello-friend](https://github.com/panr/hug
 
 ## Differences from upstream
 
-- Builds warning-free on Hugo 0.164: `languageCode`, `.Site.Data`,
-  `.Site.LanguageCode` and the LibSass transpiler have all been migrated off
-  their deprecated forms.
-- Uses the template layout introduced in Hugo 0.146 (`layouts/_partials/`,
-  `_shortcodes/`, `_markup/`, `page.html`, `list.html`, `home.html`).
+Added here, and absent from hello-friend-ng:
+
+- **For AI readers:** an optional `llms.txt`, `llms-full.txt` and a Markdown
+  copy of every page, a `robots.txt` AI policy that can refuse training
+  without refusing citation, and `noai` to keep one page out. See
+  [llms.txt](docs/config.md#llmstxt) and [AI crawlers](docs/config.md#ai-crawlers).
+- **For writing:** GitHub-style alerts, series navigation, maths, and the
+  `gallery`, `video` and `faq` shortcodes. See [Writing content](docs/content.md).
+- **For readers:** a search page, related posts, front page content from
+  `content/_index.md` and a content column of the width you choose.
+- **For search engines:** JSON-LD structured data, breadcrumbs and a complete
+  `hreflang` set with `x-default`. See [SEO](docs/seo.md).
+- **Performance:** 100 in every PageSpeed Insights category on both demo
+  sites, mobile and desktop. See [Performance](docs/performance.md).
+
+Kept current with Hugo:
+
+- Builds warning-free on Hugo 0.164, on the template layout of Hugo 0.146
+  (`_partials/`, `_shortcodes/`, `_markup/`, `page.html`, `list.html`,
+  `home.html`), with no deprecated call left.
 - SCSS uses the Sass module system (`@use`) and compiles with Dart Sass, which
   is now required: LibSass does not implement `@use` and silently emitted a
   stylesheet with no CSS in it.
-- Fixes two selectors that made inline code lose its styling entirely.
-- Emits JSON-LD structured data, and completes the `hreflang` set with
-  `x-default`. See [SEO](docs/seo.md).
-- Writes a `robots.txt` that names the sitemap Hugo leaves out, and — when a
-  site asks for one — an AI policy split the way the fetches differ: training
-  on one side, answering with a link on the other. See
-  [AI crawlers](docs/config.md#ai-crawlers).
-- Renders `content/_index.md` on the front page, which upstream ignores. See
-  [Front page content](docs/content.md#front-page-content).
-- CI builds the exampleSite on every change and fails on any new deprecation.
-- The exampleSite is published as a
-  [live demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/) on
-  every push, so what you see is what the current code produces. A second build
-  of the same site, with
-  [every option turned on](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/),
-  is published alongside it — and built in CI, so an optional feature cannot
-  break unnoticed.
+- CI builds both demos on every change and fails on any new deprecation. The
+  [demo](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/) and the
+  [showcase with every option on](https://mehdilaruelle.github.io/hugo-theme-hello-friend-ai/showcase/)
+  are published on every push, so what you see is what the current code
+  produces.
 
 ---
 
