@@ -1,5 +1,0 @@
-{{- /* The resource a local path names: the page's, else under assets/; "" if
-       none. Get before GetMatch, which reads "photo [1].png" as a glob. */ -}}
-{{- $r := "" -}}
-{{- with .page }}{{ $r = or (.Resources.Get $.src) (.Resources.GetMatch $.src) }}{{ end -}}
-{{- return or $r (resources.Get .src) "" -}}
