@@ -11,6 +11,8 @@ date: 2026-10-05
 
 ![A sign &#169; &#xE9;](https://example.com/sign.png)
 
+![Escaped \&#169; and `&#169;` stay as written](https://example.com/kept.png)
+
 ![A percent](100%.png)
 
 ![From assets](<img/an example.png>)

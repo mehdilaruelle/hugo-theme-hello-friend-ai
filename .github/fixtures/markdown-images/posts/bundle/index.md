@@ -15,3 +15,8 @@ At the width the writer gave, the height following:
 
 ![Sized by hand](dunes%20photo.jpg)
 {width="300"}
+
+Written with its unit:
+
+![Sized in px](dunes%20photo.jpg)
+{width="300px"}

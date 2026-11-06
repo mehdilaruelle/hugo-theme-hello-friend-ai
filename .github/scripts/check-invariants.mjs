@@ -287,12 +287,14 @@ const checks = {
     const sized = find(bundle, "Sized by hand");
     want(sized, "width", "300");
     want(sized, "height", "200");
+    want(find(bundle, "Sized in px"), "width", "300");
 
     const hard = "posts/2026/10/pictures-written-the-hard-way/index.html";
     find(hard, "A *starred* alt");
     find(hard, "<b> in code");
     want(find(hard, "An entity"), "src", "https://example.com/q.png?a=1&amp;b=2&amp;region=eu");
-    find(hard, "A sign &#169; &#233;"); // as the minifier writes "© é"
+    find(hard, "A sign © é");
+    find(hard, "Escaped &amp;#169; and &amp;#169; stay as written");
     want(find(hard, "A percent"), "src", "100%25.png");
     const answer = find(hard, "In an answer");
     want(answer, "loading", "lazy");
@@ -438,14 +440,19 @@ const checks = {
     if (!set.some((b) => declares(b, "--content-width", want)))
       fail(`--content-width:${want} is not in the stylesheet`, set.map((b) => `:root{${b}}`).join("\n") || "(no rule)");
     const sizes = `(max-width: ${want}) 100vw, ${want}`;
+    // Covers are 60px wider than the column.
+    const cover = `min(calc(${want} + 60px), calc(100vw - 40px))`;
     const off = [];
     let seen = 0;
     for (const p of pages(dir)) {
-      for (const m of readFileSync(p, "utf8").matchAll(/<img\b[^>]*>/gi)) {
+      const html = readFileSync(p, "utf8");
+      const covers = [...html.matchAll(/<figure\b[^>]*post-cover[^>]*>\s*(<img\b[^>]*>)/gi)].map((m) => m[1]);
+      for (const m of html.matchAll(/<img\b[^>]*>/gi)) {
         const s = attr(m[0], "sizes");
         if (s === null || hasClass(m[0], "portrait")) continue;
         seen++;
-        if (s !== sizes) off.push(`${rel(p)}: sizes="${s}"`);
+        const wanted = covers.includes(m[0]) ? cover : sizes;
+        if (s.replace(/&#43;/g, "+") !== wanted) off.push(`${rel(p)}: sizes="${s}"`);
       }
     }
     if (!seen) fail("no image with a sizes attribute was built");
