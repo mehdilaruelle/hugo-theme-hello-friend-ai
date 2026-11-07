@@ -97,6 +97,40 @@ const checks = {
     ok("a table of contents is rendered only where there is something to list");
   },
 
+  // A screen reader lists landmarks by name: two unnamed navs on one page (the
+  // menu and the table of contents) cannot be told apart, and an aside inside
+  // the article is a complementary landmark nested in another.
+  landmarks() {
+    const bad = [];
+    let navs = 0, tocs = 0;
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      const names = [];
+      for (const m of html.matchAll(/<nav\b[^>]*>/gi)) {
+        navs++;
+        const label = attr(m[0], "aria-label");
+        const by = attr(m[0], "aria-labelledby");
+        let name = label;
+        if (!name && by) {
+          const target = [...html.matchAll(/<[a-z][^>]*>/gi)].find((t) => attr(t[0], "id") === by);
+          if (!target) { bad.push(`${rel(p)}: aria-labelledby="${by}" names no element`); continue; }
+          name = text(element(html, target.index + target[0].length, target[0].match(/^<([a-z0-9]+)/i)[1]));
+        }
+        if (attr(m[0], "id") === "TableOfContents") tocs++;
+        if (!name) bad.push(`${rel(p)}: a nav with no name: ${m[0]}`);
+        else names.push(name);
+      }
+      const dup = names.filter((n, i) => names.indexOf(n) !== i);
+      if (dup.length) bad.push(`${rel(p)}: two navs named "${dup[0]}"`);
+      for (const m of html.matchAll(/<article\b[^>]*>/gi)) {
+        if (/<aside\b/i.test(element(html, m.index + m[0].length, "article"))) bad.push(`${rel(p)}: an aside inside the article`);
+      }
+    }
+    if (bad.length) fail("a landmark a screen reader cannot tell apart", bad.slice(0, 5).join("\n"));
+    if (!tocs) fail("no table of contents was rendered anywhere");
+    ok(`${navs} navs are each named once on their page, ${tocs} of them tables of contents, and no aside sits in an article`);
+  },
+
   // #265: .content is the page frame, not a prose wrapper.
   "list-content"() {
     const nested = [];
