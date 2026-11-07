@@ -99,7 +99,7 @@ Kept current with Hugo:
 
 ## Requirements
 
-- **Hugo**, version **0.158.0 or newer** (tested against 0.164.0). Either
+- **Hugo**, version **0.158.0 or newer** (CI builds on 0.164.0 and on 0.158.0). Either
   edition will do: the standard build compiles the stylesheet too, through
   Dart Sass.
 - **[Dart Sass](https://sass-lang.com/install/)** — required.

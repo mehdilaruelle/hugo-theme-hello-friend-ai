@@ -657,8 +657,8 @@ and an article names the series it belongs to:
 series: ["Hugo 101"]
 ```
 
-Nothing to switch on. A series of one shows nothing, since there is nowhere
-else to go; an article in two series shows two blocks; a part built with
+Nothing to switch on. Any page shows the block, in `posts/` or not. A series of
+one shows nothing, since there is nowhere else to go; an article in two series shows two blocks; a part built with
 `render: never` or `render: link` is left out, as it has no page to link to. A site whose
 taxonomy is called something else gets no block: the theme reads `series`.
 
@@ -1052,6 +1052,13 @@ is fine to land on but not worth submitting.
 `_build.list: never` is the blunt version: it removes the page from the sitemap,
 the lists, the feeds and the search index in one line, while still rendering it.
 Use it when the page should exist at its URL and nowhere else.
+
+`build.render: link` is the opposite case: the page has a permalink but no
+page behind it. The theme treats it as kept out: `noindex`, no sitemap entry,
+and left out of the lists, the counts and the series blocks. A tag or category
+that only such pages carry has nothing to list, so its taxonomy leaves it out,
+in the HTML, the feed and the Markdown copy, and its page is `noindex`. A term
+with its own `_index.md` is a page in its own right and stays.
 
 ## Search
 

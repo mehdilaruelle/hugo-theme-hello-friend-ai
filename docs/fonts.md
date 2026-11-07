@@ -13,6 +13,11 @@ and a page downloads only the files whose `unicode-range` it draws: a page in
 English fetches about 25 KB per weight instead of 100.
 `.github/scripts/subset-fonts.py` writes them from the full faces.
 
+The fallback faces carry Inter's own `unicode-range` too. Their metrics are
+measured on Inter, so they only apply to the scripts Inter draws: Arabic,
+Japanese or any other script falls through to its own system font, at its own
+size.
+
 There is **one face per weight** the theme asks Inter for. A fallback family
 with a single face is matched for every weight, and the browser is left to
 synthesise the rest. Headings are the visible case: `h1` to `h6` keep the

@@ -1,17 +1,30 @@
 # Performance
 
 Both demo sites are measured, not a private one, so you can re-run these
-yourself. Both home pages are **100 across the board**, on mobile and on
-desktop:
+yourself: each link below starts a fresh PageSpeed Insights run. Both home pages
+are **100 across the board**, on mobile and on desktop:
 
 | | performance | accessibility | best practices | SEO | agentic browsing |
 | --- | --- | --- | --- | --- | --- |
-| [demo, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai/zeo42l0acb?form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
-| [demo, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai/zeo42l0acb?form_factor=mobile) | 100 | 100 | 100 | 100 | 100 |
-| [showcase, desktop](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai-showcase/8r7wpox7me?form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
-| [showcase, mobile](https://pagespeed.web.dev/analysis/https-mehdilaruelle-github-io-hugo-theme-hello-friend-ai-showcase/8r7wpox7me?form_factor=mobile) | 100 | 100 | 100 | 100 | 100 |
+| [demo, desktop](https://pagespeed.web.dev/report?url=https%3A%2F%2Fmehdilaruelle.github.io%2Fhugo-theme-hello-friend-ai%2F&form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
+| [demo, mobile](https://pagespeed.web.dev/report?url=https%3A%2F%2Fmehdilaruelle.github.io%2Fhugo-theme-hello-friend-ai%2F&form_factor=mobile) | 100 | 100 | 100 | 100 | 100 |
+| [showcase, desktop](https://pagespeed.web.dev/report?url=https%3A%2F%2Fmehdilaruelle.github.io%2Fhugo-theme-hello-friend-ai%2Fshowcase%2F&form_factor=desktop) | 100 | 100 | 100 | 100 | 100 |
+| [showcase, mobile](https://pagespeed.web.dev/report?url=https%3A%2F%2Fmehdilaruelle.github.io%2Fhugo-theme-hello-friend-ai%2Fshowcase%2F&form_factor=mobile) | 100 | 100 | 100 | 100 | 100 |
 
-Measured on 30 September 2026 with Lighthouse 13, on these URLs.
+Measured on 7 November 2026 with Lighthouse 13.6, three runs per row, every
+one of them 100. These are Lighthouse's default mobile and desktop settings,
+the ones PageSpeed Insights uses, but run from a container rather than Google's
+servers, so the timings are that machine's:
+
+| | Largest Contentful Paint | Speed Index |
+| --- | --- | --- |
+| demo, mobile | 1.1 s | 1.1–1.6 s |
+| demo, desktop | 0.3 s | 0.5 s |
+| showcase, mobile | 0.9 s | 1.1–1.5 s |
+| showcase, desktop | 0.3 s | 0.4–0.5 s |
+
+The previous measurement, with PageSpeed Insights on 30 September 2026, gave
+the same scores.
 
 **These are home pages, not articles.** An article is scored on what it carries,
 and a photograph is most of that. The theme resizes and measures it when the
@@ -24,7 +37,8 @@ Paint.
 
 **Read a mobile performance score as a range.** Earlier runs put the demo's home
 page at 99, 97 and 97 and the showcase at 99, with Speed Index the part that
-moved most. The theme changed between some of those runs, so not every point of
+moves most: across the three mobile runs above it varies by up to half a
+second, without leaving 100. The theme changed between some of those runs, so not every point of
 the difference is noise, but not every point is code either. Re-run before
 believing a drop, or a gain.
 
@@ -78,6 +92,9 @@ as the theme does. What the theme contributes is the part it controls:
   | stylesheet | 57 612 → **31 868 B** | 57 612 → **32 260 B** |
   | gzipped | 9 149 → **6 447 B** | 9 149 → **6 520 B** |
   | whole build | 9 MB → **3 MB** | 12 MB → **6 MB** |
+
+  Measured when the change landed. The stylesheet has grown since with the
+  features added after it, to 41 728 B (7 882 B gzipped) on the demo.
 
   Nothing to configure, and adding a language to `data/langFlags.yaml` in your
   own site is enough to get its flag.
