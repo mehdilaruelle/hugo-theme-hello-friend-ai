@@ -582,8 +582,7 @@ jobs:
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
-          # A tag on render: link pages only: unlisted, noindex, not in the sitemap;
-          # one with a page of its own, or with a listed post, stays.
+          # A term of render: link pages only is unlisted and noindex; a described or populated one stays.
           p=public-series
           for f in tags/index.html tags/index.xml sitemap.xml; do
             [ -f $p/$f ] && ! grep -q 'never-written' $p/$f || { echo "  BAD  an empty term is listed in $f"; exit 1; }
