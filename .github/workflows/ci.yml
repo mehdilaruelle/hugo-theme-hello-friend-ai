@@ -72,10 +72,17 @@ jobs:
           echo "  the alias is followed, into a .txt template"
 
   build:
-    name: Build exampleSite
+    name: Build exampleSite (Hugo ${{ matrix.hugo }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: github.event_name != 'schedule'
+    # The pinned version and the declared minimum.
+    strategy:
+      fail-fast: false
+      matrix:
+        hugo: ["0.164.0", "0.158.0"]
+    env:
+      HUGO_VERSION: ${{ matrix.hugo }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -101,7 +108,10 @@ jobs:
 
       - name: Build
         working-directory: hello-friend-ai/exampleSite
-        run: hugo --themesDir ../.. --gc --minify --panicOnWarning
+        run: |
+          hugo --themesDir ../.. --gc --minify --panicOnWarning
+          # Before 0.164, content/about/ beside about.md made /about/ a section.
+          grep -q '<title>About ::' public/about/index.html || { echo "  BAD  /about/ is not the About page"; exit 1; }
 
       # The showcase turns on everything the default demo leaves off, so a
       # template change that only breaks an optional feature still fails here.
