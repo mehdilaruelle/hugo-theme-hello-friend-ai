@@ -573,6 +573,8 @@ jobs:
           grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
             || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
           echo "  a stray % reads as itself"
+          node ../.github/scripts/check-invariants.mjs public-seo-shapes title-plain \
+            posts/2026/10/cheap-or-dear/index.html 'Cheap ($$) or dear ($$$$)?'
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite
