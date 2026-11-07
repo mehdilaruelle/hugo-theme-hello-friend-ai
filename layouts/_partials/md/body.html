@@ -6,15 +6,28 @@
        them all, and a leading &#43; becomes \+, not a list marker. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $text := .RenderShortcodes -}}
-{{- /* A picture the image hook finds in assets/ is published resized only:
-       the copy links the original, which .Permalink publishes. */ -}}
+{{- /* Links the HTML rewrites, so the copy points to the same file: assets/
+       pictures, and the link hook's page and file links when multilingual. */ -}}
 {{- $assets := dict -}}
-{{- range findRESubmatch `!\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
-  {{- $dest := or (index . 1) (index . 2) -}}
+{{- range findRESubmatch `(?:^|[^\\])(!?)\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
+  {{- $image := eq (index . 1) "!" -}}
+  {{- $dest := or (index . 2) (index . 3) -}}
   {{- with (try (urls.Parse (htmlUnescape $dest))).Value -}}
-    {{- if not (or .Scheme .Host .RawQuery .Fragment ($.Resources.Get .Path)) -}}
-      {{- with resources.Get .Path -}}{{- $assets = merge $assets (dict $dest .Permalink) -}}{{- end -}}
+    {{- $u := . -}}
+    {{- $to := "" -}}
+    {{- if or .Scheme .Host (not .Path) -}}
+    {{- else if $image -}}
+      {{- if not (or .RawQuery .Fragment ($.Resources.Get .Path)) }}{{ with resources.Get .Path }}{{ $to = .Permalink }}{{ end }}{{ end -}}
+    {{- else if hugo.IsMultilingual -}}
+      {{- with or ($.GetPage .Path) ($.Resources.Get .Path) (resources.Get .Path) -}}
+        {{- with .Permalink -}}
+          {{- $to = . -}}
+          {{- with $u.RawQuery }}{{ $to = printf "%s?%s" $to . }}{{ end -}}
+          {{- with $u.EscapedFragment }}{{ $to = printf "%s#%s" $to . }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
     {{- end -}}
+    {{- with $to }}{{ $assets = merge $assets (dict $dest .) }}{{ end -}}
   {{- end -}}
 {{- end -}}
 {{- $lines := slice -}}
@@ -29,7 +42,7 @@
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
         {{- range $dest, $to := $assets -}}
-          {{- $p = replaceRE (printf `(!\[[^\]]*\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
+          {{- $p = replaceRE (printf `((?:^|[^\\])\[(?:[^\]]*[^\\\]])?\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
         {{- end -}}
       {{- end -}}
       {{- $out = print $out $p -}}

@@ -194,9 +194,15 @@ jobs:
                          '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
                          '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
                          '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
-                         '- [ ]: commas.svg' '-     [shown]: commas.svg'; do
+                         '- [ ]: commas.svg' '-     [shown]: commas.svg' \
+                         'Literal text, not a link: \[text\](commas.svg).' \
+                         'Nor this one: \[text](commas.svg).' \
+                         '[n]: https://example.com/subpath/showcase/llms-links/escapes/../../svg-sizes/commas.svg'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
+          # Links the link hook resolves in the HTML resolve in the copy too.
+          grep -qF '[the page next door](https://example.com/subpath/showcase/kept-out/)' public/kept-out-quoted/index.md \
+            || { echo "  BAD  /kept-out/ is left root-relative in the Markdown copy"; bad=1; }
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 

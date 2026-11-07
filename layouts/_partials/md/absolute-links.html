@@ -22,7 +22,7 @@
 {{- /* A definition's label, not a footnote's nor a task box, and what may follow its
        destination: a title. Indented code is skipped, so any indent is a list's. */ -}}
 {{- $label := `(?:(?:[-*+]|\d{1,9}[.)])(?: {1,4}| {0,3}\t))?\[[ \t]*[^\]\s^][^\]]*\]:` -}}
-{{- $title := `(?:[ \t]+(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\((?:[^)\\]|\\.)*\)))?[ \t]*$` -}}
+{{- $title := `(?:[ \t]+(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\((?:[^)\\]|\\.)*\)))?[ \t]*\r?$` -}}
 {{- $lines := slice -}}
 {{- $code := partial "md/code-lines.html" .text -}}
 {{- range $n, $raw := split .text "\n" -}}
@@ -32,21 +32,24 @@
     {{- range partial "md/spans.html" $line -}}
       {{- $p := .text -}}
       {{- if not .code -}}
+        {{- /* \[text](x) is literal text too: a mark keeps "](" from matching. */ -}}
+        {{- $p = replaceRE `(\\\[[^\[\]\n]*\])\(` "${1}\ue000(" $p -}}
         {{- range $name := $names -}}
           {{- $q := printf `(?:\./)?%s` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $name) -}}
           {{- $to := print $bb (replace $name "$" "$$") -}}
-          {{- $p = replaceRE (printf `\]\(%s([?#)\s])` $q) (printf `](%s${1}` $to) $p -}}
-          {{- $p = replaceRE (printf `\]\(<%s([?#>])` $q) (printf `](<%s${1}` $to) $p -}}
+          {{- $p = replaceRE (printf `(^|[^\\])\]\(%s([?#)\s])` $q) (printf `${1}](%s${2}` $to) $p -}}
+          {{- $p = replaceRE (printf `(^|[^\\])\]\(<%s([?#>])` $q) (printf `${1}](<%s${2}` $to) $p -}}
           {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)%s((?:[?#][^\s>]*)?>?%s)` $dp $label $q $title) (printf `${1}%s${2}` $to) $p -}}
           {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s([?#"'])` $q) (printf `${1}%s${2}` $to) $p -}}
         {{- end -}}
-        {{- $p = replaceRE (printf `\]\((%s)([)\s])` $md) (printf `](%s${1}${2}` $b) $p -}}
-        {{- $p = replaceRE `\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `](<%s${1}>` $b) $p -}}
+        {{- /* Not after a backslash: \[text\](x) is literal text. */ -}}
+        {{- $p = replaceRE (printf `(^|[^\\])\]\((%s)([)\s])` $md) (printf `${1}](%s${2}${3}` $b) $p -}}
+        {{- $p = replaceRE `(^|[^\\])\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `${1}](<%s${2}>` $b) $p -}}
         {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)(%s)(>?%s)` $dp $label $def $title) (printf `${1}%s${2}${3}` $b) $p -}}
         {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*")(%s)"` $dq) (printf `${1}%s${2}"` $b) $p -}}
         {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*')(%s)'` $sq) (printf `${1}%s${2}'` $b) $p -}}
       {{- end -}}
-      {{- $out = print $out $p -}}
+      {{- $out = print $out (replace $p "\ue000" "") -}}
     {{- end -}}
     {{- $line = $out -}}
   {{- end -}}
