@@ -19,7 +19,9 @@
   }
 }
 
-.alert-title {
+// By element too: > [!TITLE] and > [!ICON] alerts carry these classes.
+.alert > p.alert-title,
+.alert > summary.alert-title {
   color: var(--alert-color);
   font-weight: 600;
   margin: 0 0 0.5em;
@@ -33,7 +35,7 @@ details.alert:not([open]) > summary.alert-title {
   margin-bottom: 0;
 }
 
-.alert-icon svg {
+.alert-title > span.alert-icon svg {
   width: 1em;
   height: 1em;
   vertical-align: -0.125em;
