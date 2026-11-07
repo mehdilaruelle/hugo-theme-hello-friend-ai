@@ -17,6 +17,6 @@
       "a" (partial "flatten.html" $html))) -}}
 <details class="faq">
   <summary>{{ $q }}</summary>
-  {{- /* No blank line, which ends the <details> block in the md copy: &#10; keeps <pre> newlines. */}}
+  {{- /* A blank line would end the HTML block in the md copy; &#10; renders the same. */}}
   {{ replace (replace $html "\n\n" "\n&#10;") "\n\n" "\n&#10;" | strings.TrimRight "\n" | safeHTML }}
 </details>
