@@ -52,7 +52,7 @@ other = "コピー"
 other = "コピーしました"
 
 [copyCodeFailed]
-other = "Ctrl+C を押してください"
+other = "手動でコピーしてください"
 
 # Search
 #

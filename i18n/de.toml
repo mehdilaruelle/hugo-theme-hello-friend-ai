@@ -61,7 +61,7 @@ other = "Kopieren"
 other = "Kopiert"
 
 [copyCodeFailed]
-other = "Strg+C drücken"
+other = "Manuell kopieren"
 
 # Search
 #

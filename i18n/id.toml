@@ -61,7 +61,7 @@ other = "Salin"
 other = "Tersalin"
 
 [copyCodeFailed]
-other = "Tekan Ctrl+C"
+other = "Salin secara manual"
 
 # Search
 #
