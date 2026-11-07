@@ -65,7 +65,7 @@ other = "Копировать"
 other = "Скопировано"
 
 [copyCodeFailed]
-other = "Нажмите Ctrl+C"
+other = "Скопируйте вручную"
 
 # Search
 #

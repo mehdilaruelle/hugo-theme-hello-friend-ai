@@ -1,4 +1,7 @@
-<nav class="menu">
+{{- /* Named, because an article can hold other navigation landmarks
+       (the table of contents, a series) and a screen reader lists them all
+       by name. The button's own label, so it needs no new translation. */ -}}
+<nav class="menu" aria-label="{{ partial "i18n.html" (dict "key" "toggleMenu" "fallback" "Menu") }}">
     <ul class="menu__inner">
         {{- $currentPage := . -}}
         {{ range .Site.Menus.main -}}

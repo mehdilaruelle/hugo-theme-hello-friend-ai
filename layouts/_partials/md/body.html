@@ -6,15 +6,28 @@
        them all, and a leading &#43; becomes \+, not a list marker. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $text := .RenderShortcodes -}}
-{{- /* A picture the image hook finds in assets/ is published resized only:
-       the copy links the original, which .Permalink publishes. */ -}}
+{{- /* Links the HTML rewrites, so the copy points to the same file: assets/
+       pictures, and the link hook's page and file links when multilingual. */ -}}
 {{- $assets := dict -}}
-{{- range findRESubmatch `!\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
-  {{- $dest := or (index . 1) (index . 2) -}}
+{{- range findRESubmatch `(?:^|[^\\])(!?)\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
+  {{- $image := eq (index . 1) "!" -}}
+  {{- $dest := or (index . 2) (index . 3) -}}
   {{- with (try (urls.Parse (htmlUnescape $dest))).Value -}}
-    {{- if not (or .Scheme .Host .RawQuery .Fragment ($.Resources.Get .Path)) -}}
-      {{- with resources.Get .Path -}}{{- $assets = merge $assets (dict $dest .Permalink) -}}{{- end -}}
+    {{- $u := . -}}
+    {{- $to := "" -}}
+    {{- if or .Scheme .Host (not .Path) -}}
+    {{- else if $image -}}
+      {{- if not (or .RawQuery .Fragment ($.Resources.Get .Path)) }}{{ with resources.Get .Path }}{{ $to = .Permalink }}{{ end }}{{ end -}}
+    {{- else if hugo.IsMultilingual -}}
+      {{- with or ($.GetPage .Path) ($.Resources.Get .Path) (resources.Get .Path) -}}
+        {{- with .Permalink -}}
+          {{- $to = . -}}
+          {{- with $u.RawQuery }}{{ $to = printf "%s?%s" $to . }}{{ end -}}
+          {{- with $u.EscapedFragment }}{{ $to = printf "%s#%s" $to . }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
     {{- end -}}
+    {{- with $to }}{{ $assets = merge $assets (dict $dest .) }}{{ end -}}
   {{- end -}}
 {{- end -}}
 {{- $lines := slice -}}
@@ -29,7 +42,7 @@
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
         {{- range $dest, $to := $assets -}}
-          {{- $p = replaceRE (printf `(!\[[^\]]*\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
+          {{- $p = replaceRE (printf `((?:^|[^\\])\[(?:[^\]]*[^\\\]])?\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
         {{- end -}}
       {{- end -}}
       {{- $out = print $out $p -}}
@@ -38,4 +51,36 @@
   {{- end -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
-{{- return delimit $lines "\n" -}}
+{{- /* Blank lines trimmed, not spaces: a first line's indent makes it code. */ -}}
+{{- $body := delimit $lines "\n" | replaceRE `^(?:[ \t]*\r?\n)+` "" | strings.TrimRight " \t\r\n" -}}
+{{- /* Close an open fence, or it swallows the rest of llms-full.txt. */ -}}
+{{- $flags := partial "md/code-lines.html" (print $body "\n") -}}
+{{- if index $flags (sub (len $flags) 1) -}}
+  {{- /* Replay the last code run's fences to find the open one; the closer
+         copies its marker, quote prefix and list indent. */ -}}
+  {{- $open := "" -}}
+  {{- $quotes := 0 -}}
+  {{- $close := "" -}}
+  {{- range $i, $l := split $body "\n" -}}
+    {{- if not (index $flags $i) -}}
+      {{- $open = "" -}}
+      {{- $close = "" -}}
+    {{- else -}}
+      {{- with findRESubmatch `^([ \t>]*)((?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})(.*)$` $l 1 -}}
+        {{- $m := index . 0 -}}
+        {{- $f := index $m 3 -}}
+        {{- $q := len (findRE ">" (index $m 1)) -}}
+        {{- if not $open -}}
+          {{- $open = $f -}}
+          {{- $quotes = $q -}}
+          {{- $close = print (index $m 1) (strings.Repeat (len (index $m 2)) " ") $f -}}
+        {{- else if and (eq $q $quotes) (eq (substr $f 0 1) (substr $open 0 1)) (ge (len $f) (len $open)) (not (strings.TrimSpace (index $m 4))) -}}
+          {{- $open = "" -}}
+          {{- $close = "" -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $close }}{{ $body = printf "%s\n%s" $body . }}{{ end -}}
+{{- end -}}
+{{- return $body -}}

@@ -194,9 +194,15 @@ jobs:
                          '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
                          '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
                          '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
-                         '- [ ]: commas.svg' '-     [shown]: commas.svg'; do
+                         '- [ ]: commas.svg' '-     [shown]: commas.svg' \
+                         'Literal text, not a link: \[text\](commas.svg).' \
+                         'Nor this one: \[text](commas.svg).' \
+                         '[n]: https://example.com/subpath/showcase/llms-links/escapes/../../svg-sizes/commas.svg'; do
             grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
           done
+          # Links the link hook resolves in the HTML resolve in the copy too.
+          grep -qF '[the page next door](https://example.com/subpath/showcase/kept-out/)' public/kept-out-quoted/index.md \
+            || { echo "  BAD  /kept-out/ is left root-relative in the Markdown copy"; bad=1; }
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 
@@ -215,6 +221,14 @@ jobs:
                       '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
             grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
           done
+          md=public/llms-links/text-edges/index.md
+          grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
+          grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }
+          awk '/<details class="faq">/,/<\/details>/' "$md" | sed '$d' | grep -qx '' \
+            && { echo "  BAD  a blank line inside the faq ends its HTML block"; bad=1; }
+          grep -A2 -x 'hugo server' public/llms-full.txt | tail -1 | grep -qx '~~~' || { echo "  BAD  a fence left open swallows llms-full.txt"; bad=1; }
+          grep -B1 -F 'llms.txt と同じ順序です' public/ja/llms-full.txt | head -1 | grep -qx '' \
+            || { echo "  BAD  the truncation notice is glued to the line above"; bad=1; }
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
           exit "$bad"
 
@@ -246,7 +260,25 @@ jobs:
         run: |
           node ../.github/scripts/check-invariants.mjs public toc
 
+      - name: Check every navigation landmark is named, and no aside sits in an article
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public landmarks
+          node ../.github/scripts/check-invariants.mjs ../exampleSite/public landmarks
+
       # Valid markup either way, so nothing else notices it.
+      # relativeURLs: a relative font preload; no home: Person and article:author keep a URL.
+      - name: Check head URLs under relativeURLs and with no home page
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          HUGO_RELATIVEURLS=true HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml --destination public-relative
+          for f in about/index.html kept-out-quoted/index.html; do
+            [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
+              || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
+          done
+          echo "  head URLs are relative or complete"
+
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: |
@@ -541,6 +573,8 @@ jobs:
           grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
             || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
           echo "  a stray % reads as itself"
+          node ../.github/scripts/check-invariants.mjs public-seo-shapes title-plain \
+            posts/2026/10/cheap-or-dear/index.html 'Cheap ($$) or dear ($$$$)?'
 
       - name: Check a url naming a file warns when the md copy would replace it, and llms.txt keeps no heading
         working-directory: hello-friend-ai/exampleSite
@@ -564,6 +598,15 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-markdown-images markdown-images
+          # A % portrait width reaches sizes as vw; imageSizes still sizes a cover.
+          HUGO_PARAMS_PORTRAIT_PATH="img/an example.png" HUGO_PARAMS_PORTRAIT_MAXWIDTH="50%" HUGO_PARAMS_IMAGESIZES="99vw" \
+            hugo --themesDir ../.. --gc --minify --destination public-portrait \
+            --contentDir ../.github/fixtures/markdown-images \
+            --config config.toml,../.github/fixtures/markdown-images.toml
+          grep -q 'class="circle portrait"' public-portrait/index.html && grep -q 'sizes=50vw' public-portrait/index.html \
+            || { echo "  BAD  the portrait has an invalid sizes"; exit 1; }
+          grep -q 'post-cover><img[^>]*sizes=99vw' public-portrait/posts/2026/10/a-cover-named-like-a-glob/index.html \
+            || { echo "  BAD  imageSizes does not reach the cover"; exit 1; }
           # The card names the cover, not the file its name matches as a glob.
           f=public-markdown-images/posts/2026/10/a-cover-named-like-a-glob/index.html
           for want in '<meta property="og:image" content="https://example.com/subpath/posts/2026/10/a-cover-named-like-a-glob/photo%20%5B1%5D.jpg">' \
@@ -582,6 +625,7 @@ jobs:
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
+          check notes/aside/index.html "Asides=An aside, first part|*An aside, second part"
           # A term of render: link pages only is unlisted and noindex; a described or populated one stays.
           p=public-series
           for f in tags/index.html tags/index.xml sitemap.xml; do
@@ -715,12 +759,14 @@ jobs:
           ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
           node ../.github/scripts/check-markup.mjs public-shapes
           echo "  contact schemes as given, javascript: dropped"
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused default-theme-value; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
           grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
             || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
           [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
+          ! grep -q 'data-theme=' public-shapes/index.html || { echo "  BAD  an unknown defaultTheme was written"; exit 1; }
+          grep -q 'logo__cursor{animation-duration:0s}' public-shapes/main-*.css || { echo "  BAD  logoCursorAnimate = 0 was ignored"; exit 1; }
           # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
             --config ../.github/fixtures/param-shapes-plain.toml \

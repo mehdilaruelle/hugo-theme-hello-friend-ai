@@ -2,3 +2,6 @@
 # on commit so a Windows checkout cannot put CRLF back, without forcing LF into
 # the working tree the way eol=lf would.
 * text=auto
+
+# CRLF on purpose: the link definition must still resolve.
+showcaseSite/content/llms-links/escapes.md -text

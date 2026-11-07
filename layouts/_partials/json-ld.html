@@ -147,7 +147,7 @@
   {{- /* Google documents an Organization publisher with a logo alongside the
          name. Without one configured, the publisher is the Person the page
          already describes in full. */ -}}
-  {{- $publisher := dict "@type" "Organization" "name" site.Title "url" site.Home.Permalink -}}
+  {{- $publisher := dict "@type" "Organization" "name" site.Title "url" (site.Home.Permalink | default site.BaseURL) -}}
   {{- $logo := "" -}}
   {{- $publisherConfigured := false -}}
   {{- with site.Params.publisher -}}
@@ -171,7 +171,7 @@
   {{- /* An organisation named without a logo keeps that name: the fallback is
          for a site that configured no publisher at all. */ -}}
   {{- if and (not $publisherConfigured) $siteAuthor -}}
-    {{- $publisher = cond $guest $person (dict "@id" (printf "%s#person" hugo.Sites.Default.Home.Permalink)) -}}
+    {{- $publisher = cond $guest $person (dict "@id" (printf "%s#person" (hugo.Sites.Default.Home.Permalink | default hugo.Sites.Default.BaseURL))) -}}
   {{- end -}}
   {{- $data = merge $data (dict "publisher" $publisher) -}}
 {{- else if and .IsPage (not (partial "noindex.html" .)) -}}

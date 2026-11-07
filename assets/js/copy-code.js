@@ -10,7 +10,7 @@
   const script = document.currentScript;
   const label = (script && script.dataset.label) || 'Copy';
   const done = (script && script.dataset.labelDone) || 'Copied';
-  const failed = (script && script.dataset.labelFailed) || 'Press Ctrl+C';
+  const failed = (script && script.dataset.labelFailed) || 'Copy manually';
 
   function isLineNumber(el) {
     if (el.classList.contains('ln') || el.classList.contains('lnt')) return true;

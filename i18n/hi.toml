@@ -61,7 +61,7 @@ other = "कॉपी करें"
 other = "कॉपी हो गया"
 
 [copyCodeFailed]
-other = "Ctrl+C दबाएँ"
+other = "हाथ से कॉपी करें"
 
 # Search
 #

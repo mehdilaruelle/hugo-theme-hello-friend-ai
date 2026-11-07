@@ -4,4 +4,5 @@
 {{- else -}}
   {{- $t = $t | replaceRE `\s+` " " | strings.TrimSpace -}}
 {{- end -}}
-{{- return $t -}}
+{{- /* Text, not Markdown: __init__ is not bold, \[a\](b) not a link. */ -}}
+{{- return replaceRE "([\\\\`*_\\[\\]])" "\\$1" $t -}}
