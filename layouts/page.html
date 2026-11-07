@@ -18,6 +18,9 @@
                        size. Not a link: it would point at the page it is on. */ -}}
                 <h1 class="post-title">{{ partial "title-inline.html" (dict "text" (partial "title.html" .) "with" "&lt;") | markdownify }}</h1>
 
+                {{- /* Parts outside posts/ show their place too. */}}
+                {{- partial "series.html" . }}
+
                 {{ partial "post-cover.html" . }}
 
                 {{ partial "toc.html" . }}

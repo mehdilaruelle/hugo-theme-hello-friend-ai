@@ -623,6 +623,7 @@ jobs:
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
+          check notes/aside/index.html "Asides=An aside, first part|*An aside, second part"
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
             --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
             --config config.toml,../.github/fixtures/series-off.toml
