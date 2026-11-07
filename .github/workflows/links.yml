@@ -688,6 +688,9 @@ jobs:
         run: |
           node .github/scripts/check-invariants.mjs showcaseSite/public content-width 960px
           node .github/scripts/check-invariants.mjs exampleSite/public content-width
+          # Fallback faces cover Inter's scripts only, so Arabic is not rescaled.
+          grep -q 'font-family:inter fallback;[^}]*unicode-range:' showcaseSite/public/main-*.css \
+            || { echo "  BAD  an Inter fallback face with no unicode-range"; exit 1; }
 
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all.
