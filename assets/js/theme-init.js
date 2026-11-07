@@ -5,8 +5,11 @@
 (function () {
   try {
     var stored = window.localStorage.getItem("theme");
+    var root = document.documentElement;
     if (stored === "dark" || stored === "light") {
-      document.documentElement.setAttribute("data-theme", stored);
+      // main.js falls back to the served value if the choice is cleared.
+      root.setAttribute("data-default-theme", root.getAttribute("data-theme") || "");
+      root.setAttribute("data-theme", stored);
     }
   } catch (e) {
     // Storage throws in some privacy modes; the served theme stands.

@@ -12,9 +12,11 @@
 
 (function () {
   const themeToggle = document.querySelector(".theme-toggle");
-  // params.defaultTheme, as rendered. theme-init.js replaces it only when a
-  // stored choice exists, and this is read only when none does.
-  const defaultTheme = document.documentElement.getAttribute("data-theme");
+  // The served params.defaultTheme, which theme-init.js may set aside.
+  const root = document.documentElement;
+  const defaultTheme = root.getAttribute(
+    root.hasAttribute("data-default-theme") ? "data-default-theme" : "data-theme",
+  );
 
   // localStorage can throw (privacy modes); treat that as no storage.
   function withStorage(use) {
@@ -26,11 +28,13 @@
   }
 
   const readStoredTheme = () => withStorage((s) => s.getItem("theme"));
-  const storeTheme = (theme) => withStorage((s) => s.setItem("theme", theme));
+  const storeTheme = (theme) => withStorage((s) => (s.setItem("theme", theme), true));
   const forgetTheme = () => withStorage((s) => s.removeItem("theme"));
+  // This page's choice, kept only when storing it failed.
+  let picked = null;
 
   function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
+    root.setAttribute("data-theme", theme);
     // The button is labelled "Dark theme" and pressed when the dark theme is on,
     // so a screen reader announces the state rather than a label that changes
     // under the reader every time it is used. Set here rather than in
@@ -44,7 +48,7 @@
 
   // Read on every call: a choice made since page load has to win.
   function detectOSColorTheme() {
-    const chosen = readStoredTheme();
+    const chosen = picked || readStoredTheme();
 
     if (chosen === "dark" || chosen === "light") {
       applyTheme(chosen);
@@ -59,11 +63,11 @@
 
   function switchTheme() {
     const next =
-      document.documentElement.getAttribute("data-theme") === "dark"
+      root.getAttribute("data-theme") === "dark"
         ? "light"
         : "dark";
 
-    storeTheme(next);
+    picked = storeTheme(next) ? null : next;
     applyTheme(next);
   }
 
@@ -74,7 +78,7 @@
     // it can.
     themeToggle.removeAttribute("disabled");
     // Follow the system only while the visitor has expressed no preference.
-    const follow = () => !readStoredTheme() && detectOSColorTheme();
+    const follow = () => !readStoredTheme() && !picked && detectOSColorTheme();
     ["dark", "light"].forEach((scheme) => {
       const query = window.matchMedia(`(prefers-color-scheme: ${scheme})`);
       if (query.addEventListener) query.addEventListener("change", follow);
@@ -82,6 +86,15 @@
     });
 
     detectOSColorTheme();
+    // Back or another tab may hold an older choice.
+    window.addEventListener("pageshow", (e) => e.persisted && detectOSColorTheme());
+    // Storage works again: its value wins over this page's.
+    window.addEventListener("storage", (e) => {
+      if (e.key === "theme" || e.key === null) {
+        picked = null;
+        detectOSColorTheme();
+      }
+    });
   } else {
     forgetTheme();
   }
