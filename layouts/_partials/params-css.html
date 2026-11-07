@@ -12,7 +12,7 @@
     {{- $cursor = printf "%sbackground-color:%s;" $cursor . -}}
   {{- end -}}
 {{- end -}}
-{{- /* isset, not with: 0 is a duration, and stops the cursor. */ -}}
+{{- /* isset, not with: 0 is a valid duration. */ -}}
 {{- if isset $logo "logocursoranimate" -}}
   {{- with partial "css-param.html" (dict "value" $logo.logoCursorAnimate "name" "params.logo.logoCursorAnimate" "kind" "time") -}}
     {{- $cursor = printf "%sanimation-duration:%s;" $cursor . -}}
