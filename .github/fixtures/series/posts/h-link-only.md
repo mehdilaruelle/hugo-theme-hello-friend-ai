@@ -1,7 +1,7 @@
 ---
 title: "Linked, never written"
 date: 2026-10-08
-tags: ["tour"]
+tags: ["tour", "never-written", "described"]
 series: ["The Tour"]
 build:
   render: link

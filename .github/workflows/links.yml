@@ -626,6 +626,16 @@ jobs:
           check posts/2026/10/on-its-own/index.html
           check posts/2026/10/left-out-of-lists/index.html
           check notes/aside/index.html "Asides=An aside, first part|*An aside, second part"
+          # A term of render: link pages only is unlisted and noindex; a described or populated one stays.
+          p=public-series
+          for f in tags/index.html tags/index.xml sitemap.xml; do
+            [ -f $p/$f ] && ! grep -q 'never-written' $p/$f || { echo "  BAD  an empty term is listed in $f"; exit 1; }
+            grep -q 'tags/described/' $p/$f || { echo "  BAD  a described term is missing from $f"; exit 1; }
+          done
+          grep -q '<meta name=robots content="noindex' $p/tags/never-written/index.html || { echo "  BAD  an empty term is indexable"; exit 1; }
+          for t in described tour; do
+            [ -f $p/tags/$t/index.html ] && ! grep -q 'name=robots content="noindex' $p/tags/$t/index.html || { echo "  BAD  the $t term is not indexable"; exit 1; }
+          done
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
             --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
             --config config.toml,../.github/fixtures/series-off.toml
