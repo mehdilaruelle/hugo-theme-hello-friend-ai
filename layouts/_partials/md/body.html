@@ -51,4 +51,36 @@
   {{- end -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
-{{- return delimit $lines "\n" -}}
+{{- /* Blank lines trimmed, not spaces: a first line's indent makes it code. */ -}}
+{{- $body := delimit $lines "\n" | replaceRE `^(?:[ \t]*\r?\n)+` "" | strings.TrimRight " \t\r\n" -}}
+{{- /* Close an open fence, or it swallows the rest of llms-full.txt. */ -}}
+{{- $flags := partial "md/code-lines.html" (print $body "\n") -}}
+{{- if index $flags (sub (len $flags) 1) -}}
+  {{- /* Replay the last code run's fences to find the open one; the closer
+         copies its marker, quote prefix and list indent. */ -}}
+  {{- $open := "" -}}
+  {{- $quotes := 0 -}}
+  {{- $close := "" -}}
+  {{- range $i, $l := split $body "\n" -}}
+    {{- if not (index $flags $i) -}}
+      {{- $open = "" -}}
+      {{- $close = "" -}}
+    {{- else -}}
+      {{- with findRESubmatch `^([ \t>]*)((?:[-*+]|\d{1,9}[.)])[ \t]+)?(\x60{3,}|~{3,})(.*)$` $l 1 -}}
+        {{- $m := index . 0 -}}
+        {{- $f := index $m 3 -}}
+        {{- $q := len (findRE ">" (index $m 1)) -}}
+        {{- if not $open -}}
+          {{- $open = $f -}}
+          {{- $quotes = $q -}}
+          {{- $close = print (index $m 1) (strings.Repeat (len (index $m 2)) " ") $f -}}
+        {{- else if and (eq $q $quotes) (eq (substr $f 0 1) (substr $open 0 1)) (ge (len $f) (len $open)) (not (strings.TrimSpace (index $m 4))) -}}
+          {{- $open = "" -}}
+          {{- $close = "" -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $close }}{{ $body = printf "%s\n%s" $body . }}{{ end -}}
+{{- end -}}
+{{- return $body -}}

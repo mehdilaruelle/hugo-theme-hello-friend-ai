@@ -11,7 +11,7 @@
 {{- with .Date }}{{ if not .IsZero }}
 {{ time.Format "2006-01-02" . }}{{ with $.Params.tags }} · {{ delimit (partial "as-list.html" .) ", " | safeHTML }}{{ end }}
 {{ end }}{{ end }}
-{{ $body | strings.TrimSpace | safeHTML }}
+{{ $body | safeHTML }}
 {{ with .Params.llmsNote }}
 {{ partial "flatten.html" . | safeHTML }}
 {{ end }}
