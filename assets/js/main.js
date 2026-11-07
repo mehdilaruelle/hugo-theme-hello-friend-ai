@@ -12,8 +12,7 @@
 
 (function () {
   const themeToggle = document.querySelector(".theme-toggle");
-  // params.defaultTheme, as served: theme-init.js keeps it aside when it
-  // applies a stored choice.
+  // The served params.defaultTheme, which theme-init.js may set aside.
   const root = document.documentElement;
   const defaultTheme = root.getAttribute(
     root.hasAttribute("data-default-theme") ? "data-default-theme" : "data-theme",
@@ -89,7 +88,7 @@
     detectOSColorTheme();
     // Back or another tab may hold an older choice.
     window.addEventListener("pageshow", (e) => e.persisted && detectOSColorTheme());
-    // An event means storage works again: its value replaces this page's.
+    // Storage works again: its value wins over this page's.
     window.addEventListener("storage", (e) => {
       if (e.key === "theme" || e.key === null) {
         picked = null;
