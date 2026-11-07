@@ -6,8 +6,7 @@
        them all, and a leading &#43; becomes \+, not a list marker. */ -}}
 {{- $entities := dict "&hellip;" "…" "&laquo;" "«" "&ldquo;" "“" "&lsquo;" "‘" "&mdash;" "—" "&ndash;" "–" "&raquo;" "»" "&rdquo;" "”" "&rsquo;" "’" "&#39;" "'" "&#43;" "+" -}}
 {{- $text := .RenderShortcodes -}}
-{{- /* Links the HTML rewrites, so the copy points to the same file: assets/
-       pictures, and the link hook's page and file links when multilingual. */ -}}
+{{- /* Rewritten as in the HTML: assets/ images, and page or file links when multilingual. */ -}}
 {{- $assets := dict -}}
 {{- range findRESubmatch `(?:^|[^\\])(!?)\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
   {{- $image := eq (index . 1) "!" -}}

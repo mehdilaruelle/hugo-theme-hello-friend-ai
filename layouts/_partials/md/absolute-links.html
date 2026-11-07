@@ -32,7 +32,7 @@
     {{- range partial "md/spans.html" $line -}}
       {{- $p := .text -}}
       {{- if not .code -}}
-        {{- /* \[text](x) is literal text too: a mark keeps "](" from matching. */ -}}
+        {{- /* \[text](x) is literal: a mark keeps "](" from matching. */ -}}
         {{- $p = replaceRE `(\\\[[^\[\]\n]*\])\(` "${1}\ue000(" $p -}}
         {{- range $name := $names -}}
           {{- $q := printf `(?:\./)?%s` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $name) -}}
@@ -42,7 +42,7 @@
           {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)%s((?:[?#][^\s>]*)?>?%s)` $dp $label $q $title) (printf `${1}%s${2}` $to) $p -}}
           {{- $p = replaceRE (printf `(\s(?:src|href)\s*=\s*["'])%s([?#"'])` $q) (printf `${1}%s${2}` $to) $p -}}
         {{- end -}}
-        {{- /* Not after a backslash: \[text\](x) is literal text. */ -}}
+        {{- /* Not after \: \[text\](x) is literal. */ -}}
         {{- $p = replaceRE (printf `(^|[^\\])\]\((%s)([)\s])` $md) (printf `${1}](%s${2}${3}` $b) $p -}}
         {{- $p = replaceRE `(^|[^\\])\]\(<([^/#?<>:\n][^<>:\n]*)>` (printf `${1}](<%s${2}>` $b) $p -}}
         {{- $p = replaceRE (printf `^(%s%s[ \t]*<?)(%s)(>?%s)` $dp $label $def $title) (printf `${1}%s${2}${3}` $b) $p -}}
