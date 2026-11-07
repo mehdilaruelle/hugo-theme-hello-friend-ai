@@ -1,0 +1,6 @@
+{{- /* params.defaultTheme as "dark", "light" or "" (system); anything else is "". */ -}}
+{{- $theme := lower (printf "%v" (site.Params.defaultTheme | default "")) -}}
+{{- if not (in (slice "dark" "light" "" "auto" "system") $theme) -}}
+  {{- warnidf "default-theme-value" "params.defaultTheme: %q is not \"dark\" or \"light\", so the page follows the system." site.Params.defaultTheme -}}
+{{- end -}}
+{{- return cond (in (slice "dark" "light") $theme) $theme "" -}}

@@ -746,12 +746,14 @@ jobs:
           ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
           node ../.github/scripts/check-markup.mjs public-shapes
           echo "  contact schemes as given, javascript: dropped"
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused; do
+          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused default-theme-value; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
           grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
             || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
           [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
+          ! grep -q 'data-theme=' public-shapes/index.html || { echo "  BAD  an unknown defaultTheme was written"; exit 1; }
+          grep -q 'logo__cursor{animation-duration:0s}' public-shapes/main-*.css || { echo "  BAD  logoCursorAnimate = 0 was ignored"; exit 1; }
           # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
             --config ../.github/fixtures/param-shapes-plain.toml \

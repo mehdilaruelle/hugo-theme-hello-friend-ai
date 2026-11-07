@@ -1,5 +1,6 @@
+{{- $theme := partialCached "default-theme.html" . -}}
 <!DOCTYPE html>
-<html lang="{{ .Site.Language }}"{{ with .Site.Language.Direction }} dir="{{ . }}"{{ end }}{{ with .Site.Params.defaultTheme }} data-theme="{{ . }}"{{ end }}>
+<html lang="{{ .Site.Language }}"{{ with .Site.Language.Direction }} dir="{{ . }}"{{ end }}{{ with $theme }} data-theme="{{ . }}"{{ end }}>
     <head>
         {{ partialCached "warn-mainsections.html" . -}}
         {{ partial "head.html" . }}
