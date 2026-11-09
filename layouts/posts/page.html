@@ -3,7 +3,7 @@
     <main id="hf-main" class="post">
 
       {{- /* The condition on the container, as page.html already does. */ -}}
-      {{- $translations := where (where .Translations "Permalink" "!=" "") "Params.build.render" "!=" "link" }}
+      {{- $translations := partial "listable.html" .Translations }}
       {{- if or (partial "switch.html" .Site.Params.EnableReadingTime) $translations }}
       <div class="post-info">
         <p>

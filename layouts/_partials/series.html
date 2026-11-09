@@ -4,7 +4,7 @@
 {{- if or (not (isset site.Params "series")) (partial "switch.html" $on) -}}
   {{- $page := . -}}
   {{- range $n, $term := .GetTerms "series" -}}
-    {{- $parts := where (where (where .Pages.ByDate "Kind" "page") "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
+    {{- $parts := partial "listable.html" (where .Pages.ByDate "Kind" "page") -}}
     {{- $part := 0 -}}
     {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
     {{- if and $part (gt (len $parts) 1) -}}

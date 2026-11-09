@@ -112,7 +112,7 @@
 
 {{- $seeAlso := slice }}
 {{- range .GetTerms "series" }}
-	{{- range where (where .Pages "Permalink" "!=" "") "Params.build.render" "!=" "link" | first 7 }}
+	{{- range partial "listable.html" .Pages | first 7 }}
 		{{- if ne $ . }}{{ $seeAlso = $seeAlso | append .Permalink }}{{ end }}
 	{{- end }}
 {{- end }}
