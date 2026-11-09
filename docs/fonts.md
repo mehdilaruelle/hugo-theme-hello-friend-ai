@@ -12,9 +12,10 @@ where the subset is `latin`, `latin-ext`, `cyrillic`, `greek` or `symbols`,
 and a page downloads only the files whose `unicode-range` it draws: a page in
 English fetches about 20 KB per weight instead of 100.
 `.github/scripts/subset-fonts.py` writes them from the full faces, keeping the
-OpenType features a browser applies by itself and the four `_base.scss` turns
-on: `case`, `ss01`, `tnum` and `zero`. Any other one a site's own CSS asks
-for, a `cv` or `ss` variant, `sups` or `ordn`, is not in the files.
+OpenType features a browser applies by itself and every one `_base.scss`
+turns on: `liga`, `calt` and `locl` are already in the first set, `case`,
+`ss01`, `tnum` and `zero` are added. Any other one a site's own CSS asks for,
+a `cv` or `ss` variant, `sups` or `ordn`, is not in the files.
 
 The fallback faces carry Inter's own `unicode-range` too. Their metrics are
 measured on Inter, so they only apply to the scripts Inter draws: Arabic,
