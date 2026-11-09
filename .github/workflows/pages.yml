@@ -1,8 +1,10 @@
 name: Demo site
 
+# The demo is built from neither docs/ nor the root Markdown files.
 on:
   push:
     branches: [master]
+    paths-ignore: ["docs/**", "*.md"]
   workflow_dispatch:
 
 permissions:

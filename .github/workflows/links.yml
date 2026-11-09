@@ -1,9 +1,12 @@
 name: Links
 
+# Nothing here reads docs/ or the root Markdown files.
 on:
   push:
     branches: [master]
+    paths-ignore: ["docs/**", "*.md"]
   pull_request:
+    paths-ignore: ["docs/**", "*.md"]
   workflow_dispatch:
 
 permissions:
