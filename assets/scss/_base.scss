@@ -423,18 +423,6 @@ hr {
   display: none;
 }
 
-.hide-on-phone {
-  @media #{$media-size-phone} {
-    display: none;
-  }
-}
-
-.hide-on-tablet {
-  @media #{$media-size-tablet} {
-    display: none;
-  }
-}
-
 // Accessibility
 .screen-reader-text {
   border: 0;
