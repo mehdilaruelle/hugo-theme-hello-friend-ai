@@ -28,13 +28,8 @@
     {{- if ge .Sitemap.Priority 0.0 }}
     <priority>{{ .Sitemap.Priority }}</priority>
     {{- end }}
-    {{- /* A set naming only this page says nothing worth saying. Ranged rather
-           than filtered with where, because the rule is noindex.html's and a
-           where clause can only read a param. */}}
-    {{- $alternates := slice }}
-    {{- range partial "listable.html" .AllTranslations }}
-    {{- if not (partial "noindex.html" .) }}{{ $alternates = $alternates | append . }}{{ end }}
-    {{- end }}
+    {{- /* A set naming only this page says nothing worth saying. */}}
+    {{- $alternates := partial "alternates.html" . }}
     {{- if gt (len $alternates) 1 }}
     {{- range $alternates }}
     <xhtml:link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />
