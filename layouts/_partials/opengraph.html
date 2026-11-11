@@ -25,7 +25,7 @@
 	<meta property="og:site_name" content="{{ . }}">
 {{- end }}
 
-{{- $title := partial "title-plain.html" . -}}
+{{- $title := partialCached "title-plain.html" . . -}}
 {{- if .IsHome }}{{ $title = partial "home-title.html" . }}{{ end -}}
 {{- with or $title site.Title site.Params.title }}
 	<meta property="og:title" content="{{ partial "pager-suffix.html" (dict "text" . "pager" $canonical.pager) }}">

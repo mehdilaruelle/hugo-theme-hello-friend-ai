@@ -31,7 +31,7 @@ The posts a reader is most likely to want next. Takes the page.
     <h2 class="related__title">{{ partial "i18n.html" (dict "key" "relatedPosts" "fallback" "Related posts") }}</h2>
     <ul class="related__list">
       {{- range . }}
-      <li><a href="{{ .Permalink }}">{{ partial "title-plain.html" . }}</a></li>
+      <li><a href="{{ .Permalink }}">{{ partialCached "title-plain.html" . . }}</a></li>
       {{- end }}
     </ul>
   </aside>

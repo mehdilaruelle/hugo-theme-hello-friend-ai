@@ -65,7 +65,7 @@
     "@type" "ProfilePage"
     "@id" .Permalink
     "url" .Permalink
-    "name" (partial "title-plain.html" .)
+    "name" (partialCached "title-plain.html" . .)
     "inLanguage" .Language.Lang
   -}}
   {{- with .Description -}}
@@ -89,7 +89,7 @@
       "@type" "CollectionPage"
       "@id" .Permalink
       "url" .Permalink
-      "name" (partial "title-plain.html" .)
+      "name" (partialCached "title-plain.html" . .)
       "inLanguage" .Language.Lang
     -}}
     {{- with partial "description.html" . -}}
@@ -103,7 +103,7 @@
     {{- with $listed -}}
       {{- $items := slice -}}
       {{- range $i, $p := first 20 . -}}
-        {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $p.Permalink "name" (partial "title-plain.html" $p)) -}}
+        {{- $items = $items | append (dict "@type" "ListItem" "position" (add $i 1) "url" $p.Permalink "name" (partialCached "title-plain.html" $p $p)) -}}
       {{- end -}}
       {{- $data = merge $data (dict "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len (partial "list-pages.html" $)) "itemListElement" $items)) -}}
     {{- end -}}
@@ -115,7 +115,7 @@
     "@id" (printf "%s#article" .Permalink)
     "url" .Permalink
     "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
-    "headline" (partial "title-plain.html" . | truncate 110 "" | htmlUnescape)
+    "headline" (partialCached "title-plain.html" . . | truncate 110 "" | htmlUnescape)
     "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")
     "inLanguage" .Language.Lang
     "wordCount" .WordCount
@@ -185,7 +185,7 @@
     "@type" "WebPage"
     "@id" .Permalink
     "url" .Permalink
-    "name" (partial "title-plain.html" .)
+    "name" (partialCached "title-plain.html" . .)
     "inLanguage" .Language.Lang
   -}}
   {{- /* The page's own words only, through the partial the rest of the theme

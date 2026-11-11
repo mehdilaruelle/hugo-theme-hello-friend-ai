@@ -8,7 +8,7 @@
     {{- $part := 0 -}}
     {{- range $i, $p := $parts }}{{ if $p.Eq $page }}{{ $part = add $i 1 }}{{ end }}{{ end -}}
     {{- if and $part (gt (len $parts) 1) -}}
-      {{- $name := partial "title-plain.html" . -}}
+      {{- $name := partialCached "title-plain.html" . . -}}
       {{- $id := printf "hf-series-%d-%s" $n (anchorize $name) -}}
       <nav class="series" aria-labelledby="{{ $id }}">
         <details>
@@ -17,9 +17,9 @@
             {{- range $parts }}
             <li>
               {{- if .Eq $page -}}
-              <span aria-current="page">{{ partial "title-plain.html" . }}</span>
+              <span aria-current="page">{{ partialCached "title-plain.html" . . }}</span>
               {{- else -}}
-              <a href="{{ .Permalink }}">{{ partial "title-plain.html" . }}</a>
+              <a href="{{ .Permalink }}">{{ partialCached "title-plain.html" . . }}</a>
               {{- end -}}
             </li>
             {{- end }}
