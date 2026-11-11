@@ -19,6 +19,10 @@ SUBSETS = {
 }
 
 
+# The features a browser applies by itself, and the ones _base.scss turns on.
+FEATURES = [*subset.Options().layout_features, "case", "ss01", "tnum", "zero"]
+
+
 def parse(ranges):
     out = set()
     for part in ranges.split(","):
@@ -49,7 +53,7 @@ for face in sorted(src.glob("Inter-*.woff2")):
     for name, points in [*((n, parse(r)) for n, r in SUBSETS.items()), ("symbols", rest)]:
         opts = subset.Options()
         opts.flavor = "woff2"
-        opts.layout_features = ["*"]
+        opts.layout_features = FEATURES
         opts.name_IDs = ["*"]
         opts.name_languages = ["*"]
         opts.notdef_outline = True
