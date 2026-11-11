@@ -1,9 +1,12 @@
 name: Links
 
+# Nothing here reads docs/ or the root Markdown files.
 on:
   push:
     branches: [master]
+    paths-ignore: ["docs/**", "*.md"]
   pull_request:
+    paths-ignore: ["docs/**", "*.md"]
   workflow_dispatch:
 
 permissions:
@@ -13,13 +16,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  HUGO_VERSION: 0.164.0
-  DART_SASS_VERSION: 1.102.0
-
 jobs:
-  internal-links:
-    name: Internal links and assets
+  # One job per demo, so the two halves run side by side; a step that read both
+  # builds is one step in each.
+  demo:
+    name: Internal links and assets (demo)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -27,18 +28,7 @@ jobs:
         with:
           path: hello-friend-ai
 
-      - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
-        run: |
-          curl -sSLf -o hugo.deb \
-            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
-          sudo dpkg -i hugo.deb
-
-      - name: Install Dart Sass ${{ env.DART_SASS_VERSION }}
-        run: |
-          curl -sSLf \
-            "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" \
-            | tar -xz
-          echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
+      - uses: ./hello-friend-ai/.github/actions/setup-hugo
 
       # Built under a subpath on purpose: every URL bug found in this theme so
       # far was invisible at a domain root and only appeared once the site was
@@ -55,401 +45,25 @@ jobs:
         working-directory: hello-friend-ai/exampleSite
         run: node ../.github/scripts/check-invariants.mjs public alerts posts/2026/11/alerts-and-the-series-this-post-belongs-to/index.html
 
-      # The showcase is where the options the default demo leaves off get
-      # exercised — covers, thumbnails, the background image. Those are exactly
-      # the paths that have gone wrong under a subpath before.
-      - name: Build the showcase under a subpath
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify --config ../exampleSite/config.toml,config.toml \
-            --baseURL "https://example.com/subpath/showcase/"
-
-      - name: Check every internal link and asset in the showcase
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-links.mjs public https://example.com/subpath/showcase/
-
-      # The build above is the regression guard -- a bare string aborted it.
-      # These keep the fix from becoming "stop emitting the tags".
-      - name: Check a single media file written on its own
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          page=$(find public -path '*single-media-file*' -name index.html | head -1)
-          [ -n "$page" ] || { echo "  BAD  the fixture page was not built"; exit 1; }
-          node ../.github/scripts/check-invariants.mjs public media "${page#public/}" \
-            https://example.com/subpath/showcase/video/demo.mp4
-
-      # A language code is not a country code — Ukrainian is uk, Ukraine is ua —
-      # and naming the wrong one renders an empty square rather than falling
-      # back to the language code, because the fallback only fires on a missing
-      # entry.
-      - name: Check every language names a flag that exists
-        working-directory: hello-friend-ai
-        run: node .github/scripts/check-flags.mjs .
-
-      # The .fi-* rules are generated per site now, not vendored. A mapping,
-      # rule or file that goes astray renders an empty square with nothing else
-      # failing. The demo is the monolingual half of this: it must draw no flag
-      # AND ship no rule — that is the 5.8 MB and the 46% of the stylesheet this
-      # replaced.
-      - name: Check every flag box has a rule and a file (showcase)
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-flag-css.mjs public https://example.com/subpath/showcase/
-
       - name: Check a monolingual site ships no flag CSS (demo)
         working-directory: hello-friend-ai/exampleSite
         run: node ../.github/scripts/check-flag-css.mjs public https://example.com/subpath/
 
-      # A ";" between query parameters is not a separator any more: it absorbs
-      # everything after it into the preceding value, and the build is silent.
-      - name: Check the sharing links parse
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-sharing.mjs public
-
-      # The icons carry no text and most of the svgs carry no <title>, so the
-      # anchor's own label is the whole accessible name. It used to be
-      # humanize, which named GitHub "Github" -- a wrong name is still a name,
-      # so nothing failed.
-      - name: Check every social link is named, and its icon is not
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-social.mjs public
-
-      # The build succeeds whether or not the passthrough delimiters survive
-      # Goldmark, so only an assertion on the built HTML catches a formula that
-      # quietly became prose.
-      - name: Check the maths survived Markdown
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-math.mjs public
-          node ../.github/scripts/check-invariants.mjs public math
-
-      # width and height on the element fix the used height, so a rule that
-      # narrows the box stretches the picture unless height is released. The
-      # markup is identical either way; only the geometry is wrong.
-      - name: Check images keep their aspect ratio
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-image-sizing.mjs public
-
-      - name: Check each SVG reserves the box it will fill
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-svg-sizing.mjs public
-
-      # pre is the scroll container, and it used to be the positioned box too,
-      # so the copy button and the language label travelled with the scrolled
-      # code and ended up on top of it. Deleting the wrapper would build green
-      # and quietly bring that back.
-      - name: Check every code block has something to anchor its controls to
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-code-blocks.mjs public
-
-      - name: Check the language label clears the copy button
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-invariants.mjs public copy-label
-
       - name: Check the focus ring, the status and the alert colours meet their contrast
         working-directory: hello-friend-ai
-        run: |
-          node .github/scripts/check-invariants.mjs exampleSite/public contrast
-          node .github/scripts/check-invariants.mjs showcaseSite/public contrast
-
-      # Open Graph and Twitter tags are written by two partials. They used to
-      # take their picture from two different sources, so a site setting
-      # params.images showed one image and named another on every page with a
-      # cover — and nothing failed.
-      # The base URL resolves the picture against the files on disk.
-      - name: Check both halves of a social card name one published picture
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-cards.mjs public https://example.com/subpath/showcase/
-
-      # Nothing else parses the XML the build writes, so a feed could stop
-      # being XML and still ship — which is what an unescaped "]]>" in an
-      # article did: it closed the CDATA section early and took the whole
-      # document with it, not just the one item.
-      - name: Check the XML outputs parse
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-feeds.mjs public
+        run: node .github/scripts/check-invariants.mjs exampleSite/public contrast
 
       - name: Check the example site's XML outputs parse
         working-directory: hello-friend-ai/exampleSite
         run: node ../.github/scripts/check-feeds.mjs public
 
-      # A broken llms.txt is still a valid text file.
-      - name: Check llms.txt and the Markdown copies
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
-            --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
-
-      # A link in code is an example, so it is carried as the author wrote it.
-      - name: Check llms-full.txt leaves links in code and footnotes as written
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          bad=0
-          for snippet in '`[a span](commas.svg)`' '    [indented](commas.svg)' \
-                         '    [in a list](commas.svg)' '> [in a quote](commas.svg)' \
-                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)' \
-                         '[^sizes]: Each size is read from the file itself.' \
-                         '[Note]: neither is a line shaped like one, commas.svg and all.' \
-                         '    The note goes on, with [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) again.' \
-                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.' \
-                         '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
-                         '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
-                         '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
-                         '- [ ]: commas.svg' '-     [shown]: commas.svg' \
-                         'Literal text, not a link: \[text\](commas.svg).' \
-                         'Nor this one: \[text](commas.svg).' \
-                         '[n]: https://example.com/subpath/showcase/llms-links/escapes/../../svg-sizes/commas.svg'; do
-            grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
-          done
-          # Links the link hook resolves in the HTML resolve in the copy too.
-          grep -qF '[the page next door](https://example.com/subpath/showcase/kept-out/)' public/kept-out-quoted/index.md \
-            || { echo "  BAD  /kept-out/ is left root-relative in the Markdown copy"; bad=1; }
-          [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
-          exit "$bad"
-
-      - name: Check the Markdown copy carries front matter and code as written
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          md=public/md-copy-edges/index.md
-          [ -f "$md" ] || { echo "  BAD  $md was not built"; exit 1; }
-          bad=0
-          for want in '# Learn C \#' '> \- a description that opens like a list' \
-                      'as written: `&rsquo;`. So does a fence:' '<p>It&rsquo;s &mdash; written as entities</p>' \
-                      '\+ this line is a paragraph, and a decoded "+" opening it would make it a' \
-                      '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
-                      'Out of the quote, it’s prose again.' '    Its second paragraph: it’s decoded as well.' \
-                      'Under it, it’s prose.' 'Under that, it’s prose too.' \
-                      '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
-            grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
-          done
-          md=public/llms-links/text-edges/index.md
-          grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
-          grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }
-          awk '/<details class="faq">/,/<\/details>/' "$md" | sed '$d' | grep -qx '' \
-            && { echo "  BAD  a blank line inside the faq ends its HTML block"; bad=1; }
-          grep -A2 -x 'hugo server' public/llms-full.txt | tail -1 | grep -qx '~~~' || { echo "  BAD  a fence left open swallows llms-full.txt"; bad=1; }
-          grep -B1 -F 'llms.txt と同じ順序です' public/ja/llms-full.txt | head -1 | grep -qx '' \
-            || { echo "  BAD  the truncation notice is glued to the line above"; bad=1; }
-          [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
-          exit "$bad"
-
-      # With neither the note nor the llms-full line between them, a body
-      # heading over a link list has the generated lists shape exactly.
-      - name: Check llms.txt with no note and no llms-full
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-plain.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-plain
-          node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
-
-      # .content is the page layout class, not a prose wrapper.
-      - name: Check no prose is wrapped in the page layout class
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public list-content
-
-      # Nothing here renders CSS, so the rule itself is asserted.
-      - name: Check the logo keeps its direction on an RTL page
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public logo-rtl ar/index.html
-
-      # .TableOfContents is a non-empty string even with no headings.
-      - name: Check no empty table of contents is rendered
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public toc
-
       - name: Check every navigation landmark is named, and no aside sits in an article
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public landmarks
-          node ../.github/scripts/check-invariants.mjs ../exampleSite/public landmarks
-
-      # Valid markup either way, so nothing else notices it.
-      # relativeURLs: a relative font preload; no home: Person and article:author keep a URL.
-      - name: Check head URLs under relativeURLs and with no home page
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          HUGO_RELATIVEURLS=true HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml --destination public-relative
-          for f in about/index.html kept-out-quoted/index.html; do
-            [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
-              || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
-          done
-          echo "  head URLs are relative or complete"
-
-      - name: Check no empty post-info is rendered
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public post-info
-
-      - name: Check no HTML entity reaches the reader as text
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public entities
-
-      - name: Check a tag in a title reaches the reader as text
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public title-html \
-            posts/2025/12/using-details-in-a-title-with-quotes/index.html '<details>'
-          node ../.github/scripts/check-invariants.mjs public title-code \
-            posts/2025/12/the-b-element-and-a-kbd-tag/index.html '<b>' '<kbd>'
-          node ../.github/scripts/check-invariants.mjs public title-plain \
-            posts/2025/12/using-details-in-a-title-with-quotes/index.html 'Using <details> in a title, with “quotes”'
-          node ../.github/scripts/check-invariants.mjs public title-plain \
-            posts/2025/12/the-b-element-and-a-kbd-tag/index.html 'The <b> element, and a <kbd> tag'
-          node ../.github/scripts/check-invariants.mjs public title-plain \
-            posts/2025/12/a-title-that-opens-like-a-list/index.html '1. A title that opens like a list'
-
-      # Nothing else here would notice: the markup is valid either way.
-      - name: Check the site switches honour a quoted value
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-quoted.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-quoted
-          post=public-quoted/posts/2026/01/everything-an-article-is-made-of/index.html
-          bad=0
-          # The pager assertion below wants to hear a count of zero, which is
-          # also what a file that was never built reads as. Named, not counted.
-          for f in public-quoted/index.html public-quoted/posts/index.html "$post"; do
-            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
-          done
-          # -c counts matching lines, and minified markup puts several on one.
-          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
-          # Absent here proves nothing unless it is present in the default build.
-          off() {
-            [ "$(count "$1" "${2/public-quoted/public}")" != 0 ] || { echo "  BAD  $1 is not in the default build either"; bad=1; }
-            n=$(count "$1" "$2")
-            [ "$n" = 0 ] || { echo "  BAD  $3 is still on: $1 appears $n time(s) in $2"; bad=1; }
-          }
-          off thumbnail         public-quoted/posts/index.html "enableThumbnails"
-          off excerpt           public-quoted/posts/index.html "enableListExcerpts"
-          off feather-clock     "$post"                        "enableReadingTime"
-          off sharing-buttons   "$post"                        "enableSharingButtons"
-          # Both call sites: head.html writes theme-init, header.html the button.
-          off theme-init        public-quoted/index.html       "enableThemeToggle"
-          off theme-toggle      public-quoted/index.html       "enableThemeToggle"
-          off language-switcher public-quoted/index.html       "enableGlobalLanguageMenu"
-          # The author's name is also in the meta tags, so the footer link it is.
-          off '>Jane Doe</a></span>' public-quoted/index.html  "footer.author"
-          off 'CC BY-NC'          public-quoted/index.html       "footer.copyright"
-          off feather-rss         public-quoted/index.html       "footer.rss"
-          off 'class=related'     "$post"                        "related.enable"
-          off '&copy;'            public-quoted/index.html       "footer.trademark"
-          off logo__pathname      public-quoted/index.html       "logoCursorPathname"
-          # A disable, like the pager: the cursor is visible by default, so off() has
-          # nothing to find there. A quoted false has to leave it visible.
-          [ "$(count logo__cursor public-quoted/index.html)" != 0 ] || { echo "  BAD  logoCursorDisabled: no cursor rendered, so nothing to hide"; bad=1; }
-          n=$( (grep -oh 'logo__cursor{[^}]*visibility:hidden' public-quoted/*.css || true) | wc -l)
-          [ "$n" = 0 ] || { echo "  BAD  logoCursorDisabled: a quoted false hid the cursor"; bad=1; }
-          # A disable, so a quoted false has to leave the pager in place.
-          n=$(count pagination__buttons "$post")
-          [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
-          # A quoted 0 means the default, as 0 does.
-          grep -q '"content":"[^"]' public-quoted/index.json \
-            || { echo "  BAD  searchContentLimit: a quoted 0 emptied the search index"; bad=1; }
-          grep -q '^10 of ' public-quoted/llms-full.txt \
-            || { echo "  BAD  llmsFullLimit: \"010\" did not keep 10 pages"; bad=1; }
-          for one in css/custom.css js/custom.js; do
-            [ "$(count "$one" public-quoted/index.html)" != 0 ] \
-              || { echo "  BAD  a lone $one given as a string was not loaded"; bad=1; }
-          done
-          [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
-          exit "$bad"
-
-      # No demo configures a comment provider, so nothing else builds the branch
-      # comments-on.html decides.
-      - name: Check the comments switch across all three providers
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-comments
-          p=public-comments/posts/2026/01
-          on=$p/a-video-where-a-gif-used-to-be/index.html
-          off_bool=$p/long-title-no-cover/index.html
-          off_quoted=$p/questions-the-theme-is-asked/index.html
-          bad=0
-          for f in "$on" "$off_bool" "$off_quoted"; do
-            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
-          done
-          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
-          for m in hello-friend-ai-ci.disqus.com commento.example.com example/hello-friend-ai-ci; do
-            [ "$(count "$m" "$on")" != 0 ] || { echo "  BAD  $m is missing with comments unset, so its absence below proves nothing"; bad=1; }
-            [ "$(count "$m" "$off_bool")" = 0 ] || { echo "  BAD  $m is on under comments: false"; bad=1; }
-            [ "$(count "$m" "$off_quoted")" = 0 ] || { echo "  BAD  $m is on under comments: \"false\""; bad=1; }
-          done
-          [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
-          # Commento fills a <div>, Comentario 3 a web component.
-          [ "$(count 'data-id-root' "$on")" = 1 ] && [ "$(count '<comentario-comments>' "$on")" = 0 ] \
-            || { echo "  BAD  a Commento script does not get exactly the Commento markup"; bad=1; }
-          HUGO_PARAMS_COMMENTO_URL="https://comments.example.org/comentario.js" \
-            hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-comentario > /dev/null
-          f=public-comentario/posts/2026/01/a-video-where-a-gif-used-to-be/index.html
-          [ "$(count '<comentario-comments></comentario-comments>' "$f")" = 1 ] && [ "$(count 'data-id-root' "$f")" = 0 ] \
-            && [ "$(count 'comments.example.org/comentario.js' "$f")" = 1 ] \
-            || { echo "  BAD  comentario.js does not get its script, one <comentario-comments> and no data-id-root"; bad=1; }
-          [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
-          exit "$bad"
-
-      - name: Check utterances follows the page's theme unless one is named
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-comments.toml,../.github/fixtures/utterances-follow.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-utterances
-          post=posts/2026/01/a-video-where-a-gif-used-to-be/index.html
-          bad=0
-          grep -q 'class=utterances-follow' "public-utterances/$post" || { echo "  BAD  the default theme did not get the following mount"; bad=1; }
-          js=$(grep -o 'js/utterances[^" >]*\.js' "public-utterances/$post" | head -1)
-          grep -qs 'set-theme' "public-utterances/$js" || { echo "  BAD  the post loads no script that tells utterances of a theme change"; bad=1; }
-          grep -q 'theme=github-light' "public-comments/$post" || { echo "  BAD  a named theme lost the static client"; bad=1; }
-          [ "$bad" = 0 ] && echo "  utterances follows the page by default, and a named theme stands"
-          exit "$bad"
-
-      - name: Check a quoted 0 keeps the default related limit
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify \
-            --config ../exampleSite/config.toml,config.toml,config-quoted-zero.toml \
-            --baseURL "https://example.com/subpath/showcase/" --destination public-quoted-zero
-          post=posts/2026/01/everything-an-article-is-made-of/index.html
-          for f in "public/$post" "public-quoted-zero/$post"; do
-            [ -f "$f" ] || { echo "  BAD  $f was not built — the count below asserts nothing"; exit 1; }
-          done
-          items() { echo $(( $(grep -oP 'class=related__list>.*?</ul>' "$1" 2>/dev/null | grep -o '<li>' | wc -l) )); }
-          want=$(items "public/$post")
-          got=$(items "public-quoted-zero/$post")
-          # Unset reads as 0 too, so the default build cannot vouch for the 5 on its own.
-          # The showcase has more candidates than that, so 5 is the cap biting.
-          [ "$want" = 5 ] || { echo "  BAD  the default build lists $want related posts, not the documented 5"; exit 1; }
-          [ "$got" = "$want" ] || { echo "  BAD  related.limit = \"0\" lists $got, the default lists $want"; exit 1; }
-          echo "  a quoted 0 keeps the default related limit"
-
-      # A failed template prints the failure and the build stays green:
-      # %!q(bool=true) went out in a heading, past every checker above.
-      - name: Check no template failed silently (showcase)
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-markup.mjs public
+        working-directory: hello-friend-ai/exampleSite
+        run: node ../.github/scripts/check-invariants.mjs public landmarks
 
       - name: Check no template failed silently (demo)
         working-directory: hello-friend-ai/exampleSite
         run: node ../.github/scripts/check-markup.mjs public
-
-      # Every one of these is a thing the build reports nothing about. A page
-      # can name two different URLs as its own, announce a card picture no
-      # platform renders, or carry two contradictory robots directives, and
-      # Hugo calls that a successful build — which is how four of the six got
-      # in. Run against both demos: the showcase is the one with covers, four
-      # languages, pagers and a search page.
-      - name: Check the SEO invariants (showcase)
-        working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-seo.mjs public
 
       - name: Check the SEO invariants (demo)
         working-directory: hello-friend-ai/exampleSite
@@ -459,9 +73,7 @@ jobs:
       # feature being off has to keep meaning an unchanged file.
       - name: Check robots.txt agrees with itself
         working-directory: hello-friend-ai
-        run: |
-          node .github/scripts/check-robots.mjs . exampleSite/public
-          node .github/scripts/check-robots.mjs . showcaseSite/public
+        run: node .github/scripts/check-robots.mjs . exampleSite/public
 
       # No demo config enables enableGitInfo, so this markup was never built.
       - name: Check the commit line survives enableGitInfo with no gitUrl
@@ -483,20 +95,9 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu https://example.com/subpath/
           node ../.github/scripts/check-invariants.mjs public-menu menu
 
-      # The demos write "posts/", so the README's "/posts/" is only built here.
-      - name: Check a leading-slash menu url under a subpath, in every language
-        working-directory: hello-friend-ai
+      - name: Check a leading-slash menu url under a subpath, in every language (demo)
+        working-directory: hello-friend-ai/exampleSite
         run: |
-          cd showcaseSite
-          hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
-            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
-            --baseURL "https://example.com/subpath/showcase/"
-          node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
-          # Absolute urls: no second /fr/; the English home is not current.
-          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html "Tous les articles" English
-          # A same-host absolute url can be current.
-          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/posts/index.html Articles=page "Tous les articles=page" English
-          cd ../exampleSite
           hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
             --config config.toml,../.github/fixtures/menu-leading-slash-subdir.toml \
             --baseURL "https://example.com/subpath/"
@@ -665,32 +266,9 @@ jobs:
           }
           echo "  the quoted AI policy is declined, as written"
 
-      # Nothing here renders CSS, so the compiled rule is what gets asserted.
-      # Both quote forms because --minify leaves attributes unquoted, and the
-      # value boundaries because column-reverse and startfoo otherwise pass.
-      - name: Check a submenu label starts where its siblings do on a phone
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
-          node ../.github/scripts/check-invariants.mjs public header ar/index.html
-
-      - name: Check every gallery thumbnail is a named link to a square
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          node ../.github/scripts/check-invariants.mjs public gallery
-          # A bracketed file name still gets the alt its front matter writes.
-          grep -q 'alt="The lake again, from a file whose name holds brackets"' \
-            public/posts/2026/02/a-gallery-from-a-page-bundle/index.html \
-            || { echo "  BAD  05-lake [copy].jpg lost its front-matter alt"; exit 1; }
-
       - name: Check contentWidth reaches the stylesheet and the image sizes
         working-directory: hello-friend-ai
-        run: |
-          node .github/scripts/check-invariants.mjs showcaseSite/public content-width 960px
-          node .github/scripts/check-invariants.mjs exampleSite/public content-width
-          # Fallback faces cover Inter's scripts only, so Arabic is not rescaled.
-          grep -q 'font-family:inter fallback;[^}]*unicode-range:' showcaseSite/public/main-*.css \
-            || { echo "  BAD  an Inter fallback face with no unicode-range"; exit 1; }
+        run: node .github/scripts/check-invariants.mjs exampleSite/public content-width
 
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all.
@@ -707,21 +285,6 @@ jobs:
           node ../.github/scripts/check-invariants.mjs public-cursor-set cursor-dark '#f0a35e'
           grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
             || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
-
-      # Built on the showcase, which holds the logo files.
-      - name: Check a logo with a dark variant, and an inlined one
-        working-directory: hello-friend-ai/showcaseSite
-        run: |
-          hugo --themesDir ../.. --gc --minify --destination public-logo-images \
-            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-images.toml \
-            --baseURL "https://example.com/subpath/showcase/"
-          node ../.github/scripts/check-links.mjs public-logo-images https://example.com/subpath/showcase/
-          node ../.github/scripts/check-invariants.mjs public-logo-images logo-images logo-light.svg logo-dark.svg
-          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-logo-inline \
-            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-inline.toml \
-            --baseURL "https://example.com/subpath/showcase/"
-          node ../.github/scripts/check-invariants.mjs public-logo-inline logo-inline "Jane Doe & co" mark
-
 
       # Neither demo ships favicons or overrides a theme file, so these paths
       # were never built.
@@ -746,8 +309,7 @@ jobs:
 
       - name: Check a site with no favicon links the empty icon
         working-directory: hello-friend-ai
-        run: |
-          node .github/scripts/check-invariants.mjs exampleSite/public favicon-none
+        run: node .github/scripts/check-invariants.mjs exampleSite/public favicon-none
 
       - name: Check a wrong-shaped param warns instead of aborting the build
         working-directory: hello-friend-ai/exampleSite
@@ -797,3 +359,447 @@ jobs:
             --config config.toml,../.github/fixtures/social-map.toml \
             --baseURL "https://example.com/subpath/"
           node ../.github/scripts/check-invariants.mjs public-social-map social-map fixturehandle
+
+  showcase:
+    name: Internal links and assets (showcase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: hello-friend-ai
+
+      - uses: ./hello-friend-ai/.github/actions/setup-hugo
+
+      # The showcase is where the options the default demo leaves off get
+      # exercised — covers, thumbnails, the background image. Those are exactly
+      # the paths that have gone wrong under a subpath before.
+      - name: Build the showcase under a subpath
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --config ../exampleSite/config.toml,config.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+
+      - name: Check every internal link and asset in the showcase
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-links.mjs public https://example.com/subpath/showcase/
+
+      # The build above is the regression guard -- a bare string aborted it.
+      # These keep the fix from becoming "stop emitting the tags".
+      - name: Check a single media file written on its own
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          page=$(find public -path '*single-media-file*' -name index.html | head -1)
+          [ -n "$page" ] || { echo "  BAD  the fixture page was not built"; exit 1; }
+          node ../.github/scripts/check-invariants.mjs public media "${page#public/}" \
+            https://example.com/subpath/showcase/video/demo.mp4
+
+      # A language code is not a country code — Ukrainian is uk, Ukraine is ua —
+      # and naming the wrong one renders an empty square rather than falling
+      # back to the language code, because the fallback only fires on a missing
+      # entry.
+      - name: Check every language names a flag that exists
+        working-directory: hello-friend-ai
+        run: node .github/scripts/check-flags.mjs .
+
+      # The .fi-* rules are generated per site now, not vendored. A mapping,
+      # rule or file that goes astray renders an empty square with nothing else
+      # failing. The demo is the monolingual half of this: it must draw no flag
+      # AND ship no rule — that is the 5.8 MB and the 46% of the stylesheet this
+      # replaced.
+      - name: Check every flag box has a rule and a file (showcase)
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-flag-css.mjs public https://example.com/subpath/showcase/
+
+      # A ";" between query parameters is not a separator any more: it absorbs
+      # everything after it into the preceding value, and the build is silent.
+      - name: Check the sharing links parse
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-sharing.mjs public
+
+      # The icons carry no text and most of the svgs carry no <title>, so the
+      # anchor's own label is the whole accessible name. It used to be
+      # humanize, which named GitHub "Github" -- a wrong name is still a name,
+      # so nothing failed.
+      - name: Check every social link is named, and its icon is not
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-social.mjs public
+
+      # The build succeeds whether or not the passthrough delimiters survive
+      # Goldmark, so only an assertion on the built HTML catches a formula that
+      # quietly became prose.
+      - name: Check the maths survived Markdown
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-math.mjs public
+          node ../.github/scripts/check-invariants.mjs public math
+
+      # width and height on the element fix the used height, so a rule that
+      # narrows the box stretches the picture unless height is released. The
+      # markup is identical either way; only the geometry is wrong.
+      - name: Check images keep their aspect ratio
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-image-sizing.mjs public
+
+      - name: Check each SVG reserves the box it will fill
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-svg-sizing.mjs public
+
+      # pre is the scroll container, and it used to be the positioned box too,
+      # so the copy button and the language label travelled with the scrolled
+      # code and ended up on top of it. Deleting the wrapper would build green
+      # and quietly bring that back.
+      - name: Check every code block has something to anchor its controls to
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-code-blocks.mjs public
+
+      - name: Check the language label clears the copy button
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public copy-label
+
+      - name: Check the focus ring, the status and the alert colours meet their contrast
+        working-directory: hello-friend-ai
+        run: node .github/scripts/check-invariants.mjs showcaseSite/public contrast
+
+      # Open Graph and Twitter tags are written by two partials. They used to
+      # take their picture from two different sources, so a site setting
+      # params.images showed one image and named another on every page with a
+      # cover — and nothing failed.
+      # The base URL resolves the picture against the files on disk.
+      - name: Check both halves of a social card name one published picture
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-cards.mjs public https://example.com/subpath/showcase/
+
+      # Nothing else parses the XML the build writes, so a feed could stop
+      # being XML and still ship — which is what an unescaped "]]>" in an
+      # article did: it closed the CDATA section early and took the whole
+      # document with it, not just the one item.
+      - name: Check the XML outputs parse
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-feeds.mjs public
+
+      # A broken llms.txt is still a valid text file.
+      - name: Check llms.txt and the Markdown copies
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-llms.mjs public https://example.com/subpath/showcase/ \
+            --absent=https://example.com/subpath/showcase/kept-out/,https://example.com/subpath/showcase/kept-out-quoted/
+
+      # A link in code is an example, so it is carried as the author wrote it.
+      - name: Check llms-full.txt leaves links in code and footnotes as written
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          bad=0
+          for snippet in '`[a span](commas.svg)`' '    [indented](commas.svg)' \
+                         '    [in a list](commas.svg)' '> [in a quote](commas.svg)' \
+                         '      [six in a list](commas.svg)' '[behind a quoted close](commas.svg)' \
+                         '[^sizes]: Each size is read from the file itself.' \
+                         '[Note]: neither is a line shaped like one, commas.svg and all.' \
+                         '    The note goes on, with [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) again.' \
+                         'Out of the quote, [the first of them](https://example.com/subpath/showcase/svg-sizes/commas.svg) once more.' \
+                         '[escaped]: https://example.com/subpath/showcase/svg-sizes/commas.svg "the \"commas\" one"' \
+                         '- [listed]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '    - [nested]: https://example.com/subpath/showcase/svg-sizes/commas.svg' \
+                         '- [ ]: commas.svg' '-     [shown]: commas.svg' \
+                         'Literal text, not a link: \[text\](commas.svg).' \
+                         'Nor this one: \[text](commas.svg).' \
+                         '[n]: https://example.com/subpath/showcase/llms-links/escapes/../../svg-sizes/commas.svg'; do
+            grep -qF -- "$snippet" public/llms-full.txt || { echo "  BAD  not carried as written: $snippet"; bad=1; }
+          done
+          # Links the link hook resolves in the HTML resolve in the copy too.
+          grep -qF '[the page next door](https://example.com/subpath/showcase/kept-out/)' public/kept-out-quoted/index.md \
+            || { echo "  BAD  /kept-out/ is left root-relative in the Markdown copy"; bad=1; }
+          [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
+          exit "$bad"
+
+      - name: Check the Markdown copy carries front matter and code as written
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          md=public/md-copy-edges/index.md
+          [ -f "$md" ] || { echo "  BAD  $md was not built"; exit 1; }
+          bad=0
+          for want in '# Learn C \#' '> \- a description that opens like a list' \
+                      'as written: `&rsquo;`. So does a fence:' '<p>It&rsquo;s &mdash; written as entities</p>' \
+                      '\+ this line is a paragraph, and a decoded "+" opening it would make it a' \
+                      '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
+                      'Out of the quote, it’s prose again.' '    Its second paragraph: it’s decoded as well.' \
+                      'Under it, it’s prose.' 'Under that, it’s prose too.' \
+                      '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
+            grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
+          done
+          md=public/llms-links/text-edges/index.md
+          grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
+          grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }
+          awk '/<details class="faq">/,/<\/details>/' "$md" | sed '$d' | grep -qx '' \
+            && { echo "  BAD  a blank line inside the faq ends its HTML block"; bad=1; }
+          grep -A2 -x 'hugo server' public/llms-full.txt | tail -1 | grep -qx '~~~' || { echo "  BAD  a fence left open swallows llms-full.txt"; bad=1; }
+          grep -B1 -F 'llms.txt と同じ順序です' public/ja/llms-full.txt | head -1 | grep -qx '' \
+            || { echo "  BAD  the truncation notice is glued to the line above"; bad=1; }
+          [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
+          exit "$bad"
+
+      # With neither the note nor the llms-full line between them, a body
+      # heading over a link list has the generated lists shape exactly.
+      - name: Check llms.txt with no note and no llms-full
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-plain.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-plain
+          node ../.github/scripts/check-llms.mjs public-plain https://example.com/subpath/showcase/
+
+      # .content is the page layout class, not a prose wrapper.
+      - name: Check no prose is wrapped in the page layout class
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public list-content
+
+      # Nothing here renders CSS, so the rule itself is asserted.
+      - name: Check the logo keeps its direction on an RTL page
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public logo-rtl ar/index.html
+
+      # .TableOfContents is a non-empty string even with no headings.
+      - name: Check no empty table of contents is rendered
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public toc
+
+      - name: Check every navigation landmark is named, and no aside sits in an article
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public landmarks
+
+      # Valid markup either way, so nothing else notices it.
+      # relativeURLs: a relative font preload; no home: Person and article:author keep a URL.
+      - name: Check head URLs under relativeURLs and with no home page
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          HUGO_RELATIVEURLS=true HUGO_DISABLEKINDS=home hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml --destination public-relative
+          for f in about/index.html kept-out-quoted/index.html; do
+            [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
+              || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
+          done
+          echo "  head URLs are relative or complete"
+
+      - name: Check no empty post-info is rendered
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public post-info
+
+      - name: Check no HTML entity reaches the reader as text
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public entities
+
+      - name: Check a tag in a title reaches the reader as text
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public title-html \
+            posts/2025/12/using-details-in-a-title-with-quotes/index.html '<details>'
+          node ../.github/scripts/check-invariants.mjs public title-code \
+            posts/2025/12/the-b-element-and-a-kbd-tag/index.html '<b>' '<kbd>'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/using-details-in-a-title-with-quotes/index.html 'Using <details> in a title, with “quotes”'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/the-b-element-and-a-kbd-tag/index.html 'The <b> element, and a <kbd> tag'
+          node ../.github/scripts/check-invariants.mjs public title-plain \
+            posts/2025/12/a-title-that-opens-like-a-list/index.html '1. A title that opens like a list'
+
+      # Nothing else here would notice: the markup is valid either way.
+      - name: Check the site switches honour a quoted value
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-quoted.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-quoted
+          post=public-quoted/posts/2026/01/everything-an-article-is-made-of/index.html
+          bad=0
+          # The pager assertion below wants to hear a count of zero, which is
+          # also what a file that was never built reads as. Named, not counted.
+          for f in public-quoted/index.html public-quoted/posts/index.html "$post"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
+          done
+          # -c counts matching lines, and minified markup puts several on one.
+          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
+          # Absent here proves nothing unless it is present in the default build.
+          off() {
+            [ "$(count "$1" "${2/public-quoted/public}")" != 0 ] || { echo "  BAD  $1 is not in the default build either"; bad=1; }
+            n=$(count "$1" "$2")
+            [ "$n" = 0 ] || { echo "  BAD  $3 is still on: $1 appears $n time(s) in $2"; bad=1; }
+          }
+          off thumbnail         public-quoted/posts/index.html "enableThumbnails"
+          off excerpt           public-quoted/posts/index.html "enableListExcerpts"
+          off feather-clock     "$post"                        "enableReadingTime"
+          off sharing-buttons   "$post"                        "enableSharingButtons"
+          # Both call sites: head.html writes theme-init, header.html the button.
+          off theme-init        public-quoted/index.html       "enableThemeToggle"
+          off theme-toggle      public-quoted/index.html       "enableThemeToggle"
+          off language-switcher public-quoted/index.html       "enableGlobalLanguageMenu"
+          # The author's name is also in the meta tags, so the footer link it is.
+          off '>Jane Doe</a></span>' public-quoted/index.html  "footer.author"
+          off 'CC BY-NC'          public-quoted/index.html       "footer.copyright"
+          off feather-rss         public-quoted/index.html       "footer.rss"
+          off 'class=related'     "$post"                        "related.enable"
+          off '&copy;'            public-quoted/index.html       "footer.trademark"
+          off logo__pathname      public-quoted/index.html       "logoCursorPathname"
+          # A disable, like the pager: the cursor is visible by default, so off() has
+          # nothing to find there. A quoted false has to leave it visible.
+          [ "$(count logo__cursor public-quoted/index.html)" != 0 ] || { echo "  BAD  logoCursorDisabled: no cursor rendered, so nothing to hide"; bad=1; }
+          n=$( (grep -oh 'logo__cursor{[^}]*visibility:hidden' public-quoted/*.css || true) | wc -l)
+          [ "$n" = 0 ] || { echo "  BAD  logoCursorDisabled: a quoted false hid the cursor"; bad=1; }
+          # A disable, so a quoted false has to leave the pager in place.
+          n=$(count pagination__buttons "$post")
+          [ "$n" != 0 ] || { echo "  BAD  disableReadOtherPosts: a quoted false disabled the pager"; bad=1; }
+          # A quoted 0 means the default, as 0 does.
+          grep -q '"content":"[^"]' public-quoted/index.json \
+            || { echo "  BAD  searchContentLimit: a quoted 0 emptied the search index"; bad=1; }
+          grep -q '^10 of ' public-quoted/llms-full.txt \
+            || { echo "  BAD  llmsFullLimit: \"010\" did not keep 10 pages"; bad=1; }
+          for one in css/custom.css js/custom.js; do
+            [ "$(count "$one" public-quoted/index.html)" != 0 ] \
+              || { echo "  BAD  a lone $one given as a string was not loaded"; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  every site switch honours the quoted spelling"
+          exit "$bad"
+
+      # No demo configures a comment provider, so nothing else builds the branch
+      # comments-on.html decides.
+      - name: Check the comments switch across all three providers
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-comments
+          p=public-comments/posts/2026/01
+          on=$p/a-video-where-a-gif-used-to-be/index.html
+          off_bool=$p/long-title-no-cover/index.html
+          off_quoted=$p/questions-the-theme-is-asked/index.html
+          bad=0
+          for f in "$on" "$off_bool" "$off_quoted"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the markers below assert nothing"; bad=1; }
+          done
+          count() { echo $(( $(grep -o "$1" "$2" 2>/dev/null | wc -l) )); }
+          for m in hello-friend-ai-ci.disqus.com commento.example.com example/hello-friend-ai-ci; do
+            [ "$(count "$m" "$on")" != 0 ] || { echo "  BAD  $m is missing with comments unset, so its absence below proves nothing"; bad=1; }
+            [ "$(count "$m" "$off_bool")" = 0 ] || { echo "  BAD  $m is on under comments: false"; bad=1; }
+            [ "$(count "$m" "$off_quoted")" = 0 ] || { echo "  BAD  $m is on under comments: \"false\""; bad=1; }
+          done
+          [ "$bad" = 0 ] && echo "  every provider honours the comments switch, quoted or not"
+          # Commento fills a <div>, Comentario 3 a web component.
+          [ "$(count 'data-id-root' "$on")" = 1 ] && [ "$(count '<comentario-comments>' "$on")" = 0 ] \
+            || { echo "  BAD  a Commento script does not get exactly the Commento markup"; bad=1; }
+          HUGO_PARAMS_COMMENTO_URL="https://comments.example.org/comentario.js" \
+            hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-comentario > /dev/null
+          f=public-comentario/posts/2026/01/a-video-where-a-gif-used-to-be/index.html
+          [ "$(count '<comentario-comments></comentario-comments>' "$f")" = 1 ] && [ "$(count 'data-id-root' "$f")" = 0 ] \
+            && [ "$(count 'comments.example.org/comentario.js' "$f")" = 1 ] \
+            || { echo "  BAD  comentario.js does not get its script, one <comentario-comments> and no data-id-root"; bad=1; }
+          [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
+          exit "$bad"
+
+      - name: Check utterances follows the page's theme unless one is named
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml,../.github/fixtures/utterances-follow.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-utterances
+          post=posts/2026/01/a-video-where-a-gif-used-to-be/index.html
+          bad=0
+          grep -q 'class=utterances-follow' "public-utterances/$post" || { echo "  BAD  the default theme did not get the following mount"; bad=1; }
+          js=$(grep -o 'js/utterances[^" >]*\.js' "public-utterances/$post" | head -1)
+          grep -qs 'set-theme' "public-utterances/$js" || { echo "  BAD  the post loads no script that tells utterances of a theme change"; bad=1; }
+          grep -q 'theme=github-light' "public-comments/$post" || { echo "  BAD  a named theme lost the static client"; bad=1; }
+          [ "$bad" = 0 ] && echo "  utterances follows the page by default, and a named theme stands"
+          exit "$bad"
+
+      - name: Check a quoted 0 keeps the default related limit
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-quoted-zero.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-quoted-zero
+          post=posts/2026/01/everything-an-article-is-made-of/index.html
+          for f in "public/$post" "public-quoted-zero/$post"; do
+            [ -f "$f" ] || { echo "  BAD  $f was not built — the count below asserts nothing"; exit 1; }
+          done
+          items() { echo $(( $(grep -oP 'class=related__list>.*?</ul>' "$1" 2>/dev/null | grep -o '<li>' | wc -l) )); }
+          want=$(items "public/$post")
+          got=$(items "public-quoted-zero/$post")
+          # Unset reads as 0 too, so the default build cannot vouch for the 5 on its own.
+          # The showcase has more candidates than that, so 5 is the cap biting.
+          [ "$want" = 5 ] || { echo "  BAD  the default build lists $want related posts, not the documented 5"; exit 1; }
+          [ "$got" = "$want" ] || { echo "  BAD  related.limit = \"0\" lists $got, the default lists $want"; exit 1; }
+          echo "  a quoted 0 keeps the default related limit"
+
+      # A failed template prints the failure and the build stays green:
+      # %!q(bool=true) went out in a heading, past every checker above.
+      - name: Check no template failed silently (showcase)
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-markup.mjs public
+
+      # Every one of these is a thing the build reports nothing about. A page
+      # can name two different URLs as its own, announce a card picture no
+      # platform renders, or carry two contradictory robots directives, and
+      # Hugo calls that a successful build — which is how four of the six got
+      # in. Run against both demos: the showcase is the one with covers, four
+      # languages, pagers and a search page.
+      - name: Check the SEO invariants (showcase)
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-seo.mjs public
+
+      # Stated twice, so assert both say the same. The demo is checked too: the
+      # feature being off has to keep meaning an unchanged file.
+      - name: Check robots.txt agrees with itself
+        working-directory: hello-friend-ai
+        run: node .github/scripts/check-robots.mjs . showcaseSite/public
+
+      - name: Check a leading-slash menu url under a subpath, in every language (showcase)
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --destination public-menu-slash \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/menu-leading-slash.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-links.mjs public-menu-slash https://example.com/subpath/showcase/
+          # Absolute urls: no second /fr/; the English home is not current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/index.html "Tous les articles" English
+          # A same-host absolute url can be current.
+          node ../.github/scripts/check-invariants.mjs public-menu-slash menu-current fr/posts/index.html Articles=page "Tous les articles=page" English
+
+      # Nothing here renders CSS, so the compiled rule is what gets asserted.
+      # Both quote forms because --minify leaves attributes unquoted, and the
+      # value boundaries because column-reverse and startfoo otherwise pass.
+      - name: Check a submenu label starts where its siblings do on a phone
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public submenu ar/index.html
+          node ../.github/scripts/check-invariants.mjs public header ar/index.html
+
+      - name: Check every gallery thumbnail is a named link to a square
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public gallery
+          # A bracketed file name still gets the alt its front matter writes.
+          grep -q 'alt="The lake again, from a file whose name holds brackets"' \
+            public/posts/2026/02/a-gallery-from-a-page-bundle/index.html \
+            || { echo "  BAD  05-lake [copy].jpg lost its front-matter alt"; exit 1; }
+
+      - name: Check contentWidth reaches the stylesheet and the image sizes
+        working-directory: hello-friend-ai
+        run: |
+          node .github/scripts/check-invariants.mjs showcaseSite/public content-width 960px
+          # Fallback faces cover Inter's scripts only, so Arabic is not rescaled.
+          grep -q 'font-family:inter fallback;[^}]*unicode-range:' showcaseSite/public/main-*.css \
+            || { echo "  BAD  an Inter fallback face with no unicode-range"; exit 1; }
+
+      # Built on the showcase, which holds the logo files.
+      - name: Check a logo with a dark variant, and an inlined one
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          hugo --themesDir ../.. --gc --minify --destination public-logo-images \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-images.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-links.mjs public-logo-images https://example.com/subpath/showcase/
+          node ../.github/scripts/check-invariants.mjs public-logo-images logo-images logo-light.svg logo-dark.svg
+          hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-logo-inline \
+            --config ../exampleSite/config.toml,config.toml,../.github/fixtures/logo-inline.toml \
+            --baseURL "https://example.com/subpath/showcase/"
+          node ../.github/scripts/check-invariants.mjs public-logo-inline logo-inline "Jane Doe & co" mark

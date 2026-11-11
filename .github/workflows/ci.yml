@@ -16,10 +16,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  HUGO_VERSION: 0.164.0
-  DART_SASS_VERSION: 1.102.0
-
 jobs:
   pr-title:
     name: Conventional pull request title
@@ -81,25 +77,14 @@ jobs:
       fail-fast: false
       matrix:
         hugo: ["0.164.0", "0.158.0"]
-    env:
-      HUGO_VERSION: ${{ matrix.hugo }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: hello-friend-ai
 
-      - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
-        run: |
-          curl -sSLf -o hugo.deb \
-            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
-          sudo dpkg -i hugo.deb
-
-      - name: Install Dart Sass ${{ env.DART_SASS_VERSION }}
-        run: |
-          curl -sSLf \
-            "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" \
-            | tar -xz
-          echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
+      - uses: ./hello-friend-ai/.github/actions/setup-hugo
+        with:
+          hugo-version: ${{ matrix.hugo }}
 
       - name: Show toolchain versions
         run: |
@@ -144,11 +129,9 @@ jobs:
         with:
           path: hello-friend-ai
 
-      - name: Install Hugo ${{ env.HUGO_VERSION }} (extended)
-        run: |
-          curl -sSLf -o hugo.deb \
-            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
-          sudo dpkg -i hugo.deb
+      - uses: ./hello-friend-ai/.github/actions/setup-hugo
+        with:
+          dart-sass-version: none
 
       # The theme is written in the Sass module system, which only Dart Sass
       # implements. It used to fall back to libsass and ship a site with no
@@ -179,22 +162,21 @@ jobs:
         with:
           path: hello-friend-ai
 
-      - name: Resolve and install the newest Hugo and Dart Sass
+      - name: Resolve the newest Hugo and Dart Sass
+        id: latest
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           hugo_version="$(gh api repos/gohugoio/hugo/releases/latest --jq .tag_name | sed 's/^v//')"
           sass_version="$(gh api repos/sass/dart-sass/releases/latest --jq .tag_name)"
           echo "Hugo ${hugo_version}, Dart Sass ${sass_version}"
+          echo "hugo=${hugo_version}" >> "${GITHUB_OUTPUT}"
+          echo "sass=${sass_version}" >> "${GITHUB_OUTPUT}"
 
-          curl -sSLf -o hugo.deb \
-            "https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_extended_${hugo_version}_linux-amd64.deb"
-          sudo dpkg -i hugo.deb
-
-          curl -sSLf \
-            "https://github.com/sass/dart-sass/releases/download/${sass_version}/dart-sass-${sass_version}-linux-x64.tar.gz" \
-            | tar -xz
-          echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
+      - uses: ./hello-friend-ai/.github/actions/setup-hugo
+        with:
+          hugo-version: ${{ steps.latest.outputs.hugo }}
+          dart-sass-version: ${{ steps.latest.outputs.sass }}
 
       - name: Show toolchain versions
         run: |

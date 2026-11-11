@@ -1,0 +1,33 @@
+name: Set up Hugo and Dart Sass
+description: Installs Hugo extended and Dart Sass. The defaults are the versions CI pins.
+
+inputs:
+  hugo-version:
+    description: Hugo version, without the leading v.
+    default: "0.164.0"
+  dart-sass-version:
+    description: Dart Sass version, or "none" to leave it out.
+    default: "1.102.0"
+
+runs:
+  using: composite
+  steps:
+    - name: Install Hugo ${{ inputs.hugo-version }} (extended)
+      shell: bash
+      env:
+        HUGO_VERSION: ${{ inputs.hugo-version }}
+      run: |
+        curl -sSLf -o hugo.deb \
+          "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+        sudo dpkg -i hugo.deb
+
+    - name: Install Dart Sass ${{ inputs.dart-sass-version }}
+      if: inputs.dart-sass-version != 'none'
+      shell: bash
+      env:
+        DART_SASS_VERSION: ${{ inputs.dart-sass-version }}
+      run: |
+        curl -sSLf \
+          "https://github.com/sass/dart-sass/releases/download/${DART_SASS_VERSION}/dart-sass-${DART_SASS_VERSION}-linux-x64.tar.gz" \
+          | tar -xz
+        echo "${PWD}/dart-sass" >> "${GITHUB_PATH}"
