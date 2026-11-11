@@ -45,8 +45,8 @@
        translation is left out, and a pager past the first has no translation
        carrying it. */ -}}
 {{- if and (eq $canonical.pager 1) (not (partial "noindex.html" .)) }}
-	{{- range .Translations }}
-		{{- if not (partial "noindex.html" .) }}
+	{{- range partial "alternates.html" . }}
+		{{- if not (.Eq $) }}
 			{{- with or .Params.locale .Language.Locale }}
 	<meta property="og:locale:alternate" content="{{ replace . `-` `_` }}">
 			{{- end }}
@@ -112,7 +112,7 @@
 
 {{- $seeAlso := slice }}
 {{- range .GetTerms "series" }}
-	{{- range where (where .Pages "Permalink" "!=" "") "Params.build.render" "!=" "link" | first 7 }}
+	{{- range partial "listable.html" .Pages | first 7 }}
 		{{- if ne $ . }}{{ $seeAlso = $seeAlso | append .Permalink }}{{ end }}
 	{{- end }}
 {{- end }}

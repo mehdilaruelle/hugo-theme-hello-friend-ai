@@ -82,14 +82,9 @@
        carrying it -- which Google requires -- nor name canonical URLs. */ -}}
 {{- if and .IsTranslated (eq $pager 1) (not (partial "noindex.html" .)) }}
 {{- /* hugo.Sites is ordered by language weight, so its first entry takes the
-       x-default alongside its own hreflang. A noindex translation is left out,
-       here and in sitemap.xml alike. Ranged rather than filtered with where,
-       which cannot call a partial. */ -}}
+       x-default alongside its own hreflang. */ -}}
 {{- $primary := (index hugo.Sites 0).Language.Lang }}
-{{- $alternates := slice }}
-{{- range .AllTranslations }}
-  {{- if not (partial "noindex.html" .) }}{{ $alternates = $alternates | append . }}{{ end }}
-{{- end }}
+{{- $alternates := partial "alternates.html" . }}
 {{- if gt (len $alternates) 1 }}
 {{- range $alternates }}
 <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />

@@ -15,7 +15,7 @@
 {{- $primary := (index hugo.Sites 0).Language.Lang }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  {{- range where (where .Pages "Sitemap.Disable" "ne" true) "Params.build.render" "!=" "link" }}
+  {{- range partial "listable.html" (where .Pages "Sitemap.Disable" "ne" true) }}
   {{- if and .Permalink (not (partial "noindex.html" .)) }}
   <url>
     <loc>{{ .Permalink }}</loc>
@@ -28,13 +28,8 @@
     {{- if ge .Sitemap.Priority 0.0 }}
     <priority>{{ .Sitemap.Priority }}</priority>
     {{- end }}
-    {{- /* A set naming only this page says nothing worth saying. Ranged rather
-           than filtered with where, because the rule is noindex.html's and a
-           where clause can only read a param. */}}
-    {{- $alternates := slice }}
-    {{- range where .AllTranslations "Params.build.render" "!=" "link" }}
-    {{- if not (partial "noindex.html" .) }}{{ $alternates = $alternates | append . }}{{ end }}
-    {{- end }}
+    {{- /* A set naming only this page says nothing worth saying. */}}
+    {{- $alternates := partial "alternates.html" . }}
     {{- if gt (len $alternates) 1 }}
     {{- range $alternates }}
     <xhtml:link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" />

@@ -3,7 +3,7 @@
 {{- with .Data.Pages -}}{{- $pages = . -}}{{- end -}}
 {{- /* Newest first: Hugo's default order puts weight before date. */ -}}
 {{- if eq $.Kind "taxonomy" -}}{{- $pages = $pages.ByTitle -}}{{- else -}}{{- $pages = $pages.ByDate.Reverse -}}{{- end -}}
-{{- $pages = where (where $pages "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
+{{- $pages = partial "listable.html" $pages -}}
 {{- /* A term with nothing left to list and no page of its own is left out. */ -}}
 {{- if eq $.Kind "taxonomy" -}}
   {{- $kept := first 0 $pages -}}

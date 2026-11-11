@@ -1,0 +1,8 @@
+{{- /* The translations of a page a search engine may index, itself included, in
+       language order: the hreflang set, the sitemap's xhtml:link and
+       og:locale:alternate read this one list, so they cannot disagree. */ -}}
+{{- $out := slice -}}
+{{- range partial "listable.html" .AllTranslations -}}
+  {{- if not (partial "noindex.html" .) }}{{ $out = $out | append . }}{{ end -}}
+{{- end -}}
+{{- return $out -}}

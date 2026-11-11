@@ -1,0 +1,2 @@
+{{- /* The pages that have a page of their own: built, and not render: link. */ -}}
+{{- return where (where . "Permalink" "!=" "") "Params.build.render" "!=" "link" -}}
