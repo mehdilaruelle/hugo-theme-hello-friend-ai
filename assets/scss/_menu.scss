@@ -93,14 +93,7 @@
 .submenu {
   background: var(--background-header);
 
-  ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  li a, .dropbtn {
+  .dropbtn {
     display: inline-block;
     text-decoration: none;
   }
