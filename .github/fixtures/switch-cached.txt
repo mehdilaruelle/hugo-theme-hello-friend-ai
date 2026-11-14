@@ -1,0 +1,4 @@
+{{- /* Switches read through partialCached: the value is read twice, the second time as the cache key. */ -}}
+{{- if partialCached "switch.html" site.Params.math site.Params.math }}site{{ end -}}
+{{- if partialCached "switch.html" .Params.noindex .Params.noindex }}page{{ end -}}
+{{- if partialCached "switch.html" (.Param "math") (.Param "math") }}param{{ end -}}

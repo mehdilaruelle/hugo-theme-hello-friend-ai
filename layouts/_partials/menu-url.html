@@ -1,3 +1,5 @@
+{{- /* Callers cache it by .URL and whether a page is attached, the two things
+       it reads: a menu entry as the key would be hashed whole, children included. */ -}}
 {{- $url := .URL -}}
 {{- /* Absolute urls as given: relLangURL would add /fr/ again. */ -}}
 {{- if and (not .Page) (not (partialCached "is-remote.html" $url $url)) -}}

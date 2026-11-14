@@ -67,6 +67,14 @@ jobs:
           echo "$out" | grep -qF "$want" || { echo "$out"; echo "  BAD  wanted: $want"; exit 1; }
           echo "  the alias is followed, into a .txt template"
 
+      # partialCached reads the value twice: as the context, then as the key.
+      - name: The switch check accepts a switch read through partialCached
+        run: |
+          root=$(mktemp -d)
+          cp -r layouts exampleSite showcaseSite archetypes "$root"
+          cp .github/fixtures/switch-cached.txt "$root/layouts/cached-fixture.txt"
+          node .github/scripts/check-switches.mjs "$root"
+
   build:
     name: Build exampleSite (Hugo ${{ matrix.hugo }})
     runs-on: ubuntu-latest

@@ -89,7 +89,7 @@ for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
 // partialCached reads it twice, the second time as the cache key.
 const ok = (before, after) =>
   /partial\s+"switch\.html"\s*\(?\s*$/.test(before) ||
-  /partialCached\s+"switch\.html"\s*(?:\(?\s*[^\s()]+\s*\)?\s+)?\(?\s*$/.test(before) ||
+  /partialCached\s+"switch\.html"\s*(?:(?:\([^()]*\)|[^\s()]+)\s+)?\(?\s*$/.test(before) ||
   /\b(?:reflect\.Is\w+|isset)\s*\(?\s*$/.test(before) ||
   /printf\s+"[^"]*"\s*$/.test(before) ||
   (/\{\{-?\s*$/.test(before) && /^\s*-?\}\}/.test(after));
