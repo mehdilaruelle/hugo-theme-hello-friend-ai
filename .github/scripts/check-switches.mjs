@@ -75,7 +75,7 @@ const PATH = String.raw`\(?\s*${PARAMS}\.([A-Za-z0-9_.]+)\s*\)?`;
 const COMPARED = new RegExp(String.raw`\b(?:eq|ne)\s+(?:${PATH}\s+(?:true|false)|(?:true|false)\s+${PATH})`, 'g');
 // And one already read through switch.html, set by a demo or not: site.Params.math.
 const PAGE = String.raw`(?<![A-Za-z])(?:\$?\.Page)?`;
-const VIA = new RegExp(String.raw`partial\s+"switch\.html"\s*\(?\s*(?:(?:\$\.Site|\.Site|site)\.Params\.([A-Za-z0-9_.]+)|${PAGE}\.Params\.([A-Za-z0-9_]+)|${PAGE}\.Param\s+"([A-Za-z0-9_]+)")`, 'g');
+const VIA = new RegExp(String.raw`partial(?:Cached)?\s+"switch\.html"\s*\(?\s*(?:(?:\$\.Site|\.Site|site)\.Params\.([A-Za-z0-9_.]+)|${PAGE}\.Params\.([A-Za-z0-9_]+)|${PAGE}\.Param\s+"([A-Za-z0-9_]+)")`, 'g');
 for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
   const { text } = resolveAliases(readFileSync(file, 'utf8'));
   for (const m of text.matchAll(COMPARED)) siteSwitches.add((m[1] || m[2]).toLowerCase());
@@ -86,8 +86,10 @@ for (const file of walk(join(root, 'layouts'), TEMPLATES)) {
 }
 
 // Reading the value is not a truth test: footer.trademark is also its text.
+// partialCached reads it twice, the second time as the cache key.
 const ok = (before, after) =>
   /partial\s+"switch\.html"\s*\(?\s*$/.test(before) ||
+  /partialCached\s+"switch\.html"\s*(?:\(?\s*[^\s()]+\s*\)?\s+)?\(?\s*$/.test(before) ||
   /\b(?:reflect\.Is\w+|isset)\s*\(?\s*$/.test(before) ||
   /printf\s+"[^"]*"\s*$/.test(before) ||
   (/\{\{-?\s*$/.test(before) && /^\s*-?\}\}/.test(after));
