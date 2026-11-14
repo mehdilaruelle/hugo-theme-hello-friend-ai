@@ -4,15 +4,15 @@
 
       {{- /* The condition on the container, as page.html already does. */ -}}
       {{- $translations := partial "listable.html" .Translations }}
-      {{- if or (partial "switch.html" .Site.Params.EnableReadingTime) $translations }}
+      {{- if or (partialCached "switch.html" .Site.Params.EnableReadingTime .Site.Params.EnableReadingTime) $translations }}
       <div class="post-info">
         <p>
-          {{- if partial "switch.html" .Site.Params.EnableReadingTime }}
+          {{- if partialCached "switch.html" .Site.Params.EnableReadingTime .Site.Params.EnableReadingTime }}
             {{ partial "icon.html" (dict "name" "clock") }}
             {{ partial "i18n.html" (dict "key" "readingTime" "args" .Page.ReadingTime "fallback" (cond (eq .Page.ReadingTime 1) "One minute" (printf "%d minutes" .Page.ReadingTime))) }}
           {{ end }}
 
-          {{ with $translations }}{{ if partial "switch.html" site.Params.EnableReadingTime }} | {{ end }}{{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
+          {{ with $translations }}{{ if partialCached "switch.html" site.Params.EnableReadingTime site.Params.EnableReadingTime }} | {{ end }}{{ partialCached "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") "postAvailable" "Also available in" }}
             {{ range . }}
                 {{ partial "translation-link.html" . }}
             {{ end}}
@@ -43,7 +43,7 @@
           <div class="post-audio">
             <audio controls>
               {{- range $files }}
-              <source src="{{ partial "abs-url.html" . | safeURL }}">
+              <source src="{{ partialCached "abs-url.html" . (printf "%v" .) | safeURL }}">
               {{- end }}
             </audio>
           </div>
@@ -78,14 +78,14 @@
           {{- end }}
 
           {{ if $hasLastmod }}
-              ({{ partial "i18n.html" (dict "key" "lastModified" "fallback" "Last updated") }}: {{ partial "date.html" (dict "date" .Lastmod "format" .Site.Params.dateformNumTime "fallback" "2006-01-02 15:04") }})
+              ({{ partialCached "i18n.html" (dict "key" "lastModified" "fallback" "Last updated") "lastModified" "Last updated" }}: {{ partial "date.html" (dict "date" .Lastmod "format" .Site.Params.dateformNumTime "fallback" "2006-01-02 15:04") }})
           {{ end }}
         </p>{{ end }}
 
         {{- partial "git-info.html" . }}
       </div>
 
-      {{- if partial "switch.html" .Site.Params.EnableSharingButtons }}
+      {{- if partialCached "switch.html" .Site.Params.EnableSharingButtons .Site.Params.EnableSharingButtons }}
         <hr />
         <div class="sharing-buttons">
           {{ partial "sharing-buttons.html" . }}
@@ -114,7 +114,7 @@
         {{- /* A Commento instance is wherever the site put it, so the origin
                comes out of the configured URL -- keeping its scheme, or none
                at all, for the reason is-remote.html gives. */ -}}
-        {{- $commento := partial "parse-url.html" $commentoParams.Url -}}
+        {{- $commento := partialCached "parse-url.html" $commentoParams.Url (printf "%v" $commentoParams.Url) -}}
         {{- with and $commento $commento.Host }}
           {{- $origin := printf "//%s" . -}}
           {{- with $commento.Scheme }}{{ $origin = printf "%s:%s" . $origin }}{{ end -}}

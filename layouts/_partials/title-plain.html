@@ -4,7 +4,19 @@
        showed their backticks and asterisks. A title that renders to no tag and
        holds no escape or entity is returned as written: through markdownify its
        straight quotes would turn curly, and the search box would no longer find
-       "don't". */ -}}
+       "don't".
+
+       Cached per page in HTML templates only. markdownify applies the output
+       format's render hooks, and before Hugo 0.169 partialCached keeps one
+       cache for all the output formats of a language: rss.xml, the JSON index
+       and the Markdown outputs call it uncached, or they would get the HTML
+       hook's title.
+
+       It is the only partial cached per page, on purpose. partialCached keeps
+       at most 1,000 entries per language, and series.html asks for every part
+       of a series on every part: a second key per page evicts these titles.
+       Caching noindex.html by page as well took a 1,001-post site in four
+       series from 18 s to 25 s. Cache by value or per language instead. */ -}}
 {{- $title := partial "title.html" . -}}
 {{- $html := partial "title-inline.html" (dict "text" $title "with" "&lt;") | markdownify -}}
 {{- if or (strings.Contains $html "<") (strings.ContainsAny $title `\&`) -}}

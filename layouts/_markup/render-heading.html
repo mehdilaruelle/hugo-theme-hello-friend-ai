@@ -11,4 +11,4 @@
 <h{{ .Level }}{{ with $anchor }} id="{{ . }}"{{ end }}
   {{- range $k, $v := .Attributes }}
     {{- if ne $k "id" }}{{ with printf "%v" $v }}{{ printf " %s=\"%s\"" $k (htmlEscape .) | safeHTMLAttr }}{{ end }}{{ end }}
-  {{- end }}>{{ .Text }}{{ with $anchor }}<a class="heading-anchor" href="#{{ . }}" aria-label="{{ partial "i18n.html" (dict "key" "headingAnchor" "fallback" "Link to this section") }}"></a>{{ end }}</h{{ .Level }}>
+  {{- end }}>{{ .Text }}{{ with $anchor }}<a class="heading-anchor" href="#{{ . }}" aria-label="{{ partialCached "i18n.html" (dict "key" "headingAnchor" "fallback" "Link to this section") "headingAnchor" "Link to this section" }}"></a>{{ end }}</h{{ .Level }}>

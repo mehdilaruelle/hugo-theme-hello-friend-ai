@@ -10,9 +10,9 @@
 {{- $search := true -}}
 {{- $custom := "" -}}
 {{- if $on -}}
-  {{- if isset $ai "train" -}}{{- $train = partial "switch.html" $ai.train -}}{{- end -}}
-  {{- if isset $ai "cite" -}}{{- $cite = partial "switch.html" $ai.cite -}}{{- end -}}
-  {{- if isset $ai "search" -}}{{- $search = partial "switch.html" $ai.search -}}{{- end -}}
+  {{- if isset $ai "train" -}}{{- $train = partialCached "switch.html" $ai.train $ai.train -}}{{- end -}}
+  {{- if isset $ai "cite" -}}{{- $cite = partialCached "switch.html" $ai.cite $ai.cite -}}{{- end -}}
+  {{- if isset $ai "search" -}}{{- $search = partialCached "switch.html" $ai.search $ai.search -}}{{- end -}}
   {{- $custom = $ai.crawlers | default "" | strings.TrimSpace -}}
 {{- end -}}
 {{- /* Only what is refused gets a group: silence is permission. */ -}}

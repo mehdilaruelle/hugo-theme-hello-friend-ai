@@ -8,16 +8,16 @@
             </p>
             <div class="banner-404">
                 <h1>404</h1>
-                <p>{{ partial "i18n.html" (dict "key" "notFound" "fallback" "Oops, page not found…") }}</p>
+                <p>{{ partialCached "i18n.html" (dict "key" "notFound" "fallback" "Oops, page not found…") "notFound" "Oops, page not found…" }}</p>
                 <p class="btn-404">
                     <a href="{{ .Site.Home.Permalink }}">
                     {{ partial "icon.html" (dict "name" "home") }}
-                    {{- partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
+                    {{- partialCached "i18n.html" (dict "key" "home" "fallback" "Home") "home" "Home" -}}
                     </a>
-                    {{- with partial "main-section.html" . }}
+                    {{- with partialCached "main-section.html" . }}
                     <a href="{{ .Permalink }}">
                     {{ partial "icon.html" (dict "name" "archive") }}
-                    {{- partial "i18n.html" (dict "key" "archives" "fallback" "Archives") -}}
+                    {{- partialCached "i18n.html" (dict "key" "archives" "fallback" "Archives") "archives" "Archives" -}}
                     </a>
                     {{- end }}
                 </p>

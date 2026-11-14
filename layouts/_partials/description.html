@@ -23,7 +23,7 @@
          fires and the placeholder is what gets published. */ -}}
   {{- $description = partial "i18n.html" (dict "key" (printf "taxonomyDescription%s" (strings.FirstUpper .Data.Singular)) "fallback" "") -}}
   {{- if not $description -}}
-    {{- $description = partial "i18n.html" (dict "key" "taxonomyDescription" "fallback" "") -}}
+    {{- $description = partialCached "i18n.html" (dict "key" "taxonomyDescription" "fallback" "") "taxonomyDescription" "" -}}
   {{- end -}}
 {{- else if and (eq .Kind "term") (not .Summary) -}}
   {{- /* .Data.Singular is Hugo's own word for the taxonomy, so it is English

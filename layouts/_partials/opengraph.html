@@ -64,7 +64,7 @@
 	       already gives the Person. Dropped when the page names a guest
 	       author, whose profile this is not. */ -}}
 	{{- $author := partial "author.html" . }}
-	{{- if and $author (eq $author (partial "site-author.html" .).name) }}
+	{{- if and $author (eq $author (partialCached "site-author.html" .).name) }}
 		<meta property="article:author" content="{{ site.Home.Permalink | default site.BaseURL }}">
 	{{- end }}
 	{{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
@@ -98,14 +98,14 @@
        subpath. json-ld.html carries the same note. */ -}}
 {{- with .Params.audio }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		{{- $url := partial "abs-url.html" . }}
+		{{- $url := partialCached "abs-url.html" . (printf "%v" .) }}
 		<meta property="og:audio" content="{{ $url }}">
 	{{- end }}
 {{- end }}
 
 {{- with .Params.videos }}
 	{{- range (partial "as-list.html" .) | first 6 }}
-		{{- $url := partial "abs-url.html" . }}
+		{{- $url := partialCached "abs-url.html" . (printf "%v" .) }}
 		<meta property="og:video" content="{{ $url }}">
 	{{- end }}
 {{- end }}

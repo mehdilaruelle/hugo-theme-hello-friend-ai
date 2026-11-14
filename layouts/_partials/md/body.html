@@ -37,7 +37,11 @@
   {{- if not (index $code $n) -}}
     {{- $line = replaceRE `^(\s*)&#43;(\s|$)` `${1}\+${2}` $line -}}
     {{- $out := "" -}}
-    {{- range partial "md/spans.html" $line -}}
+    {{- /* A line holding no backtick (and no NUL, which spans.html cuts at) is
+           one span of text, which spans.html would take a partial call to say. */ -}}
+    {{- $spans := slice (dict "text" $line "code" false) -}}
+    {{- if or (strings.Contains $line "`") (strings.Contains $line "\x00") }}{{ $spans = partial "md/spans.html" $line }}{{ end -}}
+    {{- range $spans -}}
       {{- $p := .text -}}
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
