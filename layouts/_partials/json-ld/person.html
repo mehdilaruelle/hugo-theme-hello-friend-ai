@@ -1,5 +1,5 @@
 {{- /* The site owner as a schema.org Person, under one @id (#person). */ -}}
-{{- $siteAuthor := (partial "site-author.html" .).name -}}
+{{- $siteAuthor := (partialCached "site-author.html" .).name -}}
 {{- $jobTitle := "" -}}
 {{- $personDescription := "" -}}
 {{- $knowsAbout := slice -}}
@@ -27,7 +27,7 @@
           {{- $credential = merge $credential (dict "credentialCategory" .) -}}
         {{- end -}}
         {{- with $url -}}
-          {{- $credential = merge $credential (dict "url" (partial "abs-url.html" .)) -}}
+          {{- $credential = merge $credential (dict "url" (partialCached "abs-url.html" . (printf "%v" .))) -}}
         {{- end -}}
         {{- with $issuer -}}
           {{- $credential = merge $credential (dict "recognizedBy" (dict "@type" "Organization" "name" .)) -}}
@@ -42,7 +42,7 @@
 {{- range partial "social-list.html" site.Params.social -}}
   {{- $name := lower (.name | default "") -}}
   {{- with .url -}}
-    {{- $u := partial "parse-url.html" . -}}
+    {{- $u := partialCached "parse-url.html" . (printf "%v" .) -}}
     {{- if and $u (in (slice "http" "https") $u.Scheme) $u.Host (not (in (slice "rss" "email") $name)) -}}
       {{- $sameAs = $sameAs | append . -}}
     {{- end -}}
@@ -68,7 +68,7 @@
 {{- end -}}
 {{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
 {{- with (partialCached "param-table.html" "portrait" "portrait").path -}}
-  {{- $portrait := partial "abs-url.html" . -}}
+  {{- $portrait := partialCached "abs-url.html" . (printf "%v" .) -}}
   {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}
   {{- end -}}

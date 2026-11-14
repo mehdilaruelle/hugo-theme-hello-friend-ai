@@ -91,7 +91,7 @@
   {{- /* A % that escapes nothing, "100%.png", is one itself. */ -}}
   {{- if $.asWritten -}}{{- $url = replace . "%" "%25" | replaceRE "%25([0-9A-Fa-f]{2})" "%$1" -}}{{- end -}}
 {{- else -}}
-  {{- if not $remote -}}{{- $url = partial "abs-url.html" $src -}}{{- end -}}
+  {{- if not $remote -}}{{- $url = partialCached "abs-url.html" $src (printf "%v" $src) -}}{{- end -}}
 {{- end -}}
 
 {{- $attrs := .attrs | default dict -}}

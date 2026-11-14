@@ -4,7 +4,7 @@
 {{- $css := slice -}}
 {{- $logo := partialCached "param-table.html" "logo" "logo" -}}
 {{- $cursor := "" -}}
-{{- if partial "switch.html" $logo.logoCursorDisabled -}}
+{{- if partialCached "switch.html" $logo.logoCursorDisabled $logo.logoCursorDisabled -}}
   {{- $cursor = "visibility:hidden;" -}}
 {{- end -}}
 {{- with $logo.logoCursorColor -}}
@@ -29,9 +29,9 @@
   {{- end -}}
 {{- end -}}
 {{- with site.Params.backgroundImage -}}
-  {{- $bg := printf "--background-image:url(%q);" (partial "abs-url.html" .) -}}
+  {{- $bg := printf "--background-image:url(%q);" (partialCached "abs-url.html" . (printf "%v" .)) -}}
   {{- with site.Params.backgroundImageLight -}}
-    {{- $bg = printf "%s--background-image-light:url(%q);" $bg (partial "abs-url.html" .) -}}
+    {{- $bg = printf "%s--background-image-light:url(%q);" $bg (partialCached "abs-url.html" . (printf "%v" .)) -}}
   {{- end -}}
   {{- $css = $css | append (printf ".background-image{%s}" $bg) -}}
 {{- end -}}

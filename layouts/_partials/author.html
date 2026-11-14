@@ -1,6 +1,6 @@
 {{- /* Page author, else site author, else "": a string, a {name} map or a list.
        Not cond: .name fails on a string. */ -}}
-{{- $author := (partial "site-author.html" .).name -}}
+{{- $author := (partialCached "site-author.html" .).name -}}
 {{- with .Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $author = .name -}}

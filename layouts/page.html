@@ -4,7 +4,7 @@
 
             {{ with partial "listable.html" .Translations }}
                 <div class="post-info">
-                    {{ partial "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") }}
+                    {{ partialCached "i18n.html" (dict "key" "postAvailable" "fallback" "Also available in") "postAvailable" "Also available in" }}
                     {{ range . }}
                         {{ partial "translation-link.html" . }}
                     {{ end }}

@@ -1,6 +1,6 @@
 {{- $url := .URL -}}
 {{- /* Absolute urls as given: relLangURL would add /fr/ again. */ -}}
-{{- if and (not .Page) (not (partial "is-remote.html" $url)) -}}
+{{- if and (not .Page) (not (partialCached "is-remote.html" $url $url)) -}}
   {{- /* Hugo already put the baseURL path in front of a leading-slash url, and relLangURL
          would put the language before that path: taken off first, as for "posts/". */ -}}
   {{- $root := printf "%s/" (strings.TrimSuffix "/" (urls.Parse site.BaseURL).Path) -}}

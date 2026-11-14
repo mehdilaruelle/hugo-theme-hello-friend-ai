@@ -16,7 +16,7 @@
 <div class="content">
   <main id="hf-main" class="post">
     <div class="post-header">
-      <h1 class="post-title">{{ .Title | default (partial "i18n.html" (dict "key" "search" "fallback" "Search")) }}</h1>
+      <h1 class="post-title">{{ .Title | default (partialCached "i18n.html" (dict "key" "search" "fallback" "Search") "search" "Search") }}</h1>
     </div>
 
     <div class="post-content">
@@ -27,28 +27,28 @@
              the count. Named data-hits-* and not data-one because
              html/template strips data- and treats a leading "on" as an event
              handler, which emitted the value as a quoted JS literal. */ -}}
-      {{- $one := partial "i18n.html" (dict "key" "searchResultsOne" "fallback" "1 result") -}}
-      {{- $many := partial "i18n.html" (dict "key" "searchResultsMany" "fallback" "%d results") -}}
-      {{- $loading := partial "i18n.html" (dict "key" "searchLoading" "fallback" "Searching…") -}}
-      {{- $failed := partial "i18n.html" (dict "key" "searchFailed" "fallback" "The search index could not be loaded.") -}}
+      {{- $one := partialCached "i18n.html" (dict "key" "searchResultsOne" "fallback" "1 result") "searchResultsOne" "1 result" -}}
+      {{- $many := partialCached "i18n.html" (dict "key" "searchResultsMany" "fallback" "%d results") "searchResultsMany" "%d results" -}}
+      {{- $loading := partialCached "i18n.html" (dict "key" "searchLoading" "fallback" "Searching…") "searchLoading" "Searching…" -}}
+      {{- $failed := partialCached "i18n.html" (dict "key" "searchFailed" "fallback" "The search index could not be loaded.") "searchFailed" "The search index could not be loaded." -}}
       <form class="search-form" role="search" data-search data-index="{{ $index }}"
             data-hits-one="{{ $one }}" data-hits-many="{{ $many }}" data-hits-failed="{{ $failed }}" data-hits-loading="{{ $loading }}"
             hidden action="{{ .RelPermalink }}" method="get">
         <label class="screen-reader-text" for="search-input">
-          {{ partial "i18n.html" (dict "key" "searchLabel" "fallback" "Search this site") }}
+          {{ partialCached "i18n.html" (dict "key" "searchLabel" "fallback" "Search this site") "searchLabel" "Search this site" }}
         </label>
         <input id="search-input" type="search" name="q" autocomplete="off"
-               placeholder="{{ partial "i18n.html" (dict "key" "searchPlaceholder" "fallback" "Type to search…") }}">
+               placeholder="{{ partialCached "i18n.html" (dict "key" "searchPlaceholder" "fallback" "Type to search…") "searchPlaceholder" "Type to search…" }}">
       </form>
 
       <p data-search-status role="status" aria-live="polite"></p>
       <ul class="search-results" data-search-results></ul>
 
       <noscript>
-        <p>{{ partial "i18n.html" (dict "key" "searchNoScript" "fallback" "Search needs JavaScript. The archive is browsable by tag and by date.") }}</p>
+        <p>{{ partialCached "i18n.html" (dict "key" "searchNoScript" "fallback" "Search needs JavaScript. The archive is browsable by tag and by date.") "searchNoScript" "Search needs JavaScript. The archive is browsable by tag and by date." }}</p>
       </noscript>
       {{- else }}
-      <p>{{ partial "i18n.html" (dict "key" "searchNoIndex" "fallback" "Search is not configured on this site.") }}</p>
+      <p>{{ partialCached "i18n.html" (dict "key" "searchNoIndex" "fallback" "Search is not configured on this site.") "searchNoIndex" "Search is not configured on this site." }}</p>
       {{- end }}
     </div>
   </main>

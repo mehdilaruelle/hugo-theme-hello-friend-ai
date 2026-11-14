@@ -3,7 +3,7 @@
 {{- $pages := partial "listable.html" .CurrentSection.RegularPages.ByDate.Reverse -}}
 {{- $newer := $pages.Next . | default "" -}}
 {{- $older := $pages.Prev . | default "" -}}
-{{ if and (not (partial "switch.html" $.Site.Params.DisableReadOtherPosts)) (or $newer $older) }}
+{{ if and (not (partialCached "switch.html" $.Site.Params.DisableReadOtherPosts $.Site.Params.DisableReadOtherPosts)) (or $newer $older) }}
     <div class="pagination">
         {{ if .Site.Params.ReadOtherPosts }}
         <div class="pagination__title">

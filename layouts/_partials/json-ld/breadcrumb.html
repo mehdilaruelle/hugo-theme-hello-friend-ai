@@ -11,7 +11,7 @@
     {{- $i = add $i 1 -}}
     {{- $name := "" -}}
     {{- if .IsHome -}}
-      {{- $name = partial "i18n.html" (dict "key" "home" "fallback" "Home") -}}
+      {{- $name = partialCached "i18n.html" (dict "key" "home" "fallback" "Home") "home" "Home" -}}
     {{- else -}}
       {{- $name = .LinkTitle -}}
     {{- end -}}

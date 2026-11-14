@@ -11,10 +11,10 @@ The posts a reader is most likely to want next. Takes the page.
 {{- $on := true -}}
 {{- $limit := 0 -}}
 {{- if reflect.IsMap site.Params.related -}}
-  {{- if isset site.Params.related "enable" }}{{ $on = partial "switch.html" site.Params.related.enable }}{{ end -}}
+  {{- if isset site.Params.related "enable" }}{{ $on = partialCached "switch.html" site.Params.related.enable site.Params.related.enable }}{{ end -}}
   {{- $limit = site.Params.related.limit -}}
 {{- else if isset site.Params "related" -}}
-  {{- $on = partial "switch.html" site.Params.related -}}
+  {{- $on = partialCached "switch.html" site.Params.related site.Params.related -}}
 {{- end -}}
 {{- if $on -}}
   {{- $limit = int (float ($limit | default 0)) -}}
@@ -28,7 +28,7 @@ The posts a reader is most likely to want next. Takes the page.
   {{- /* A heading over an empty list is worse than no section. */ -}}
   {{- with first $limit $pages }}
   <aside class="related">
-    <h2 class="related__title">{{ partial "i18n.html" (dict "key" "relatedPosts" "fallback" "Related posts") }}</h2>
+    <h2 class="related__title">{{ partialCached "i18n.html" (dict "key" "relatedPosts" "fallback" "Related posts") "relatedPosts" "Related posts" }}</h2>
     <ul class="related__list">
       {{- range . }}
       <li><a href="{{ .Permalink }}">{{ partialCached "title-plain.html" . . }}</a></li>

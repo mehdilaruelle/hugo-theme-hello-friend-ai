@@ -3,7 +3,7 @@
        trim markers. */ -}}
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 {{- /* xmlns:content is what makes content:encoded below mean anything. */}}
-{{- $author := partial "site-author.html" . -}}
+{{- $author := partialCached "site-author.html" . -}}
 {{- $title := partial "title-plain.html" . -}}
 {{- /* Characters XML 1.0 forbids (an ESC pasted from a terminal): one made the
        whole feed unreadable. Hugo's embedded template strips them too. */ -}}

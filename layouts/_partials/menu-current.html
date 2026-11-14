@@ -12,7 +12,7 @@
 {{- $url := "" -}}
 {{- $local := false -}}
 {{- if $entry.URL -}}
-  {{- with (try (urls.Parse (partial "menu-url.html" $entry))).Value -}}
+  {{- with (try (urls.Parse (partialCached "menu-url.html" $entry $entry))).Value -}}
     {{- /* Same host: compared by path. */ -}}
     {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (eq .Host $site.Host)) -}}
       {{- $url = replaceRE $trim "" .Path -}}

@@ -19,13 +19,13 @@
 
 {{- $src := .Get "src" -}}
 {{- $formats := split (.Get "formats" | default "webm,mp4") "," -}}
-{{- $controls := partial "switch.html" (.Get "controls") -}}
+{{- $controls := partialCached "switch.html" (.Get "controls") (.Get "controls") -}}
 {{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
 {{- /* A site served from a subpath needs it kept; a remote URL must be left
        alone. */ -}}
 {{- $poster := "" -}}
-{{- with .Get "poster" }}{{ $poster = partial "abs-url.html" . }}{{ end -}}
+{{- with .Get "poster" }}{{ $poster = partialCached "abs-url.html" . (printf "%v" .) }}{{ end -}}
 
 {{- if $src -}}
 <video
@@ -40,7 +40,7 @@
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>
   {{- range $formats }}
     {{- $ext := trim . " " }}
-    <source src="{{ partial "abs-url.html" (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ index $types (lower $ext) | default (lower $ext) }}">
+    <source src="{{ partialCached "abs-url.html" (printf "%s.%s" $src $ext) (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ index $types (lower $ext) | default (lower $ext) }}">
   {{- end }}
 </video>
 {{- end -}}

@@ -209,7 +209,7 @@ for (const path of templates) {
   // The partial has to be named: "key" alone is an ordinary dict field, as in
   // font-fallback.html.
   const calls = [
-    ...template.matchAll(/partial\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_.-]+)"/g),
+    ...template.matchAll(/partial(?:Cached)?\s+"i18n\.html"\s+\(dict\s+"key"\s+"([A-Za-z0-9_.-]+)"/g),
     ...template.matchAll(/\bi18n\s+"([A-Za-z0-9_.-]+)"/g),
   ];
   for (const m of calls) {
