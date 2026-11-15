@@ -6,7 +6,7 @@
 {{- $children = partial "md/pages.html" $children -}}
 {{- $desc := cond (and (not .Description) .Summary) "" (partial "description.html" .) -}}
 {{ partial "md/header.html" (dict "page" . "title" (partial "title.html" .) "desc" $desc) }}
-{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "contents" "fallback" "Contents")) "pages" $children) }}
+{{- partial "md/list.html" (dict "heading" (partialCached "i18n.html" (dict "key" "contents" "fallback" "Contents") "contents" "Contents") "pages" $children) }}
 {{- with .Params.llmsNote }}
 {{ partial "flatten.html" . | safeHTML }}
 {{ end }}

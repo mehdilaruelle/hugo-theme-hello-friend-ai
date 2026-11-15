@@ -29,7 +29,10 @@
   {{- $line := $raw -}}
   {{- if not (index $code $n) -}}
     {{- $out := "" -}}
-    {{- range partial "md/spans.html" $line -}}
+    {{- /* No backtick and no NUL: one span of text, as in body.html. */ -}}
+    {{- $spans := slice (dict "text" $line "code" false) -}}
+    {{- if or (strings.Contains $line "`") (strings.Contains $line "\x00") }}{{ $spans = partial "md/spans.html" $line }}{{ end -}}
+    {{- range $spans -}}
       {{- $p := .text -}}
       {{- if not .code -}}
         {{- /* \[text](x) is literal text too: a mark keeps "](" from matching. */ -}}

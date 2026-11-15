@@ -13,7 +13,7 @@
 {{- /* Blocking and before the stylesheet: it has to run before first paint.
        Only where the toggle exists, or a stored choice would restore a scheme
        the site no longer offers. */ -}}
-{{- if partial "switch.html" .Site.Params.EnableThemeToggle }}
+{{- if partialCached "switch.html" .Site.Params.EnableThemeToggle .Site.Params.EnableThemeToggle }}
 {{- with resources.Get "js/theme-init.js" }}
 {{- $init := . | resources.Minify | resources.Fingerprint "sha512" }}
 <script src="{{ $init.RelPermalink }}" integrity="{{ $init.Data.Integrity }}"></script>
@@ -110,50 +110,14 @@
     <title>{{ $title }}</title>
 {{ end }}
 
-{{- $scss := resources.Get "scss/main.scss" -}}
-{{- $opts := dict "targetPath" "main.css" "outputStyle" "compressed" "enableSourceMap" hugo.IsDevelopment "transpiler" "dartsass" -}}
-{{- with $scss -}}
-  {{- /* Dart Sass only: libsass does not implement @use and passed the rules
-         through as unknown at-rules -- an unstyled site reported as a successful
-         build. .Content is read inside try so a missing Dart Sass is reported
-         here. */ -}}
-  {{- $res := try (($scss | toCSS $opts).Content) -}}
-  {{- with $res.Err -}}
-    {{- errorf "Dart Sass is required to build this theme and is not available. Install it: https://gohugo.io/functions/css/sass/#dart-sass — %s" . -}}
-  {{- else -}}
-    {{- $css := $scss | toCSS $opts -}}
-    {{- /* Concatenated rather than inlined: a style element forces style-src
-           'unsafe-inline' on a site with a strict policy. */ -}}
-    {{- /* Appended rather than @use'd: the rules name published asset paths,
-           which only a template can resolve. See flag-css.html. */ -}}
-    {{- $extra := printf "%s%s%s" (partial "font-fallback.html" .) (partial "flag-css.html" .) (partial "params-css.html" .) -}}
-    {{- with $extra }}
-      {{- /* One digest, on BOTH paths: FromString and Concat both cache by
-             target path, and each language passes content of its own since
-             site.Params.fontFallback is overridable per language. Hugo 0.164
-             happens to keep the cache per-language, but that is not promised. */ -}}
-      {{- $digest := substr (sha256 .) 0 8 -}}
-      {{- $css = slice $css (resources.FromString (printf "css/main-extra-%s.css" $digest) .) | resources.Concat (printf "main-%s.css" $digest) -}}
-    {{- end -}}
-    {{- with $css | minify | fingerprint }}
-    <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
-    {{- end -}}
-    {{- if site.Menus.main }}
-    {{- with resources.Get "css/noscript.css" | minify | fingerprint }}
-    <noscript><link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></noscript>
-    {{- end }}
-    {{- end -}}
-  {{- end -}}
-{{- else -}}
-  {{- errorf "assets/scss/main.scss is missing, the site would be built without any stylesheet." -}}
-{{- end }}
+{{- partialCached "stylesheet.html" . }}
 
 
 {{- /* Joined to the base URL: as written, the path is relative to whatever page
        is being served and 404s off the home page. */ -}}
 {{ range $val := slice | append ($.Site.Params.customCSS | default slice) }}
     {{- with $val }}
-        <link rel="stylesheet" type="text/css" href="{{ partial "abs-url.html" . | safeURL }}">
+        <link rel="stylesheet" type="text/css" href="{{ partialCached "abs-url.html" . (printf "%v" .) | safeURL }}">
     {{- end }}
 {{ end }}
 

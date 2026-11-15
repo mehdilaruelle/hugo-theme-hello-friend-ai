@@ -1,8 +1,8 @@
 {{- /* Joins a local path to the base URL (keeping the subpath absURL drops).
        The query and fragment are split off first: JoinPath would encode ? and #. */ -}}
 {{- $url := printf "%v" . -}}
-{{- if not (partial "is-remote.html" $url) -}}
-  {{- with partial "parse-url.html" $url -}}
+{{- if not (partialCached "is-remote.html" $url $url) -}}
+  {{- with partialCached "parse-url.html" $url $url -}}
     {{- $url = urls.JoinPath site.BaseURL .EscapedPath -}}
     {{- with .RawQuery }}{{ $url = printf "%s?%s" $url . }}{{ end -}}
     {{- with .EscapedFragment }}{{ $url = printf "%s#%s" $url . }}{{ end -}}

@@ -17,14 +17,14 @@
                        menu open. menu.js corrects it during init, before it
                        removes disabled. */ -}}
                 <button type="button" class="menu-trigger" aria-expanded="true" disabled
-                        aria-label="{{ partial "i18n.html" (dict "key" "toggleMenu" "fallback" "Menu") }}">
+                        aria-label="{{ partialCached "i18n.html" (dict "key" "toggleMenu" "fallback" "Menu") "toggleMenu" "Menu" }}">
                     {{ partial "icon.html" (dict "name" "menu") }}
                 </button>
                 {{- /* After the button, so Tab goes from it into the panel. */}}
                 {{ partial "menu.html" . }}
             {{- end }}
 
-            {{- if partial "switch.html" .Site.Params.EnableThemeToggle }}
+            {{- if partialCached "switch.html" .Site.Params.EnableThemeToggle .Site.Params.EnableThemeToggle }}
                 {{- /* disabled until main.js has wired it up. Switching theme
                        is entirely the script's job, so without it the button
                        can do nothing, and a focusable control that does
@@ -32,7 +32,7 @@
                        rather than hidden so the header does not shift when the
                        script enables it. */ -}}
                 <button type="button" class="theme-toggle not-selectable" aria-pressed="false" disabled
-                        aria-label="{{ partial "i18n.html" (dict "key" "toggleTheme" "fallback" "Dark theme") }}">{{ partial "theme-toggle-icon.html" . }}</button>
+                        aria-label="{{ partialCached "i18n.html" (dict "key" "toggleTheme" "fallback" "Dark theme") "toggleTheme" "Dark theme" }}">{{ partial "theme-toggle-icon.html" . }}</button>
             {{- end}}
 
             {{- /* Outside the menu, so it survives the fold into the

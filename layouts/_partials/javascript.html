@@ -8,9 +8,9 @@
        concatenated, so document.currentScript is this element for all of
        them. */ -}}
 <script type="text/javascript" defer src="{{ $secureJS.RelPermalink }}" integrity="{{ $secureJS.Data.Integrity }}"
-        data-label="{{ partial "i18n.html" (dict "key" "copyCode" "fallback" "Copy") }}"
-        data-label-done="{{ partial "i18n.html" (dict "key" "copyCodeDone" "fallback" "Copied") }}"
-        data-label-failed="{{ partial "i18n.html" (dict "key" "copyCodeFailed" "fallback" "Copy manually") }}"></script>
+        data-label="{{ partialCached "i18n.html" (dict "key" "copyCode" "fallback" "Copy") "copyCode" "Copy" }}"
+        data-label-done="{{ partialCached "i18n.html" (dict "key" "copyCodeDone" "fallback" "Copied") "copyCodeDone" "Copied" }}"
+        data-label-failed="{{ partialCached "i18n.html" (dict "key" "copyCodeFailed" "fallback" "Copy manually") "copyCodeFailed" "Copy manually" }}"></script>
 
 {{- /* Search, on the page that has it and nowhere else. The index can run to
        hundreds of kilobytes, so a page with no search box asks for neither the
@@ -27,7 +27,7 @@
        site's base URL, or it resolves against the page being served. */ -}}
 {{ range $val := slice | append ($.Site.Params.customJS | default slice) }}
     {{- with $val }}
-        <script src="{{ partial "abs-url.html" . | safeURL }}"></script>
+        <script src="{{ partialCached "abs-url.html" . (printf "%v" .) | safeURL }}"></script>
     {{- end }}
 {{ end }}
 

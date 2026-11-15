@@ -25,7 +25,7 @@
             {{- with $logo.pathDark -}}
               {{- $variants = slice (dict "src" $logo.path "class" " logo__img--light") (dict "src" . "class" " logo__img--dark") -}}
             {{- end -}}
-            {{- $inline := partial "switch.html" $logo.inline -}}
+            {{- $inline := partialCached "switch.html" $logo.inline $logo.inline -}}
             {{- range $variants -}}
               {{- $variant := . -}}
               {{- $src := .src -}}
@@ -62,7 +62,7 @@
                 {{- end -}}
                 {{- $markup | safeHTML -}}
               {{- else -}}
-                <img src="{{ partial "abs-url.html" $src | safeURL }}" alt="{{ $alt }}" class="logo__img{{ .class }}"
+                <img src="{{ partialCached "abs-url.html" $src (printf "%v" $src) | safeURL }}" alt="{{ $alt }}" class="logo__img{{ .class }}"
                   {{- if $logo.pathDark }} loading="lazy"{{ end }} />
               {{- end -}}
             {{- end -}}
@@ -72,7 +72,7 @@
                    alone would take a deployment prefix for a section.
                    Home.RelPermalink carries the prefix and the language
                    directory together. */ -}}
-            {{- $cursorPath := partial "switch.html" $logo.logoCursorPathname -}}
+            {{- $cursorPath := partialCached "switch.html" $logo.logoCursorPathname $logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ $base }}"{{ end }}>
                 {{ with $logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>

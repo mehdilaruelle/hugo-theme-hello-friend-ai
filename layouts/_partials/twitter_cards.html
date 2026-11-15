@@ -39,7 +39,7 @@
       {{- if and $url (in (slice "twitter" "x") $name) -}}
         {{- /* The last segment is the handle; a host has a dot, a handle never. */ -}}
         {{- $candidate := "" -}}
-        {{- with partial "parse-url.html" $url }}{{ $candidate = path.Base (strings.TrimSuffix "/" .Path) }}{{ end -}}
+        {{- with partialCached "parse-url.html" $url (printf "%v" $url) }}{{ $candidate = path.Base (strings.TrimSuffix "/" .Path) }}{{ end -}}
         {{- if and $candidate (not (strings.Contains $candidate ".")) -}}
           {{- $handle = $candidate -}}
         {{- end -}}

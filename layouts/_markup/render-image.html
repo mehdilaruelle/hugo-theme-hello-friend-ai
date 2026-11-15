@@ -8,7 +8,7 @@
 {{- with try (urls.Parse $dest) -}}
   {{- if .Err -}}
     {{- $asWritten = true -}}
-  {{- else if and (not (partial "is-remote.html" $dest)) (not .Value.RawQuery) (not .Value.Fragment) -}}
+  {{- else if and (not (partialCached "is-remote.html" $dest $dest)) (not .Value.RawQuery) (not .Value.Fragment) -}}
     {{- $src = .Value.Path -}}
   {{- end -}}
 {{- end -}}

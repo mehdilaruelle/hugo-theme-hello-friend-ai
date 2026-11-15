@@ -4,9 +4,9 @@
   A details/summary, so it opens with no JavaScript; menu.js only adds Escape
   and click-outside.
 */ -}}
-{{- if and (partial "switch.html" .Site.Params.EnableGlobalLanguageMenu) hugo.IsMultilingual -}}
+{{- if and (partialCached "switch.html" .Site.Params.EnableGlobalLanguageMenu .Site.Params.EnableGlobalLanguageMenu) hugo.IsMultilingual -}}
 {{- $page := . -}}
-{{- $label := partial "i18n.html" (dict "key" "language" "fallback" "Language") -}}
+{{- $label := partialCached "i18n.html" (dict "key" "language" "fallback" "Language") "language" "Language" -}}
 <details class="language-switcher">
     <summary class="language-switcher__toggle" title="{{ $label }}">
         {{ partial "icon.html" (dict "name" "globe") }}

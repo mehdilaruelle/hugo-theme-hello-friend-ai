@@ -72,7 +72,7 @@
         {{- end -}}
       {{- end -}}
     {{- else -}}
-      {{- $url = partial "abs-url.html" $url -}}
+      {{- $url = partialCached "abs-url.html" $url (printf "%v" $url) -}}
     {{- end -}}
   {{- end -}}
 {{- end -}}

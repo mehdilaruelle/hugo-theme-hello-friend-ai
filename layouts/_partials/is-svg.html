@@ -1,5 +1,5 @@
 {{- /* Whether a URL names an SVG. No platform renders one on a social card, and
        Hugo answers neither .Width nor .Resize for one. */ -}}
 {{- $path := "" -}}
-{{- with partial "parse-url.html" . }}{{ $path = .Path }}{{ end -}}
+{{- with partialCached "parse-url.html" . (printf "%v" .) }}{{ $path = .Path }}{{ end -}}
 {{- return eq (lower (path.Ext $path)) ".svg" -}}

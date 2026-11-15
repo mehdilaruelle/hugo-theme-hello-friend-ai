@@ -1,13 +1,13 @@
 <footer class="footer">
     {{- $footer := partialCached "param-table.html" "footer" "footer" }}
-    {{if or (partial "switch.html" $footer.trademark) (and (partial "switch.html" $footer.author) (partial "site-author.html" .).name) (and (partial "switch.html" $footer.copyright) .Site.Copyright) (partial "switch.html" $footer.rss) ($footer.topText) }}
+    {{if or (partialCached "switch.html" $footer.trademark $footer.trademark) (and (partialCached "switch.html" $footer.author $footer.author) (partialCached "site-author.html" .).name) (and (partialCached "switch.html" $footer.copyright $footer.copyright) .Site.Copyright) (partialCached "switch.html" $footer.rss $footer.rss) ($footer.topText) }}
     <div class="footer__inner">
         <div class="footer__content">
             {{- /* A switch or the text to show: "true" means the year, like the boolean. */}}
-            {{ if partial "switch.html" $footer.trademark }}<span>&copy; {{ if eq (lower (printf "%v" $footer.trademark)) "true" }}{{ now.Year }}{{ else }}{{ $footer.trademark }}{{ end }}</span>{{ end }}
-            {{ if partial "switch.html" $footer.author }}{{ with (partial "site-author.html" .).name }}<span><a href="{{ site.Home.RelPermalink }}">{{ . }}</a></span>{{ end }}{{ end }}
-            {{ if partial "switch.html" $footer.copyright }}{{ with .Site.Copyright }}<span>{{ . | safeHTML }}</span>{{ end }}{{ end }}
-            {{ if partial "switch.html" $footer.rss }}{{ with partial "main-section.html" . }}{{ with .OutputFormats.Get "rss" }}<span><a href="{{ .Permalink }}" target="_blank" rel="noopener" title="rss">{{ partial "icon.html" (dict "name" "rss") }}</a></span>{{ end }}{{ end }}{{ end }}
+            {{ if partialCached "switch.html" $footer.trademark $footer.trademark }}<span>&copy; {{ if eq (lower (printf "%v" $footer.trademark)) "true" }}{{ now.Year }}{{ else }}{{ $footer.trademark }}{{ end }}</span>{{ end }}
+            {{ if partialCached "switch.html" $footer.author $footer.author }}{{ with (partialCached "site-author.html" .).name }}<span><a href="{{ site.Home.RelPermalink }}">{{ . }}</a></span>{{ end }}{{ end }}
+            {{ if partialCached "switch.html" $footer.copyright $footer.copyright }}{{ with .Site.Copyright }}<span>{{ . | safeHTML }}</span>{{ end }}{{ end }}
+            {{ if partialCached "switch.html" $footer.rss $footer.rss }}{{ with partialCached "main-section.html" . }}{{ with .OutputFormats.Get "rss" }}<span><a href="{{ .Permalink }}" target="_blank" rel="noopener" title="rss">{{ partial "icon.html" (dict "name" "rss") }}</a></span>{{ end }}{{ end }}{{ end }}
             {{ range $footer.topText }}<span>{{ . | safeHTML}}</span>{{ end }}
         </div>
     </div>

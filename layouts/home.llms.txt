@@ -6,8 +6,8 @@
 {{- $limit := int (float (site.Params.llmsFullLimit | default 0)) -}}
 {{- $full := "" -}}
 {{- with .OutputFormats.Get "llmsfull" -}}
-  {{- $full = printf "%s %s" (cond (and (gt $limit 0) (lt $limit $total)) (partial "i18n.html" (dict "key" "llmsFullAtFirst" "args" (dict "Kept" $limit) "fallback" (printf "The full text of the first %d pages below:" $limit))) (partial "i18n.html" (dict "key" "llmsFullAt" "fallback" "The full text of every page below:"))) .Permalink -}}
+  {{- $full = printf "%s %s" (cond (and (gt $limit 0) (lt $limit $total)) (partial "i18n.html" (dict "key" "llmsFullAtFirst" "args" (dict "Kept" $limit) "fallback" (printf "The full text of the first %d pages below:" $limit))) (partialCached "i18n.html" (dict "key" "llmsFullAt" "fallback" "The full text of every page below:") "llmsFullAt" "The full text of every page below:")) .Permalink -}}
 {{- end -}}
 {{ partial "md/header.html" (dict "page" . "title" site.Title "desc" $desc "note" true "llms" true "after" $full) }}
-{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "posts" "fallback" "Posts")) "pages" $s.posts) }}
-{{- partial "md/list.html" (dict "heading" (partial "i18n.html" (dict "key" "pages" "fallback" "Pages")) "pages" $s.other) -}}
+{{- partial "md/list.html" (dict "heading" (partialCached "i18n.html" (dict "key" "posts" "fallback" "Posts") "posts" "Posts") "pages" $s.posts) }}
+{{- partial "md/list.html" (dict "heading" (partialCached "i18n.html" (dict "key" "pages" "fallback" "Pages") "pages" "Pages") "pages" $s.other) -}}

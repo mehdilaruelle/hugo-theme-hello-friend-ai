@@ -1,7 +1,7 @@
 {{- /* Where this article sits in each of its series, oldest part first; parts with no page (build.render never or link) are left out. */ -}}
 {{- $on := site.Params.series -}}
 {{- if reflect.IsMap $on }}{{ $on = cond (isset $on "enable") $on.enable true }}{{ end -}}
-{{- if or (not (isset site.Params "series")) (partial "switch.html" $on) -}}
+{{- if or (not (isset site.Params "series")) (partialCached "switch.html" $on $on) -}}
   {{- $page := . -}}
   {{- range $n, $term := .GetTerms "series" -}}
     {{- $parts := partial "listable.html" (where .Pages.ByDate "Kind" "page") -}}

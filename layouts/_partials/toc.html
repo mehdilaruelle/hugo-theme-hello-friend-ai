@@ -1,5 +1,5 @@
 {{- /* .TableOfContents is never empty, even with no entries: test its text. */ -}}
-{{- if and (partial "switch.html" .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
+{{- if and (partialCached "switch.html" .Params.toc .Params.toc) (.TableOfContents | plainify | strings.TrimSpace) }}
   <hr />
   {{- /* A div, not an aside: an aside inside the article is a
          complementary landmark nested in another, and the table of contents
@@ -7,7 +7,7 @@
          the title as its name, so it is not a second unnamed navigation
          beside the menu. */}}
   <div id="hf-toc">
-    <div class="toc-title" id="hf-toc-title">{{ partial "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") }}</div>
+    <div class="toc-title" id="hf-toc-title">{{ partialCached "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") "tableOfContents" "Table of Contents" }}</div>
     {{ .TableOfContents | replaceRE `<a href="#">(.*?)</a>` "$1" | replaceRE `^<nav id="TableOfContents">` `<nav id="TableOfContents" aria-labelledby="hf-toc-title">` | safeHTML }}
   </div>
   <hr />

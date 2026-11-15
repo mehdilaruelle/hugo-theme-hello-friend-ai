@@ -9,14 +9,14 @@
 {{- $author := partial "author.html" . -}}
 
 {{- /* Site-level: $person is the site owner, whatever the page's author. */ -}}
-{{- $siteAuthor := (partial "site-author.html" .).name -}}
+{{- $siteAuthor := (partialCached "site-author.html" .).name -}}
 
 {{- /* From the partial that answers this for the card, so the two name the same
        picture. Only one the page brought itself. */ -}}
 {{- $social := partial "social-image.html" . -}}
 {{- $image := cond $social.owned $social.url "" -}}
 
-{{- $person := partial "json-ld/person.html" . -}}
+{{- $person := partialCached "json-ld/person.html" . -}}
 
 {{- /* A page naming someone other than the site's owner: a name and nothing
        else, since the site's profiles are not theirs to claim. The same test
@@ -158,7 +158,7 @@
     {{- end -}}
   {{- end -}}
   {{- with $logo -}}
-    {{- $node := dict "@type" "ImageObject" "url" (partial "abs-url.html" .) -}}
+    {{- $node := dict "@type" "ImageObject" "url" (partialCached "abs-url.html" . (printf "%v" .)) -}}
     {{- with resources.Get . -}}
       {{- $node = merge $node (dict "url" .Permalink) -}}
       {{- /* Asking an SVG for its dimensions is a build error. */ -}}

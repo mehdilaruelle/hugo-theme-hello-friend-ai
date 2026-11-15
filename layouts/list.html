@@ -49,10 +49,10 @@
                         <ul class="posts-list">
                             {{ range $group }}
                                 {{- $cover := partial "string-param.html" (dict "value" .Params.cover "name" "cover") }}
-                                {{- $thumbnail := and (partial "switch.html" .Site.Params.enableThumbnails) $cover }}
+                                {{- $thumbnail := and (partialCached "switch.html" .Site.Params.enableThumbnails .Site.Params.enableThumbnails) $cover }}
                                 {{- /* Description first, .Summary as a fallback, cut short. */ -}}
                                 {{- $excerpt := "" }}
-                                {{- if partial "switch.html" .Site.Params.enableListExcerpts }}
+                                {{- if partialCached "switch.html" .Site.Params.enableListExcerpts .Site.Params.enableListExcerpts }}
                                     {{- $excerpt = .Description | default (partial "flatten.html" .Summary | truncate 200) }}
                                 {{- end }}
                                 <li class="post-item">

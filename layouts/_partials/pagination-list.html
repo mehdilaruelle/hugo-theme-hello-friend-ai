@@ -1,9 +1,9 @@
 {{- /* A taxonomy lists terms by title: its pagers are neither newer nor older. */ -}}
-{{- $prev := partial "i18n.html" (dict "key" "pagination.newerPosts" "fallback" "Newer posts") -}}
-{{- $next := partial "i18n.html" (dict "key" "pagination.olderPosts" "fallback" "Older posts") -}}
+{{- $prev := partialCached "i18n.html" (dict "key" "pagination.newerPosts" "fallback" "Newer posts") "pagination.newerPosts" "Newer posts" -}}
+{{- $next := partialCached "i18n.html" (dict "key" "pagination.olderPosts" "fallback" "Older posts") "pagination.olderPosts" "Older posts" -}}
 {{- if eq .Kind "taxonomy" -}}
-  {{- $prev = partial "i18n.html" (dict "key" "pagination.previousPage" "fallback" "Previous page") -}}
-  {{- $next = partial "i18n.html" (dict "key" "pagination.nextPage" "fallback" "Next page") -}}
+  {{- $prev = partialCached "i18n.html" (dict "key" "pagination.previousPage" "fallback" "Previous page") "pagination.previousPage" "Previous page" -}}
+  {{- $next = partialCached "i18n.html" (dict "key" "pagination.nextPage" "fallback" "Next page") "pagination.nextPage" "Next page" -}}
 {{- end -}}
 <div class="pagination">
     <div class="pagination__buttons">
