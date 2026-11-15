@@ -1,4 +1,5 @@
-<pre class="mermaid">
+{{- /* tabindex: a wide diagram scrolls, and a keyboard can only scroll what it can focus. Chroma's pre does the same. */ -}}
+<pre class="mermaid" tabindex="0">
   {{- .Inner | htmlEscape | safeHTML }}
 </pre>
 {{ .Page.Store.Set "hasMermaid" true }}

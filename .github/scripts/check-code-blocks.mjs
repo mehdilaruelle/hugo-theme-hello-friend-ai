@@ -1,4 +1,5 @@
-// Asserts that every highlighted code block sits inside a .code-block wrapper.
+// Asserts that every highlighted code block sits inside a .code-block wrapper,
+// and that every Mermaid diagram, which scrolls too, takes keyboard focus.
 //
 // Delete render-codeblock.html and nothing else fails: the page still builds,
 // the CSS still applies, and the copy button and language label quietly start
@@ -10,7 +11,7 @@
 //
 //   node .github/scripts/check-code-blocks.mjs <public-dir>
 import { readFileSync } from "node:fs";
-import { walk } from "./_lib.mjs";
+import { walk, tagRe, attrRe, value } from "./_lib.mjs";
 
 // --minify drops the quotes it can, so match quoted, single-quoted and bare.
 const WRAPPER = /<div\s[^>]*class\s*=\s*(?:"[^"]*\bcode-block\b[^"]*"|'[^']*\bcode-block\b[^']*'|code-block)[^>]*>/gi;
@@ -43,11 +44,18 @@ const seen = new Set();
 let files = 0;
 let wrapped = 0;
 let total = 0;
+let diagrams = 0;
 
 for (const file of walk(root, ".html")) {
   files++;
   const html = readFileSync(file, "utf8");
   const spans = wrapperSpans(html);
+  // A diagram's pre scrolls too, so it needs tabindex="0" to be reached.
+  for (const [tag] of html.matchAll(tagRe("pre"))) {
+    if (!value(tag.match(attrRe("class")))?.split(/\s+/).includes("mermaid")) continue;
+    diagrams++;
+    if (value(tag.match(attrRe("tabindex"))) !== "0") failures.push([file, "a Mermaid diagram", "no tabindex=\"0\", so a keyboard cannot scroll it"]);
+  }
   for (const m of html.matchAll(LABELLED_PRE)) {
     const lang = m[1] ?? m[2] ?? m[3] ?? "";
     total++;
@@ -71,12 +79,16 @@ if (total === 0) {
   console.error(`no highlighted code blocks found under ${root}`);
   process.exit(1);
 }
+if (diagrams === 0) {
+  console.error(`no Mermaid diagram found under ${root}`);
+  process.exit(1);
+}
 
-console.log(`checked ${total} highlighted code blocks across ${files} files, ${wrapped} wrapped`);
+console.log(`checked ${total} highlighted code blocks and ${diagrams} Mermaid diagrams across ${files} files, ${wrapped} wrapped`);
 if (failures.length) {
-  // Deduplicated by language, so this counts kinds of block, not pages.
-  console.error(`\n${total - wrapped} unanchored, ${failures.length} distinct:\n`);
+  // Code blocks once per language; diagrams once per page.
+  console.error(`\n${failures.length} failing:\n`);
   for (const [file, what, why] of failures) console.error(`  ${file}\n    ${what}  (${why})`);
   process.exit(1);
 }
-console.log("every highlighted block is inside a non-scrolling .code-block");
+console.log("every highlighted block is inside a non-scrolling .code-block, and every diagram takes focus");
