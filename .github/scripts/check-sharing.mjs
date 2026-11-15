@@ -10,16 +10,12 @@
 //   node .github/scripts/check-sharing.mjs <public-dir>
 
 import { readFileSync } from "node:fs";
-import { walk, NAME, attrRe } from "./_lib.mjs";
+import { walk, attrs, tagRe } from "./_lib.mjs";
 
 const PROVIDERS = /facebook|twitter|tumblr|pinterest|linkedin|reddit|xing|telegram|vk\.com|whatsapp|hacker/i;
 
-const HREF = attrRe("href", "gi");
-
-// The opening tag whole, so rel can be read beside href. Matched on the class
-// the stylesheet also hangs the button off, so the two cannot drift apart.
-const ANCHOR = new RegExp(`<a\\b[^>]*${NAME}class\\s*=\\s*(?:"[^"]*resp-sharing-button__link[^"]*"|'[^']*resp-sharing-button__link[^']*'|[^\\s>]*resp-sharing-button__link[^\\s>]*)[^>]*>`, "gi");
-const REL = attrRe("rel");
+const ANCHOR = tagRe("a");
+const ANY_TAG = tagRe("[a-z][\\w-]*");
 
 const root = process.argv[2] || "public";
 const failures = [];
@@ -32,10 +28,13 @@ const seenFollowed = new Set();
 for (const file of walk(root, ".html")) {
   const html = readFileSync(file, "utf8").replace(/\n/g, " ");
   files++;
-  for (const tag of html.matchAll(ANCHOR)) {
+  for (const [tag] of html.matchAll(ANCHOR)) {
+    const a = attrs(tag);
+    // The class the stylesheet also hangs the button off, so the two cannot drift apart.
+    if (!(a.get("class") ?? "").split(/\s+/).includes("resp-sharing-button__link")) continue;
     anchors++;
-    const rel = (tag[0].match(REL) ?? []).slice(1).find((v) => v !== undefined) ?? "";
-    const target = (tag[0].match(new RegExp(HREF.source, "i")) ?? []).slice(1).find((v) => v !== undefined) ?? "";
+    const rel = a.get("rel") ?? "";
+    const target = a.get("href") ?? "";
     if (!/^https?:/i.test(target.replace(/&amp;/g, "&"))) continue;
     if (!rel.split(/\s+/).includes("nofollow")) {
       // One report per destination host rather than per page: the same button
@@ -47,8 +46,8 @@ for (const file of walk(root, ".html")) {
       }
     }
   }
-  for (const m of html.matchAll(HREF)) {
-    const raw = (m[1] ?? m[2] ?? m[3] ?? "").replace(/&amp;/g, "&");
+  for (const [tag] of html.matchAll(ANY_TAG)) {
+    const raw = (attrs(tag).get("href") ?? "").replace(/&amp;/g, "&");
     if (!raw.startsWith("https://")) continue;
     if (!PROVIDERS.test(raw)) continue;
     let url;

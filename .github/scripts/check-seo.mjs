@@ -10,10 +10,7 @@
 
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { walk, attrSource, value, tagRe } from "./_lib.mjs";
-
-const attr = attrSource;
-const pick = value;
+import { walk, attrs, tagRe } from "./_lib.mjs";
 
 // Every occurrence, not the last one: Open Graph allows a property to repeat,
 // and a map keyed by property hid an SVG followed by a usable picture. The
@@ -47,11 +44,6 @@ const decode = (v) =>
 
 const TITLE = /<title[^>]*>([\s\S]*?)<\/title\s*>/i;
 const META = tagRe("meta");
-const REL = new RegExp(attr("rel"), "i");
-const HREF = new RegExp(attr("href"), "i");
-const NAME = new RegExp(attr("name"), "i");
-const PROPERTY = new RegExp(attr("property"), "i");
-const CONTENT = new RegExp(attr("content"), "i");
 const LD = /<script[^>]*type\s*=\s*["']?application\/ld\+json["']?[^>]*>([\s\S]*?)<\/script>/gi;
 
 // The search layout is not knowable from the markup, so the form it is the only
@@ -68,16 +60,18 @@ for (const file of walk(root, ".html")) {
 
   const canonicals = [];
   for (const tag of html.match(LINK) ?? []) {
-    if ((pick(tag.match(REL)) ?? "").toLowerCase() === "canonical") canonicals.push(pick(tag.match(HREF)));
+    const a = attrs(tag);
+    if ((a.get("rel") ?? "").toLowerCase() === "canonical") canonicals.push(a.get("href") ?? null);
   }
 
   const robots = [];
   const og = new Map();
   const named = new Map();
   for (const tag of html.match(META) ?? []) {
-    const property = (pick(tag.match(PROPERTY)) ?? "").toLowerCase();
-    const name = (pick(tag.match(NAME)) ?? "").toLowerCase();
-    const content = pick(tag.match(CONTENT)) ?? "";
+    const a = attrs(tag);
+    const property = (a.get("property") ?? "").toLowerCase();
+    const name = (a.get("name") ?? "").toLowerCase();
+    const content = a.get("content") ?? "";
     if (name === "robots") robots.push(content);
     if (property) add(og, property, content);
     if (name) add(named, name, content);

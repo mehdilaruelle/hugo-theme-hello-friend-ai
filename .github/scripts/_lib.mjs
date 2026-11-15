@@ -12,16 +12,25 @@ export function* walk(dir, ext) {
   }
 }
 
-// Not \b: \brel would match the rel in data-rel.
-export const NAME = "(?<![-\\w])";
+// One attribute after the tag name: quoted, single-quoted, bare (--minify drops
+// quotes) or valueless. A name starts after whitespace and a quoted value is
+// consumed whole, so data:x="0" and title="x=0" never read as x.
+const ATTR = /\s+([^\s"'<>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/y;
 
-// Quoted, single-quoted or bare (--minify drops quotes); value in group 1, 2 or 3.
-export const attrSource = (name) =>
-  `${NAME}${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`;
+// One start tag's attributes, lowercase name to value; the first of a repeated
+// name wins, as in a browser. "" (no tag found) has none.
+export function attrs(tag) {
+  const out = new Map();
+  ATTR.lastIndex = tag.match(/^<?[^\s\/>]*/)[0].length;
+  for (let m; (m = ATTR.exec(tag)); ) {
+    const name = m[1].toLowerCase();
+    if (!out.has(name)) out.set(name, m[2] ?? m[3] ?? m[4] ?? "");
+  }
+  return out;
+}
 
-export const attrRe = (name, flags = "i") => new RegExp(attrSource(name), flags);
-
-export const value = (m) => (m ? (m[1] ?? m[2] ?? m[3] ?? "") : null);
+// One attribute of a start tag, or null when it has none.
+export const attr = (tag, name) => attrs(tag).get(name) ?? null;
 
 // A whole start tag: a quoted value may hold ">" (the minifier leaves "<x>" raw there).
 export const tagRe = (name) => new RegExp(`<${name}\\b(?:[^>"']|"[^"]*"|'[^']*')*>`, "gi");
