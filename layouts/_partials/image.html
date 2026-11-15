@@ -52,6 +52,24 @@
 {{- $srcset := slice -}}
 {{- $wantsFill := ne (.fill | default "") "" -}}
 {{- $processable := and $img (reflect.IsImageResourceProcessable $img) (or $wantsFill (ne $img.MediaType.SubType "gif")) -}}
+{{- /* Since Hugo 0.168, a picture whose extension names another format (a JPEG
+       saved as .png) answers 0 for its width and height, yet still resizes:
+       the ceiling below came out 0 and the original was served whole and
+       unmeasured. A copy made from it knows its own size, so it is asked. */ -}}
+{{- $natural := 0 -}}
+{{- $probe := "" -}}
+{{- if $processable -}}
+  {{- $natural = $img.Width -}}
+  {{- if le $natural 0 -}}
+    {{- with try ($img.Process "webp") -}}
+      {{- if and (not .Err) (gt .Value.Width 0) -}}
+        {{- $probe = .Value -}}
+        {{- $natural = $probe.Width -}}
+        {{- $measurable = true -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- if and $processable $wantsFill -}}
   {{- $cut := try ($img.Fill (printf "%s q85 webp" .fill)) -}}
   {{- with $cut.Err -}}
@@ -60,13 +78,13 @@
     {{- $rendered = $cut.Value -}}
   {{- end -}}
 {{- else if $processable -}}
-  {{- $ceiling := cond (gt $img.Width $maxWidth) $maxWidth $img.Width -}}
+  {{- $ceiling := cond (gt $natural $maxWidth) $maxWidth $natural -}}
   {{- $offered := slice -}}
   {{- range $widths -}}
     {{- if lt . $ceiling -}}{{- $offered = $offered | append . -}}{{- end -}}
   {{- end -}}
   {{- $offered = $offered | append $ceiling -}}
-  {{- if and (eq (len $offered) 1) (eq $ceiling $img.Width) -}}
+  {{- if and (eq (len $offered) 1) (eq $ceiling $natural) -}}
     {{- $srcset = slice -}}
   {{- else -}}
     {{- range $offered -}}
@@ -100,6 +118,8 @@
 {{- $width := 0 -}}
 {{- $height := 0 -}}
 {{- if $measurable -}}{{- $width = $rendered.Width -}}{{- $height = $rendered.Height -}}
+  {{- /* Served whole, a picture measured through its copy still answers 0. */ -}}
+  {{- with and (not $width) $probe -}}{{- $width = .Width -}}{{- $height = .Height -}}{{- end -}}
 {{- else if $svgWidth -}}{{- $width = $svgWidth -}}{{- $height = $svgHeight -}}{{- end -}}
 {{- /* A caller's pixel width or height wins; alone, the other follows the ratio. */ -}}
 {{- $px := `^\s*([0-9]+(?:\.[0-9]+)?)\s*(?:px)?\s*$` -}}
@@ -112,12 +132,17 @@
 {{- if or $w $h -}}{{- $width = $w -}}{{- $height = $h -}}{{- end -}}
 {{- with $attrs.sizes -}}{{- $sizes = . -}}{{- end -}}
 
+{{- /* alt arrives as HTML: entity-escaped text, maybe with tags. plainify
+       strips the tags; safeHTML keeps the entities from being escaped again.
+       Hugo 0.169 made plainify return a string unless given template.HTML, and
+       "&lt;b&gt;" reached the reader as "&amp;lt;b&amp;gt;". The attribute
+       escaper still strips tags and escapes quotes from an HTML value. */ -}}
 {{- if $src -}}
   <img src="{{ $url | safeURL }}" loading="{{ $loading }}" decoding="async"
     {{- with $fetchpriority }} fetchpriority="{{ . }}"{{ end }}
     {{- with $srcset }} srcset="{{ delimit . ", " }}" sizes="{{ $sizes }}"{{ end }}
     {{- with $width }} width="{{ . }}"{{ end }}
-    {{- with $height }} height="{{ . }}"{{ end }} alt="{{ $alt | plainify }}"
+    {{- with $height }} height="{{ . }}"{{ end }} alt="{{ $alt | plainify | safeHTML }}"
     {{- with $class }} class="{{ . }}"{{ end }}
     {{- with .style | default $attrs.style }} style="{{ . | safeCSS }}"{{ end }}
     {{- range $k, $v := $attrs }}{{ if and $v (not (in $own (lower $k))) }}{{ printf ` %s="%s"` $k (htmlEscape (string $v)) | safeHTMLAttr }}{{ end }}{{ end }} />

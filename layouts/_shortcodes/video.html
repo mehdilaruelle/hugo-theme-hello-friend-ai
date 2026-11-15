@@ -32,7 +32,7 @@
   {{- with .Get "width" }} width="{{ . }}"{{ end }}
   {{- with .Get "height" }} height="{{ . }}"{{ end }}
   {{- with $poster }} poster="{{ . | safeURL }}"{{ end }}
-  {{- with .Get "alt" }} aria-label="{{ . | plainify }}"{{ end }}
+  {{- with .Get "alt" }} aria-label="{{ . | plainify | safeHTML }}"{{ end }}
   {{- /* controls in both modes: a loop has to be stoppable without a script,
          not only when the author remembers to ask. */}}
   controls{{ if not $controls }} autoplay loop{{ end }}
