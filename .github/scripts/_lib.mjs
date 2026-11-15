@@ -12,16 +12,13 @@ export function* walk(dir, ext) {
   }
 }
 
-// One attribute after the tag name: quoted, single-quoted, bare (--minify drops
-// quotes) or valueless. A name starts after whitespace and a quoted value is
-// consumed whole, so data:x="0" and title="x=0" never read as x.
+// Quoted, bare (--minify) or valueless; a name follows whitespace, so data:x and title="x=0" are not x.
 const ATTR = /\s+([^\s"'<>\/=]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))?/y;
 
-// One start tag's attributes, lowercase name to value; the first of a repeated
-// name wins, as in a browser. "" (no tag found) has none.
+// A start tag's attributes, lowercase name to value; the first duplicate wins.
 export function attrs(tag) {
   const out = new Map();
-  ATTR.lastIndex = tag.match(/^<?[^\s\/>]*/)[0].length;
+  ATTR.lastIndex = tag.search(/[\s\/>]|$/);
   for (let m; (m = ATTR.exec(tag)); ) {
     const name = m[1].toLowerCase();
     if (!out.has(name)) out.set(name, m[2] ?? m[3] ?? m[4] ?? "");
@@ -29,8 +26,10 @@ export function attrs(tag) {
   return out;
 }
 
-// One attribute of a start tag, or null when it has none.
 export const attr = (tag, name) => attrs(tag).get(name) ?? null;
+
+// A whole token of a space-separated value: "post-info" is not "post-infobar".
+export const hasToken = (value, token) => (value ?? "").split(/\s+/).includes(token);
 
 // A whole start tag: a quoted value may hold ">" (the minifier leaves "<x>" raw there).
 export const tagRe = (name) => new RegExp(`<${name}\\b(?:[^>"']|"[^"]*"|'[^']*')*>`, "gi");

@@ -6,11 +6,9 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { walk, attr, tagRe } from "./_lib.mjs";
+import { walk, attr, hasToken, tagRe } from "./_lib.mjs";
 
-// Whole tokens: "post-info" is not "post-infobar".
-const hasClass = (tag, want) =>
-  (attr(tag, "class") ?? "").split(/\s+/).includes(want);
+const hasClass = (tag, want) => hasToken(attr(tag, "class"), want);
 
 const pages = (dir) => [...walk(dir, ".html")];
 const text = (html) => html.replace(/<[^>]*>/g, "").trim();

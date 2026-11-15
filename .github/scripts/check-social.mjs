@@ -11,7 +11,7 @@
 //
 //   node .github/scripts/check-social.mjs <public-dir>
 import { readFileSync } from "node:fs";
-import { walk, attrs } from "./_lib.mjs";
+import { walk, attrs, hasToken } from "./_lib.mjs";
 
 // The anchor and everything up to its close. rel="me" is what social-icons.html
 // always writes and nothing else in the theme does, so it identifies these
@@ -46,12 +46,12 @@ for (const file of walk(root, ".html")) {
   const html = readFileSync(file, "utf8");
   for (const [tag] of html.matchAll(ANCHOR)) {
     const a = attrs(tag);
-    if (!(a.get("rel") ?? "").split(/\s+/).includes("me")) continue;
+    if (!hasToken(a.get("rel"), "me")) continue;
     anchors++;
 
     const href = a.get("href") ?? "";
-    const label = a.get("aria-label") ?? null;
-    const title = a.get("title") ?? null;
+    const label = a.get("aria-label");
+    const title = a.get("title");
 
     // One report per destination rather than per page: the same icon is wrong
     // on every page that draws the header, and 200 identical lines hide the
@@ -63,9 +63,9 @@ for (const file of walk(root, ".html")) {
       failures.push([file, href || "(no href)", why]);
     };
 
-    if (label === null || text(label) === "") {
+    if (label === undefined || text(label) === "") {
       report("a social link with no aria-label: the icon carries no text, so it has no accessible name");
-    } else if (title === null) {
+    } else if (title === undefined) {
       // The template writes both, and the point of the pair is that they agree.
       // Absent, there is nothing to disagree with and the tooltip is gone.
       report("a social link with an aria-label but no title");
