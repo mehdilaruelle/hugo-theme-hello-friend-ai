@@ -11,13 +11,11 @@
 //
 //   node .github/scripts/check-code-blocks.mjs <public-dir>
 import { readFileSync } from "node:fs";
-import { walk } from "./_lib.mjs";
+import { walk, tagRe, attrRe, value } from "./_lib.mjs";
 
 // --minify drops the quotes it can, so match quoted, single-quoted and bare.
 const WRAPPER = /<div\s[^>]*class\s*=\s*(?:"[^"]*\bcode-block\b[^"]*"|'[^']*\bcode-block\b[^']*'|code-block)[^>]*>/gi;
 const DIV_EDGE = /<div\b[^>]*>|<\/div\s*>/gi;
-// A Mermaid diagram's pre: it scrolls, so it needs a tab stop.
-const MERMAID_PRE = /<pre\b[^>]*\bclass\s*=\s*(?:"[^"]*\bmermaid\b[^"]*"|'[^']*\bmermaid\b[^']*'|mermaid)[^>]*>/gi;
 // A pre whose code carries a language: what Hugo highlights, and the only kind
 // that draws a language label.
 const LABELLED_PRE = /<pre\b[^>]*>\s*(?:<code\b[^>]*\bdata-lang\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+)))/gi;
@@ -52,9 +50,11 @@ for (const file of walk(root, ".html")) {
   files++;
   const html = readFileSync(file, "utf8");
   const spans = wrapperSpans(html);
-  for (const m of html.matchAll(MERMAID_PRE)) {
+  // A diagram's pre scrolls too, so it needs tabindex="0" to be reached.
+  for (const [tag] of html.matchAll(tagRe("pre"))) {
+    if (!value(tag.match(attrRe("class")))?.split(/\s+/).includes("mermaid")) continue;
     diagrams++;
-    if (!/\btabindex\s*=\s*["']?0\b/i.test(m[0])) failures.push([file, "a Mermaid diagram", "no tabindex, so a keyboard cannot scroll it"]);
+    if (value(tag.match(attrRe("tabindex"))) !== "0") failures.push([file, "a Mermaid diagram", "no tabindex=\"0\", so a keyboard cannot scroll it"]);
   }
   for (const m of html.matchAll(LABELLED_PRE)) {
     const lang = m[1] ?? m[2] ?? m[3] ?? "";
