@@ -11,7 +11,7 @@
 //
 //   node .github/scripts/check-code-blocks.mjs <public-dir>
 import { readFileSync } from "node:fs";
-import { walk, tagRe, attrRe, value } from "./_lib.mjs";
+import { walk, tagRe, attrs, hasToken } from "./_lib.mjs";
 
 // --minify drops the quotes it can, so match quoted, single-quoted and bare.
 const WRAPPER = /<div\s[^>]*class\s*=\s*(?:"[^"]*\bcode-block\b[^"]*"|'[^']*\bcode-block\b[^']*'|code-block)[^>]*>/gi;
@@ -52,9 +52,10 @@ for (const file of walk(root, ".html")) {
   const spans = wrapperSpans(html);
   // A diagram's pre scrolls too, so it needs tabindex="0" to be reached.
   for (const [tag] of html.matchAll(tagRe("pre"))) {
-    if (!value(tag.match(attrRe("class")))?.split(/\s+/).includes("mermaid")) continue;
+    const a = attrs(tag);
+    if (!hasToken(a.get("class"), "mermaid")) continue;
     diagrams++;
-    if (value(tag.match(attrRe("tabindex"))) !== "0") failures.push([file, "a Mermaid diagram", "no tabindex=\"0\", so a keyboard cannot scroll it"]);
+    if (a.get("tabindex") !== "0") failures.push([file, "a Mermaid diagram", "no tabindex=\"0\", so a keyboard cannot scroll it"]);
   }
   for (const m of html.matchAll(LABELLED_PRE)) {
     const lang = m[1] ?? m[2] ?? m[3] ?? "";

@@ -7,14 +7,9 @@
 
 import { readFileSync, statSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
-import { walk, attrRe, value as attrValue } from "./_lib.mjs";
+import { walk, attrs } from "./_lib.mjs";
 
 const META = /<meta\b[^>]*>/gi;
-const PROPERTY = attrRe("property");
-const NAME = attrRe("name");
-const CONTENT = attrRe("content");
-
-const attr = (tag, re) => attrValue(tag.match(re));
 
 const root = process.argv[2] || "public";
 const rootPath = resolve(root);
@@ -63,11 +58,11 @@ for (const file of walk(root, ".html")) {
   const tags = { "og:image": [], "og:image:alt": [], "twitter:image": [], "twitter:image:alt": [] };
 
   for (const m of html.matchAll(META)) {
-    const tag = m[0];
-    const key = attr(tag, PROPERTY) ?? attr(tag, NAME);
-    if (key === null) continue;
+    const a = attrs(m[0]);
+    const key = a.get("property") ?? a.get("name");
+    if (key === undefined) continue;
     const k = key.toLowerCase();
-    if (k in tags) tags[k].push((attr(tag, CONTENT) ?? "").trim());
+    if (k in tags) tags[k].push((a.get("content") ?? "").trim());
   }
 
   if (!Object.values(tags).some((v) => v.length)) continue;

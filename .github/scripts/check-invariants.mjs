@@ -6,13 +6,9 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { walk, attrRe, tagRe, value as attrValue } from "./_lib.mjs";
+import { walk, attr, hasToken, tagRe } from "./_lib.mjs";
 
-const attr = (tag, name) => attrValue(tag.match(attrRe(name)));
-
-// Whole tokens: "post-info" is not "post-infobar".
-const hasClass = (tag, want) =>
-  (attr(tag, "class") ?? "").split(/\s+/).includes(want);
+const hasClass = (tag, want) => hasToken(attr(tag, "class"), want);
 
 const pages = (dir) => [...walk(dir, ".html")];
 const text = (html) => html.replace(/<[^>]*>/g, "").trim();
@@ -243,9 +239,9 @@ const checks = {
         ?? fail(`${page}: a series block with no summary`, block);
       if (attr(m[0], "aria-labelledby") !== attr(summary[0], "id"))
         fail(`${page}: a series block is not labelled by its summary`, block);
-      const parts = [...block.matchAll(/<li>\s*<(a|span)\b([^>]*)>([^<]*)<\/\1>\s*<\/li>/gi)].map((li) => {
-        const here = li[1].toLowerCase() === "span";
-        if (here !== (attr(li[0], "aria-current") === "page"))
+      const parts = [...block.matchAll(/<li>\s*(<(a|span)\b[^>]*>)([^<]*)<\/\2>\s*<\/li>/gi)].map((li) => {
+        const here = li[2].toLowerCase() === "span";
+        if (here !== (attr(li[1], "aria-current") === "page"))
           fail(`${page}: a part is ${here ? "not a link but not" : "a link and"} marked current`, li[0]);
         return (here ? "*" : "") + li[3].trim();
       });

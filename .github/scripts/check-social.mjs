@@ -11,14 +11,7 @@
 //
 //   node .github/scripts/check-social.mjs <public-dir>
 import { readFileSync } from "node:fs";
-import { walk, attrRe } from "./_lib.mjs";
-
-const attr = (name) => attrRe(name);
-
-const HREF = attr("href");
-const REL = attr("rel");
-const TITLE = attr("title");
-const ARIA_LABEL = attr("aria-label");
+import { walk, attrs, hasToken } from "./_lib.mjs";
 
 // The anchor and everything up to its close. rel="me" is what social-icons.html
 // always writes and nothing else in the theme does, so it identifies these
@@ -30,7 +23,6 @@ const ANCHOR = /<a\b[^>]*>[\s\S]*?<\/a>/gi;
 // link happened to carry one -- and passed aria-hidden on the anchor itself,
 // which hides the named link rather than the icon.
 const HIDDEN = `aria-hidden\\s*=\\s*(?:"true"|'true'|true)`;
-const HIDDEN_ATTR = new RegExp(HIDDEN, "i");
 // The svg carries it, or the element that immediately wraps the svg does --
 // which is what social-icons.html emits: <span aria-hidden="true"><svg …>.
 const ICON_HIDDEN = new RegExp(
@@ -38,11 +30,6 @@ const ICON_HIDDEN = new RegExp(
     `|<(?:span|div|i)\\b[^>]*${HIDDEN}[^>]*>\\s*<svg\\b`,
   "i"
 );
-
-const value = (tag, re) => {
-  const m = tag.match(re);
-  return m ? (m[1] ?? m[2] ?? m[3] ?? "") : null;
-};
 
 // Decoded far enough to compare two attributes written by the same template.
 const text = (s) =>
@@ -58,14 +45,13 @@ for (const file of walk(root, ".html")) {
   files++;
   const html = readFileSync(file, "utf8");
   for (const [tag] of html.matchAll(ANCHOR)) {
-    const open = tag.slice(0, tag.indexOf(">") + 1);
-    const rel = value(open, REL) ?? "";
-    if (!rel.split(/\s+/).includes("me")) continue;
+    const a = attrs(tag);
+    if (!hasToken(a.get("rel"), "me")) continue;
     anchors++;
 
-    const href = value(open, HREF) ?? "";
-    const label = value(open, ARIA_LABEL);
-    const title = value(open, TITLE);
+    const href = a.get("href") ?? "";
+    const label = a.get("aria-label");
+    const title = a.get("title");
 
     // One report per destination rather than per page: the same icon is wrong
     // on every page that draws the header, and 200 identical lines hide the
@@ -77,9 +63,9 @@ for (const file of walk(root, ".html")) {
       failures.push([file, href || "(no href)", why]);
     };
 
-    if (label === null || text(label) === "") {
+    if (label === undefined || text(label) === "") {
       report("a social link with no aria-label: the icon carries no text, so it has no accessible name");
-    } else if (title === null) {
+    } else if (title === undefined) {
       // The template writes both, and the point of the pair is that they agree.
       // Absent, there is nothing to disagree with and the tooltip is gone.
       report("a social link with an aria-label but no title");
@@ -89,7 +75,7 @@ for (const file of walk(root, ".html")) {
 
     // On the anchor itself this hides the link that was just named, rather than
     // the icon inside it.
-    if (HIDDEN_ATTR.test(open)) {
+    if (a.get("aria-hidden")?.toLowerCase() === "true") {
       report("aria-hidden on the social link itself, which hides the named link");
     } else if (/<svg\b/i.test(tag) && !ICON_HIDDEN.test(tag)) {
       report("a social icon that is not aria-hidden: the link is announced twice");
