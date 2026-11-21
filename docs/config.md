@@ -544,12 +544,12 @@ leaves most of a wide screen empty. `params.contentWidth` sets another:
 ```
 
 Everything that lines up with the column follows it: the header and footer stay
-level with its text, and a post's cover still reaches 50px past it on each
+level with its text, and a post's cover still reaches 30px past it on each
 side. So does the `sizes` the theme gives every image, which otherwise tells a
 wide viewport the picture is 800px and has it stretch a copy picked for that —
 unless `imageSizes` is set, which still wins. A percentage is accepted for the
-column but cannot be a `sizes` length, so with one the images keep the 800px
-guess.
+column but cannot be a `sizes` length: content images keep the 800px guess, and
+a cover reads it as `vw`, its upper bound.
 
 On a tablet, the column narrows to 600px (660px for a list) as it always has,
 or to `contentWidth` if that is narrower. `0` or no value keeps 800px. A value
@@ -772,7 +772,7 @@ templates.
 | `llmsFullLimit` | how many pages `llms-full.txt` carries. Unset or `0` publishes every one |
 | `ai` | which AI crawlers `robots.txt` turns away. **A table**, see [AI crawlers](#ai-crawlers) |
 | `contentWidth` | the width of the column articles, lists and the front page are set in. Defaults to `800px`, see [Content width](#content-width) |
-| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set |
+| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set; on a cover, to its width, `min(calc(<column> + 60px), calc(100vw - 40px))` |
 | `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400`, as `0` does |
 
 ```toml

@@ -206,6 +206,15 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml
           grep -q 'class="circle portrait"' public-portrait/index.html && grep -q 'sizes=50vw' public-portrait/index.html \
             || { echo "  BAD  the portrait has an invalid sizes"; exit 1; }
+          # In a CSS function too: every % as vw, and no var() in any case.
+          for pair in 'clamp(80px, 20%, 160px)|sizes="clamp(80px, 20vw, 160px)"' 'VAR(--x)|sizes="(max-width: 800px) 100vw, 800px"'; do
+            HUGO_PARAMS_PORTRAIT_PATH="img/an example.png" HUGO_PARAMS_PORTRAIT_MAXWIDTH="${pair%%|*}" \
+              hugo --themesDir ../.. --gc --minify --destination public-portrait-fn \
+              --contentDir ../.github/fixtures/markdown-images \
+              --config config.toml,../.github/fixtures/markdown-images.toml > /dev/null
+            grep -o '<img[^>]*circle portrait[^>]*>' public-portrait-fn/index.html | grep -qF "${pair#*|}" \
+              || { echo "  BAD  maxWidth = \"${pair%%|*}\" does not give ${pair#*|}"; exit 1; }
+          done
           grep -q 'post-cover><img[^>]*sizes=99vw' public-portrait/posts/2026/10/a-cover-named-like-a-glob/index.html \
             || { echo "  BAD  imageSizes does not reach the cover"; exit 1; }
           # The card names the cover, not the file its name matches as a glob.
