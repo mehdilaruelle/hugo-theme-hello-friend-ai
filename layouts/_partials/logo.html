@@ -68,10 +68,9 @@
             {{- end -}}
         {{ else }}
             <span class="logo__mark" aria-hidden="true">{{ with $logo.logoMark }}{{ . }}{{ else }}>{{ end }}</span>
-            {{- /* Where this site starts, for logo.js: location.pathname
-                   alone would take a deployment prefix for a section. The
-                   home's Permalink carries the prefix and the language
-                   directory; its RelPermalink loses the prefix under canonifyURLs. */ -}}
+            {{- /* Where this site starts, for logo.js: prefix and language
+                   directory. Permalink, as canonifyURLs drops the prefix from
+                   RelPermalink. */ -}}
             {{- $cursorPath := partialCached "switch.html" $logo.logoCursorPathname $logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
                   {{- if $cursorPath }} data-base="{{ replaceRE `[^/]*$` "" (urls.Parse .Site.Home.Permalink).Path }}"{{ end }}>
