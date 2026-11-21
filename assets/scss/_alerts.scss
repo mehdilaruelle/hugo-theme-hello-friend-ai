@@ -31,6 +31,8 @@ summary.alert-title {
   cursor: pointer;
 }
 
+// A title alone, or folded away, has nothing under it to clear.
+.alert > .alert-title:last-child,
 details.alert:not([open]) > summary.alert-title {
   margin-bottom: 0;
 }
