@@ -27,3 +27,16 @@
     name       = "Source"
     url        = "https://github.com/mehdilaruelle/hugo-theme-hello-friend-ai"
     parent     = "more"
+
+  # No host, like a host-less baseURL: never the current page.
+  [[menu.main]]
+    identifier = "mail"
+    name       = "Mail"
+    url        = "mailto:me@example.com"
+    parent     = "more"
+
+  [[menu.main]]
+    identifier = "call"
+    name       = "Call"
+    url        = "tel:+33123456789"
+    weight     = 40
