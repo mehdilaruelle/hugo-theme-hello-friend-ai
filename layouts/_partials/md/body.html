@@ -56,14 +56,16 @@
       {{- $p := .text -}}
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
-        {{- range $hide }}{{ $p = replace $p (index . 0) (index . 1) }}{{ end -}}
-        {{- range $dest, $to := $assets -}}
-          {{- $q := replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest -}}
-          {{- $to = replace $to "$" "$$" -}}
-          {{- $p = replaceRE (printf `(\]\(<?)%s([)>\s])` $q) (printf `${1}%s${2}` $to) $p -}}
-          {{- $p = replaceRE (printf `^(%s[ \t]*<?)%s(>|\s|$)` $def $q) (printf `${1}%s${2}` $to) $p -}}
+        {{- if $assets -}}
+          {{- range $hide }}{{ $p = replace $p (index . 0) (index . 1) }}{{ end -}}
+          {{- range $dest, $to := $assets -}}
+            {{- $q := replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest -}}
+            {{- $to = replace $to "$" "$$" -}}
+            {{- $p = replaceRE (printf `(\]\(<?)%s([)>\s])` $q) (printf `${1}%s${2}` $to) $p -}}
+            {{- $p = replaceRE (printf `^(%s[ \t]*<?)%s(>|\s|$)` $def $q) (printf `${1}%s${2}` $to) $p -}}
+          {{- end -}}
+          {{- range $hide }}{{ $p = replace $p (index . 1) (index . 0) }}{{ end -}}
         {{- end -}}
-        {{- range $hide }}{{ $p = replace $p (index . 1) (index . 0) }}{{ end -}}
       {{- end -}}
       {{- $out = print $out $p -}}
     {{- end -}}
