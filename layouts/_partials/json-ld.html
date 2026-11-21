@@ -48,8 +48,9 @@
     "name" site.Title
     "inLanguage" .Language.Lang
   -}}
-  {{- with .Description | default site.Params.description -}}
-    {{- $data = merge $data (dict "description" (. | plainify | htmlUnescape)) -}}
+  {{- /* Only the site's may hold markup; the page's own is text: List<String>. */ -}}
+  {{- with .Description | default (site.Params.description | plainify | htmlUnescape) -}}
+    {{- $data = merge $data (dict "description" .) -}}
   {{- end -}}
   {{- with $author -}}
     {{- $data = merge $data (dict "author" $authorNode) -}}
