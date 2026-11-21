@@ -6,6 +6,7 @@
   verification = "abc"
   [params.author]
     credentials = ["x"]
+    description = ["Writes", "code"]
   [params.logo]
     logoCursorColor = "#67a2c9}body{display:none"
     logoCursorAnimate = 0   # a number: with read it as unset
