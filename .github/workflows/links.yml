@@ -694,6 +694,15 @@ jobs:
             && [ "$(count 'comments.example.org/comentario.js' "$f")" = 1 ] \
             || { echo "  BAD  comentario.js does not get its script, one <comentario-comments> and no data-id-root"; bad=1; }
           [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
+          # An unparsable url is the site's to fix, not a reason to abort.
+          HUGO_PARAMS_COMMENTO_URL="http://[::1/js/commento.js" \
+            hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-commento-bad > /dev/null \
+            || { echo "  BAD  an unparsable commento url aborted the build"; exit 1; }
+          [ "$(count 'data-id-root' public-commento-bad/posts/2026/01/a-video-where-a-gif-used-to-be/index.html)" = 1 ] \
+            || { echo "  BAD  an unparsable commento url does not get the Commento markup"; bad=1; }
+          [ "$bad" = 0 ] && echo "  an unparsable url still builds, with the Commento markup"
           exit "$bad"
 
       - name: Check utterances follows the page's theme unless one is named
