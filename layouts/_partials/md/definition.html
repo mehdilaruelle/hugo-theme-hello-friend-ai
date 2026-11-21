@@ -1,0 +1,4 @@
+{{- /* What opens a link reference definition, up to its ":": a quote's or a list's
+       prefix, and a label that is not a footnote's nor a task box. Indented code is
+       skipped, so any indent is a list's. Shared by body.html and absolute-links.html. */ -}}
+{{- return `(?: {0,3}> ?)* *(?:(?:[-*+]|\d{1,9}[.)])(?: {1,4}| {0,3}\t))?\[[ \t]*[^\]\s^][^\]]*\]:` -}}

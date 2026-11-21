@@ -333,6 +333,9 @@ const checks = {
     if (!/\.webp$/.test(attr(find(hard, "From assets"), "src") ?? "")) fail("a picture from assets/ is not served as WebP");
     const md = read("posts/2026/10/pictures-written-the-hard-way/index.md");
     if (!md.includes("![From assets](<https://example.com/subpath/img/an%20example.png>)")) fail("the md copy does not link the assets/ original", md);
+    const linked = read("posts/2026/10/a-page-with-a-cover/index.md");
+    if (!linked.includes("[![A linked badge](<https://example.com/subpath/img/an%20example.png>)](https://ci.example.org/)"))
+      fail("the md copy does not link the assets/ original of a linked picture", linked);
     if (!existsSync(join(dir, "img/an example.png"))) fail("the assets/ original the md copy links is not published");
 
     const cut = find("posts/2026/10/a-picture-that-cannot-be-decoded/index.html", "Cut short");
