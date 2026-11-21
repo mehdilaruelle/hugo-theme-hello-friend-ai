@@ -5,10 +5,11 @@
   if (!logo) return;
 
   window.addEventListener("load", () => {
-    // Encoded like location.pathname (/caf%C3%A9/).
-    const base = new URL(logo.dataset.base || "/", window.location.href).pathname;
+    // One case for escapes: URL() writes /caf%C3%A9/, the theme's links /caf%c3%a9/.
+    const norm = (s) => s.replace(/%[0-9a-f]{2}/gi, (m) => m.toUpperCase());
+    const base = norm(new URL(logo.dataset.base || "/", window.location.href).pathname);
     // uglyURLs: the home is .../index.html.
-    const path = window.location.pathname.replace(/\/index\.html$/, "/");
+    const path = norm(window.location.pathname.replace(/\/index\.html$/, "/"));
     const rest = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\//, "");
     const section = rest.split("/").filter(Boolean)[0] || "";
     let text = section;
