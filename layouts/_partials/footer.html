@@ -1,6 +1,6 @@
 <footer class="footer">
     {{- $footer := partialCached "param-table.html" "footer" "footer" }}
-    {{- /* Each entry once, and only with something to show: disableKinds = ["rss"] leaves no feed. */}}
+    {{- /* Each entry once, empty when it has nothing to show. */}}
     {{- $mark := partialCached "switch.html" $footer.trademark $footer.trademark }}
     {{- $author := and (partialCached "switch.html" $footer.author $footer.author) (partialCached "site-author.html" .).name }}
     {{- $copyright := and (partialCached "switch.html" $footer.copyright $footer.copyright) .Site.Copyright }}
