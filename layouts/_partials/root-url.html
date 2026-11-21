@@ -1,5 +1,10 @@
 {{- /* abs-url.html, a local path kept root-relative for relativeURLs and canonifyURLs. */ -}}
 {{- $s := printf "%v" . -}}
 {{- $url := partialCached "abs-url.html" $s $s -}}
-{{- if not (partialCached "is-remote.html" $s $s) }}{{ $url = (urls.Parse $url).RequestURI }}{{ end -}}
+{{- if not (partialCached "is-remote.html" $s $s) -}}
+  {{- with partialCached "parse-url.html" $url $url -}}
+    {{- $url = .RequestURI -}}
+    {{- with .EscapedFragment }}{{ $url = printf "%s#%s" $url . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
 {{- return $url -}}
