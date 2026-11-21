@@ -352,6 +352,17 @@ jobs:
             || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
           echo "  a list of authors names each of them"
 
+      - name: Check the footer draws no empty block
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          # The rss switch on, but no feed to link: only bottomText is left.
+          HUGO_DISABLEKINDS=rss HUGO_PARAMS_FOOTER_TRADEMARK=false HUGO_PARAMS_FOOTER_AUTHOR=false \
+            HUGO_PARAMS_FOOTER_COPYRIGHT=false hugo --themesDir ../.. --gc --minify --destination public-footer
+          [ "$(grep -o 'class=footer__inner' public-footer/index.html | wc -l)" = 1 ] \
+            && ! grep -q 'footer__content></div>' public-footer/index.html \
+            || { echo "  BAD  an empty footer block was drawn"; exit 1; }
+          echo "  rss on with no feed draws no footer block"
+
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
         run: |
