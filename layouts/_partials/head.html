@@ -113,8 +113,7 @@
 {{- partialCached "stylesheet.html" . }}
 
 
-{{- /* From the site's root: as written, the path is relative to whatever page
-       is being served and 404s off the home page. */ -}}
+{{- /* From the site's root: as written, it resolves against each page. */ -}}
 {{ range $val := slice | append ($.Site.Params.customCSS | default slice) }}
     {{- with $val }}
         <link rel="stylesheet" type="text/css" href="{{ partialCached "root-url.html" . (printf "%v" .) | safeURL }}">

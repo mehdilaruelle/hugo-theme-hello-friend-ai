@@ -1,4 +1,4 @@
-{{- /* abs-url.html, but a local path from the root: relativeURLs and canonifyURLs then apply to it. */ -}}
+{{- /* abs-url.html, a local path kept root-relative for relativeURLs and canonifyURLs. */ -}}
 {{- $s := printf "%v" . -}}
 {{- $url := partialCached "abs-url.html" $s $s -}}
 {{- if not (partialCached "is-remote.html" $s $s) }}{{ $url = (urls.Parse $url).RequestURI }}{{ end -}}
