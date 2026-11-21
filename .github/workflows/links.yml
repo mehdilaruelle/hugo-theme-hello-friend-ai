@@ -577,6 +577,8 @@ jobs:
           for f in about/index.html kept-out-quoted/index.html; do
             [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
               || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
+            grep -qE 'href=(\.\./)*css/custom\.css>' "public-relative/$f" && grep -qE 'src=(\.\./)*js/custom\.js>' "public-relative/$f" \
+              || { echo "  BAD  $f: customCSS or customJS is not relative"; exit 1; }
           done
           echo "  head URLs are relative or complete"
 
