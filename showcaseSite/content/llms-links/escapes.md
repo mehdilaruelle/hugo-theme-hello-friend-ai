@@ -14,3 +14,9 @@ Saved with CRLF line ends, [a definition][n] still resolves.
 [n]: ../../svg-sizes/commas.svg
 
 And a line after it.
+
+{{< faq "A blank line in a CRLF answer?" >}}
+    line one
+
+    # line three
+{{< /faq >}}

@@ -6,15 +6,17 @@
 {{- $code := false -}}
 {{- $list := false -}}
 {{- $indent := 0 -}}
+{{- $within := 0 -}}
 {{- $blank := true -}}
 {{- range split . "\n" -}}
   {{- $line := . -}}
   {{- $isBlank := not (strings.TrimSpace $line) -}}
+  {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
   {{- $is := false -}}
   {{- if $fence -}}
     {{- $is = true -}}
-    {{- if lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes -}}
-      {{- /* Leaving the quote ends the fence. */ -}}
+    {{- if or (lt (len (findRE ">" (replaceRE "^((?: {0,3}>)*).*$" "$1" $line))) $quotes) (and (not $isBlank) (lt $lead $within)) -}}
+      {{- /* Leaving the quote, or the list item, ends the fence. */ -}}
       {{- $fence = "" -}}
       {{- $is = false -}}
     {{- else -}}
@@ -29,7 +31,6 @@
   {{- if not $is -}}
     {{- /* Indented code: four spaces past the container, after a blank line. So
            far in, a fence marker is text, whatever came before. */ -}}
-    {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
     {{- $at := cond $list $indent 0 -}}
     {{- $code = and (not $isBlank) (ge $lead (add $at 4)) (or $blank $code) -}}
     {{- $open := "" -}}
@@ -65,7 +66,7 @@
         {{- if not $lead }}{{ $list = false }}{{ end -}}
       {{- end -}}
     {{- end -}}
-    {{- if $open }}{{ $fence = $open }}{{ end -}}
+    {{- if $open }}{{ $fence = $open }}{{ $within = cond $list $indent 0 }}{{ end -}}
     {{- $is = or $open $code -}}
   {{- end -}}
   {{- $blank = $isBlank -}}

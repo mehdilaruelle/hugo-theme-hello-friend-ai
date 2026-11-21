@@ -55,3 +55,10 @@ Under that, it&rsquo;s prose too.
     ```
 
 After the list, it&rsquo;s prose.
+
+- An item whose fence is left open
+
+  ```
+  closed by the end of its item
+
+Out of the list again, it&rsquo;s prose.
