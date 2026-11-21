@@ -358,7 +358,10 @@ const checks = {
     // The container classes of > [!TITLE] and > [!ICON].
     for (const sel of [".alert-title", ".alert-icon svg"])
       if (rules(css(), sel).length) fail(`a bare ${sel} rule styles an alert whose type is its name`);
-    ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
+    // The title rule outranks .alert > :last-child, so a title-only alert needs its own.
+    if (!rules(css(), ".alert>.alert-title:last-child").some((b) => declares(b, "margin-bottom", "0")))
+      fail("no rule takes the bottom margin off a title-only alert");
+    ok("each alert gets its type and title, a sign folds it closed or open, a lone title adds no margin, and a plain blockquote stays one");
   },
 
   // #272
