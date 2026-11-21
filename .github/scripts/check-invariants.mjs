@@ -798,9 +798,9 @@ const checks = {
     const all = css();
     if (!rules(all, ".katex").some((b) => declares(b, "direction", "ltr") && declares(b, "unicode-bidi", "isolate")))
       fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
-    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && b.includes("padding-block")))
-      fail("no html .katex-display rule scrolls a wide formula in its own box, with room for its limits");
-    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
+    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && declares(b, "direction", "ltr") && b.includes("padding-block")))
+      fail("no html .katex-display rule scrolls a wide formula in its own LTR box, with room for its limits");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box, from its start");
   },
 
   // Colours a static scan never sees in use (focus ring, script-written status and
