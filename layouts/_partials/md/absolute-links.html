@@ -33,8 +33,7 @@
     {{- range $spans -}}
       {{- $p := .text -}}
       {{- if not .code -}}
-        {{- /* Escapes hidden, so a "](" left closes a link: \\ then \]. \[text](x) is
-               literal text too: a mark keeps its "](" from matching. */ -}}
+        {{- /* Escapes hidden, so a "](" left closes a link; \[text](x) is literal, marked. */ -}}
         {{- $p = replace (replace $p `\\` "\ue001") `\]` "\ue003" -}}
         {{- $p = replaceRE `(\\\[[^\[\]\n]*\])\(` "${1}\ue000(" $p -}}
         {{- range $name := $names -}}

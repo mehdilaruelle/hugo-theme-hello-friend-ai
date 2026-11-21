@@ -9,11 +9,11 @@
 {{- /* Links the HTML rewrites, so the copy points to the same file: assets/
        pictures, and the link hook's page and file links when multilingual. */ -}}
 {{- $assets := dict -}}
-{{- /* Escapes hidden, so a [ or ] left is markup: \\ first, then \[ and \]. */ -}}
+{{- /* Escapes hidden, \\ first: a [ or ] left is markup. */ -}}
 {{- $hide := slice (slice `\\` "\ue001") (slice `\[` "\ue002") (slice `\]` "\ue003") -}}
 {{- $scan := $text -}}
 {{- range $hide }}{{ $scan = replace $scan (index . 0) (index . 1) }}{{ end -}}
-{{- /* A link or an image, a linked image's outer link, a definition: group 1 is "!" for an image. */ -}}
+{{- /* Links and images, a linked image's outer link, definitions; group 1 is "!" for an image. */ -}}
 {{- $d := `\((?:<([^>]+)>|([^)\s]+))` -}}
 {{- $def := partialCached "md/definition.html" true -}}
 {{- $patterns := slice (print `(!?)\[[^\[\]]*\]` $d) (print `!\[[^\[\]]*\]\([^)]*\)()\]` $d) -}}
