@@ -1,4 +1,4 @@
-// Every key en.toml defines has to exist in the other twenty translations.
+// Every key en.toml defines has to exist in every other translation.
 // i18n.html falls back to English, so a missing one builds green.
 //
 //   node check-i18n.mjs <theme-root>
