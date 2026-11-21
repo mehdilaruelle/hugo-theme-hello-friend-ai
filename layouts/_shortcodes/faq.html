@@ -17,6 +17,6 @@
       "a" (partial "flatten.html" $html))) -}}
 <details class="faq">
   <summary>{{ $q }}</summary>
-  {{- /* A blank line would end the HTML block in the md copy; &#10; renders the same. CRLF first, or \r\n\r\n slips past. */}}
+  {{- /* A blank line, LF or CRLF, would end the HTML block in the md copy; &#10; renders the same. */}}
   {{ replace (replace (replace $html "\r\n" "\n") "\n\n" "\n&#10;") "\n\n" "\n&#10;" | strings.TrimRight "\n" | safeHTML }}
 </details>
