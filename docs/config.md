@@ -172,6 +172,9 @@ Arabic ships with the theme as `i18n/ar.toml`, carrying the five plural forms
 the language distinguishes, so a reading time reads correctly at one, two, a few
 and many minutes rather than only at one and many.
 
+Persian ships as `i18n/fa.toml` too. It needs the same `direction = "rtl"`, and
+a `locale` such as `fa-IR`.
+
 ## Proving you own the site
 
 Every search console offers two ways to verify ownership: upload a file to the

@@ -7,6 +7,10 @@ de: de
 el: gr
 en: gb
 es: es
+# Persian is spoken in Iran, Afghanistan and Tajikistan; ir follows the fa-ir
+# locale, as sa does for Arabic. A site can map fa to af or tj in its own
+# data/langFlags.yaml.
+fa: ir
 fr: fr
 gl: es-ga
 hi: in
@@ -19,6 +23,7 @@ ml: in
 nl: nl
 pl: pl
 pt-br: br
+pt-pt: pt
 ru: ru
 sv: se
 tr: tr
