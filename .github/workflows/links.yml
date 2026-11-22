@@ -130,8 +130,12 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu-ugly https://example.com/subpath/
           grep -q '<a href=/subpath/#top>' public-menu-ugly/posts/index.html \
             || { echo "  BAD  the logo does not link /subpath/#top"; exit 1; }
-          # More has two entries, unlike the demos' submenus.
+          # More has several entries, unlike the demos' submenus.
           node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
+          # A host-less baseURL: mailto: and tel: have no host either.
+          hugo --themesDir ../.. --gc --minify --destination public-menu-root \
+            --config config.toml,../.github/fixtures/menu-current.toml --baseURL /
+          node ../.github/scripts/check-invariants.mjs public-menu-root menu-current index.html Home=page
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
