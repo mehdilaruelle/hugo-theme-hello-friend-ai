@@ -40,8 +40,7 @@
       const cell = pre.closest('td');
       if (cell && cell.nextElementSibling && !codeText(pre.querySelector('code')).trim()) return;
 
-      // An indented block skips render-codeblock.html, so it lacks the
-      // tabindex Chroma gives: a keyboard could not scroll it.
+      // Indented blocks miss Chroma's tabindex, which keyboard scrolling needs.
       if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0;
       if (!navigator.clipboard) return;
 
