@@ -197,10 +197,18 @@ jobs:
           echo "  the build warns that the md copy would replace the HTML"
           [ -f public-md-url/llms.txt ] && ! grep -qx '\*\*\*\*' public-md-url/llms.txt \
             || { cat public-md-url/llms.txt; echo "  BAD  an empty heading became a rule in llms.txt"; exit 1; }
-          for want in '> **A quoted heading**' '- **A listed heading**' '**A setext heading**' '**Another setext heading**'; do
+          for want in '> **A quoted heading**' '- **A listed heading**' '**A setext heading**' '**Another setext heading**' '**#hashtag**'; do
             grep -qxF -- "$want" public-md-url/llms.txt || { cat public-md-url/llms.txt; echo "  BAD  no line reading: $want"; exit 1; }
           done
-          ! grep -qxE '(=+|-+)' public-md-url/llms.txt || { echo "  BAD  a setext underline is left in llms.txt"; exit 1; }
+          for h in 'A setext heading' 'Another setext heading' '#hashtag'; do
+            ! grep -A1 -xF "**$h**" public-md-url/llms.txt | tail -1 | grep -qxE '(=+|-+)' \
+              || { echo "  BAD  the underline of $h is left in llms.txt"; exit 1; }
+          done
+          # After a list item or a table row, --- is a rule, not an underline.
+          for l in '  its continuation' '| 1 | 2 |'; do
+            grep -A1 -xF -- "$l" public-md-url/llms.txt | tail -1 | grep -qx -- '---' \
+              || { echo "  BAD  the rule after \"$l\" was read as a setext underline"; exit 1; }
+          done
           # An Org page's copy carries its text, not its Org syntax.
           f=public-md-url/org/index.md
           grep -qF 'A heading in Org' "$f" && ! grep -qE '^\* |\[\[|#\+BEGIN_SRC' "$f" \
@@ -547,6 +555,12 @@ jobs:
           # The item's end closed its fence: a closer here would open a new one.
           grep -A3 -xF 'Out of the list again, it’s prose.' "$md" | grep -q '```' \
             && { echo "  BAD  a fence its list item closed got a closer"; bad=1; }
+          md=public/llms-links/fences/index.md
+          grep -qxF '  it&rsquo;s code in the item, after its sub-item' "$md" \
+            || { echo "  BAD  a fence back in a parent item was read as prose"; bad=1; }
+          # A marker at the margin ends the item's fence and opens one, which gets the closer.
+          grep -A1 -xF 'still code after that marker' "$md" | tail -1 | grep -qx '```' \
+            || { echo "  BAD  a fence opened at the margin after a list's fence got no closer"; bad=1; }
           md=public/llms-links/text-edges/index.md
           grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
           grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }

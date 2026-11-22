@@ -1,5 +1,10 @@
-{{- /* (text): one bool per line, true where it is code: a fence, markers included, or an indented block. */ -}}
+{{- /* (text): one bool per line, true where it is code: a fence, markers included, or an indented block.
+       (dict "text" t "closer" true): the line that closes a fence left open at the end, or "". */ -}}
+{{- $text := . -}}
+{{- $closer := false -}}
+{{- if reflect.IsMap . }}{{ $text = .text }}{{ $closer = .closer }}{{ end -}}
 {{- $flags := slice -}}
+{{- $prefix := "" -}}
 {{- $fence := "" -}}
 {{- $quotes := 0 -}}
 {{- $from := 0 -}}
@@ -8,7 +13,7 @@
 {{- $indent := 0 -}}
 {{- $within := 0 -}}
 {{- $blank := true -}}
-{{- range split . "\n" -}}
+{{- range split $text "\n" -}}
   {{- $line := . -}}
   {{- $isBlank := not (strings.TrimSpace $line) -}}
   {{- $lead := len (replace (replaceRE "^([ \\t]*).*$" "$1" $line) "\t" "    ") -}}
@@ -39,6 +44,7 @@
       {{- /* A backtick fence's info string holds no backtick. */ -}}
       {{- if not (and (hasPrefix (index $m 3) "`") (strings.Contains (index $m 4) "`")) -}}
         {{- $open = index $m 3 -}}
+        {{- $prefix = index $m 1 -}}
         {{- $quotes = len (findRE ">" (index $m 1)) -}}
         {{- $from = len (replace (index $m 2) "\t" "    ") -}}
       {{- end -}}
@@ -63,7 +69,8 @@
           {{- $list = false -}}
         {{- end -}}
       {{- else -}}
-        {{- if not $lead }}{{ $list = false }}{{ end -}}
+        {{- /* Back in a parent item: its content starts where this line does. */ -}}
+        {{- if not $lead }}{{ $list = false }}{{ else if lt $lead $indent }}{{ $indent = $lead }}{{ end -}}
       {{- end -}}
     {{- end -}}
     {{- if $open }}{{ $fence = $open }}{{ $within = cond $list $indent 0 }}{{ end -}}
@@ -72,4 +79,4 @@
   {{- $blank = $isBlank -}}
   {{- $flags = $flags | append $is -}}
 {{- end -}}
-{{- return $flags -}}
+{{- return cond $closer (cond (ne $fence "") (print $prefix (strings.Repeat $from " ") $fence) "") $flags -}}

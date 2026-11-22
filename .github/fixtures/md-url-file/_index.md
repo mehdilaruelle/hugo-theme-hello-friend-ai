@@ -18,3 +18,15 @@ Under it, a paragraph.
 
 Another setext heading
 ======================
+
+#hashtag
+========
+
+- A listed item
+  its continuation
+---
+
+| a | b |
+| - | - |
+| 1 | 2 |
+---
