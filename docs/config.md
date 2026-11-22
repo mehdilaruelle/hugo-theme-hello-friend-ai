@@ -772,7 +772,7 @@ templates.
 | `llmsFullLimit` | how many pages `llms-full.txt` carries. Unset or `0` publishes every one |
 | `ai` | which AI crawlers `robots.txt` turns away. **A table**, see [AI crawlers](#ai-crawlers) |
 | `contentWidth` | the width of the column articles, lists and the front page are set in. Defaults to `800px`, see [Content width](#content-width) |
-| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set; on a cover, to its width, `min(calc(<column> + 60px), calc(100vw - 40px))` |
+| `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set and not a percentage; on a cover, to its width, `min(calc(<column> + 60px), calc(100vw - 40px))` |
 | `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400`, as `0` does |
 
 ```toml
