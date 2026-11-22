@@ -523,6 +523,8 @@ jobs:
           for want in "[![the badge]($n)](https://example.com/subpath/showcase/about/)" '[about]: https://example.com/subpath/showcase/about/'; do
             grep -qF -- "$want" public/llms-links/nested/index.md || { echo "  BAD  the Markdown copy has no $want"; bad=1; }
           done
+          grep -qF 'only text: \[not a link](/about/).' public/llms-links/nested/index.md \
+            || { echo "  BAD  an escaped [ was rewritten as a link"; bad=1; }
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 
