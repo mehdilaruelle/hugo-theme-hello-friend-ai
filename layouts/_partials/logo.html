@@ -72,7 +72,7 @@
                    drops the subpath from RelPermalink. */ -}}
             {{- $cursorPath := partialCached "switch.html" $logo.logoCursorPathname $logo.logoCursorPathname -}}
             <span class="logo__text{{ if $cursorPath }} logo__pathname{{ end }}"
-                  {{- if $cursorPath }} data-base="{{ replaceRE `[^/]*$` "" (urls.Parse .Site.Home.Permalink).Path }}"{{ end }}>
+                  {{- if $cursorPath }} data-base="{{ replaceRE `[^/]*$` "" (urls.Parse .Site.Home.Permalink).EscapedPath }}"{{ end }}>
                 {{ with $logo.logoText }}{{ . }}{{ else }}hello{{ end }}</span>
             <span class="logo__cursor">
             </span>

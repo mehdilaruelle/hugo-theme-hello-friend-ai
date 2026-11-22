@@ -297,6 +297,11 @@ jobs:
             "https://example.com/caf%c3%a9/posts/=posts" "https://example.com/caf%C3%A9/posts/x/=posts"
           grep -qF '<a href=/caf%C3%A9/50%25off/>' public-logo-path/index.html \
             || { echo "  BAD  logoHomeLink = \"50%off/\" does not link /caf%C3%A9/50%25off/"; exit 1; }
+          # An escaped % in the base stays escaped, as the browser keeps it.
+          HUGO_PARAMS_LOGO_LOGOHOMELINK="" HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-pct --baseURL "https://example.com/50%25off/"
+          node ../.github/scripts/check-invariants.mjs public-logo-pct logo-path index.html \
+            "https://example.com/50%25off/" "https://example.com/50%25off/posts/=posts"
           # canonifyURLs drops the subpath from RelPermalink.
           HUGO_CANONIFYURLS=true HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
             hugo --themesDir ../.. --gc --minify --destination public-logo-canon --baseURL "https://example.com/sub/"
