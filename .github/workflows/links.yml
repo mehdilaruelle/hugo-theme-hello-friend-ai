@@ -214,6 +214,12 @@ jobs:
           grep -qF 'A heading in Org' "$f" && ! grep -qE '^\* |\[\[|#\+BEGIN_SRC' "$f" \
             || { cat "$f"; echo "  BAD  the Org page's md copy carries Org syntax, or nothing"; exit 1; }
           echo "  a page not written in Markdown is copied as text"
+          # A link around a picture, and one after an escaped backslash, are absolute in llms-full.txt.
+          g=https://example.com/gallery
+          for want in "[![the thumbnail]($g/thumb.svg)]($g/full.svg)" "[C:\\\\]($g/full.svg)" "\\\\[the file]($g/thumb.svg)"; do
+            grep -qF -- "$want" public-md-url/llms-full.txt || { echo "  BAD  llms-full.txt has no $want"; exit 1; }
+          done
+          echo "  llms-full.txt makes every link of a bundle absolute"
 
       - name: Check pictures written in Markdown are resized and measured
         working-directory: hello-friend-ai/exampleSite
@@ -575,6 +581,16 @@ jobs:
           # Links the link hook resolves in the HTML resolve in the copy too.
           grep -qF '[the page next door](https://example.com/subpath/showcase/kept-out/)' public/kept-out-quoted/index.md \
             || { echo "  BAD  /kept-out/ is left root-relative in the Markdown copy"; bad=1; }
+          # Around a picture, after an escaped backslash, and by reference.
+          n=https://example.com/subpath/showcase/llms-links/nested/commas.svg
+          for want in "[C:\\\\]($n)" "\\\\[the file]($n)"; do
+            grep -qF -- "$want" public/llms-full.txt || { echo "  BAD  llms-full.txt has no $want"; bad=1; }
+          done
+          for want in "[![the badge]($n)](https://example.com/subpath/showcase/about/)" '[about]: https://example.com/subpath/showcase/about/'; do
+            grep -qF -- "$want" public/llms-links/nested/index.md || { echo "  BAD  the Markdown copy has no $want"; bad=1; }
+          done
+          grep -qF 'only text: \[not a link](/about/).' public/llms-links/nested/index.md \
+            || { echo "  BAD  an escaped [ was rewritten as a link"; bad=1; }
           [ "$bad" = 0 ] && echo "  code and footnotes are carried as written, the links around them resolved"
           exit "$bad"
 

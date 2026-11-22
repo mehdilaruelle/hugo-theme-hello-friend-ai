@@ -15,7 +15,18 @@
 {{- /* Links the HTML rewrites, so the copy points to the same file: assets/
        pictures, and the link hook's page and file links when multilingual. */ -}}
 {{- $assets := dict -}}
-{{- range findRESubmatch `(?:^|[^\\])(!?)\[[^\]]*\]\((?:<([^>]+)>|([^)\s]+))` $text -}}
+{{- /* Escapes hidden, \\ first: a [ or ] left is markup. */ -}}
+{{- $hide := slice (slice `\\` "\ue001") (slice `\[` "\ue002") (slice `\]` "\ue003") -}}
+{{- $scan := $text -}}
+{{- range $hide }}{{ $scan = replace $scan (index . 0) (index . 1) }}{{ end -}}
+{{- /* Links and images, a linked image's outer link, definitions; group 1 is "!" for an image. */ -}}
+{{- $d := `\((?:<([^>]+)>|([^)\s]+))` -}}
+{{- $def := partialCached "md/definition.html" true -}}
+{{- $patterns := slice (print `(!?)\[[^\[\]]*\]` $d) (print `!\[[^\[\]]*\]\([^)]*\)()\]` $d) -}}
+{{- if hugo.IsMultilingual -}}
+  {{- $patterns = $patterns | append (printf `(?m)^%s[ \t]*()(?:<([^>]+)>|([^\s>]+))` $def) -}}
+{{- end -}}
+{{- range $patterns }}{{ range findRESubmatch . $scan -}}
   {{- $image := eq (index . 1) "!" -}}
   {{- $dest := or (index . 2) (index . 3) -}}
   {{- with (try (urls.Parse (htmlUnescape $dest))).Value -}}
@@ -35,7 +46,7 @@
     {{- end -}}
     {{- with $to }}{{ $assets = merge $assets (dict $dest .) }}{{ end -}}
   {{- end -}}
-{{- end -}}
+{{- end }}{{ end -}}
 {{- $lines := slice -}}
 {{- $code := partial "md/code-lines.html" $text -}}
 {{- range $n, $raw := split $text "\n" -}}
@@ -51,8 +62,18 @@
       {{- $p := .text -}}
       {{- if not .code -}}
         {{- range $entity, $char := $entities }}{{ $p = replace $p $entity $char }}{{ end -}}
-        {{- range $dest, $to := $assets -}}
-          {{- $p = replaceRE (printf `((?:^|[^\\])\[(?:[^\]]*[^\\\]])?\]\(<?)%s([)>\s])` (replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest)) (printf `${1}%s${2}` (replace $to "$" "$$")) $p -}}
+        {{- if $assets -}}
+          {{- range $hide }}{{ $p = replace $p (index . 0) (index . 1) }}{{ end -}}
+          {{- /* \[text](x) is literal: a mark breaks its "](". */ -}}
+          {{- $p = replaceRE "(\ue002[^\\[\\]\n]*\\])\\(" "${1}\ue000(" $p -}}
+          {{- range $dest, $to := $assets -}}
+            {{- $q := replaceRE `([\\.+*?()|\[\]{}^$])` `\$1` $dest -}}
+            {{- $to = replace $to "$" "$$" -}}
+            {{- $p = replaceRE (printf `(\]\(<?)%s([)>\s])` $q) (printf `${1}%s${2}` $to) $p -}}
+            {{- $p = replaceRE (printf `^(%s[ \t]*<?)%s(>|\s|$)` $def $q) (printf `${1}%s${2}` $to) $p -}}
+          {{- end -}}
+          {{- range $hide }}{{ $p = replace $p (index . 1) (index . 0) }}{{ end -}}
+          {{- $p = replace $p "\ue000" "" -}}
         {{- end -}}
       {{- end -}}
       {{- $out = print $out $p -}}
