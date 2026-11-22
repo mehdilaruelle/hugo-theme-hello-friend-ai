@@ -5,8 +5,6 @@
 // than one that does nothing when pressed.
 
 (function () {
-  if (!navigator.clipboard) return;
-
   const script = document.currentScript;
   const label = (script && script.dataset.label) || 'Copy';
   const done = (script && script.dataset.labelDone) || 'Copied';
@@ -41,6 +39,11 @@
       // first number in a highlight span, which is not itself unselectable.
       const cell = pre.closest('td');
       if (cell && cell.nextElementSibling && !codeText(pre.querySelector('code')).trim()) return;
+
+      // An indented block skips render-codeblock.html, so it lacks the
+      // tabindex Chroma gives: a keyboard could not scroll it.
+      if (!pre.hasAttribute('tabindex')) pre.tabIndex = 0;
+      if (!navigator.clipboard) return;
 
       // The wrapper render-codeblock.html puts around every fenced block.
       // closest, not parentElement: Hugo puts a div.highlight in between

@@ -819,6 +819,17 @@ const checks = {
     ok("the language label is placed by the copy button's measured width");
   },
 
+  // An indented block reaches no render hook: copy-code.js gives its pre the
+  // tabindex Chroma gives the others, with or without a clipboard.
+  "code-focus"() {
+    const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).find((s) => s.includes("copy-code--done")) ?? "";
+    const focus = js.search(/\.tabIndex\s*=\s*0\b/);
+    if (focus < 0) fail("copy-code.js gives an indented code block's pre no tabindex");
+    const bail = js.search(/!navigator\.clipboard\)\s*return\b/);
+    if (bail >= 0 && bail < focus) fail("an indented code block takes no focus where there is no clipboard");
+    ok("an indented code block takes keyboard focus, clipboard or not");
+  },
+
   // KaTeX sets no direction and no overflow: the theme has to.
   math() {
     const all = css();
