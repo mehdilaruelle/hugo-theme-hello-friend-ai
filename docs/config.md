@@ -1228,6 +1228,9 @@ and the one written last replaces the other. The build warns about it
 (`md-url-names-a-file`). Give that page `outputs: ["HTML"]`, or end its `url`
 with a slash.
 
+A page written in another markup, such as Org or AsciiDoc, is copied as its
+plain text: its source would read as broken Markdown.
+
 A list page's Markdown is its title, its own description, its body, then its
 children as links to their own `.md`. The children are listed whole rather than
 one pager at a time — pagination is a reading aid for a screen, and a file

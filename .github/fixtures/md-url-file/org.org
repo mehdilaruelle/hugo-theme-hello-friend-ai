@@ -1,0 +1,7 @@
+#+TITLE: An Org page
+
+* A heading in Org
+Text with [[https://gohugo.io][a link]].
+#+BEGIN_SRC sh
+echo hi
+#+END_SRC

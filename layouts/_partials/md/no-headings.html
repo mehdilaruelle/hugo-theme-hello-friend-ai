@@ -1,14 +1,34 @@
-{{- /* Markdown with each ATX heading outside code printed as a bold line. */ -}}
+{{- /* Markdown with each heading outside code printed as a bold line. */ -}}
 {{- $lines := slice -}}
 {{- $code := partial "md/code-lines.html" . -}}
+{{- /* The line before, when it can be a setext heading's text: prose in a paragraph
+       no list, quote, table or HTML opened. $ok: the paragraph so far is one. */ -}}
+{{- $text := "" -}}
+{{- $ok := true -}}
+{{- $lead := `^([ \t]*)` -}}
 {{- range $n, $raw := split . "\n" -}}
   {{- $line := $raw -}}
   {{- if not (index $code $n) -}}
+    {{- /* Not indented less than its text, or the underline is out of its container. */ -}}
+    {{- if and $text (findRE `^ {0,3}(?:=+|-+)[ \t]*\r?$` $raw 1) (ge (len (index (findRESubmatch $lead $raw 1) 0 1)) (len (index (findRESubmatch $lead $text 1) 0 1))) -}}
+      {{- /* Its underline goes, and the line above it goes bold. */ -}}
+      {{- $lines = first (sub (len $lines) 1) $lines | append (replaceRE `^ *(.*?)[ \t]*(\r?)$` `**${1}**${2}` $text) -}}
+      {{- $text = "" }}{{ continue -}}
+    {{- end -}}
     {{- /* One in a quote or a list item keeps its prefix. An empty one goes, or
            **** would draw a rule. CRLF keeps its \r after the closing **. */ -}}
     {{- $in := `^((?: {0,3}>[ \t]?)*(?: {0,3}(?:[-*+]|\d{1,9}[.)])[ \t]+)?) {0,3}#{1,6}` -}}
     {{- $line = replaceRE (print $in `(?:[ \t]+#+)?[ \t]*(\r?)$`) `${1}${2}` $line -}}
     {{- $line = replaceRE (print $in `(?:[ \t]+(.*?))??(?:[ \t]+#+)?[ \t]*(\r?)$`) `${1}**${2}**${3}` $line -}}
+  {{- end -}}
+  {{- $text = "" -}}
+  {{- if or (index $code $n) (not (strings.TrimSpace $raw)) (findRE `^ {0,3}(?:#{1,6}(?:[ \t]|\r?$)|(?:[-*_=][ \t]*)+\r?$)` $raw 1) -}}
+    {{- /* A blank, code, a heading or a rule ends the paragraph. */ -}}
+    {{- $ok = true -}}
+  {{- else if findRE `^ {0,3}(?:[>|<]|[-*+](?:[ \t]|\r?$)|\d{1,9}[.)](?:[ \t]|\r?$))` $raw 1 -}}
+    {{- $ok = false -}}
+  {{- else if $ok -}}
+    {{- $text = $raw -}}
   {{- end -}}
   {{- $lines = $lines | append $line -}}
 {{- end -}}
