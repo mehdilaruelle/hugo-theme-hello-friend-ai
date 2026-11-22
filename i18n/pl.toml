@@ -1,0 +1,196 @@
+# Translations for Polish
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Inne wersje językowe:"
+
+
+# 404.html
+#
+[archives]
+other = "Archiwum"
+
+[home]
+other = "Strona główna"
+
+[notFound]
+other = "Ups, nie znaleziono strony…"
+
+
+# posts/single.html
+#
+# Polish counts in three forms: 1 minuta, 2–4 minuty, 5–21 minut. `other`
+# only catches fractions, which take the genitive singular.
+[readingTime]
+one   = "Jedna minuta"
+few   = "{{ .Count }} minuty"
+many  = "{{ .Count }} minut"
+other = "{{ .Count }} minuty"
+
+[tableOfContents]
+other = "Spis treści"
+
+[wordCount]
+one   = "Jedno słowo"
+few   = "{{ .Count }} słowa"
+many  = "{{ .Count }} słów"
+other = "{{ .Count }} słowa"
+
+[lastModified]
+other = "Ostatnia aktualizacja"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Nowsze wpisy"
+olderPosts = "Starsze wpisy"
+previousPage = "Poprzednia strona"
+nextPage = "Następna strona"
+
+[skipToContent]
+other = "Przejdź do treści"
+
+[copyCode]
+other = "Kopiuj"
+
+[copyCodeDone]
+other = "Skopiowano"
+
+[copyCodeFailed]
+other = "Skopiuj ręcznie"
+
+# Search
+#
+[searchLabel]
+other = "Przeszukaj tę stronę"
+
+[searchPlaceholder]
+other = "Wpisz, aby wyszukać…"
+
+[searchResultsOne]
+other = "1 wynik"
+
+# One string for every count above one, so the noun stays out of agreement
+# with it: "Wyniki: 3" and "Wyniki: 5" both read, "5 wyniki" would not.
+[searchResultsMany]
+other = "Wyniki: %d"
+
+[searchFailed]
+other = "Nie udało się wczytać indeksu wyszukiwania."
+
+[searchNoScript]
+other = "Wyszukiwanie wymaga JavaScriptu. Archiwum można przeglądać według tagów i dat."
+
+[searchNoIndex]
+other = "Wyszukiwanie nie jest skonfigurowane na tej stronie."
+
+[searchLoading]
+other = "Wyszukiwanie…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Wszystkie tagi na tej stronie wraz z liczbą wpisów dla każdego z nich."
+
+[taxonomyDescriptionCategory]
+other = "Wszystkie kategorie na tej stronie wraz z liczbą wpisów w każdej z nich."
+
+[taxonomyDescription]
+other = "Wszystko, według czego ta strona porządkuje swoje wpisy."
+
+[termDescriptionTag]
+other = "Wszystkie wpisy z tagiem „{{ .Term }}”."
+
+[termDescriptionCategory]
+other = "Wszystkie wpisy w kategorii „{{ .Term }}”."
+
+[termDescription]
+other = "Wszystkie wpisy przypisane do „{{ .Term }}”."
+
+
+[toggleTheme]
+other = "Ciemny motyw"
+
+[toggleMenu]
+other = "Menu"
+
+[language]
+other = "Język"
+
+[pageNumber]
+other = "strona {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Pierwotnie opublikowano na"
+
+[posts]
+other = "Wpisy"
+
+[pages]
+other = "Strony"
+
+[shareOn]
+other = "Udostępnij w serwisie {{ .Network }}"
+
+[shareViaEmail]
+other = "Udostępnij przez e-mail"
+
+[search]
+other = "Szukaj"
+
+[contents]
+other = "Zawartość"
+
+[llmsFullAt]
+other = "Pełna treść każdej strony poniżej:"
+
+[llmsFullAtFirst]
+other = "Pełna treść pierwszych {{ .Kept }} stron poniżej:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} z {{ .Total }} stron, w kolejności z llms.txt."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Link do tej sekcji"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Powiązane wpisy"
+
+
+# rss.xml
+#
+# "na stronie" and "z działu" keep the site and section names in the
+# nominative, so a name Polish would otherwise decline is printed as written.
+[feedTitle]
+other = "{{ .Title }} na stronie {{ .Site }}"
+
+[feedDescription]
+other = "Najnowsze treści z działu {{ .Title }} na stronie {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Najnowsze treści na stronie {{ .Site }}"
+
+[seriesPart]
+other = "Część {{ .Part }} z {{ .Total }} w serii {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Notatka"
+
+[alertTip]
+other = "Wskazówka"
+
+[alertImportant]
+other = "Ważne"
+
+[alertWarning]
+other = "Ostrzeżenie"
+
+[alertCaution]
+other = "Uwaga"

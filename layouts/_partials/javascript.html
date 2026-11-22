@@ -23,11 +23,10 @@
 {{- end }}
 {{- end }}
 
-{{- /* Same as customCSS in head.html: a path under static/ has to carry the
-       site's base URL, or it resolves against the page being served. */ -}}
+{{- /* Same as customCSS in head.html. */ -}}
 {{ range $val := slice | append ($.Site.Params.customJS | default slice) }}
     {{- with $val }}
-        <script src="{{ partialCached "abs-url.html" . (printf "%v" .) | safeURL }}"></script>
+        <script src="{{ partialCached "root-url.html" . (printf "%v" .) | safeURL }}"></script>
     {{- end }}
 {{ end }}
 

@@ -7,7 +7,13 @@
 {{- with site.Params.author -}}
   {{- if reflect.IsMap . -}}
     {{- $jobTitle = .jobTitle -}}
-    {{- with .description }}{{ $personDescription = . | plainify | htmlUnescape }}{{ end -}}
+    {{- with .description -}}
+      {{- if or (reflect.IsMap .) (reflect.IsSlice .) -}}
+        {{- warnidf "author-description-shape" "params.author.description: expected a string, got a %T. It is skipped." . -}}
+      {{- else -}}
+        {{- $personDescription = . | plainify | htmlUnescape -}}
+      {{- end -}}
+    {{- end -}}
     {{- with .knowsAbout -}}
       {{- $knowsAbout = . -}}
     {{- end -}}

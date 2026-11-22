@@ -1,0 +1,186 @@
+# Translations for Dutch
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Ook beschikbaar in"
+
+
+# 404.html
+#
+[archives]
+other = "Archief"
+
+[home]
+other = "Home"
+
+[notFound]
+other = "Oeps, pagina niet gevonden…"
+
+
+# posts/single.html
+#
+[readingTime]
+one   = "Eén minuut"
+other = "{{ .Count }} minuten"
+
+[tableOfContents]
+other = "Inhoudsopgave"
+
+[wordCount]
+one   = "Eén woord"
+other = "{{ .Count }} woorden"
+
+[lastModified]
+other = "Laatst bijgewerkt"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Nieuwere berichten"
+olderPosts = "Oudere berichten"
+previousPage = "Vorige pagina"
+nextPage = "Volgende pagina"
+
+[skipToContent]
+other = "Naar de inhoud"
+
+[copyCode]
+other = "Kopiëren"
+
+[copyCodeDone]
+other = "Gekopieerd"
+
+[copyCodeFailed]
+other = "Kopieer handmatig"
+
+# Search
+#
+[searchLabel]
+other = "Doorzoek deze site"
+
+[searchPlaceholder]
+other = "Typ om te zoeken…"
+
+[searchResultsOne]
+other = "1 resultaat"
+
+[searchResultsMany]
+other = "%d resultaten"
+
+[searchFailed]
+other = "De zoekindex kon niet worden geladen."
+
+[searchNoScript]
+other = "Zoeken vereist JavaScript. Het archief is per tag en per datum te doorbladeren."
+
+[searchNoIndex]
+other = "Zoeken is niet ingesteld op deze site."
+
+[searchLoading]
+other = "Zoeken…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Alle tags op deze site, met het aantal berichten per tag."
+
+[taxonomyDescriptionCategory]
+other = "Alle categorieën op deze site, met het aantal berichten per categorie."
+
+[taxonomyDescription]
+other = "Alles waaronder deze site haar berichten indeelt."
+
+[termDescriptionTag]
+other = "Alle berichten met de tag “{{ .Term }}”."
+
+[termDescriptionCategory]
+other = "Alle berichten in de categorie “{{ .Term }}”."
+
+[termDescription]
+other = "Alle berichten ingedeeld onder “{{ .Term }}”."
+
+
+[toggleTheme]
+other = "Donker thema"
+
+[toggleMenu]
+other = "Menu"
+
+[language]
+other = "Taal"
+
+[pageNumber]
+other = "pagina {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Oorspronkelijk gepubliceerd op"
+
+[posts]
+other = "Berichten"
+
+[pages]
+other = "Pagina's"
+
+[shareOn]
+other = "Delen op {{ .Network }}"
+
+[shareViaEmail]
+other = "Delen via e-mail"
+
+[search]
+other = "Zoeken"
+
+[contents]
+other = "Inhoud"
+
+[llmsFullAt]
+other = "De volledige tekst van elke pagina hieronder:"
+
+[llmsFullAtFirst]
+other = "De volledige tekst van de eerste {{ .Kept }} pagina's hieronder:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} van {{ .Total }} pagina's, in de volgorde van llms.txt."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Link naar deze sectie"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Gerelateerde berichten"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} op {{ .Site }}"
+
+[feedDescription]
+other = "Recente inhoud in {{ .Title }} op {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Recente inhoud op {{ .Site }}"
+
+[seriesPart]
+other = "Deel {{ .Part }} van {{ .Total }} in {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Opmerking"
+
+[alertTip]
+other = "Tip"
+
+[alertImportant]
+other = "Belangrijk"
+
+[alertWarning]
+other = "Waarschuwing"
+
+[alertCaution]
+other = "Let op"

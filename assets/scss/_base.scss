@@ -270,8 +270,10 @@ em, i, strong {
 }
 
 // A wide formula scrolls in its own box, not the page. Under html to beat
-// katex.min.css, which loads later and sets the margin.
+// katex.min.css, which loads later and sets the margin. LTR as the formula is:
+// on an RTL page it overflowed on the start side, which cannot be scrolled to.
 html .katex-display {
+  direction: ltr;
   overflow-x: auto;
   overflow-y: hidden;
   // Room for limits overflow-y would clip, taken from the 1em margin.

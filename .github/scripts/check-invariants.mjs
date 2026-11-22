@@ -358,7 +358,10 @@ const checks = {
     // The container classes of > [!TITLE] and > [!ICON].
     for (const sel of [".alert-title", ".alert-icon svg"])
       if (rules(css(), sel).length) fail(`a bare ${sel} rule styles an alert whose type is its name`);
-    ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
+    // The title rule outranks .alert > :last-child, so a title-only alert needs its own.
+    if (!rules(css(), ".alert>.alert-title:last-child").some((b) => declares(b, "margin-bottom", "0")))
+      fail("no rule takes the bottom margin off a title-only alert");
+    ok("each alert gets its type and title, a sign folds it closed or open, a lone title adds no margin, and a plain blockquote stays one");
   },
 
   // #272
@@ -798,9 +801,9 @@ const checks = {
     const all = css();
     if (!rules(all, ".katex").some((b) => declares(b, "direction", "ltr") && declares(b, "unicode-bidi", "isolate")))
       fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
-    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && b.includes("padding-block")))
-      fail("no html .katex-display rule scrolls a wide formula in its own box, with room for its limits");
-    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
+    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && declares(b, "direction", "ltr") && b.includes("padding-block")))
+      fail("no html .katex-display rule scrolls a wide formula in its own LTR box, with room for its limits");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box, from its start");
   },
 
   // Colours a static scan never sees in use (focus ring, script-written status and
