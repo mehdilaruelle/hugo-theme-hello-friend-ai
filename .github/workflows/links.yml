@@ -296,6 +296,28 @@ jobs:
           grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
             || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
 
+      - name: Check the logo cursor names the section, and logoHomeLink reads a stray % as itself
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          # A non-ASCII base: the theme links /caf%c3%a9/, URL() gives /caf%C3%A9/.
+          HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true HUGO_PARAMS_LOGO_LOGOHOMELINK="50%off/" \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-path --baseURL "https://example.com/café/"
+          node ../.github/scripts/check-invariants.mjs public-logo-path logo-path index.html \
+            "https://example.com/caf%c3%a9/" "https://example.com/caf%C3%A9/" \
+            "https://example.com/caf%c3%a9/posts/=posts" "https://example.com/caf%C3%A9/posts/x/=posts"
+          grep -qF '<a href=/caf%C3%A9/50%25off/>' public-logo-path/index.html \
+            || { echo "  BAD  logoHomeLink = \"50%off/\" does not link /caf%C3%A9/50%25off/"; exit 1; }
+          # An escaped % in the base stays escaped, as the browser keeps it.
+          HUGO_PARAMS_LOGO_LOGOHOMELINK="" HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-pct --baseURL "https://example.com/50%25off/"
+          node ../.github/scripts/check-invariants.mjs public-logo-pct logo-path index.html \
+            "https://example.com/50%25off/" "https://example.com/50%25off/posts/=posts"
+          # canonifyURLs drops the subpath from RelPermalink.
+          HUGO_CANONIFYURLS=true HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-canon --baseURL "https://example.com/sub/"
+          node ../.github/scripts/check-invariants.mjs public-logo-canon logo-path index.html \
+            "https://example.com/sub/" "https://example.com/sub/posts/p1/=posts"
+
       # Neither demo ships favicons or overrides a theme file, so these paths
       # were never built.
       - name: Check a site's favicons and overridden theme files are used

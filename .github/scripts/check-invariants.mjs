@@ -200,6 +200,26 @@ const checks = {
     ok("the logo reads left-to-right on an RTL page");
   },
 
+  // logo.js on the page's data-base, as if opened at each "url=text" pair.
+  "logo-path"(page, ...want) {
+    const span = [...read(page).matchAll(/<span\b[^>]*>/gi)].find((m) => hasClass(m[0], "logo__pathname"));
+    if (!span) fail(`${page}: no logo cursor path`);
+    const base = attr(span[0], "data-base");
+    const src = readFileSync(new URL("../../assets/js/logo.js", import.meta.url), "utf8");
+    const bad = [];
+    for (const pair of want) {
+      const [url, text = ""] = pair.split("=");
+      const logo = { dataset: { base }, textContent: "" };
+      let load;
+      new Function("document", "window", src)({ querySelector: () => logo },
+        { location: new URL(url), addEventListener: (_, f) => { load = f; } });
+      load();
+      if (logo.textContent !== text) bad.push(`${url}: "${logo.textContent}", wanted "${text}"`);
+    }
+    if (bad.length) fail(`${page}: data-base="${base}" names the wrong section`, bad.join("\n"));
+    ok(`${page}: the cursor names the section from data-base="${base}"`);
+  },
+
   // Each entry as "Name=page" or "Name=true"; any other must carry no aria-current.
   "menu-current"(page, ...want) {
     const html = read(page);
