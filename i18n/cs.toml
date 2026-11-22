@@ -1,0 +1,197 @@
+# Translations for Czech
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Další jazykové verze:"
+
+
+# 404.html
+#
+[archives]
+other = "Archiv"
+
+[home]
+other = "Domů"
+
+[notFound]
+other = "Jejda, stránka nenalezena…"
+
+
+# posts/single.html
+#
+# Czech counts in three forms: 1 minuta, 2–4 minuty, 0 and 5+ minut. `many`
+# only catches fractions, which take the genitive singular.
+[readingTime]
+one   = "Jedna minuta"
+few   = "{{ .Count }} minuty"
+many  = "{{ .Count }} minuty"
+other = "{{ .Count }} minut"
+
+[tableOfContents]
+other = "Obsah"
+
+[wordCount]
+one   = "Jedno slovo"
+few   = "{{ .Count }} slova"
+many  = "{{ .Count }} slova"
+other = "{{ .Count }} slov"
+
+[lastModified]
+other = "Naposledy aktualizováno"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Novější příspěvky"
+olderPosts = "Starší příspěvky"
+previousPage = "Předchozí stránka"
+nextPage = "Další stránka"
+
+[skipToContent]
+other = "Přejít na obsah"
+
+[copyCode]
+other = "Kopírovat"
+
+[copyCodeDone]
+other = "Zkopírováno"
+
+[copyCodeFailed]
+other = "Zkopírujte ručně"
+
+# Search
+#
+[searchLabel]
+other = "Hledat na webu"
+
+[searchPlaceholder]
+other = "Pište pro vyhledávání…"
+
+[searchResultsOne]
+other = "1 výsledek"
+
+# One string for every count above one, so the noun stays out of agreement
+# with it: "Výsledky: 3" and "Výsledky: 5" both read, "5 výsledky" would not.
+[searchResultsMany]
+other = "Výsledky: %d"
+
+[searchFailed]
+other = "Index vyhledávání se nepodařilo načíst."
+
+[searchNoScript]
+other = "Vyhledávání vyžaduje JavaScript. Archiv lze procházet podle štítků a data."
+
+[searchNoIndex]
+other = "Vyhledávání není na tomto webu nastaveno."
+
+[searchLoading]
+other = "Hledám…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Všechny štítky na tomto webu s počtem příspěvků u každého z nich."
+
+[taxonomyDescriptionCategory]
+other = "Všechny kategorie na tomto webu s počtem příspěvků v každé z nich."
+
+[taxonomyDescription]
+other = "Vše, podle čeho tento web třídí své příspěvky."
+
+[termDescriptionTag]
+other = "Všechny příspěvky se štítkem „{{ .Term }}“."
+
+[termDescriptionCategory]
+other = "Všechny příspěvky v kategorii „{{ .Term }}“."
+
+[termDescription]
+other = "Všechny příspěvky zařazené pod „{{ .Term }}“."
+
+
+[toggleTheme]
+other = "Tmavý motiv"
+
+[toggleMenu]
+other = "Menu"
+
+[language]
+other = "Jazyk"
+
+[pageNumber]
+other = "strana {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Původně publikováno na"
+
+[posts]
+other = "Příspěvky"
+
+[pages]
+other = "Stránky"
+
+[shareOn]
+other = "Sdílet na síti {{ .Network }}"
+
+[shareViaEmail]
+other = "Sdílet e-mailem"
+
+[search]
+other = "Hledat"
+
+# Not "Obsah", which is already the table of contents.
+[contents]
+other = "Obsah webu"
+
+[llmsFullAt]
+other = "Úplný text všech stránek níže:"
+
+[llmsFullAtFirst]
+other = "Úplný text prvních {{ .Kept }} stránek níže:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} z {{ .Total }} stránek, v pořadí podle llms.txt."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Odkaz na tuto sekci"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Související příspěvky"
+
+
+# rss.xml
+#
+# "na webu" and "z rubriky" keep the site and section names in the nominative,
+# so a name Czech would otherwise decline is printed as written.
+[feedTitle]
+other = "{{ .Title }} na webu {{ .Site }}"
+
+[feedDescription]
+other = "Nejnovější obsah z rubriky {{ .Title }} na webu {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Nejnovější obsah na webu {{ .Site }}"
+
+[seriesPart]
+other = "Díl {{ .Part }} z {{ .Total }} v sérii {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Poznámka"
+
+[alertTip]
+other = "Tip"
+
+[alertImportant]
+other = "Důležité"
+
+[alertWarning]
+other = "Varování"
+
+[alertCaution]
+other = "Upozornění"

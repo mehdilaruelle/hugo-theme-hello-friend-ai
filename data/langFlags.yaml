@@ -1,10 +1,16 @@
 # Modern Standard Arabic is not tied to a country; sa matches the ar-sa locale
 # the docs recommend, and is the conventional choice.
 ar: sa
+cs: cz
 da: dk
 de: de
+el: gr
 en: gb
 es: es
+# Persian is spoken in Iran, Afghanistan and Tajikistan; ir follows the fa-ir
+# locale, as sa does for Arabic. A site can map fa to af or tj in its own
+# data/langFlags.yaml.
+fa: ir
 fr: fr
 gl: es-ga
 hi: in
@@ -12,12 +18,17 @@ id: id
 it: it
 lmo: it
 ja: jp
+ko: kr
 ml: in
 nl: nl
+pl: pl
 pt-br: br
+pt-pt: pt
 ru: ru
+sv: se
 tr: tr
 uk: ua
+vi: vn
 zh-cn: cn
 zh-hk: hk
 zh-tw: tw

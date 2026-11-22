@@ -122,7 +122,7 @@
         {{- end }}
         {{- /* Comentario 3 (comentario.js) draws into a web component, not
                the <div> Commento fills. */ -}}
-        {{- if eq (lower (path.Base $commento.Path)) "comentario.js" }}
+        {{- if and $commento (eq (lower (path.Base $commento.Path)) "comentario.js") }}
         <script defer src="{{ $commentoParams.Url }}"></script>
         <comentario-comments></comentario-comments>
         {{- else }}

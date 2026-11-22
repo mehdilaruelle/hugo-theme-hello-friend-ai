@@ -1,0 +1,190 @@
+# Translations for Portuguese (Portugal)
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+#
+# European Portuguese, not a copy of pt-br: partilhar rather than compartilhar,
+# pesquisar rather than buscar, secção, ligação, the continuous "a pesquisar"
+# and «» quotes.
+
+# Generic
+#
+[postAvailable]
+other = "Também disponível em"
+
+
+# 404.html
+#
+[archives]
+other = "Arquivo"
+
+[home]
+other = "Início"
+
+[notFound]
+other = "Ups, página não encontrada…"
+
+
+# posts/single.html
+#
+[readingTime]
+one   = "{{ .Count }} minuto"
+other = "{{ .Count }} minutos"
+
+[tableOfContents]
+other = "Índice"
+
+[wordCount]
+one   = "{{ .Count }} palavra"
+other = "{{ .Count }} palavras"
+
+[lastModified]
+other = "Última atualização"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Artigos mais recentes"
+olderPosts = "Artigos mais antigos"
+previousPage = "Página anterior"
+nextPage = "Página seguinte"
+
+[skipToContent]
+other = "Saltar para o conteúdo"
+
+[copyCode]
+other = "Copiar"
+
+[copyCodeDone]
+other = "Copiado"
+
+[copyCodeFailed]
+other = "Copie manualmente"
+
+# Search
+#
+[searchLabel]
+other = "Pesquisar neste site"
+
+[searchPlaceholder]
+other = "Escreva para pesquisar…"
+
+[searchResultsOne]
+other = "1 resultado"
+
+[searchResultsMany]
+other = "%d resultados"
+
+[searchFailed]
+other = "Não foi possível carregar o índice de pesquisa."
+
+[searchNoScript]
+other = "A pesquisa requer JavaScript. O arquivo pode ser consultado por etiqueta e por data."
+
+[searchNoIndex]
+other = "A pesquisa não está configurada neste site."
+
+[searchLoading]
+other = "A pesquisar…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Todas as etiquetas deste site, com o número de artigos em cada uma."
+
+[taxonomyDescriptionCategory]
+other = "Todas as categorias deste site, com o número de artigos em cada uma."
+
+[taxonomyDescription]
+other = "Tudo aquilo em que este site organiza os seus artigos."
+
+[termDescriptionTag]
+other = "Todos os artigos com a etiqueta «{{ .Term }}»."
+
+[termDescriptionCategory]
+other = "Todos os artigos na categoria «{{ .Term }}»."
+
+[termDescription]
+other = "Todos os artigos arquivados em «{{ .Term }}»."
+
+
+[toggleTheme]
+other = "Tema escuro"
+
+[toggleMenu]
+other = "Menu"
+
+[language]
+other = "Idioma"
+
+[pageNumber]
+other = "página {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Publicado originalmente em"
+
+[posts]
+other = "Artigos"
+
+[pages]
+other = "Páginas"
+
+[shareOn]
+other = "Partilhar no {{ .Network }}"
+
+[shareViaEmail]
+other = "Partilhar por e-mail"
+
+[search]
+other = "Pesquisar"
+
+[contents]
+other = "Conteúdo"
+
+[llmsFullAt]
+other = "O texto completo de todas as páginas abaixo:"
+
+[llmsFullAtFirst]
+other = "O texto completo das primeiras {{ .Kept }} páginas abaixo:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} de {{ .Total }} páginas, pela ordem em que o llms.txt as lista."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Ligação para esta secção"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Artigos relacionados"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} em {{ .Site }}"
+
+[feedDescription]
+other = "Conteúdo recente de {{ .Title }} em {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Conteúdo recente em {{ .Site }}"
+
+[seriesPart]
+other = "Parte {{ .Part }} de {{ .Total }} da série {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Nota"
+
+[alertTip]
+other = "Dica"
+
+[alertImportant]
+other = "Importante"
+
+[alertWarning]
+other = "Aviso"
+
+[alertCaution]
+other = "Atenção"

@@ -13,8 +13,8 @@
 {{- $local := false -}}
 {{- if $entry.URL -}}
   {{- with (try (urls.Parse (partialCached "menu-url.html" $entry $entry.URL (not $entry.Page)))).Value -}}
-    {{- /* Same host: compared by path. */ -}}
-    {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (eq .Host $site.Host)) -}}
+    {{- /* Same host, which mailto: lacks: compared by path. */ -}}
+    {{- if and (not (or .RawQuery .Fragment)) (or (not (or .Scheme .Host)) (and .Host (eq .Host $site.Host))) -}}
       {{- $url = replaceRE $trim "" .Path -}}
       {{- $local = true -}}
     {{- end -}}

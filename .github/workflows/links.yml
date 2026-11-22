@@ -130,8 +130,12 @@ jobs:
           node ../.github/scripts/check-links.mjs public-menu-ugly https://example.com/subpath/
           grep -q '<a href=/subpath/#top>' public-menu-ugly/posts/index.html \
             || { echo "  BAD  the logo does not link /subpath/#top"; exit 1; }
-          # More has two entries, unlike the demos' submenus.
+          # More has several entries, unlike the demos' submenus.
           node ../.github/scripts/check-invariants.mjs public-menu-current submenu-panel
+          # A host-less baseURL: mailto: and tel: have no host either.
+          hugo --themesDir ../.. --gc --minify --destination public-menu-root \
+            --config config.toml,../.github/fixtures/menu-current.toml --baseURL /
+          node ../.github/scripts/check-invariants.mjs public-menu-root menu-current index.html Home=page
 
       # No demo lists more posts than a pager holds, so the order was never paged.
       - name: Check posts are paged and linked newest first
@@ -165,6 +169,12 @@ jobs:
           echo "  a ProfilePage section is described as one"
           grep -qF '"description":"Notes on DevOps \u0026 SRE"' public-seo-shapes/index.html \
             || { echo "  BAD  markup in params.description reached the JSON-LD"; exit 1; }
+          # The home's own description is text: <T> is not a tag.
+          hugo --themesDir ../.. --gc --minify --destination public-seo-home \
+            --contentDir ../.github/fixtures/seo-home \
+            --config config.toml,../.github/fixtures/seo-shapes.toml
+          grep -qF '"description":"Notes on List\u003cString\u003e, Option\u003cT\u003e and the \u003cdialog\u003e element"' \
+            public-seo-home/index.html || { echo "  BAD  the home's own description lost its <…> text in the JSON-LD"; exit 1; }
           # A stray % must not end the build.
           f=public-seo-shapes/posts/2026/10/half-price-a-file-name-with-a-percent-sign/index.html
           for want in '<meta property="og:image" content="https://example.com/img/50%25off.png">' \
@@ -187,9 +197,23 @@ jobs:
           echo "  the build warns that the md copy would replace the HTML"
           [ -f public-md-url/llms.txt ] && ! grep -qx '\*\*\*\*' public-md-url/llms.txt \
             || { cat public-md-url/llms.txt; echo "  BAD  an empty heading became a rule in llms.txt"; exit 1; }
-          for want in '> **A quoted heading**' '- **A listed heading**'; do
+          for want in '> **A quoted heading**' '- **A listed heading**' '**A setext heading**' '**Another setext heading**' '**#hashtag**'; do
             grep -qxF -- "$want" public-md-url/llms.txt || { cat public-md-url/llms.txt; echo "  BAD  no line reading: $want"; exit 1; }
           done
+          for h in 'A setext heading' 'Another setext heading' '#hashtag'; do
+            ! grep -A1 -xF "**$h**" public-md-url/llms.txt | tail -1 | grep -qxE '(=+|-+)' \
+              || { echo "  BAD  the underline of $h is left in llms.txt"; exit 1; }
+          done
+          # After a list item or a table row, --- is a rule, not an underline.
+          for l in '  its continuation' '| 1 | 2 |'; do
+            grep -A1 -xF -- "$l" public-md-url/llms.txt | tail -1 | grep -qx -- '---' \
+              || { echo "  BAD  the rule after \"$l\" was read as a setext underline"; exit 1; }
+          done
+          # An Org page's copy carries its text, not its Org syntax.
+          f=public-md-url/org/index.md
+          grep -qF 'A heading in Org' "$f" && ! grep -qE '^\* |\[\[|#\+BEGIN_SRC' "$f" \
+            || { cat "$f"; echo "  BAD  the Org page's md copy carries Org syntax, or nothing"; exit 1; }
+          echo "  a page not written in Markdown is copied as text"
           # A link around a picture, and one after an escaped backslash, are absolute in llms-full.txt.
           g=https://example.com/gallery
           for want in "[![the thumbnail]($g/thumb.svg)]($g/full.svg)" "[C:\\\\]($g/full.svg)" "\\\\[the file]($g/thumb.svg)"; do
@@ -212,6 +236,15 @@ jobs:
             --config config.toml,../.github/fixtures/markdown-images.toml
           grep -q 'class="circle portrait"' public-portrait/index.html && grep -q 'sizes=50vw' public-portrait/index.html \
             || { echo "  BAD  the portrait has an invalid sizes"; exit 1; }
+          # In a CSS function too: every % as vw, and no var() in any case.
+          for pair in 'clamp(80px, 20%, 160px)|sizes="clamp(80px, 20vw, 160px)"' 'VAR(--x)|sizes="(max-width: 800px) 100vw, 800px"'; do
+            HUGO_PARAMS_PORTRAIT_PATH="img/an example.png" HUGO_PARAMS_PORTRAIT_MAXWIDTH="${pair%%|*}" \
+              hugo --themesDir ../.. --gc --minify --destination public-portrait-fn \
+              --contentDir ../.github/fixtures/markdown-images \
+              --config config.toml,../.github/fixtures/markdown-images.toml > /dev/null
+            grep -o '<img[^>]*circle portrait[^>]*>' public-portrait-fn/index.html | grep -qF "${pair#*|}" \
+              || { echo "  BAD  maxWidth = \"${pair%%|*}\" does not give ${pair#*|}"; exit 1; }
+          done
           grep -q 'post-cover><img[^>]*sizes=99vw' public-portrait/posts/2026/10/a-cover-named-like-a-glob/index.html \
             || { echo "  BAD  imageSizes does not reach the cover"; exit 1; }
           # The card names the cover, not the file its name matches as a glob.
@@ -292,6 +325,28 @@ jobs:
           grep -q 'portrait{max-width:clamp(80px,20vw,160px)}' public-cursor-set/main-*.css \
             || { echo "  BAD  a portrait width in clamp() was turned away"; exit 1; }
 
+      - name: Check the logo cursor names the section, and logoHomeLink reads a stray % as itself
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          # A non-ASCII base: the theme links /caf%c3%a9/, URL() gives /caf%C3%A9/.
+          HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true HUGO_PARAMS_LOGO_LOGOHOMELINK="50%off/" \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-path --baseURL "https://example.com/café/"
+          node ../.github/scripts/check-invariants.mjs public-logo-path logo-path index.html \
+            "https://example.com/caf%c3%a9/" "https://example.com/caf%C3%A9/" \
+            "https://example.com/caf%c3%a9/posts/=posts" "https://example.com/caf%C3%A9/posts/x/=posts"
+          grep -qF '<a href=/caf%C3%A9/50%25off/>' public-logo-path/index.html \
+            || { echo "  BAD  logoHomeLink = \"50%off/\" does not link /caf%C3%A9/50%25off/"; exit 1; }
+          # An escaped % in the base stays escaped, as the browser keeps it.
+          HUGO_PARAMS_LOGO_LOGOHOMELINK="" HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-pct --baseURL "https://example.com/50%25off/"
+          node ../.github/scripts/check-invariants.mjs public-logo-pct logo-path index.html \
+            "https://example.com/50%25off/" "https://example.com/50%25off/posts/=posts"
+          # canonifyURLs drops the subpath from RelPermalink.
+          HUGO_CANONIFYURLS=true HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
+            hugo --themesDir ../.. --gc --minify --destination public-logo-canon --baseURL "https://example.com/sub/"
+          node ../.github/scripts/check-invariants.mjs public-logo-canon logo-path index.html \
+            "https://example.com/sub/" "https://example.com/sub/posts/p1/=posts"
+
       # Neither demo ships favicons or overrides a theme file, so these paths
       # were never built.
       - name: Check a site's favicons and overridden theme files are used
@@ -330,7 +385,7 @@ jobs:
           ! grep -q 'javascript:' public-shapes/index.html || { echo "  BAD  a javascript: link was written"; exit 1; }
           node ../.github/scripts/check-markup.mjs public-shapes
           echo "  contact schemes as given, javascript: dropped"
-          for id in ogimage-shape verification-shape credentials-shape css-param-invalid portrait-width-invalid url-scheme-refused default-theme-value; do
+          for id in ogimage-shape verification-shape credentials-shape author-description-shape css-param-invalid portrait-width-invalid url-scheme-refused default-theme-value; do
             grep -q "$id" <<< "$out" || { echo "  BAD  no $id warning"; exit 1; }
           done
           grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
@@ -357,6 +412,17 @@ jobs:
           grep -qF '"author":[{"@type":"Person","name":"Ann"},{"@type":"Person","name":"Bob"}]' "$f" \
             || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
           echo "  a list of authors names each of them"
+
+      - name: Check the footer draws no empty block
+        working-directory: hello-friend-ai/exampleSite
+        run: |
+          # The rss switch on, but no feed to link: only bottomText is left.
+          HUGO_DISABLEKINDS=rss HUGO_PARAMS_FOOTER_TRADEMARK=false HUGO_PARAMS_FOOTER_AUTHOR=false \
+            HUGO_PARAMS_FOOTER_COPYRIGHT=false hugo --themesDir ../.. --gc --minify --destination public-footer
+          [ "$(grep -o 'class=footer__inner' public-footer/index.html | wc -l)" = 1 ] \
+            && ! grep -q 'footer__content></div>' public-footer/index.html \
+            || { echo "  BAD  an empty footer block was drawn"; exit 1; }
+          echo "  rss on with no feed draws no footer block"
 
       - name: Check a table-shaped params.social
         working-directory: hello-friend-ai/exampleSite
@@ -540,15 +606,29 @@ jobs:
                       '    Its second paragraph: it’s decoded.' 'inside a plain fence, &rsquo; stays' \
                       'Out of the quote, it’s prose again.' '    Its second paragraph: it’s decoded as well.' \
                       'Under it, it’s prose.' 'Under that, it’s prose too.' \
-                      '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.'; do
+                      '    echo it&rsquo;s code in a list item' 'After the list, it’s prose.' \
+                      'Out of the list again, it’s prose.'; do
             grep -qxF -- "$want" "$md" || { echo "  BAD  no line reading: $want"; bad=1; }
           done
+          # The item's end closed its fence: a closer here would open a new one.
+          grep -A3 -xF 'Out of the list again, it’s prose.' "$md" | grep -q '```' \
+            && { echo "  BAD  a fence its list item closed got a closer"; bad=1; }
+          md=public/llms-links/fences/index.md
+          grep -qxF '  it&rsquo;s code in the item, after its sub-item' "$md" \
+            || { echo "  BAD  a fence back in a parent item was read as prose"; bad=1; }
+          # A marker at the margin ends the item's fence and opens one, which gets the closer.
+          grep -A1 -xF 'still code after that marker' "$md" | tail -1 | grep -qx '```' \
+            || { echo "  BAD  a fence opened at the margin after a list's fence got no closer"; bad=1; }
           md=public/llms-links/text-edges/index.md
           grep -qx '    $ hugo new site demo' "$md" || { echo "  BAD  a body opening with indented code lost its indent"; bad=1; }
           grep -qF '\_\_init\_\_ and \*args' "$md" || { echo "  BAD  the summary is read as Markdown"; bad=1; }
-          awk '/<details class="faq">/,/<\/details>/' "$md" | sed '$d' | grep -qx '' \
-            && { echo "  BAD  a blank line inside the faq ends its HTML block"; bad=1; }
+          for f in "$md" public/llms-links/escapes/index.md; do
+            awk '/<details class="faq">/,/<\/details>/' "$f" | sed '$d' | grep -qxE $'\r?' \
+              && { echo "  BAD  $f: a blank line inside the faq ends its HTML block"; bad=1; }
+          done
           grep -A2 -x 'hugo server' public/llms-full.txt | tail -1 | grep -qx '~~~' || { echo "  BAD  a fence left open swallows llms-full.txt"; bad=1; }
+          grep -A2 -x 'Out of the list, prose again.' "$md" | grep -q '```' \
+            && { echo "  BAD  a fence its list item closed got a closer, which opens a new one"; bad=1; }
           grep -B1 -F 'llms.txt と同じ順序です' public/ja/llms-full.txt | head -1 | grep -qx '' \
             || { echo "  BAD  the truncation notice is glued to the line above"; bad=1; }
           [ "$bad" = 0 ] && echo "  the Markdown copy reads as the page does"
@@ -593,6 +673,8 @@ jobs:
           for f in about/index.html kept-out-quoted/index.html; do
             [ "$(grep -cE 'rel=preload href=https://example.com|"url":""|"@id":"#person"|article:author" content>' "public-relative/$f")" = 0 ] \
               || { echo "  BAD  $f: an absolute font preload, or an empty author URL, or no page"; exit 1; }
+            grep -qF 'href=../css/custom.css>' "public-relative/$f" && grep -qF 'src=../js/custom.js>' "public-relative/$f" \
+              || { echo "  BAD  $f: customCSS or customJS is not relative"; exit 1; }
           done
           echo "  head URLs are relative or complete"
 
@@ -710,6 +792,15 @@ jobs:
             && [ "$(count 'comments.example.org/comentario.js' "$f")" = 1 ] \
             || { echo "  BAD  comentario.js does not get its script, one <comentario-comments> and no data-id-root"; bad=1; }
           [ "$bad" = 0 ] && echo "  Commento gets its <div>, Comentario 3 its <comentario-comments>"
+          # An unparsable url is the site's to fix, not a reason to abort.
+          HUGO_PARAMS_COMMENTO_URL="http://[::1/js/commento.js" \
+            hugo --themesDir ../.. --gc --minify \
+            --config ../exampleSite/config.toml,config.toml,config-comments.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-commento-bad > /dev/null \
+            || { echo "  BAD  an unparsable commento url aborted the build"; exit 1; }
+          [ "$(count 'data-id-root' public-commento-bad/posts/2026/01/a-video-where-a-gif-used-to-be/index.html)" = 1 ] \
+            || { echo "  BAD  an unparsable commento url does not get the Commento markup"; bad=1; }
+          [ "$bad" = 0 ] && echo "  an unparsable url still builds, with the Commento markup"
           exit "$bad"
 
       - name: Check utterances follows the page's theme unless one is named

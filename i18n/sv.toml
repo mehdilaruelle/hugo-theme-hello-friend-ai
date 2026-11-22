@@ -1,0 +1,187 @@
+# Translations for Swedish
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Finns även på"
+
+
+# 404.html
+#
+[archives]
+other = "Arkiv"
+
+[home]
+other = "Hem"
+
+[notFound]
+other = "Hoppsan, sidan hittades inte…"
+
+
+# posts/single.html
+#
+[readingTime]
+one   = "En minut"
+other = "{{ .Count }} minuter"
+
+[tableOfContents]
+other = "Innehållsförteckning"
+
+[wordCount]
+one   = "Ett ord"
+other = "{{ .Count }} ord"
+
+[lastModified]
+other = "Senast uppdaterad"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Nyare inlägg"
+olderPosts = "Äldre inlägg"
+previousPage = "Föregående sida"
+nextPage = "Nästa sida"
+
+[skipToContent]
+other = "Hoppa till innehållet"
+
+[copyCode]
+other = "Kopiera"
+
+[copyCodeDone]
+other = "Kopierat"
+
+[copyCodeFailed]
+other = "Kopiera manuellt"
+
+# Search
+#
+[searchLabel]
+other = "Sök på webbplatsen"
+
+[searchPlaceholder]
+other = "Skriv för att söka…"
+
+[searchResultsOne]
+other = "1 träff"
+
+[searchResultsMany]
+other = "%d träffar"
+
+[searchFailed]
+other = "Sökindexet kunde inte läsas in."
+
+[searchNoScript]
+other = "Sökningen kräver JavaScript. Arkivet går att bläddra i efter tagg och datum."
+
+[searchNoIndex]
+other = "Sökning är inte inställd på den här webbplatsen."
+
+[searchLoading]
+other = "Söker…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Alla taggar på webbplatsen, med antalet inlägg under varje."
+
+[taxonomyDescriptionCategory]
+other = "Alla kategorier på webbplatsen, med antalet inlägg i varje."
+
+[taxonomyDescription]
+other = "Allt som webbplatsen sorterar sina inlägg under."
+
+# Swedish closes and opens a quotation with the same mark.
+[termDescriptionTag]
+other = "Alla inlägg taggade ”{{ .Term }}”."
+
+[termDescriptionCategory]
+other = "Alla inlägg i kategorin ”{{ .Term }}”."
+
+[termDescription]
+other = "Alla inlägg under ”{{ .Term }}”."
+
+
+[toggleTheme]
+other = "Mörkt tema"
+
+[toggleMenu]
+other = "Meny"
+
+[language]
+other = "Språk"
+
+[pageNumber]
+other = "sida {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Ursprungligen publicerad på"
+
+[posts]
+other = "Inlägg"
+
+[pages]
+other = "Sidor"
+
+[shareOn]
+other = "Dela på {{ .Network }}"
+
+[shareViaEmail]
+other = "Dela via e-post"
+
+[search]
+other = "Sök"
+
+[contents]
+other = "Innehåll"
+
+[llmsFullAt]
+other = "Den fullständiga texten för varje sida nedan:"
+
+[llmsFullAtFirst]
+other = "Den fullständiga texten för de första {{ .Kept }} sidorna nedan:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} av {{ .Total }} sidor, i den ordning llms.txt listar dem."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Länk till det här avsnittet"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Relaterade inlägg"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} på {{ .Site }}"
+
+[feedDescription]
+other = "Senaste innehållet i {{ .Title }} på {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Senaste innehållet på {{ .Site }}"
+
+[seriesPart]
+other = "Del {{ .Part }} av {{ .Total }} i {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Notera"
+
+[alertTip]
+other = "Tips"
+
+[alertImportant]
+other = "Viktigt"
+
+[alertWarning]
+other = "Varning"
+
+[alertCaution]
+other = "Se upp"

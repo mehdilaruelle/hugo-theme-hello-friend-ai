@@ -200,6 +200,26 @@ const checks = {
     ok("the logo reads left-to-right on an RTL page");
   },
 
+  // logo.js on the page's data-base, as if opened at each "url=text" pair.
+  "logo-path"(page, ...want) {
+    const span = [...read(page).matchAll(/<span\b[^>]*>/gi)].find((m) => hasClass(m[0], "logo__pathname"));
+    if (!span) fail(`${page}: no logo cursor path`);
+    const base = attr(span[0], "data-base");
+    const src = readFileSync(new URL("../../assets/js/logo.js", import.meta.url), "utf8");
+    const bad = [];
+    for (const pair of want) {
+      const [url, text = ""] = pair.split("=");
+      const logo = { dataset: { base }, textContent: "" };
+      let load;
+      new Function("document", "window", src)({ querySelector: () => logo },
+        { location: new URL(url), addEventListener: (_, f) => { load = f; } });
+      load();
+      if (logo.textContent !== text) bad.push(`${url}: "${logo.textContent}", wanted "${text}"`);
+    }
+    if (bad.length) fail(`${page}: data-base="${base}" names the wrong section`, bad.join("\n"));
+    ok(`${page}: the cursor names the section from data-base="${base}"`);
+  },
+
   // Each entry as "Name=page" or "Name=true"; any other must carry no aria-current.
   "menu-current"(page, ...want) {
     const html = read(page);
@@ -361,7 +381,10 @@ const checks = {
     // The container classes of > [!TITLE] and > [!ICON].
     for (const sel of [".alert-title", ".alert-icon svg"])
       if (rules(css(), sel).length) fail(`a bare ${sel} rule styles an alert whose type is its name`);
-    ok("each alert gets its type and title, a sign folds it closed or open, and a plain blockquote stays one");
+    // The title rule outranks .alert > :last-child, so a title-only alert needs its own.
+    if (!rules(css(), ".alert>.alert-title:last-child").some((b) => declares(b, "margin-bottom", "0")))
+      fail("no rule takes the bottom margin off a title-only alert");
+    ok("each alert gets its type and title, a sign folds it closed or open, a lone title adds no margin, and a plain blockquote stays one");
   },
 
   // #272
@@ -801,9 +824,9 @@ const checks = {
     const all = css();
     if (!rules(all, ".katex").some((b) => declares(b, "direction", "ltr") && declares(b, "unicode-bidi", "isolate")))
       fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
-    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && b.includes("padding-block")))
-      fail("no html .katex-display rule scrolls a wide formula in its own box, with room for its limits");
-    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box");
+    if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && declares(b, "direction", "ltr") && b.includes("padding-block")))
+      fail("no html .katex-display rule scrolls a wide formula in its own LTR box, with room for its limits");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box, from its start");
   },
 
   // Colours a static scan never sees in use (focus ring, script-written status and

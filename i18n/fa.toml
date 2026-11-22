@@ -1,0 +1,192 @@
+# Translations for Persian
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+#
+# Persian reads right to left: set direction = "rtl" on the language, as for
+# Arabic. Words like نوشته‌ها carry a zero-width non-joiner (U+200C) between
+# their parts; it is part of the spelling, not stray whitespace.
+
+# Generic
+#
+[postAvailable]
+other = "به زبان‌های دیگر:"
+
+
+# 404.html
+#
+[archives]
+other = "بایگانی"
+
+[home]
+other = "خانه"
+
+[notFound]
+other = "اوه، صفحه پیدا نشد…"
+
+
+# posts/single.html
+#
+# A noun after a number stays singular in Persian, so both forms read the same.
+# `one` covers 0 as well as 1, which is why it keeps the number.
+[readingTime]
+one   = "{{ .Count }} دقیقه"
+other = "{{ .Count }} دقیقه"
+
+[tableOfContents]
+other = "فهرست مطالب"
+
+[wordCount]
+one   = "{{ .Count }} واژه"
+other = "{{ .Count }} واژه"
+
+[lastModified]
+other = "آخرین به‌روزرسانی"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "نوشته‌های جدیدتر"
+olderPosts = "نوشته‌های قدیمی‌تر"
+previousPage = "صفحهٔ قبل"
+nextPage = "صفحهٔ بعد"
+
+[skipToContent]
+other = "رفتن به محتوا"
+
+[copyCode]
+other = "کپی"
+
+[copyCodeDone]
+other = "کپی شد"
+
+[copyCodeFailed]
+other = "دستی کپی کنید"
+
+# Search
+#
+[searchLabel]
+other = "جست‌وجو در این سایت"
+
+[searchPlaceholder]
+other = "برای جست‌وجو تایپ کنید…"
+
+[searchResultsOne]
+other = "1 نتیجه"
+
+[searchResultsMany]
+other = "%d نتیجه"
+
+[searchFailed]
+other = "بارگذاری فهرست جست‌وجو ممکن نشد."
+
+[searchNoScript]
+other = "جست‌وجو به JavaScript نیاز دارد. بایگانی را می‌توان بر اساس برچسب و تاریخ مرور کرد."
+
+[searchNoIndex]
+other = "جست‌وجو در این سایت پیکربندی نشده است."
+
+[searchLoading]
+other = "در حال جست‌وجو…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "همهٔ برچسب‌های این سایت، همراه با تعداد نوشته‌های هر کدام."
+
+[taxonomyDescriptionCategory]
+other = "همهٔ دسته‌های این سایت، همراه با تعداد نوشته‌های هر کدام."
+
+[taxonomyDescription]
+other = "همهٔ مواردی که این سایت نوشته‌هایش را زیر آن‌ها دسته‌بندی می‌کند."
+
+[termDescriptionTag]
+other = "همهٔ نوشته‌های دارای برچسب «{{ .Term }}»."
+
+[termDescriptionCategory]
+other = "همهٔ نوشته‌های دستهٔ «{{ .Term }}»."
+
+[termDescription]
+other = "همهٔ نوشته‌های ذیل «{{ .Term }}»."
+
+
+[toggleTheme]
+other = "پوستهٔ تیره"
+
+[toggleMenu]
+other = "منو"
+
+[language]
+other = "زبان"
+
+[pageNumber]
+other = "صفحهٔ {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "نخستین بار منتشرشده در"
+
+[posts]
+other = "نوشته‌ها"
+
+[pages]
+other = "صفحه‌ها"
+
+[shareOn]
+other = "اشتراک‌گذاری در {{ .Network }}"
+
+[shareViaEmail]
+other = "اشتراک‌گذاری با ایمیل"
+
+[search]
+other = "جست‌وجو"
+
+[contents]
+other = "محتوا"
+
+[llmsFullAt]
+other = "متن کامل همهٔ صفحه‌ها در ادامه:"
+
+[llmsFullAtFirst]
+other = "متن کامل {{ .Kept }} صفحهٔ نخست در ادامه:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} از {{ .Total }} صفحه، به ترتیبی که llms.txt فهرست کرده است."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "پیوند به این بخش"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "نوشته‌های مرتبط"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} در {{ .Site }}"
+
+[feedDescription]
+other = "تازه‌ترین محتوای {{ .Title }} در {{ .Site }}"
+
+[feedDescriptionSite]
+other = "تازه‌ترین محتوا در {{ .Site }}"
+
+[seriesPart]
+other = "بخش {{ .Part }} از {{ .Total }} در مجموعهٔ {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "یادداشت"
+
+[alertTip]
+other = "نکته"
+
+[alertImportant]
+other = "مهم"
+
+[alertWarning]
+other = "هشدار"
+
+[alertCaution]
+other = "احتیاط"

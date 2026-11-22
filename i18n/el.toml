@@ -1,0 +1,186 @@
+# Translations for Greek
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Διαθέσιμο επίσης στα"
+
+
+# 404.html
+#
+[archives]
+other = "Αρχείο"
+
+[home]
+other = "Αρχική"
+
+[notFound]
+other = "Ωχ, η σελίδα δεν βρέθηκε…"
+
+
+# posts/single.html
+#
+[readingTime]
+one   = "Ένα λεπτό"
+other = "{{ .Count }} λεπτά"
+
+[tableOfContents]
+other = "Πίνακας περιεχομένων"
+
+[wordCount]
+one   = "Μία λέξη"
+other = "{{ .Count }} λέξεις"
+
+[lastModified]
+other = "Τελευταία ενημέρωση"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Νεότερες αναρτήσεις"
+olderPosts = "Παλαιότερες αναρτήσεις"
+previousPage = "Προηγούμενη σελίδα"
+nextPage = "Επόμενη σελίδα"
+
+[skipToContent]
+other = "Μετάβαση στο περιεχόμενο"
+
+[copyCode]
+other = "Αντιγραφή"
+
+[copyCodeDone]
+other = "Αντιγράφηκε"
+
+[copyCodeFailed]
+other = "Αντιγράψτε χειροκίνητα"
+
+# Search
+#
+[searchLabel]
+other = "Αναζήτηση στον ιστότοπο"
+
+[searchPlaceholder]
+other = "Πληκτρολογήστε για αναζήτηση…"
+
+[searchResultsOne]
+other = "1 αποτέλεσμα"
+
+[searchResultsMany]
+other = "%d αποτελέσματα"
+
+[searchFailed]
+other = "Δεν ήταν δυνατή η φόρτωση του ευρετηρίου αναζήτησης."
+
+[searchNoScript]
+other = "Η αναζήτηση απαιτεί JavaScript. Μπορείτε να περιηγηθείτε στο αρχείο ανά ετικέτα και ανά ημερομηνία."
+
+[searchNoIndex]
+other = "Η αναζήτηση δεν έχει ρυθμιστεί σε αυτόν τον ιστότοπο."
+
+[searchLoading]
+other = "Αναζήτηση…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Όλες οι ετικέτες του ιστότοπου, με τον αριθμό των αναρτήσεων σε καθεμία."
+
+[taxonomyDescriptionCategory]
+other = "Όλες οι κατηγορίες του ιστότοπου, με τον αριθμό των αναρτήσεων σε καθεμία."
+
+[taxonomyDescription]
+other = "Όλα όσα χρησιμοποιεί ο ιστότοπος για να ταξινομεί τις αναρτήσεις του."
+
+[termDescriptionTag]
+other = "Όλες οι αναρτήσεις με την ετικέτα «{{ .Term }}»."
+
+[termDescriptionCategory]
+other = "Όλες οι αναρτήσεις στην κατηγορία «{{ .Term }}»."
+
+[termDescription]
+other = "Όλες οι αναρτήσεις που ταξινομούνται στο «{{ .Term }}»."
+
+
+[toggleTheme]
+other = "Σκούρο θέμα"
+
+[toggleMenu]
+other = "Μενού"
+
+[language]
+other = "Γλώσσα"
+
+[pageNumber]
+other = "σελίδα {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Αρχική δημοσίευση στο"
+
+[posts]
+other = "Αναρτήσεις"
+
+[pages]
+other = "Σελίδες"
+
+[shareOn]
+other = "Κοινοποίηση στο {{ .Network }}"
+
+[shareViaEmail]
+other = "Κοινοποίηση μέσω email"
+
+[search]
+other = "Αναζήτηση"
+
+[contents]
+other = "Περιεχόμενα"
+
+[llmsFullAt]
+other = "Το πλήρες κείμενο κάθε σελίδας παρακάτω:"
+
+[llmsFullAtFirst]
+other = "Το πλήρες κείμενο των πρώτων {{ .Kept }} σελίδων παρακάτω:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} από {{ .Total }} σελίδες, με τη σειρά του llms.txt."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Σύνδεσμος σε αυτή την ενότητα"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Σχετικές αναρτήσεις"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} στο {{ .Site }}"
+
+[feedDescription]
+other = "Πρόσφατο περιεχόμενο από {{ .Title }} στο {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Πρόσφατο περιεχόμενο στο {{ .Site }}"
+
+[seriesPart]
+other = "Μέρος {{ .Part }} από {{ .Total }} της σειράς {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Σημείωση"
+
+[alertTip]
+other = "Συμβουλή"
+
+[alertImportant]
+other = "Σημαντικό"
+
+[alertWarning]
+other = "Προειδοποίηση"
+
+[alertCaution]
+other = "Προσοχή"
