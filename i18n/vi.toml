@@ -1,0 +1,185 @@
+# Translations for Vietnamese
+# https://gohugo.io/content-management/multilingual/#translation-of-strings
+
+# Generic
+#
+[postAvailable]
+other = "Đọc bằng ngôn ngữ khác:"
+
+
+# 404.html
+#
+[archives]
+other = "Lưu trữ"
+
+[home]
+other = "Trang chủ"
+
+[notFound]
+other = "Rất tiếc, không tìm thấy trang…"
+
+
+# posts/single.html
+#
+# Vietnamese has a single plural category, so `other` covers every count.
+[readingTime]
+other = "{{ .Count }} phút"
+
+[tableOfContents]
+other = "Mục lục"
+
+[wordCount]
+other = "{{ .Count }} từ"
+
+[lastModified]
+other = "Cập nhật lần cuối"
+
+# partials/pagination-list.html
+[pagination]
+newerPosts = "Bài mới hơn"
+olderPosts = "Bài cũ hơn"
+previousPage = "Trang trước"
+nextPage = "Trang sau"
+
+[skipToContent]
+other = "Chuyển đến nội dung"
+
+[copyCode]
+other = "Sao chép"
+
+[copyCodeDone]
+other = "Đã sao chép"
+
+[copyCodeFailed]
+other = "Hãy sao chép thủ công"
+
+# Search
+#
+[searchLabel]
+other = "Tìm kiếm trên trang này"
+
+[searchPlaceholder]
+other = "Nhập để tìm kiếm…"
+
+[searchResultsOne]
+other = "1 kết quả"
+
+[searchResultsMany]
+other = "%d kết quả"
+
+[searchFailed]
+other = "Không thể tải chỉ mục tìm kiếm."
+
+[searchNoScript]
+other = "Tìm kiếm cần JavaScript. Bạn có thể duyệt kho lưu trữ theo thẻ và theo ngày."
+
+[searchNoIndex]
+other = "Trang này chưa cấu hình tìm kiếm."
+
+[searchLoading]
+other = "Đang tìm kiếm…"
+
+# partials/head.html
+[taxonomyDescriptionTag]
+other = "Tất cả các thẻ trên trang này, kèm số bài viết của mỗi thẻ."
+
+[taxonomyDescriptionCategory]
+other = "Tất cả các chuyên mục trên trang này, kèm số bài viết trong mỗi chuyên mục."
+
+[taxonomyDescription]
+other = "Mọi cách mà trang này dùng để phân loại bài viết."
+
+[termDescriptionTag]
+other = "Tất cả bài viết có thẻ “{{ .Term }}”."
+
+[termDescriptionCategory]
+other = "Tất cả bài viết trong chuyên mục “{{ .Term }}”."
+
+[termDescription]
+other = "Tất cả bài viết được xếp vào “{{ .Term }}”."
+
+
+[toggleTheme]
+other = "Giao diện tối"
+
+[toggleMenu]
+other = "Menu"
+
+[language]
+other = "Ngôn ngữ"
+
+[pageNumber]
+other = "trang {{ .Number }}"
+# Markdown output and llms.txt
+#
+[llmsCanonical]
+other = "Đăng lần đầu tại"
+
+[posts]
+other = "Bài viết"
+
+[pages]
+other = "Trang"
+
+[shareOn]
+other = "Chia sẻ lên {{ .Network }}"
+
+[shareViaEmail]
+other = "Chia sẻ qua email"
+
+[search]
+other = "Tìm kiếm"
+
+[contents]
+other = "Nội dung"
+
+[llmsFullAt]
+other = "Toàn văn của mọi trang bên dưới:"
+
+[llmsFullAtFirst]
+other = "Toàn văn của {{ .Kept }} trang đầu tiên bên dưới:"
+
+[llmsFullTruncated]
+other = "{{ .Kept }} trên {{ .Total }} trang, theo thứ tự trong llms.txt."
+
+# _markup/render-heading.html
+#
+[headingAnchor]
+other = "Liên kết đến mục này"
+
+
+# _partials/related.html
+#
+[relatedPosts]
+other = "Bài viết liên quan"
+
+
+# rss.xml
+#
+[feedTitle]
+other = "{{ .Title }} trên {{ .Site }}"
+
+[feedDescription]
+other = "Nội dung mới nhất trong {{ .Title }} trên {{ .Site }}"
+
+[feedDescriptionSite]
+other = "Nội dung mới nhất trên {{ .Site }}"
+
+[seriesPart]
+other = "Phần {{ .Part }}/{{ .Total }} trong loạt bài {{ .Series }}"
+
+# _markup/render-blockquote.html
+[alertNote]
+other = "Ghi chú"
+
+[alertTip]
+other = "Mẹo"
+
+[alertImportant]
+other = "Quan trọng"
+
+[alertWarning]
+other = "Cảnh báo"
+
+[alertCaution]
+other = "Thận trọng"
