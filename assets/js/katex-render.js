@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     throwOnError: false
   });
 
-  // Safari only lets the keyboard scroll a box that is a tab stop. Every one,
-  // as tables and code are: a formula that fits now may not after a resize.
+  // Safari only lets the keyboard scroll a tab stop, and a resize can make any formula overflow.
   for (const el of document.querySelectorAll('.katex-display')) el.tabIndex = 0;
 });

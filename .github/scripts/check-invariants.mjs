@@ -835,7 +835,7 @@ const checks = {
       fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
     if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && declares(b, "direction", "ltr") && b.includes("padding-block")))
       fail("no html .katex-display rule scrolls a wide formula in its own LTR box, with room for its limits");
-    // Every formula, as a load-time width test misses one a resize makes overflow.
+    // A load-time width test misses a formula that a resize makes overflow.
     const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).find((s) => s.includes("katex-display")) ?? "";
     if (!/\.tabIndex\s*=\s*0\b/.test(js) || /scrollWidth|clientWidth/.test(js))
       fail("not every display formula is a tab stop, so a keyboard cannot scroll one that overflows after a resize");
