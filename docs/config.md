@@ -1111,9 +1111,11 @@ browser over that array.
 Every word typed has to appear somewhere in the page — two words narrow the
 result rather than widening it. Case is ignored, and so are accents: *resume*
 finds *résumé*, because a reader searching for a word is not making that
-distinction. So are Arabic vowel marks, hamza and the tatweel; a kana's voicing mark is
-not: *シ* does not find *ジ*. A hit in the title counts for more than one in the body, and a
-hit in a tag for more than that; ties are broken by date, newest first.
+distinction; *lodz* finds *Łódź* and *strasse* *Straße* too. So are Arabic vowel marks, hamza
+and the tatweel, and in Persian the ZWNJ, Arabic-keyboard *ي* and *ك*, and Persian or
+Arabic-Indic digits, which match ASCII ones. A kana's voicing mark is not: *シ* does
+not find *ジ*. A hit in the title counts for more than one in the body, and a hit in
+a tag for more than that; ties are broken by date, newest first.
 
 Each language gets its own index and searches only itself.
 
