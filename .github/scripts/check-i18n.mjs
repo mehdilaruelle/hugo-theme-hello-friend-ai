@@ -61,10 +61,10 @@ const SPELLABLE = new Set(['zero', 'one', 'two']);
 const COUNT = 'Count';
 
 // CLDR 48: in these the form covers more than one count (21, 102, 10 …), so it
-// carries the number. fr, pt and hi too, whose `one` adds 0.
+// carries the number. fa, fr, hi and pt too, whose `one` adds 0.
 const RANGED = {
   be: ['one'], br: ['one', 'two'], bs: ['one'], ceb: ['one'], dsb: ['one', 'two'],
-  fil: ['one'], fr: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hi: ['one'],
+  fa: ['one'], fil: ['one'], fr: ['one'], gd: ['one', 'two'], gv: ['one', 'two'], hi: ['one'],
   hr: ['one'], hsb: ['one', 'two'], is: ['one'], kw: ['two'], lt: ['one'],
   lv: ['zero', 'one'], mk: ['one'], prg: ['zero', 'one'], pt: ['one'], ru: ['one'],
   sgs: ['one'], sl: ['one', 'two'], sr: ['one'], tl: ['one'], tzm: ['one'], uk: ['one'],
@@ -82,9 +82,13 @@ const localeOf = (file) =>
 
 const CATEGORY_SWEEP = 1000;
 
+// CLDR 49 gives vi a `one`, but Hugo's go-i18n still selects only other for it.
+const OTHER_ONLY = new Set(['vi']);
+
 // null for a language ICU does not know (lmo), which would fall back to en-US.
 const categoriesFor = (file) => {
   const tag = localeOf(file);
+  if (OTHER_ONLY.has(tag)) return new Map();
   if (Intl.PluralRules.supportedLocalesOf([tag]).length === 0) return null;
   const rules = new Intl.PluralRules(tag);
   const needed = new Map();
