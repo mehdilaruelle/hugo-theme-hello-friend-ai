@@ -73,9 +73,10 @@
 	{{- with .PublishDate }}
 		<meta property="article:published_time" {{ .Format $ISO8601 | printf "content=%q" | safeHTMLAttr }}>
 	{{- end }}
-	{{- with .Lastmod }}
+	{{- /* Not before publication, as dateModified in json-ld.html. */ -}}
+	{{- with .Lastmod }}{{ if not (.Before $.PublishDate) }}
 		<meta property="article:modified_time" {{ .Format $ISO8601 | printf "content=%q" | safeHTMLAttr }}>
-	{{- end }}
+	{{- end }}{{ end }}
 	{{- range .GetTerms "tags" | first 6 }}
 		<meta property="article:tag" content="{{ .Page.Title | plainify | safeHTML }}">
 	{{- end }}
