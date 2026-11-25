@@ -506,6 +506,7 @@ property in a stylesheet listed in `customCSS`:
 | `--color-strong` | text on a mid-tone ground: the table header, the hovered scrollbar |
 | `--control-border-color` | the frame of the copy button and the code-language label |
 | `--field-border-color` | the edge of the search field |
+| `--placeholder-color` | the search field's placeholder |
 | `--focus-ring` | the keyboard focus outline of the theme toggle, the menu button, the language switcher, the copy button and scrollable tables |
 | `--copy-done` / `--copy-failed` | the copy button's status text |
 | `--alert-note` … `--alert-caution` | the five alert types' accent: `note`, `tip`, `important`, `warning`, `caution` |
