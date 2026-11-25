@@ -14,8 +14,9 @@
   const input = form.querySelector("input[type=search]");
   const status = document.querySelector("[data-search-status]");
   const list = document.querySelector("[data-search-results]");
-  // .href, so the browser resolves whatever form Hugo's URL mode wrote.
-  const url = document.querySelector("[data-search-index]").href;
+  // .href, so the browser resolves whatever Hugo's URL mode wrote. An old
+  // head.html override has no link, and search then says it failed.
+  const url = (document.querySelector("[data-search-index]") || {}).href;
 
   form.hidden = false;
   form.addEventListener("submit", (e) => {
@@ -41,7 +42,7 @@
   function load() {
     if (index) return Promise.resolve(index);
     if (loading) return loading;
-    loading = fetch(url)
+    loading = (url ? fetch(url) : Promise.reject(new Error("no index link")))
       .then((r) => {
         if (!r.ok) throw new Error(r.status);
         return r.json();
