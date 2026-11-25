@@ -208,11 +208,9 @@ copyright = 'Text & images: <a href="https://creativecommons.org/licenses/by-nc/
     weight = 3
     locale = "ja-JP"
     label  = "日本語"
-    # Japanese has no spaces, so Hugo's default word count saw a paragraph as
-    # one word, under a label that reads "characters".
+    # Without it, an unspaced paragraph is one word under a "characters" label.
     hasCJKLanguage = true
-  # No dateformShort: Hugo's "Jan" is empty in Japanese, and this list is where
-  # CI checks the theme's fall back to the full month.
+  # No dateformShort, so CI checks the fallback for Hugo's empty "Jan" here.
   [languages.ja.params]
     subtitle     = "機能ショーケース"
     description  = "テーマのすべてのオプションを一度に有効にしたサイト"
