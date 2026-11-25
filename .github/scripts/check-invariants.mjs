@@ -898,7 +898,7 @@ const checks = {
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
-    // The copy states' tokens are unused if [data-theme=dark] button (0,1,1) outranks them.
+    // The copy states' tokens go unused if [data-theme=dark] button (0,1,1) outranks them.
     for (const t of ["done", "failed"])
       if (!rules(sheet, `.copy-code.copy-code--${t}`).some((b) => declares(b, "color", `var(--copy-${t})`)))
         bad.push(`.copy-code.copy-code--${t}: no rule in var(--copy-${t}), so the dark theme's button reset wins`);

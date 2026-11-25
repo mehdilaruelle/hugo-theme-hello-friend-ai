@@ -490,9 +490,8 @@ hr {
 
 // Chroma wraps the blocks it highlights in this; an unhighlighted block is a
 // bare pre. The spacing sits on the pre so that both are spaced alike, and the
-// wrapper adds none of its own on top. LTR for the same reason as pre: with
-// linenos=table the table sits outside the pre, and an RTL table drew the
-// line numbers to the right of the code.
+// wrapper adds none of its own on top. LTR as pre is, since a linenos=table
+// table sits outside the pre and RTL put its line numbers on the right.
 .highlight {
   margin: 0;
   direction: ltr;
@@ -533,8 +532,7 @@ hr {
     outline-offset: 2px;
   }
 
-  // Doubled to outrank the [data-theme=dark] button reset in _buttons.scss,
-  // which left both states in the base colour in the dark theme.
+  // Doubled to outrank the [data-theme=dark] button reset in _buttons.scss.
   &#{&}--done {
     color: var(--copy-done);
   }
