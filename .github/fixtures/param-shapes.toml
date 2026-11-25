@@ -17,7 +17,7 @@
     maxWidth = "120 px"
     path     = ["/img/a.png"]
   [params.fontFallback]
-    local = "Arial"   # one name: a list of one
+    local = "Arial"   # one name, not a list
   [params.ai]
     crawlers = ["User-agent: GPTBot", "Disallow: /"]
   [params.publisher.logo]

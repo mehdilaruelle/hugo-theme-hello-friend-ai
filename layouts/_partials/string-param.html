@@ -1,6 +1,6 @@
 {{- /* (dict "value" v "name" "cover"): v when it is a string, else "" with a
-       warning rather than a template error further down. "want" names what
-       was expected, a path unless given. */ -}}
+       warning rather than a template error further down. "want" defaults to
+       "a path". */ -}}
 {{- $out := "" -}}
 {{- $type := printf "%T" .value -}}
 {{- if eq $type "string" -}}
