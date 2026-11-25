@@ -44,6 +44,12 @@ though the frame stays empty until the video loads:
 intrinsic size until it loads, so without them the page reflows when it arrives.
 The `poster` is what fills the frame in the meantime.
 
+A clip can also sit in the post's own folder, a page bundle, next to its
+Markdown. Give the path without a leading slash and the shortcode finds it
+there, as `image` does:
+
+{{< video src="demo" poster="demo.jpg" width="640" height="360" alt="The same test pattern, from the page bundle" >}}
+
 Hugo has no built-in shortcode for this. It ships `youtube` and `vimeo`, but
 those embed somebody else's player; there is nothing for a file you host
 yourself.

@@ -39,6 +39,12 @@ l'autolecture et la boucle, le clip attend alors qu'on le démarre :
 pas de taille propre tant qu'elle n'est pas chargée, donc sans eux la page
 sursaute à son arrivée. Le `poster` remplit le cadre en attendant.
 
+Le clip peut aussi se trouver dans le dossier de l'article, un page bundle, à
+côté de son Markdown. Donnez le chemin sans barre oblique au début et le
+shortcode l'y trouve, comme `image` :
+
+{{< video src="demo" poster="demo.jpg" width="640" height="360" alt="La même mire, depuis le page bundle" >}}
+
 Hugo n'a pas de shortcode intégré pour ça. Il fournit `youtube` et `vimeo`, mais
 ceux-là encapsulent le lecteur de quelqu'un d'autre ; rien n'existe pour un
 fichier que vous hébergez vous-même.
