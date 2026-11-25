@@ -490,9 +490,12 @@ hr {
 
 // Chroma wraps the blocks it highlights in this; an unhighlighted block is a
 // bare pre. The spacing sits on the pre so that both are spaced alike, and the
-// wrapper adds none of its own on top.
+// wrapper adds none of its own on top. LTR for the same reason as pre: with
+// linenos=table the table sits outside the pre, and an RTL table drew the
+// line numbers to the right of the code.
 .highlight {
   margin: 0;
+  direction: ltr;
 }
 
 // The box the controls are positioned against. render-codeblock.html puts it
@@ -530,11 +533,13 @@ hr {
     outline-offset: 2px;
   }
 
-  &--done {
+  // Doubled to outrank the [data-theme=dark] button reset in _buttons.scss,
+  // which left both states in the base colour in the dark theme.
+  &#{&}--done {
     color: var(--copy-done);
   }
 
-  &--failed {
+  &#{&}--failed {
     color: var(--copy-failed);
   }
 }

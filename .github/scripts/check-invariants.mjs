@@ -828,6 +828,15 @@ const checks = {
     ok("an indented code block takes keyboard focus, clipboard or not");
   },
 
+  // With linenos=table Chroma's table is outside the pre, so its wrapper is pinned too.
+  "code-ltr"() {
+    const all = css();
+    for (const sel of ["pre", ".highlight"])
+      if (!rules(all, sel).some((b) => declares(b, "direction", "ltr")))
+        fail(`no ${sel} rule keeps code, and its line numbers, left to right on an RTL page`);
+    ok("code and its line numbers read left to right on an RTL page");
+  },
+
   // KaTeX sets no direction and no overflow: the theme has to.
   math() {
     const all = css();
@@ -889,6 +898,10 @@ const checks = {
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
+    // The copy states' tokens are unused if [data-theme=dark] button (0,1,1) outranks them.
+    for (const t of ["done", "failed"])
+      if (!rules(sheet, `.copy-code.copy-code--${t}`).some((b) => declares(b, "color", `var(--copy-${t})`)))
+        bad.push(`.copy-code.copy-code--${t}: no rule in var(--copy-${t}), so the dark theme's button reset wins`);
     if (bad.length) fail("a colour under its contrast minimum", bad.join("\n"));
     ok(`${pairs.length * 2} colour pairs meet their contrast minimum in both schemes`);
   },
