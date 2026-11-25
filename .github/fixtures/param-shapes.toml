@@ -4,6 +4,9 @@
   defaultTheme = "sepia"
   plausibleDataDomain = "example.org"   # without its script: src="" before
   verification = "abc"
+  imageMaxWidth = "1200px"   # a CSS length, as the other widths are written
+  description  = ["first", "second"]
+  homeSubtitle = ["a", "b"]
   [params.author]
     credentials = ["x"]
     description = ["Writes", "code"]
@@ -12,6 +15,17 @@
     logoCursorAnimate = 0   # a number: with read it as unset
   [params.portrait]
     maxWidth = "120 px"
+    path     = ["/img/a.png"]
+  [params.fontFallback]
+    local = "Arial"   # one name: a list of one
+  [params.ai]
+    crawlers = ["User-agent: GPTBot", "Disallow: /"]
+  [params.publisher.logo]
+    url = "/img/logo.png"
+
+# The text outputs read the subtitle and the description as well.
+[outputs]
+  home = ["HTML", "RSS", "JSON", "llms", "llmsfull", "md"]
 
 # Schemes html/template turned into #ZgotmplZ; javascript: must be dropped.
 [[params.social]]

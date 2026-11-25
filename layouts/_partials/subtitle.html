@@ -1,3 +1,3 @@
-{{- with .Site.Params.homeSubtitle }}
+{{- with partial "string-param.html" (dict "value" site.Params.homeSubtitle "name" "homeSubtitle" "want" "a string") }}
     <p>{{ . | safeHTML }}</p>
 {{- end }}

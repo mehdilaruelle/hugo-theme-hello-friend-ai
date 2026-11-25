@@ -8,7 +8,7 @@ The sentence a meta tag publishes: the page's own, the site's when it has
 */ -}}
 {{- $description := partial "description.html" . -}}
 {{- if not $description -}}
-  {{- $description = site.Params.description | plainify | htmlUnescape -}}
+  {{- $description = partial "string-param.html" (dict "value" site.Params.description "name" "description" "want" "a string") | plainify | htmlUnescape -}}
 {{- end -}}
 {{- $pager := (partial "canonical.html" .).pager -}}
 {{- $out := partial "pager-suffix.html" (dict "text" $description "pager" $pager) -}}

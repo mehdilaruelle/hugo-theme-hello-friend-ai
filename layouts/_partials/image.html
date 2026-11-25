@@ -16,7 +16,15 @@
   {{- $img = partial "find-resource.html" (dict "page" $page "src" $src) -}}
 {{- end -}}
 
-{{- $maxWidth := int (float (.maxWidth | default site.Params.imageMaxWidth | default 0)) -}}
+{{- /* A number of pixels, bare or in px as the other widths are written. */ -}}
+{{- $maxWidth := 0 -}}
+{{- with .maxWidth | default site.Params.imageMaxWidth -}}
+  {{- with findRESubmatch `^\s*([0-9]+(?:\.[0-9]+)?)\s*(?:px)?\s*$` (printf "%v" .) 1 -}}
+    {{- $maxWidth = int (float (index . 0 1)) -}}
+  {{- else -}}
+    {{- warnidf "image-max-width-shape" "imageMaxWidth: expected a number of pixels such as 1200, got %q. 1400 is used." (printf "%v" .) -}}
+  {{- end -}}
+{{- end -}}
 {{- if le $maxWidth 0 }}{{ $maxWidth = 1400 }}{{ end -}}
 {{- $rendered := $img -}}
 {{- $measurable := false -}}
