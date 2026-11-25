@@ -175,6 +175,41 @@ and many minutes rather than only at one and many.
 Persian ships as `i18n/fa.toml` too. It needs the same `direction = "rtl"`, and
 a `locale` such as `fa-IR`.
 
+### Dates and word counts in Chinese, Japanese, Korean and Arabic
+
+A list dates each post with `dateformShort`, `Jan 2` when unset. Hugo translates
+the month but keeps the layout's order, and has no abbreviated month in
+Japanese, Korean, Arabic or Lombard, so the theme writes the full one there:
+`3月 5`, `3월 5`, `مارس 5`. Chinese gets English month names whatever the layout. Set
+`dateformShort` per language for zh, ja, ko and ar:
+
+```toml
+[languages.zh-cn.params]
+  dateformShort = "1月2日"
+[languages.ja.params]
+  dateformShort = "1月2日"
+[languages.ko.params]
+  dateformShort = "1월 2일"
+[languages.ar.params]
+  dateformShort = "2 January"
+```
+
+The word count under a post is Hugo's, and by default Hugo counts words between
+spaces, so a Japanese or Chinese paragraph is one word under a label that reads
+*characters* (`文字`, `字`). Set `hasCJKLanguage = true` on those languages and
+Hugo counts each character; reading time follows. Korean is written with spaces
+and its label reads *words* (`단어`), so leave it off there, and if you set it
+at the root, turn it back off for Korean:
+
+```toml
+[languages.ja]
+  hasCJKLanguage = true
+[languages.zh-cn]
+  hasCJKLanguage = true
+[languages.ko]
+  hasCJKLanguage = false   # only needed when the root sets it to true
+```
+
 ## Proving you own the site
 
 Every search console offers two ways to verify ownership: upload a file to the

@@ -208,10 +208,12 @@ copyright = 'Text & images: <a href="https://creativecommons.org/licenses/by-nc/
     weight = 3
     locale = "ja-JP"
     label  = "日本語"
-  # No abbreviated month exists in CLDR for either language, so "Jan" resolves
-  # to an empty string and the list date came out as a bare day number.
+    # Japanese has no spaces, so Hugo's default word count saw a paragraph as
+    # one word, under a label that reads "characters".
+    hasCJKLanguage = true
+  # No dateformShort: Hugo's "Jan" is empty in Japanese, and this list is where
+  # CI checks the theme's fall back to the full month.
   [languages.ja.params]
-    dateformShort = "January 2"
     subtitle     = "機能ショーケース"
     description  = "テーマのすべてのオプションを一度に有効にしたサイト"
     homeSubtitle = "すべてのスイッチを入れた状態です"
