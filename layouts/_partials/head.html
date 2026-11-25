@@ -51,8 +51,7 @@
 <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" />
 {{- end }}
 {{- end }}
-{{- /* The index search.js fetches. In an href, not a data- attribute, so that
-       canonifyURLs and relativeURLs rewrite it like every other URL. */ -}}
+{{- /* search.js's index, in an href so that Hugo's URL modes rewrite it. */ -}}
 {{- if eq .Layout "search" }}
 {{- with site.Home.OutputFormats.Get "json" }}
 <link rel="alternate" type="application/json" href="{{ .RelPermalink }}" data-search-index />

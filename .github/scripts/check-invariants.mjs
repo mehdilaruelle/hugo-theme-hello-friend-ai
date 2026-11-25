@@ -675,8 +675,7 @@ const checks = {
     ok("a bare string and a list of one name the same file");
   },
 
-  // FE-20: served at root, each search page finds its index and its results
-  // under root, whatever Hugo's URL mode wrote.
+  // FE-20: served at root, each search page's index and results stay under it.
   "search-urls"(root) {
     const file = (u) => join(dir, decodeURIComponent(u.pathname.slice(new URL(root).pathname.length)), u.pathname.endsWith("/") ? "index.html" : "");
     const under = (u, what) => {

@@ -14,8 +14,7 @@
   const input = form.querySelector("input[type=search]");
   const status = document.querySelector("[data-search-status]");
   const list = document.querySelector("[data-search-results]");
-  // .href, not the attribute: the browser resolves whatever Hugo wrote there,
-  // root-relative, relative or absolute.
+  // .href, so the browser resolves whatever form Hugo's URL mode wrote.
   const url = document.querySelector("[data-search-index]").href;
 
   form.hidden = false;
@@ -143,7 +142,6 @@
         hits.forEach((h) => {
           const li = document.createElement("li");
           const a = document.createElement("a");
-          // Relative to the index, so it keeps whatever path the index was found on.
           a.href = new URL(h.page.url, url).href;
           a.textContent = h.page.title;
           li.appendChild(a);

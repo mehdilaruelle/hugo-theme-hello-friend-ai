@@ -10,11 +10,8 @@
 
   Set searchable = false in a page's front matter to keep it out.
 
-  Each url is relative to the index's own directory, and search.js resolves
-  it against the index's URL. A root-relative one would lose the subpath
-  under canonifyURLs and the build's location under relativeURLs, since
-  Hugo rewrites neither inside a JSON body. The directory and not
-  site.Home.RelPermalink, which is .../index.html under uglyURLs.
+  Each url is relative to the index, and search.js resolves it there:
+  canonifyURLs and relativeURLs never rewrite a JSON body.
 
   htmlUnescape appears twice, and each one has its own job. .Plain leaves
   the entities the renderer produced — the apostrophes Goldmark turns into

@@ -7,11 +7,9 @@
   the script blocked, the page says search is unavailable rather than
   presenting a box that does nothing.
 
-  The index URL is per-language, so the template passes it: head.html writes
-  it as a <link>, where Hugo's URL rewriting reaches it.
+  head.html links the index, where Hugo's URL rewriting reaches it.
 */ -}}
-{{- $index := "" -}}
-{{- with site.Home.OutputFormats.Get "json" }}{{ $index = .RelPermalink }}{{ end -}}
+{{- $index := site.Home.OutputFormats.Get "json" -}}
 
 <div class="content">
   <main id="hf-main" class="post">
