@@ -243,8 +243,7 @@ for (const file of walk(root, ".html")) {
     }
   }
 
-  // 9b. Never modified before it was published. Lastmod defaults to date, not
-  //     publishDate, so a post scheduled after its date said exactly that.
+  // 9b. Never modified before published: Lastmod defaults to date, not publishDate.
   const dated = [
     ["dateModified", article?.dateModified, "datePublished", article?.datePublished],
     ["article:modified_time", all(og, "article:modified_time")[0], "article:published_time", all(og, "article:published_time")[0]],
