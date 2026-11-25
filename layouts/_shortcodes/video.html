@@ -22,12 +22,11 @@
 {{- $controls := partialCached "switch.html" (.Get "controls") (.Get "controls") -}}
 {{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
-{{- /* A file in the page bundle or assets/ is served where Hugo publishes it;
-       any other path is joined to the base URL, which keeps a subpath and
-       leaves a remote URL alone. */ -}}
+{{- /* A bundle or assets/ file is linked where Hugo publishes it; anything
+       else is joined to the base URL, as before. */ -}}
 {{- define "partials/inline/video-url" -}}
   {{- $url := printf "%v" .src -}}
-  {{- with and (not (partial "is-remote.html" $url)) (partial "find-resource.html" (dict "page" .page "src" $url)) -}}
+  {{- with partial "find-resource.html" (dict "page" .page "src" $url) -}}
     {{- $url = .RelPermalink -}}
   {{- else -}}
     {{- $url = partialCached "abs-url.html" $url $url -}}

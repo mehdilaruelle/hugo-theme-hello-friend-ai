@@ -177,10 +177,9 @@ the weight. Encode once with ffmpeg and drop the files next to your images.
 
 Properties:
 
-  - `src` (required, the path **without** an extension). Each file, the
-    `poster` too, is looked for as a picture is: in the page bundle, then
-    under `assets/`; else it is served from `static/` under the base URL, or
-    as written when remote
+  - `src` (required, the path **without** an extension). It and `poster` are
+    looked for in the page bundle, then `assets/`, like an image; else under
+    the base URL (`static/`), or as written when remote
   - `poster` (optional, an image shown before the clip loads)
   - `width` / `height` (optional but recommended — a video has no size until it
     loads, and the page jumps around without them)
