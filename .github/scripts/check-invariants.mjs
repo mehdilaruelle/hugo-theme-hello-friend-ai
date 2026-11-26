@@ -828,6 +828,13 @@ const checks = {
     ok("an indented code block takes keyboard focus, clipboard or not");
   },
 
+  // A linenos=table table sits outside the pre, so pre's ltr does not reach it.
+  "code-ltr"() {
+    if (!rules(css(), ".highlight").some((b) => declares(b, "direction", "ltr")))
+      fail("no .highlight rule keeps a linenos=table gutter left of the code on an RTL page");
+    ok("a linenos=table gutter stays left of the code on an RTL page");
+  },
+
   // KaTeX sets no direction and no overflow: the theme has to.
   math() {
     const all = css();
@@ -889,6 +896,9 @@ const checks = {
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
+    for (const t of ["done", "failed"])
+      if (!rules(sheet, `.copy-code.copy-code--${t}`).some((b) => declares(b, "color", `var(--copy-${t})`)))
+        bad.push(`.copy-code.copy-code--${t}: no rule in var(--copy-${t}), so the dark theme's button reset wins`);
     if (bad.length) fail("a colour under its contrast minimum", bad.join("\n"));
     ok(`${pairs.length * 2} colour pairs meet their contrast minimum in both schemes`);
   },
