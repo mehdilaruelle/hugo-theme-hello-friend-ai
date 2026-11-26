@@ -14,8 +14,12 @@
 {{- $page := .Page.RelPermalink -}}
 {{- range findRESubmatch `\sid="([^"]+)"` $html -}}
   {{- $id := index . 1 -}}
-  {{- range slice "" $page -}}
-    {{- $html = replace $html (printf `href="%s#%s"` . $id) (printf "href=\"%s\ue000%s%s\"" . $scope $id) -}}
+  {{- /* Hugo links a non-ASCII id percent-encoded, in lower-case hex. */ -}}
+  {{- $enc := urls.PathEscape $id -}}
+  {{- range $frag := uniq (slice $id $enc (cond (eq $id (lower $id)) (lower $enc) $enc)) -}}
+    {{- range slice "" $page -}}
+      {{- $html = replace $html (printf `href="%s#%s"` . $frag) (printf "href=\"%s\ue000%s%s\"" . $scope $frag) -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 {{- $html = replace (replaceRE `(\sid=")` (print "${1}" $scope) $html) "\ue000" "#" -}}

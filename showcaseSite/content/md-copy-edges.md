@@ -80,11 +80,13 @@ echo one
 {{< faq "And the next answer?" >}}
 ## Example
 
-Its own too.[^edge] See [its heading](#example).
+Its own too.[^edge] See [its heading](#example) and [an accented one](#caf%C3%A9).
 
 [^edge]: The second answer's note.
 
 ```sh {lineNos=inline anchorLineNos=true}
 echo two
 ```
+
+## Café
 {{< /faq >}}
