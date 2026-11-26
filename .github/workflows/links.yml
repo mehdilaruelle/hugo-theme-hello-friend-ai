@@ -401,6 +401,12 @@ jobs:
           for t in llms.txt llms-full.txt index.md; do [ -f "public-shapes/$t" ] || { echo "  BAD  no $t"; exit 1; }; done
           out=$(HUGO_PARAMS_IMAGEMAXWIDTH=wide hugo --themesDir ../.. --renderToMemory 2>&1) || { echo "$out"; exit 1; }
           grep -q image-max-width-shape <<< "$out" || { echo "  BAD  no image-max-width-shape warning"; exit 1; }
+          # A markup-only subtitle falls through to the site description.
+          HUGO_PARAMS_HOMESUBTITLE="<br>" HUGO_PARAMS_DESCRIPTION="Site description" hugo --themesDir ../.. --quiet \
+            --config config.toml,../.github/fixtures/param-shapes.toml --destination public-blank-sub > /dev/null 2>&1
+          for t in llms.txt llms-full.txt index.md; do
+            grep -q "Site description" "public-blank-sub/$t" || { echo "  BAD  a blank subtitle hides the description in $t"; exit 1; }
+          done
           echo "  imageMaxWidth in px, one local font, a list of crawler lines"
           # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
