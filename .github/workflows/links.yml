@@ -892,8 +892,7 @@ jobs:
           # A bracketed file name still gets the alt its front matter writes.
           grep -q 'alt="The lake again, from a file whose name holds brackets"' "$f" \
             || { echo "  BAD  05-lake [copy].jpg lost its front-matter alt"; exit 1; }
-          # 04-field.jpg has a resource name: both galleries still order it by
-          # file name and give it its file name as alt, not its path.
+          # The name given to 04-field.jpg changes neither its place nor its alt.
           order=$(grep -oE 'href="?[^ >"]*/photos/0[1-5]' "$f" | grep -oE '[0-9]+$' | tr -d '\n')
           [ "$order" = 01020304050102030405 ] \
             || { echo "  BAD  gallery order $order: the named 04-field.jpg moved"; exit 1; }

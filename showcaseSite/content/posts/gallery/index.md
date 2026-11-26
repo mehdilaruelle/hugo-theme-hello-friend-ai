@@ -6,9 +6,9 @@ tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
 
-# The fourth picture has no alt, to exercise the file-name fallback, and a name,
-# which must change neither its place nor that alt. The fifth has brackets in
-# its name, which a glob reads as a character class: src escapes them.
+# The fourth picture has no alt, to exercise the file-name fallback, and a
+# name, which must not change it. The fifth has brackets in its name, which a
+# glob reads as a character class: src escapes them.
 [[resources]]
   src = "photos/01-dunes.jpg"
   [resources.params]
