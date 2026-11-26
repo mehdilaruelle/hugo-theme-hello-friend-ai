@@ -23,10 +23,11 @@
 {{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
 {{- /* A bundle or assets/ file is linked where Hugo publishes it; anything
-       else is joined to the base URL, as before. */ -}}
+       else is joined to the base URL, as before. Looked up literally, not
+       through GetMatch, so a "[" in a static path is not read as a glob. */ -}}
 {{- define "partials/inline/video-url" -}}
   {{- $url := printf "%v" .src -}}
-  {{- with partial "find-resource.html" (dict "page" .page "src" $url) -}}
+  {{- with or (.page.Resources.Get $url) (resources.Get $url) -}}
     {{- $url = .RelPermalink -}}
   {{- else -}}
     {{- $url = partialCached "abs-url.html" $url $url -}}

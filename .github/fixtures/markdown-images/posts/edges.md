@@ -21,3 +21,5 @@ date: 2026-10-05
 
 > A quote with a list attribute.
 {data-x=[1,2]}
+
+{{< video src="/video/take[1" poster="/video/take[1.jpg" width="640" height="360" alt="A static clip whose name holds a bracket" >}}
