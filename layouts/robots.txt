@@ -5,6 +5,10 @@
        This file is a request. The rest is a matter for the CDN. */ -}}
 {{- $ai := site.Params.ai -}}
 {{- $on := and $ai (reflect.IsMap $ai) -}}
+{{- /* Not param-table.html: it lets false, the likely mistake, pass unwarned. */ -}}
+{{- if and (isset site.Params "ai") (not (reflect.IsMap $ai)) -}}
+  {{- warnidf "ai-shape" "params.ai: expected a table such as [params.ai], got a %T. Ignored." $ai -}}
+{{- end -}}
 {{- $train := true -}}
 {{- $cite := true -}}
 {{- $search := true -}}

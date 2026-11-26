@@ -28,7 +28,11 @@
 <meta name="description" content="{{ . }}" />
 {{- end }}
 {{- with .Site.Params.themeColor }}
+{{- if or (reflect.IsMap .) (reflect.IsSlice .) }}
+{{- warnidf "themecolor-shape" "params.themeColor: expected one colour such as \"#1b1c1d\", not a table or a list. No theme-color tag is written." }}
+{{- else }}
 <meta name="theme-color" content="{{ . }}" />
+{{- end }}
 {{- end }}
 {{- /* From canonical.html, which opengraph.html and json-ld.html ask as well. */ -}}
 {{- $self := partial "canonical.html" . -}}
@@ -58,19 +62,19 @@
 {{- if not (reflect.IsMap .) }}
 {{- warnidf "verification-shape" "params.verification: expected a table such as { google = \"...\" }, got a %T. No verification tag is written." . }}
 {{- else }}
-{{- with .google }}
+{{- range partial "as-list.html" (.google | default slice) }}
 <meta name="google-site-verification" content="{{ . }}" />
 {{- end }}
-{{- with .bing }}
+{{- range partial "as-list.html" (.bing | default slice) }}
 <meta name="msvalidate.01" content="{{ . }}" />
 {{- end }}
-{{- with .yandex }}
+{{- range partial "as-list.html" (.yandex | default slice) }}
 <meta name="yandex-verification" content="{{ . }}" />
 {{- end }}
-{{- with .baidu }}
+{{- range partial "as-list.html" (.baidu | default slice) }}
 <meta name="baidu-site-verification" content="{{ . }}" />
 {{- end }}
-{{- with .pinterest }}
+{{- range partial "as-list.html" (.pinterest | default slice) }}
 <meta name="p:domain_verify" content="{{ . }}" />
 {{- end }}
 {{- end }}

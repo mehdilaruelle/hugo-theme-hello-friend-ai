@@ -191,7 +191,8 @@ a rebuild, so the theme emits it for you:
 ```
 
 Set only the ones you use — an unset entry emits nothing, and with no
-`[params.verification]` at all nothing changes. The tags go on the home page
+`[params.verification]` at all nothing changes. A site several people verify
+gives a list, `google = ["token-a", "token-b"]`, and gets one tag per token. The tags go on the home page
 only, which is where each console looks, rather than on all of them.
 
 ## The logo
@@ -787,7 +788,8 @@ templates.
 ```
 
 `themeColor` is only emitted when set. An empty `content` is not
-a neutral default — it is a tag asserting the value is blank.
+a neutral default — it is a tag asserting the value is blank. It takes one
+colour: a light/dark table warns (`themecolor-shape`) and writes nothing.
 
 #### Responsive images
 

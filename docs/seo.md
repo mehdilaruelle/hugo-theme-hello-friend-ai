@@ -35,7 +35,8 @@ date is a `WebPage`: its URL, name, language and its own description, and
 nothing the theme would have to invent to say.
 
 The values come from what you already set: `author` (a string or a map with a
-`name`, in the page or in the site params), `description` — falling back to a
+`name`, in the page or in the site params; a list of names is joined with
+commas), `description` — falling back to a
 trimmed summary — and the picture, which is the one the social card shows: the
 page's `images` or its `cover`, resolved by the same partial so the two can
 never disagree. The site-wide fallback is not borrowed here. It is the right

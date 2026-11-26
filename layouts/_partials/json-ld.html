@@ -151,12 +151,14 @@
   {{- $publisher := dict "@type" "Organization" "name" site.Title "url" (site.Home.Permalink | default site.BaseURL) -}}
   {{- $logo := "" -}}
   {{- $publisherConfigured := false -}}
-  {{- with site.Params.publisher -}}
-    {{- if reflect.IsMap . -}}
-      {{- $publisherConfigured = true -}}
-      {{- with .name -}}{{- $publisher = merge $publisher (dict "name" .) -}}{{- end -}}
-      {{- $logo = .logo -}}
-    {{- end -}}
+  {{- /* param-table.html warns only on a truthy value, so a false is caught here. */ -}}
+  {{- if and (isset site.Params "publisher") (not site.Params.publisher) (not (reflect.IsMap site.Params.publisher)) -}}
+    {{- warnidf "publisher-shape" "params.publisher: expected a table such as [params.publisher], got a %T. Ignored." site.Params.publisher -}}
+  {{- end -}}
+  {{- with partialCached "param-table.html" "publisher" "publisher" -}}
+    {{- $publisherConfigured = true -}}
+    {{- with .name -}}{{- $publisher = merge $publisher (dict "name" .) -}}{{- end -}}
+    {{- $logo = .logo -}}
   {{- end -}}
   {{- with $logo -}}
     {{- $node := dict "@type" "ImageObject" "url" (partialCached "abs-url.html" . (printf "%v" .)) -}}

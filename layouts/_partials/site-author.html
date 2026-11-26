@@ -16,4 +16,14 @@
     {{- $name = . -}}
   {{- end -}}
 {{- end -}}
+{{- /* A list is joined, as author.html joins a page's. */ -}}
+{{- if reflect.IsSlice $name -}}
+  {{- $names := slice -}}
+  {{- range $name -}}
+    {{- $n := . -}}
+    {{- if reflect.IsMap . }}{{ $n = .name }}{{ end -}}
+    {{- with $n }}{{ $names = $names | append (printf "%v" .) }}{{ end -}}
+  {{- end -}}
+  {{- $name = delimit $names ", " -}}
+{{- end -}}
 {{- return dict "name" $name "email" $email -}}

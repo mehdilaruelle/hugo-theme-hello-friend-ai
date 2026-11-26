@@ -3,6 +3,7 @@ baseURL = "https://example.com/subpath/"
 title   = "Param shapes"
 theme   = "hello-friend-ai"
 defaultContentLanguage = "en"
+enableRobotsTXT = true
 
 [params]
   logo       = "img/logo.png"
@@ -13,8 +14,18 @@ defaultContentLanguage = "en"
   footer     = true
   favicon    = "/favicon.png"
   author     = "Jane"
+  ai         = false
+  publisher  = "Acme Inc."
+
+# A list where one value was expected, and a number where a percentage was.
+[params.verification]
+  google = ["token-a", "token-b"]
+[params.fontFallback]
+  sizeAdjust = 105
 
 [languages.en]
   weight = 1
 [languages.fr]
   weight = 2
+  [languages.fr.params]
+    publisher = false   # falsy: param-table.html would not warn
