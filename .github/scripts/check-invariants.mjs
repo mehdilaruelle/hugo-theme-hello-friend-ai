@@ -127,8 +127,7 @@ const checks = {
     ok(`${navs} navs are each named once on their page, ${tocs} of them tables of contents, and no aside sits in an article`);
   },
 
-  // A faq answer is rendered on its own, so its footnote and heading ids
-  // restarted at the page's, and a link reached the first one.
+  // A faq answer, rendered on its own, repeated the page's footnote and heading ids.
   "unique-ids"() {
     const bad = [];
     let ids = 0;

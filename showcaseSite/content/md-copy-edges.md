@@ -63,7 +63,7 @@ After the list, it&rsquo;s prose.
 
 Out of the list again, it&rsquo;s prose.
 
-Each answer below is rendered on its own, and its ids still do not repeat the page's.
+Two answers whose ids would repeat the page's.
 
 {{< faq "Does an answer keep its own footnote?" >}}
 ## Example
