@@ -490,8 +490,8 @@ hr {
 
 // Chroma wraps the blocks it highlights in this; an unhighlighted block is a
 // bare pre. The spacing sits on the pre so that both are spaced alike, and the
-// wrapper adds none of its own on top. LTR as pre is, since a linenos=table
-// table sits outside the pre and RTL put its line numbers on the right.
+// wrapper adds none of its own on top. LTR as pre is: a linenos=table table
+// sits outside the pre.
 .highlight {
   margin: 0;
   direction: ltr;

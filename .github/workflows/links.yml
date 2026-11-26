@@ -533,7 +533,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public code-focus
 
-      - name: Check code and its line numbers read left to right on an RTL page
+      - name: Check a linenos=table gutter stays left of the code on an RTL page
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public code-ltr
 

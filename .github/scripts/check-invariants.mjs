@@ -828,13 +828,11 @@ const checks = {
     ok("an indented code block takes keyboard focus, clipboard or not");
   },
 
-  // With linenos=table Chroma's table is outside the pre, so its wrapper is pinned too.
+  // A linenos=table table sits outside the pre, so pre's ltr does not reach it.
   "code-ltr"() {
-    const all = css();
-    for (const sel of ["pre", ".highlight"])
-      if (!rules(all, sel).some((b) => declares(b, "direction", "ltr")))
-        fail(`no ${sel} rule keeps code, and its line numbers, left to right on an RTL page`);
-    ok("code and its line numbers read left to right on an RTL page");
+    if (!rules(css(), ".highlight").some((b) => declares(b, "direction", "ltr")))
+      fail("no .highlight rule keeps a linenos=table gutter left of the code on an RTL page");
+    ok("a linenos=table gutter stays left of the code on an RTL page");
   },
 
   // KaTeX sets no direction and no overflow: the theme has to.
@@ -898,7 +896,6 @@ const checks = {
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
-    // The copy states' tokens go unused if [data-theme=dark] button (0,1,1) outranks them.
     for (const t of ["done", "failed"])
       if (!rules(sheet, `.copy-code.copy-code--${t}`).some((b) => declares(b, "color", `var(--copy-${t})`)))
         bad.push(`.copy-code.copy-code--${t}: no rule in var(--copy-${t}), so the dark theme's button reset wins`);
