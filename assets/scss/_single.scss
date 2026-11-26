@@ -11,7 +11,9 @@
     max-width: min(var(--content-width, 800px), 600px);
   }
 
+  // Also a list row's title: a flex item does not shrink below a long word.
   &-title {
+    overflow-wrap: anywhere;
     font-size: 2.625rem;
     margin: 0 0 20px;
     @media #{$media-size-phone} {
@@ -21,8 +23,6 @@
 
   &-content {
     margin-top: 30px;
-    // Not anywhere: table cells keep their minimum width.
-    overflow-wrap: break-word;
   }
 
   &-cover {

@@ -26,7 +26,13 @@ td {
   &.align-right { text-align: right; }
 }
 
-.post-content {
+// The prose of a post, of the front page and of a section's introduction.
+.post-content,
+.home-content,
+.list-content {
+  // Not anywhere: table cells keep their minimum width.
+  overflow-wrap: break-word;
+
   table {
     border-collapse: collapse;
     margin: 25px auto;
