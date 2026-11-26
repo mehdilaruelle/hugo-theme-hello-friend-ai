@@ -49,7 +49,7 @@
     "inLanguage" .Language.Lang
   -}}
   {{- /* Only the site's may hold markup; the page's own is text: List<String>. */ -}}
-  {{- with .Description | default (partial "string-param.html" (dict "value" site.Params.description "name" "description" "want" "a string") | plainify | htmlUnescape) -}}
+  {{- with .Description | default (partial "string-param.html" (dict "value" site.Params.description "name" "description") | plainify | htmlUnescape) -}}
     {{- $data = merge $data (dict "description" .) -}}
   {{- end -}}
   {{- with $author -}}

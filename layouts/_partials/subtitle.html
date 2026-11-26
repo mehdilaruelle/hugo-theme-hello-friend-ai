@@ -1,3 +1,3 @@
-{{- with partial "string-param.html" (dict "value" site.Params.homeSubtitle "name" "homeSubtitle" "want" "a string") }}
+{{- with partial "string-param.html" (dict "value" site.Params.homeSubtitle "name" "homeSubtitle") }}
     <p>{{ . | safeHTML }}</p>
 {{- end }}

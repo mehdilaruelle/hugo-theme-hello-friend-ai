@@ -16,7 +16,7 @@
   {{- $img = partial "find-resource.html" (dict "page" $page "src" $src) -}}
 {{- end -}}
 
-{{- /* A number of pixels, bare or in px as the other widths are written. */ -}}
+{{- /* Pixels, bare or in px as the theme's other widths are written. */ -}}
 {{- $maxWidth := 0 -}}
 {{- with .maxWidth | default site.Params.imageMaxWidth -}}
   {{- with findRESubmatch `^\s*([0-9]+(?:\.[0-9]+)?)\s*(?:px)?\s*$` (printf "%v" .) 1 -}}
