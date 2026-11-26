@@ -22,9 +22,7 @@
 {{- $controls := partialCached "switch.html" (.Get "controls") (.Get "controls") -}}
 {{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
-{{- /* A bundle or assets/ file is linked where Hugo publishes it; anything
-       else is joined to the base URL, as before. Looked up literally, not
-       through GetMatch, so a "[" in a static path is not read as a glob. */ -}}
+{{- /* Get, not GetMatch: a "[" in a static path would be read as a glob. */ -}}
 {{- define "partials/inline/video-url" -}}
   {{- $url := printf "%v" .src -}}
   {{- with or (.page.Resources.Get $url) (resources.Get $url) -}}
