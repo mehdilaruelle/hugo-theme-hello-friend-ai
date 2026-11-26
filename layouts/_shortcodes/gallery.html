@@ -15,9 +15,17 @@
 {{- end -}}
 {{- /* SVGs cannot be cropped. */ -}}
 {{- $images = where (where $images "ResourceType" "image") "MediaType.SubType" "!=" "svg" -}}
-{{- /* A front-matter `name` replaces .Name, so the file is read from its URL. */ -}}
+{{- /* A front-matter `name` replaces .Name, so the file is read from its URL,
+       less the page's: a shared file is published under another language's. */ -}}
 {{- $files := slice -}}
-{{- range $images }}{{ $files = $files | append (dict "path" (urls.Parse .RelPermalink).Path "image" .) }}{{ end -}}
+{{- range $images -}}
+  {{- $path := (urls.Parse .RelPermalink).Path -}}
+  {{- range $.Page.AllTranslations -}}
+    {{- $page := (urls.Parse .RelPermalink).Path -}}
+    {{- if strings.HasPrefix $path $page }}{{ $path = strings.TrimPrefix (strings.TrimSuffix "/" $page) $path }}{{ break }}{{ end -}}
+  {{- end -}}
+  {{- $files = $files | append (dict "path" $path "image" .) -}}
+{{- end -}}
 {{- $images = sort $files "path" -}}
 
 {{- if not $images -}}

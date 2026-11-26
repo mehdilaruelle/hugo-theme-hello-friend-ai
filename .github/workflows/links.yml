@@ -892,10 +892,12 @@ jobs:
           # A bracketed file name still gets the alt its front matter writes.
           grep -q 'alt="The lake again, from a file whose name holds brackets"' "$f" \
             || { echo "  BAD  05-lake [copy].jpg lost its front-matter alt"; exit 1; }
-          # The name given to 04-field.jpg changes neither its place nor its alt.
-          order=$(grep -oE 'href="?[^ >"]*/photos/0[1-5]' "$f" | grep -oE '[0-9]+$' | tr -d '\n')
-          [ "$order" = 01020304050102030405 ] \
-            || { echo "  BAD  gallery order $order: the named 04-field.jpg moved"; exit 1; }
+          # Neither the name given to 04-field.jpg nor the French 02-lake.fr.jpg,
+          # published under another URL than the shared files, moves a picture.
+          for p in "$f" public/fr/posts/2026/02/une-galerie-*/index.html; do
+            order=$(grep -oE 'href="?[^ >"]*/photos/0[1-5]' "$p" | grep -oE '[0-9]+$' | tr -d '\n')
+            [[ "$order" =~ ^(0102030405)+$ ]] || { echo "  BAD  ${p#public/}: gallery order $order"; exit 1; }
+          done
           [ "$(grep -o 'alt="04 field"' "$f" | wc -l)" -eq 2 ] \
             || { echo "  BAD  the named 04-field.jpg lost its file-name alt"; exit 1; }
 
