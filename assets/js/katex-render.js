@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     throwOnError: false
   });
 
-  // Safari only lets the keyboard scroll a box that is a tab stop.
-  for (const el of document.querySelectorAll('.katex-display')) {
-    if (el.scrollWidth > el.clientWidth) el.tabIndex = 0;
-  }
+  // Safari only lets the keyboard scroll a tab stop, and a resize can make any formula overflow.
+  for (const el of document.querySelectorAll('.katex-display')) el.tabIndex = 0;
 });

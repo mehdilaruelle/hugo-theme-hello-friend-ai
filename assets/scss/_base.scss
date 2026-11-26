@@ -635,6 +635,12 @@ pre > code[data-lang]:not([data-lang=""])::before {
 
     background: var(--background-secondary);
     border: 1px solid var(--field-border-color);
+
+    // Firefox dims a placeholder by default, below the token's contrast.
+    &::placeholder {
+      color: var(--placeholder-color);
+      opacity: 1;
+    }
   }
 }
 

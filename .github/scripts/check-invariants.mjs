@@ -835,7 +835,10 @@ const checks = {
       fail("no .katex rule keeps a formula left to right, isolated, on an RTL page");
     if (!rules(all, "html .katex-display").some((b) => declares(b, "overflow-x", "auto") && declares(b, "direction", "ltr") && b.includes("padding-block")))
       fail("no html .katex-display rule scrolls a wide formula in its own LTR box, with room for its limits");
-    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box, from its start");
+    const js = [...walk(dir, ".js")].map((f) => readFileSync(f, "utf8")).find((s) => s.includes("katex-display")) ?? "";
+    if (!/\.tabIndex\s*=\s*0\b/.test(js) || js.includes("scrollWidth"))
+      fail("not every display formula is a tab stop, so a keyboard cannot scroll one that overflows after a resize");
+    ok("a formula reads left to right on an RTL page, and a wide one scrolls in its own box, from its start, by keyboard too");
   },
 
   // Colours a static scan never sees in use (focus ring, script-written status and
@@ -865,6 +868,7 @@ const checks = {
       ["color", "background-secondary", 4.5],
       ["field-border-color", "background", 3],
       ["field-border-color", "background-secondary", 3],
+      ["placeholder-color", "background-secondary", 4.5],
       ...["note", "tip", "important", "warning", "caution"].map((t) => [`alert-${t}`, "background", 4.5]),
     ];
     const bad = [];
@@ -889,6 +893,9 @@ const checks = {
       if (m[1].split(",").map((x) => x.trim()).includes(".search-results time") && /(?:^|;)\s*opacity:/.test(m[2]))
         bad.push(".search-results time: dimmed by opacity");
     }
+    if (!rules(sheet.replaceAll('"', ""), ".search-form input[type=search]::placeholder")
+      .some((b) => declares(b, "color", "var(--placeholder-color)") && declares(b, "opacity", "1")))
+      bad.push(".search-form input::placeholder: not var(--placeholder-color) at full opacity");
     if (bad.length) fail("a colour under its contrast minimum", bad.join("\n"));
     ok(`${pairs.length * 2} colour pairs meet their contrast minimum in both schemes`);
   },
