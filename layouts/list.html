@@ -67,9 +67,7 @@
                                         {{ if not .Date.IsZero }}{{- /* An undated page has the zero time, and "Jan 1" reads like a real date rather than a missing one. */ -}}<time class="post-day" datetime="{{ .Date.Format "2006-01-02" }}">
                                             {{- /* Hugo's "Jan" is empty in ja, ko, ar and lmo, which left a bare day. */ -}}
                                             {{- $fmt := .Site.Params.dateformShort | default "Jan 2" }}
-                                            {{- if and (strings.Contains $fmt "Jan") (not (strings.Contains $fmt "January")) (eq (time.Format "Jan" .Date) "") }}
-                                                {{- $fmt = replace $fmt "Jan" "January" }}
-                                            {{- end }}
+                                            {{- if eq (time.Format "Jan" .Date) "" }}{{ $fmt = replaceRE "Jan(uary)?" "January" $fmt }}{{ end }}
                                             {{ time.Format $fmt .Date }}
                                         </time>{{ end }}
                                         {{- with $excerpt }}
