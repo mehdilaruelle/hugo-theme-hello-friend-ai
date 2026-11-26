@@ -1,4 +1,3 @@
 {{- /* HTML to one line of plain text, entities decoded (plainify keeps them). */ -}}
-{{- /* Chroma's line numbers are not text: found by class or, with noClasses,
-       by being unselectable. */ -}}
+{{- /* Chroma's line numbers, by class or (noClasses) by user-select, are not text. */ -}}
 {{- return (. | replaceRE `<span [^>]*(?:class="lnt?"|user-select:none)[^>]*>(?:<a [^>]*>[^<]*</a>)?[^<]*</span>` "" | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace) -}}

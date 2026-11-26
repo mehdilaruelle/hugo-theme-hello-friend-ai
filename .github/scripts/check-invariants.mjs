@@ -78,7 +78,6 @@ const checks = {
   },
 
   // #268 and #274: the table lists levels 2..3, so headings are not the test.
-  // A picture in a heading kept its src as written there, which 404s.
   toc() {
     const empty = [], pictured = [], seen = [];
     let headed = 0;
@@ -589,7 +588,7 @@ const checks = {
     ok("list excerpts and JSON-LD descriptions carry characters, not entities");
   },
 
-  // A summary that opens on a numbered code block starts with the code, not "1 2 3".
+  // A summary opening on numbered code starts with the code, not "1 2 3".
   linenos(want) {
     const bad = [];
     let excerpts = 0, descriptions = 0;

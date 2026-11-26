@@ -10,6 +10,5 @@ int main() {
 }
 ```
 
-No description, and the code comes first, so the list excerpt and the meta
-description start with it. Its line numbers are markup, not text: they used to
-come first, as "1 2 3".
+No description, so the list excerpt and the meta description start with the
+code above. They used to start with its line numbers.
