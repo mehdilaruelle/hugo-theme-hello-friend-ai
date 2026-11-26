@@ -340,7 +340,8 @@ jobs:
           HUGO_PARAMS_LOGO_LOGOHOMELINK="" HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
             hugo --themesDir ../.. --gc --minify --destination public-logo-pct --baseURL "https://example.com/50%25off/"
           node ../.github/scripts/check-invariants.mjs public-logo-pct logo-path index.html \
-            "https://example.com/50%25off/" "https://example.com/50%25off/posts/=posts"
+            "https://example.com/50%25off/" "https://example.com/50%25off/posts/=posts" \
+            "https://example.com/50%25off/about.html=about"
           # canonifyURLs drops the subpath from RelPermalink.
           HUGO_CANONIFYURLS=true HUGO_PARAMS_LOGO_LOGOCURSORPATHNAME=true \
             hugo --themesDir ../.. --gc --minify --destination public-logo-canon --baseURL "https://example.com/sub/"
