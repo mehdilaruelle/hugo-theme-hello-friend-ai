@@ -169,8 +169,7 @@ jobs:
           echo "  a ProfilePage section is described as one"
           grep -qF '"description":"Notes on DevOps \u0026 SRE"' public-seo-shapes/index.html \
             || { echo "  BAD  markup in params.description reached the JSON-LD"; exit 1; }
-          # The site title and a tag are plain text: their <…> is kept. A section's
-          # title and linkTitle are Markdown: the crumb reads them as text.
+          # A site title or tag keeps its <…>; a crumb drops its section's Markdown.
           f=public-seo-shapes/posts/2026/10/coloured-terminal-output-pasted-as-it-was/index.html
           for want in '<meta property="og:site_name" content="<dev/> notes">' \
                       '<meta property="article:tag" content="<Dialog>">' \

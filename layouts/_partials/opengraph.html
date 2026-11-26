@@ -21,7 +21,7 @@
 {{- $canonical := partial "canonical.html" . -}}
 <meta property="og:url" content="{{ $canonical.url }}">
 
-{{- /* The site title is plain text: plainify took "<dev/> notes" for markup. */ -}}
+{{- /* Plain text: plainify read the <…> of "<dev/> notes" as a tag. */ -}}
 {{- with or site.Title site.Params.title }}
 	<meta property="og:site_name" content="{{ . }}">
 {{- end }}
