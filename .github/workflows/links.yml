@@ -416,9 +416,7 @@ jobs:
           grep -qF '"author":[{"@type":"Person","name":"Ann"},{"@type":"Person","name":"Bob"}]' "$f" \
             || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
           echo "  a list of authors names each of them"
-          for t in token-a token-b; do
-            grep -qF "<meta name=\"google-site-verification\" content=\"$t\"" "$p/index.html" || { echo "  BAD  no verification tag for $t"; exit 1; }
-          done
+          [ "$(grep -c 'name="google-site-verification" content="token-' "$p/index.html")" = 2 ] || { echo "  BAD  a list of verification tokens is not one tag each"; exit 1; }
           grep -q 'size-adjust:105%;' "$p"/main-*.css || { echo "  BAD  a numeric sizeAdjust is not a percentage"; exit 1; }
 
       - name: Check the footer draws no empty block

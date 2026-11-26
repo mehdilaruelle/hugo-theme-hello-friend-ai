@@ -16,7 +16,7 @@
     {{- $name = . -}}
   {{- end -}}
 {{- end -}}
-{{- /* A list of names reads as one, joined as author.html joins a page's. */ -}}
+{{- /* A list is joined, as author.html joins a page's. */ -}}
 {{- if reflect.IsSlice $name -}}
   {{- $names := slice -}}
   {{- range $name -}}
