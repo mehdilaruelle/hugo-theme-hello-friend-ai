@@ -682,8 +682,7 @@ jobs:
           done
           echo "  head URLs are relative or complete"
 
-      # Hugo rewrites neither a data- attribute nor a JSON body, so search lost
-      # the subpath under canonifyURLs and its location under relativeURLs.
+      # Hugo rewrites neither a data- attribute nor a JSON body.
       - name: Check search finds its index and results under canonifyURLs and relativeURLs
         working-directory: hello-friend-ai/showcaseSite
         run: |

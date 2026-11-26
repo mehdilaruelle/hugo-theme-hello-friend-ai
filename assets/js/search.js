@@ -14,8 +14,7 @@
   const input = form.querySelector("input[type=search]");
   const status = document.querySelector("[data-search-status]");
   const list = document.querySelector("[data-search-results]");
-  // .href, so the browser resolves whatever Hugo's URL mode wrote. An old
-  // head.html override has no link, and search then says it failed.
+  // .href resolves whatever form Hugo wrote; an old head.html override has no link.
   const url = (document.querySelector("[data-search-index]") || {}).href;
 
   form.hidden = false;

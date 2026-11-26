@@ -10,8 +10,8 @@
 
   Set searchable = false in a page's front matter to keep it out.
 
-  Each url is relative to the index, and search.js resolves it there:
-  canonifyURLs and relativeURLs never rewrite a JSON body.
+  Each url is relative to the index, since Hugo's URL modes never rewrite a
+  JSON body, and starts with ./ so that a colon in it is not read as a scheme.
 
   htmlUnescape appears twice, and each one has its own job. .Plain leaves
   the entities the renderer produced — the apostrophes Goldmark turns into
@@ -24,7 +24,7 @@
 {{- $limit := int (float (site.Params.searchContentLimit | default 0)) -}}
 {{- if le $limit 0 }}{{ $limit = 4000 }}{{ end -}}
 {{- $index := slice -}}
-{{- $dir := printf "%s/" (strings.TrimSuffix "/" (path.Dir (.OutputFormats.Get "json").RelPermalink)) -}}
+{{- $dir := replaceRE `[^/]*$` "" (.OutputFormats.Get "json").RelPermalink -}}
 {{- /* range then if, not where: where cannot call a partial, and its typed
        compare dropped every page whose searchable was a string. */ -}}
 {{- range partial "listable.html" site.RegularPages -}}

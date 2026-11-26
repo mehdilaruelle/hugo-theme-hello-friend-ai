@@ -1116,9 +1116,8 @@ not: *シ* does not find *ジ*. A hit in the title counts for more than one in t
 hit in a tag for more than that; ties are broken by date, newest first.
 
 Each language gets its own index and searches only itself. A page's URL in the
-index is relative to the index, and the search page links the index through an
-`href`, so search follows `canonifyURLs`, `relativeURLs` and a subpath like
-every other link.
+index is relative to the index, so search follows `canonifyURLs`,
+`relativeURLs` and a subpath.
 
 ### Without JavaScript
 
