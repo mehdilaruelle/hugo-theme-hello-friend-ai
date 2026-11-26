@@ -1,3 +1,5 @@
+{{- /* A one-pager list has nowhere to go, and an empty block still takes its margin. */ -}}
+{{- if or .Paginator.HasPrev .Paginator.HasNext -}}
 {{- /* A taxonomy lists terms by title: its pagers are neither newer nor older. */ -}}
 {{- $prev := partialCached "i18n.html" (dict "key" "pagination.newerPosts" "fallback" "Newer posts") "pagination.newerPosts" "Newer posts" -}}
 {{- $next := partialCached "i18n.html" (dict "key" "pagination.olderPosts" "fallback" "Older posts") "pagination.olderPosts" "Older posts" -}}
@@ -25,3 +27,4 @@
         {{ end }}
     </div>
 </div>
+{{- end }}

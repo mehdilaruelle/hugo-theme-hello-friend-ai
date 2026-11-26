@@ -16,9 +16,10 @@
             {{ end }}
 
             {{ if eq .Kind "taxonomy" }}
+                {{ with $paginator.Pages }}
                 <div class="posts-group">
                     <ul class="posts-list">
-                        {{ range $paginator.Pages }}
+                        {{ range . }}
                             <li class="post-item">
                                 <a href="{{ .Permalink }}" class="post-item-inner">
                                     <span class="post-title">{{ partialCached "title-plain.html" . . }}</span>
@@ -28,6 +29,7 @@
                         {{ end }}
                     </ul>
                 </div>
+                {{ end }}
             {{ else }}
                 {{- /* By year in the list's own order: GroupByDate sorts again, and
                        reverses posts that share a date. */ -}}
