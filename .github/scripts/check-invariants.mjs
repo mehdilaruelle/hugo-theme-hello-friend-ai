@@ -127,8 +127,7 @@ const checks = {
     ok(`${navs} navs are each named once on their page, ${tocs} of them tables of contents, and no aside sits in an article`);
   },
 
-  // A faq answer, rendered on its own, repeated the page's footnote and heading
-  // ids. A link to this page, bare "#x" or after its URL, must reach its id.
+  // Each id once per page, and each link to "#x", bare or after this page's URL, reaches x.
   "unique-ids"() {
     const bad = [];
     let ids = 0, links = 0;
@@ -143,14 +142,11 @@ const checks = {
           seen.add(id);
         }
         const href = attr(m[0], "href") ?? "";
-        const hash = href.indexOf("#");
-        if (hash === -1 || hash === href.length - 1) continue;
-        if (hash === 0 || (self !== "/" && href.slice(0, hash).endsWith(self))) frags.push(href.slice(hash + 1));
+        const hash = href.indexOf("#"), frag = href.slice(hash + 1);
+        if (hash !== -1 && frag && (hash === 0 || (self !== "/" && href.slice(0, hash).endsWith(self)))) frags.push(frag);
       }
-      for (const f of frags) {
-        links++;
-        if (!seen.has(decodeURIComponent(f))) bad.push(`${rel(p)}: href="#${f}" reaches no id`);
-      }
+      links += frags.length;
+      for (const f of frags) if (!seen.has(decodeURIComponent(f))) bad.push(`${rel(p)}: href="#${f}" reaches no id`);
     }
     if (bad.length) fail("an id is used twice on one page, or a link to it misses", bad.slice(0, 5).join("\n"));
     if (!ids) fail("no id was rendered anywhere");

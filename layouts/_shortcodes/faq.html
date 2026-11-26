@@ -7,17 +7,16 @@
 {{- .Page.Store.Set "renderString" true -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- .Page.Store.Delete "renderString" -}}
-{{- /* RenderString restarts the page's id counters, so the answer's ids, and its
-       links to them, are scoped. A multilingual site's link hook puts the page
-       URL before "#"; a rewritten link holds \ue000 for it, so no later id matches it. */ -}}
+{{- /* RenderString restarts the page's id counters, so the answer's ids and its links
+       to them (bare, after the link hook's page URL, or percent-encoded) are scoped. */ -}}
 {{- $scope := printf "faq%d-" .Ordinal -}}
 {{- $page := .Page.RelPermalink -}}
 {{- range findRESubmatch `\sid="([^"]+)"` $html -}}
   {{- $id := index . 1 -}}
-  {{- /* Hugo links a non-ASCII id percent-encoded, in lower-case hex. */ -}}
   {{- $enc := urls.PathEscape $id -}}
   {{- range $frag := uniq (slice $id $enc (cond (eq $id (lower $id)) (lower $enc) $enc)) -}}
     {{- range slice "" $page -}}
+      {{- /*  holds the rewritten "#", so a later id cannot match the link again. */ -}}
       {{- $html = replace $html (printf `href="%s#%s"` . $frag) (printf "href=\"%s\ue000%s%s\"" . $scope $frag) -}}
     {{- end -}}
   {{- end -}}

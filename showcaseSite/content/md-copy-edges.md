@@ -71,10 +71,6 @@ Two answers whose ids would repeat the page's.
 Yes.[^edge]
 
 [^edge]: The first answer's note.
-
-```sh {lineNos=inline anchorLineNos=true}
-echo one
-```
 {{< /faq >}}
 
 {{< faq "And the next answer?" >}}
@@ -83,10 +79,6 @@ echo one
 Its own too.[^edge] See [its heading](#example) and [an accented one](#caf%C3%A9).
 
 [^edge]: The second answer's note.
-
-```sh {lineNos=inline anchorLineNos=true}
-echo two
-```
 
 ## Café
 {{< /faq >}}
