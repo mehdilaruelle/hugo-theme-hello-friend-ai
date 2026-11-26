@@ -309,7 +309,6 @@ jobs:
         working-directory: hello-friend-ai
         run: node .github/scripts/check-invariants.mjs exampleSite/public content-width
 
-      # Nothing here renders CSS, so the rules themselves are asserted.
       - name: Check intros and titles wrap, and intro tables look like a post's
         working-directory: hello-friend-ai
         run: node .github/scripts/check-invariants.mjs exampleSite/public prose

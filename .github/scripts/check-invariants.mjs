@@ -491,7 +491,6 @@ const checks = {
   prose() {
     const all = css(), bad = [];
     const table = rules(all, ".post-content table td");
-    if (!table.length) fail("no .post-content table rule was built");
     for (const box of [".home-content", ".list-content"]) {
       if (!rules(all, box).some((b) => declares(b, "overflow-wrap", "break-word"))) bad.push(`${box} does not wrap a long word`);
       if (!rules(all, `${box} table td`).some((b) => table.includes(b))) bad.push(`${box} tables are not styled as a post's`);
