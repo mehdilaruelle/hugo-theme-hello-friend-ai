@@ -62,3 +62,29 @@ After the list, it&rsquo;s prose.
   closed by the end of its item
 
 Out of the list again, it&rsquo;s prose.
+
+Each answer below is rendered on its own, and its ids still do not repeat the page's.
+
+{{< faq "Does an answer keep its own footnote?" >}}
+## Example
+
+Yes.[^edge]
+
+[^edge]: The first answer's note.
+
+```sh {lineNos=inline anchorLineNos=true}
+echo one
+```
+{{< /faq >}}
+
+{{< faq "And the next answer?" >}}
+## Example
+
+Its own too.[^edge]
+
+[^edge]: The second answer's note.
+
+```sh {lineNos=inline anchorLineNos=true}
+echo two
+```
+{{< /faq >}}

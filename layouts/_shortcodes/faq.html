@@ -7,6 +7,14 @@
 {{- .Page.Store.Set "renderString" true -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- .Page.Store.Delete "renderString" -}}
+{{- /* The answer is a document of its own, whose footnote, heading and line ids
+       restart at the page's: scoped to this faq, with the links that reach them.
+       A link to the page's own ids is left alone. */ -}}
+{{- $scope := printf "faq%d-" .Ordinal -}}
+{{- range findRESubmatch `\sid="([^"]+)"` $html -}}
+  {{- $html = replace $html (printf `href="#%s"` (index . 1)) (printf `href="#%s%s"` $scope (index . 1)) -}}
+{{- end -}}
+{{- $html = replaceRE `(\sid=")` (print "${1}" $scope) $html -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}

@@ -127,6 +127,26 @@ const checks = {
     ok(`${navs} navs are each named once on their page, ${tocs} of them tables of contents, and no aside sits in an article`);
   },
 
+  // A faq answer is rendered on its own, so its footnote and heading ids
+  // restarted at the page's, and a link reached the first one.
+  "unique-ids"() {
+    const bad = [];
+    let ids = 0;
+    for (const p of pages(dir)) {
+      const seen = new Set();
+      for (const m of readFileSync(p, "utf8").matchAll(tagRe("[a-z][a-z0-9-]*"))) {
+        const id = attr(m[0], "id");
+        if (id === null) continue;
+        ids++;
+        if (seen.has(id)) bad.push(`${rel(p)}: id="${id}"`);
+        seen.add(id);
+      }
+    }
+    if (bad.length) fail("an id is used twice on one page", bad.slice(0, 5).join("\n"));
+    if (!ids) fail("no id was rendered anywhere");
+    ok(`${ids} ids, none used twice on its page`);
+  },
+
   // #265: .content is the page frame, not a prose wrapper.
   "list-content"() {
     const nested = [];
