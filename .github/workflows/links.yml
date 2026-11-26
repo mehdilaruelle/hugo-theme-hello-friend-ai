@@ -659,7 +659,7 @@ jobs:
         run: node ../.github/scripts/check-invariants.mjs public logo-rtl ar/index.html
 
       # .TableOfContents is a non-empty string even with no headings.
-      - name: Check no empty table of contents is rendered
+      - name: Check no empty table of contents, nor a picture in one, is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public toc
 
@@ -689,6 +689,13 @@ jobs:
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public entities
+
+      - name: Check an excerpt does not start with code line numbers
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          node ../.github/scripts/check-invariants.mjs public linenos 'int main()'
+          grep -qxF '2026 notice.' public/posts/2026/01/a-summary-that-opens-on-a-numbered-code-block/index.md \
+            || { echo "  BAD  a span that is not a line number lost its text"; exit 1; }
 
       - name: Check a tag in a title reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
