@@ -256,11 +256,15 @@ jobs:
           echo "  a glob-like cover name is the card's picture"
           node ../.github/scripts/check-invariants.mjs public-markdown-images menu-current café/index.html Café=page
 
-      - name: Check a post shows where it sits in its series
+      - name: Check a post shows where it sits in its series, and links only terms with a page
         working-directory: hello-friend-ai/exampleSite
         run: |
+          # No main menu: its pages are not in this content.
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series \
-            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/"
+            --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
+            --config config.toml,../.github/fixtures/menu-footer-only.toml
+          node ../.github/scripts/check-links.mjs public-series https://example.com/subpath/
+          node ../.github/scripts/check-invariants.mjs public-series post-info
           check() { node ../.github/scripts/check-invariants.mjs public-series series "$@"; }
           check posts/2026/10/halfway/index.html "The Tour=Setting out|*Halfway|Wrapping up" "The Tour!=*Halfway|Wrapping up"
           check posts/2026/10/on-its-own/index.html

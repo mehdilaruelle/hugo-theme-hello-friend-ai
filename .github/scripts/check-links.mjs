@@ -19,6 +19,10 @@ const META_URL =
 const CONTENT = /(?<![-\w])content\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
 const SKIP = /^(?:https?:|mailto:|tel:|data:|javascript:|\/\/|#)/i;
 
+// A link with an empty href, which --minify writes bare, goes nowhere: it is
+// what a page with no permalink prints.
+const EMPTY_HREF = /<a\b[^>]*?(?<![-\w])href(?:\s*=\s*(?:""|''))?(?=[\s>])/gi;
+
 const decode = (s) =>
   s
     .replace(/&amp;/g, "&")
@@ -73,6 +77,7 @@ for (const file of walk(root)) {
   const raws = [];
   for (const m of text.matchAll(isCss ? CSS_URL : ATTR)) raws.push(m[1] ?? m[2] ?? m[3] ?? "");
   if (!isCss) {
+    for (const m of text.matchAll(EMPTY_HREF)) failures.push([page, m[0], "an empty href"]);
     for (const m of text.matchAll(META_URL)) {
       const c = m[0].match(CONTENT);
       if (c) raws.push(c[1] ?? c[2] ?? c[3] ?? "");

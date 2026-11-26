@@ -30,9 +30,9 @@
                 </div>
             </article>
 
-            {{- /* tags.html and categories.html render nothing without terms,
-                   and GitInfo is nil unless enableGitInfo is on. */ -}}
-            {{- $hasTerms := or (.GetTerms "tags") (.GetTerms "categories") -}}
+            {{- /* tags.html and categories.html render nothing without a term
+                   that has a page, and GitInfo is nil unless enableGitInfo is on. */ -}}
+            {{- $hasTerms := or (partial "listable.html" (.GetTerms "tags")) (partial "listable.html" (.GetTerms "categories")) -}}
             {{- if or $hasTerms .GitInfo }}
             <hr />
 
