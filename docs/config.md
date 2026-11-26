@@ -314,6 +314,7 @@ Only `repository` is required: `issueTerm` defaults to `pathname` and `theme` to
 | key | what it does |
 | --- | --- |
 | `services.disqus.shortname` | the Disqus site name |
+| `privacy.disqus.disable` | Hugo's privacy switch: `true` turns Disqus off everywhere, its `preconnect` included, even with a shortname set |
 | `params.commento.url` | the script URL of your Commento or [Comentario](https://comentario.app) instance. A script named `comentario.js` (Comentario 3) gets `<comentario-comments>`, any other Commento's `<div>` |
 | `params.utterances.repository` | the public `owner/repo` holding the issues |
 | `params.utterances.issueTerm` | how a page maps to its issue: `pathname` (the default), `url`, `title`, `og:title`, or a specific term. A number is a term too, searched for in issue titles: utterances opens a given issue only through its `issue-number` attribute, which the theme does not set |
