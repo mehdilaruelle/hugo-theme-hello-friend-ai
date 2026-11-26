@@ -276,7 +276,7 @@ jobs:
           for t in described tour; do
             [ -f $p/tags/$t/index.html ] && ! grep -q 'name=robots content="noindex' $p/tags/$t/index.html || { echo "  BAD  the $t term is not indexable"; exit 1; }
           done
-          # No post here has a category: the declared taxonomy is as empty.
+          # No post here has a category.
           grep -q '<meta name=robots content="noindex' $p/categories/index.html && ! grep -q 'posts-list' $p/categories/index.html \
             && ! grep -q '/categories/<' $p/sitemap.xml || { echo "  BAD  an unused taxonomy is indexable, or renders an empty list"; exit 1; }
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
