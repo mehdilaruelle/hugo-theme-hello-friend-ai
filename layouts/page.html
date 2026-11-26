@@ -30,8 +30,7 @@
                 </div>
             </article>
 
-            {{- /* Gate on what tags.html and categories.html print, so a site's
-                   override still shows; GitInfo is nil unless enableGitInfo is on. */ -}}
+            {{- /* Gated on what the partials print, so a site's override counts too. */ -}}
             {{- $tags := partial "tags.html" . -}}
             {{- $categories := partial "categories.html" . -}}
             {{- if or (strings.TrimSpace (print $tags $categories)) .GitInfo }}

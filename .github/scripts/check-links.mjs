@@ -19,8 +19,7 @@ const META_URL =
 const CONTENT = /(?<![-\w])content\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
 const SKIP = /^(?:https?:|mailto:|tel:|data:|javascript:|\/\/|#)/i;
 
-// An empty href, bare under --minify, is what a link to a page with no
-// permalink prints.
+// A link to a page with no permalink; --minify writes it bare.
 const EMPTY_HREF = /<a\b[^>]*?(?<![-\w])href(?:\s*=\s*(?:""|'')|(?!\s*=))(?=[\s>])/gi;
 
 const decode = (s) =>
