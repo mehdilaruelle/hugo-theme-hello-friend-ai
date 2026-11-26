@@ -7,18 +7,18 @@
 {{- .Page.Store.Set "renderString" true -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- .Page.Store.Delete "renderString" -}}
-{{- /* RenderString restarts the page's id counters, so the answer's ids, and its links to them, are scoped. */ -}}
-{{- /* A multilingual site's link hook writes #x as the page URL then #x. A
-       rewritten link holds  for its "#" until the end, so no other id matches it. */ -}}
+{{- /* RenderString restarts the page's id counters, so the answer's ids, and its
+       links to them, are scoped. A multilingual site's link hook puts the page
+       URL before "#"; a rewritten link holds \ue000 for it, so no later id matches it. */ -}}
 {{- $scope := printf "faq%d-" .Ordinal -}}
 {{- $page := .Page.RelPermalink -}}
 {{- range findRESubmatch `\sid="([^"]+)"` $html -}}
   {{- $id := index . 1 -}}
   {{- range slice "" $page -}}
-    {{- $html = replace $html (printf `href="%s#%s"` . $id) (printf "href=\"%s%s%s\"" . $scope $id) -}}
+    {{- $html = replace $html (printf `href="%s#%s"` . $id) (printf "href=\"%s\ue000%s%s\"" . $scope $id) -}}
   {{- end -}}
 {{- end -}}
-{{- $html = replace (replaceRE `(\sid=")` (print "${1}" $scope) $html) "" "#" -}}
+{{- $html = replace (replaceRE `(\sid=")` (print "${1}" $scope) $html) "\ue000" "#" -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}
