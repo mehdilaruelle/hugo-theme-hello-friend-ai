@@ -6,8 +6,7 @@ tags = ["hugo"]
 categories = ["Development"]
 series = ["Showcase"]
 
-# 02-lake.fr.jpg replaces 02-lake.jpg here, and is published under this
-# page's URL while the others keep the English one: the order must not change.
+# 02-lake.fr.jpg is published under this page's URL, the others under the English one.
 [[resources]]
   src = "photos/01-dunes.jpg"
   [resources.params]
