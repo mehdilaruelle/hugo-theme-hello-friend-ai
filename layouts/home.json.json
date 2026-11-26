@@ -35,7 +35,7 @@
     {{- if not .Date.IsZero -}}{{- $date = .Date.Format "2006-01-02" -}}{{- end -}}
     {{- $index = $index | append (dict
         "title"   (partial "title-plain.html" .)
-        "url"     (strings.TrimPrefix $dir .RelPermalink)
+        "url"     (cond (hasPrefix .RelPermalink $dir) (printf "./%s" (strings.TrimPrefix $dir .RelPermalink)) .RelPermalink)
         "date"    $date
         "tags"    (partial "as-list.html" (.Params.tags | default slice))
         "summary" (.Summary | plainify | htmlUnescape | chomp)

@@ -683,8 +683,12 @@ const checks = {
     };
     let seen = 0;
     for (const p of pages(dir)) {
-      const link = [...readFileSync(p, "utf8").matchAll(tagRe("link"))].find((m) => attr(m[0], "data-search-index") !== null);
-      if (!link) continue;
+      const html = readFileSync(p, "utf8");
+      const link = [...html.matchAll(tagRe("link"))].find((m) => attr(m[0], "data-search-index") !== null);
+      if (!link) {
+        if ([...html.matchAll(tagRe("form"))].some((m) => attr(m[0], "data-search") !== null)) fail(`${rel(p)}: a search form with no index link`);
+        continue;
+      }
       seen++;
       const index = new URL(attr(link[0], "href"), new URL(rel(p).replace(/index\.html$/, ""), root));
       under(index, `${rel(p)}: the index`);
