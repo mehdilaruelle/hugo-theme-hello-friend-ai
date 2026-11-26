@@ -1062,7 +1062,9 @@ and left out of the lists, the counts and the series blocks. A tag or category
 that only such pages carry has nothing to list, so its taxonomy leaves it out,
 in the HTML, the feed and the Markdown copy, and its page is `noindex`. A term
 with its own `_index.md` is a page in its own right and stays, unless that
-file is `render: link` too.
+file is `render: link` too. A term whose `_index.md` is `render: never` or
+`render: link` has no page, so the pages carrying it do not link to it; its
+name still reaches their search index, Markdown copy and metadata.
 
 ## Search
 

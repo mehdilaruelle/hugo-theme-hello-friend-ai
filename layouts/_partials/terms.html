@@ -1,7 +1,8 @@
 {{- /* (dict "page" . "taxonomy" "tags" "icon" "tag"). GetTerms, not urlize:
-       the term page owns its URL ("CI/CD" is not /tags/ci/cd/). */ -}}
+       the term page owns its URL ("CI/CD" is not /tags/ci/cd/). Only terms
+       with a page: a link to the others leads nowhere. */ -}}
 {{- $page := .page -}}
-{{ with $page.GetTerms .taxonomy }}
+{{ with partial "listable.html" ($page.GetTerms .taxonomy) }}
     <p>
         {{ partial "icon.html" (dict "name" $.icon) }}
 
