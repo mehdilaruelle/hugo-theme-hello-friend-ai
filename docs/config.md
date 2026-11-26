@@ -180,8 +180,16 @@ a `locale` such as `fa-IR`.
 A list dates each post with `dateformShort`, `Jan 2` when unset. Hugo translates
 the month but keeps the layout's order, and has no abbreviated month in
 Japanese, Korean, Arabic or Lombard, so the theme writes the full one there:
-`3月 5`, `3월 5`, `مارس 5`. Chinese gets English month names whatever the layout. Set
-`dateformShort` per language for zh, ja, ko and ar:
+`3月 5`, `3월 5`, `مارس 5`. Chinese gets English month names unless its `locale`
+is one Hugo knows, such as `zh-Hans-CN` or `zh-Hant-TW` (`zh-CN` is not):
+
+```toml
+[languages.zh-cn]
+  locale = "zh-Hans-CN"
+```
+
+For a date in each language's own order, set `dateformShort` per language for
+zh, ja, ko and ar:
 
 ```toml
 [languages.zh-cn.params]
