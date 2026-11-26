@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 
 const file = process.argv[2] || "assets/js/search.js";
 const src = readFileSync(file, "utf8");
-const body = src.match(/function fold\(s\) \{[\s\S]*?\n  \}/);
+const body = src.match(/(?:const LETTERS = .*\n  )?function fold\(s\) \{[\s\S]*?\n  \}/);
 if (!body) {
   console.log(`  BAD  no function fold(s) in ${file}`);
   process.exit(1);
@@ -23,6 +23,16 @@ const cases = [
   ["هذا", "هٰذا", true],         // superscript alef
   ["シ", "ジ", false],          // a voicing mark makes another kana
   ["가", "각", true],           // a Hangul prefix still matches
+  ["lodz", "Łódź", true],       // letters with no decomposition
+  ["zolw", "żółw", true],
+  ["Da Nang", "Đà Nẵng", true],
+  ["kobenhavn", "København", true],
+  ["strasse", "Straße", true],
+  ["ΘΕΣ", "Θεσσαλονίκη", true], // an all-caps prefix lowercases to a final sigma
+  ["کتابها", "کتاب‌ها", true],   // Persian, typed without the ZWNJ
+  ["ایران", "ايران", true],     // Arabic-keyboard yeh
+  ["کتاب", "كتاب", true],       // Arabic-keyboard kaf
+  ["۱۴۰۲", "1402", true],       // Persian digits
 ];
 
 let bad = 0;

@@ -29,11 +29,15 @@
   // Arabic harakat, hamza (often left untyped), superscript alef and tatweel. A kana's voicing mark is
   // not an accent ("シ" is not "ジ"), so those pairs are recomposed; Hangul stays
   // split, so "가" still finds "각".
+  // ł đ ø ß ı do not decompose, and Persian is typed with or without the ZWNJ,
+  // Arabic yeh and kaf, and its own digits (each block starts at a multiple of 16).
+  const LETTERS = { "đ": "d", "ł": "l", "ø": "o", "ß": "ss", "ı": "i", "ς": "σ", "ي": "ی", "ى": "ی", "ك": "ک" };
   function fold(s) {
     return (s || "")
       .toLowerCase()
       .normalize("NFD")
-      .replace(/[\u0300-\u036f\u0640\u064b-\u065f\u0670]/g, "")
+      .replace(/[\u0300-\u036f\u0640\u064b-\u065f\u0670\u200c]/g, "")
+      .replace(/[đłøßıςيىك\u0660-\u0669\u06f0-\u06f9]/g, (c) => LETTERS[c] || c.charCodeAt(0) % 16)
       .replace(/[\u3040-\u30ff][\u3099\u309a]/g, (kana) => kana.normalize("NFC"));
   }
 
