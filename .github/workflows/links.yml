@@ -391,13 +391,17 @@ jobs:
           grep -q 'src="https://plausible.io/js/script.js"' public-shapes/index.html \
             || { echo "  BAD  plausibleDataDomain alone gets no script"; exit 1; }
           [ "$(grep -c '<span></span>' public-shapes/index.html)" = 0 ] || { echo "  BAD  an empty footer entry, or no page"; exit 1; }
+          grep -q themecolor-shape <<< "$out" && ! grep -q 'name="theme-color"' public-shapes/index.html \
+            || { echo "  BAD  a themeColor table was written, or did not warn"; exit 1; }
+          grep -qF '<meta name="author" content="Ann, Bob"' public-shapes/index.html && grep -qF '"name":"Ann, Bob"' public-shapes/index.html \
+            || { echo "  BAD  a list of site authors is not joined"; exit 1; }
           ! grep -q 'data-theme=' public-shapes/index.html || { echo "  BAD  an unknown defaultTheme was written"; exit 1; }
           grep -q 'logo__cursor{animation-duration:0s}' public-shapes/main-*.css || { echo "  BAD  logoCursorAnimate = 0 was ignored"; exit 1; }
           # Plain-value table params, and a page param build that is not a table.
           out=$(hugo --themesDir ../.. --gc --destination public-shapes-plain \
             --config ../.github/fixtures/param-shapes-plain.toml \
             --contentDir ../.github/fixtures/param-shapes-plain 2>&1) || { echo "$out"; exit 1; }
-          for id in logo-shape portrait-shape social-shape commento-shape utterances-shape footer-shape favicon-shape; do
+          for id in logo-shape portrait-shape social-shape commento-shape utterances-shape footer-shape favicon-shape ai-shape publisher-shape; do
             grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
           done
           p=public-shapes-plain
@@ -412,6 +416,10 @@ jobs:
           grep -qF '"author":[{"@type":"Person","name":"Ann"},{"@type":"Person","name":"Bob"}]' "$f" \
             || { echo "  BAD  a list of authors is not one Person each"; exit 1; }
           echo "  a list of authors names each of them"
+          for t in token-a token-b; do
+            grep -qF "<meta name=\"google-site-verification\" content=\"$t\"" "$p/index.html" || { echo "  BAD  no verification tag for $t"; exit 1; }
+          done
+          grep -q 'size-adjust:105%;' "$p"/main-*.css || { echo "  BAD  a numeric sizeAdjust is not a percentage"; exit 1; }
 
       - name: Check the footer draws no empty block
         working-directory: hello-friend-ai/exampleSite

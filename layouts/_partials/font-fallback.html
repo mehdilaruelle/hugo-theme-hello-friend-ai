@@ -61,6 +61,8 @@
     {{- if ne $over false -}}
       {{- if not (reflect.IsMap $over) -}}{{- $over = dict -}}{{- end -}}
       {{- $sizeAdjust := $over.sizeAdjust | default .sizeAdjust -}}
+      {{- /* A bare number is a percentage, as the defaults are written. */ -}}
+      {{- if ne (printf "%T" $sizeAdjust) "string" }}{{ $sizeAdjust = printf "%v%%" $sizeAdjust }}{{ end -}}
       {{- $ascent := $over.ascentOverride | default .ascentOverride -}}
       {{- $descent := $over.descentOverride | default .descentOverride -}}
       {{- $lineGap := $over.lineGapOverride | default .lineGapOverride -}}

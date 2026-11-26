@@ -7,6 +7,10 @@
   [params.author]
     credentials = ["x"]
     description = ["Writes", "code"]
+    name        = ["Ann", "Bob"]
+  [params.themeColor]   # one colour, not a light/dark table
+    light = "#ffffff"
+    dark  = "#000000"
   [params.logo]
     logoCursorColor = "#67a2c9}body{display:none"
     logoCursorAnimate = 0   # a number: with read it as unset
