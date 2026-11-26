@@ -80,7 +80,7 @@ echo one
 {{< faq "And the next answer?" >}}
 ## Example
 
-Its own too.[^edge]
+Its own too.[^edge] See [its heading](#example).
 
 [^edge]: The second answer's note.
 

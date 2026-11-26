@@ -8,11 +8,17 @@
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- .Page.Store.Delete "renderString" -}}
 {{- /* RenderString restarts the page's id counters, so the answer's ids, and its links to them, are scoped. */ -}}
+{{- /* A multilingual site's link hook writes #x as the page URL then #x. A
+       rewritten link holds  for its "#" until the end, so no other id matches it. */ -}}
 {{- $scope := printf "faq%d-" .Ordinal -}}
+{{- $page := .Page.RelPermalink -}}
 {{- range findRESubmatch `\sid="([^"]+)"` $html -}}
-  {{- $html = replace $html (printf `href="#%s"` (index . 1)) (printf `href="#%s%s"` $scope (index . 1)) -}}
+  {{- $id := index . 1 -}}
+  {{- range slice "" $page -}}
+    {{- $html = replace $html (printf `href="%s#%s"` . $id) (printf "href=\"%s%s%s\"" . $scope $id) -}}
+  {{- end -}}
 {{- end -}}
-{{- $html = replaceRE `(\sid=")` (print "${1}" $scope) $html -}}
+{{- $html = replace (replaceRE `(\sid=")` (print "${1}" $scope) $html) "" "#" -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}

@@ -667,7 +667,7 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public landmarks
 
-      - name: Check no id is used twice on a page, faq answers included
+      - name: Check no id is used twice on a page, and each link to one reaches it
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public unique-ids
 
