@@ -40,8 +40,23 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # Plural rules come from Node's ICU, so the runner's default must not pick them.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+
       - name: Check the translations against en.toml
         run: node .github/scripts/check-i18n.mjs .
+
+      # Persian `one` covers 0 too, so it keeps the number.
+      - name: The translation check fails on a spelled-out Persian one
+        run: |
+          root=$(mktemp -d)
+          cp -r i18n layouts "$root"
+          sed -i 's/^one   = "{{ .Count }} دقیقه"$/one   = "یک دقیقه"/' "$root/i18n/fa.toml"
+          out=$(node .github/scripts/check-i18n.mjs "$root" 2>&1) || true
+          want='i18n/fa.toml: [readingTime] one drops {{ .Count }}'
+          echo "$out" | grep -qF "$want" || { echo "$out"; echo "  BAD  wanted: $want"; exit 1; }
 
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
