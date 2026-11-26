@@ -5,13 +5,6 @@
 // subtitle and nothing longer: a paragraph set centred is hard to read, and
 // a full-width one is harder still. Prose gets the same measure and the same
 // alignment as a post.
-//
-// The centred column takes its content's width, so it is capped at the
-// screen's, or a long word in the prose would widen the page.
-.content-center > main {
-  max-width: 100%;
-}
-
 .home-content {
   width: 100%;
   max-width: var(--content-width, 800px);
@@ -30,4 +23,9 @@
   > :last-child {
     margin-block-end: 0;
   }
+}
+
+// Centred, the column takes its content's width: a long word would widen the page.
+.content-center > main {
+  max-width: 100%;
 }

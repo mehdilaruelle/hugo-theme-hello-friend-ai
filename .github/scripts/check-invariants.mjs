@@ -487,8 +487,7 @@ const checks = {
     ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
-  // The front page's and a section's introduction wrap and set tables as a post
-  // does, and a title wraps, so none widens a phone's page.
+  // RND-18: no intro or title widens a phone's page.
   prose() {
     const all = css(), bad = [];
     const table = rules(all, ".post-content table td");
