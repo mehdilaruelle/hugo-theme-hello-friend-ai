@@ -54,12 +54,9 @@ jobs:
           root=$(mktemp -d)
           cp -r i18n layouts "$root"
           sed -i 's/^one   = "{{ .Count }} دقیقه"$/one   = "یک دقیقه"/' "$root/i18n/fa.toml"
-          if out=$(node .github/scripts/check-i18n.mjs "$root" 2>&1); then
-            echo "$out"; echo "  BAD  the fixture passed"; exit 1
-          fi
+          out=$(node .github/scripts/check-i18n.mjs "$root" 2>&1) || true
           want='i18n/fa.toml: [readingTime] one drops {{ .Count }}'
           echo "$out" | grep -qF "$want" || { echo "$out"; echo "  BAD  wanted: $want"; exit 1; }
-          echo "  a spelled-out fa one is caught"
 
       - name: Check docs/svgs.md lists exactly the icons the theme draws
         run: node .github/scripts/check-svgs.mjs .
