@@ -26,7 +26,12 @@ td {
   &.align-right { text-align: right; }
 }
 
-.post-content {
+.post-content,
+.home-content,
+.list-content {
+  // Not anywhere: table cells keep their minimum width.
+  overflow-wrap: break-word;
+
   table {
     border-collapse: collapse;
     margin: 25px auto;

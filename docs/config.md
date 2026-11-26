@@ -516,7 +516,8 @@ properties above, and for a rule on an element as long as its selector is at
 least as specific as the theme's: `customCSS` loads after the theme's
 stylesheet, so a tie goes to it. The theme styles table cells with
 `.post-content table th`, so `.post-content table th { border-color: … }` wins
-and `.post-content th` does not.
+and `.post-content th` does not. Tables in the front page's and a section's
+`_index.md` take the same rule under `.home-content` and `.list-content`.
 
 So a value set on `:root` applies in both schemes. To change one scheme only,
 scope the rule to it. Light mode has two ways in, the toggle and the operating

@@ -95,13 +95,12 @@
   }
 
   // The title takes the space the date leaves, or it pushes the date onto the
-  // wrapped line; overflow-wrap because flex will not shrink below a long word.
+  // wrapped line.
   .post-item-inner--excerpt {
     flex-wrap: wrap;
 
     .post-title {
       flex: 1;
-      overflow-wrap: anywhere;
     }
   }
 

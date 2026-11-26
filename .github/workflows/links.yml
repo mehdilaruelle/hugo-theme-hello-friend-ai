@@ -309,6 +309,10 @@ jobs:
         working-directory: hello-friend-ai
         run: node .github/scripts/check-invariants.mjs exampleSite/public content-width
 
+      - name: Check intros and titles wrap, and intro tables look like a post's
+        working-directory: hello-friend-ai
+        run: node .github/scripts/check-invariants.mjs exampleSite/public prose
+
       # Unminified on purpose: --minify drops an empty attribute, so a
       # minified build cannot observe this at all.
       - name: Check the logo cursor ships no style attribute

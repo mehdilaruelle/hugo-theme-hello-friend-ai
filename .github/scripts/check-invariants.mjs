@@ -487,6 +487,20 @@ const checks = {
     ok(`the logo is inlined and named "${name}"${keep.length ? `, keeping its own ${keep.join(", ")}` : ""}`);
   },
 
+  // RND-18: no intro or title widens a phone's page.
+  prose() {
+    const all = css(), bad = [];
+    const table = rules(all, ".post-content table td");
+    for (const box of [".home-content", ".list-content"]) {
+      if (!rules(all, box).some((b) => declares(b, "overflow-wrap", "break-word"))) bad.push(`${box} does not wrap a long word`);
+      if (!rules(all, `${box} table td`).some((b) => table.includes(b))) bad.push(`${box} tables are not styled as a post's`);
+    }
+    if (!rules(all, ".post-title").some((b) => declares(b, "overflow-wrap", "anywhere"))) bad.push(".post-title does not wrap a long word");
+    if (!rules(all, ".content-center>main").some((b) => declares(b, "max-width", "100%"))) bad.push("the front page column is not capped at the screen");
+    if (bad.length) fail("prose can widen the page", bad.join("\n"));
+    ok("intros wrap and set tables as a post does, and titles wrap");
+  },
+
   // contentWidth reaches the stylesheet and image sizes; no argument means unset.
   "content-width"(want) {
     const set = rules(css(), ":root").filter((b) =>

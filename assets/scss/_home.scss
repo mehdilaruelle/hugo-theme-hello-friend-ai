@@ -24,3 +24,8 @@
     margin-block-end: 0;
   }
 }
+
+// Centred, the column takes its content's width: a long word would widen the page.
+.content-center > main {
+  max-width: 100%;
+}
