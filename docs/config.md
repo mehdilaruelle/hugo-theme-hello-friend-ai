@@ -776,7 +776,7 @@ templates.
 | `ai` | which AI crawlers `robots.txt` turns away. **A table**, see [AI crawlers](#ai-crawlers) |
 | `contentWidth` | the width of the column articles, lists and the front page are set in. Defaults to `800px`, see [Content width](#content-width) |
 | `imageSizes` | the `sizes` attribute on every processed image — how wide it will be shown. Defaults to `(max-width: 800px) 100vw, 800px`, or to `contentWidth` in its place when that is set and not a percentage; on a cover, to its width, `min(calc(<column> + 60px), calc(100vw - 40px))` |
-| `imageMaxWidth` | caps the widest copy generated for `srcset`. Defaults to `1400`, as `0` does |
+| `imageMaxWidth` | caps the widest copy generated for `srcset`, in pixels: `1200` or `"1200px"`. Defaults to `1400`, as `0` does |
 
 ```toml
 [params]
@@ -1363,7 +1363,7 @@ Disallow: /
 """
 ```
 
-That text is emitted verbatim in place of the generated groups.
+That text, or a list of its lines, is emitted verbatim in place of the generated groups.
 `Content-Signal` still follows `train`, `cite` and `search`, so the two halves
 can now disagree — the theme is stating an intention next to a list it did not
 write, and only you know whether they match. Nothing checks it for you: the

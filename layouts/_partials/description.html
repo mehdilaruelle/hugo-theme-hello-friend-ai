@@ -13,7 +13,7 @@
   {{- /* homeSubtitle is the line under the title. A front page with a
          description of its own says what the site is for at the length a search
          result gives it, so that wins. */ -}}
-  {{- $description = .Site.Params.homeSubtitle | plainify | htmlUnescape -}}
+  {{- $description = partial "string-param.html" (dict "value" site.Params.homeSubtitle "name" "homeSubtitle") | plainify | htmlUnescape -}}
 {{- else if .Description -}}
   {{- $description = .Description -}}
 {{- else if and (eq .Kind "taxonomy") (not .Summary) -}}

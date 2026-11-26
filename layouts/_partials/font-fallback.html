@@ -66,7 +66,7 @@
       {{- $lineGap := $over.lineGapOverride | default .lineGapOverride -}}
       {{- $local := $over.local | default .local -}}
       {{- $src := slice -}}
-      {{- range $local -}}
+      {{- range partial "as-list.html" $local -}}
         {{- $src = $src | append (printf "local(\"%s\")" .) -}}
       {{- end -}}
       {{- $weight := "" -}}

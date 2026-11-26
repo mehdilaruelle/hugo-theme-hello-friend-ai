@@ -73,7 +73,7 @@
   {{- $person = merge $person (dict "hasCredential" .) -}}
 {{- end -}}
 {{- /* resources.Get publishes the original; a static file keeps its path. */ -}}
-{{- with (partialCached "param-table.html" "portrait" "portrait").path -}}
+{{- with partial "string-param.html" (dict "value" (partialCached "param-table.html" "portrait" "portrait").path "name" "portrait.path") -}}
   {{- $portrait := partialCached "abs-url.html" . (printf "%v" .) -}}
   {{- with resources.Get . -}}
     {{- $portrait = .Permalink -}}

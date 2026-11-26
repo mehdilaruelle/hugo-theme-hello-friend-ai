@@ -1,0 +1,5 @@
+{{- /* The subtitle, else the site description, each flattened first so a
+       markup-only one falls through. */ -}}
+{{- $sub := partial "flatten.html" (partial "string-param.html" (dict "value" site.Params.homeSubtitle "name" "homeSubtitle")) -}}
+{{- $site := partial "flatten.html" (partial "string-param.html" (dict "value" site.Params.description "name" "description")) -}}
+{{- return (default $site $sub) -}}

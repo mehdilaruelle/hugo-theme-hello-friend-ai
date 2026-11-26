@@ -5,6 +5,6 @@
 {{- if eq $type "string" -}}
   {{- $out = .value -}}
 {{- else if ne $type "<nil>" -}}
-  {{- warnidf (printf "%s-shape" .name) "%s: expected a path, got %T. It is ignored." .name .value -}}
+  {{- warnidf (printf "%s-shape" (replace .name "." "-")) "%s: expected a string, got %T. It is ignored." .name .value -}}
 {{- end -}}
 {{- return $out -}}

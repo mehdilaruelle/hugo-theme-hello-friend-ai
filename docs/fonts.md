@@ -78,7 +78,7 @@ regular face, weight 400, and the two tables are the weights above it:
     local           = ["Arial Bold", "Arial-BoldMT", "Helvetica Bold", "Helvetica-Bold", "Liberation Sans Bold"]
 ```
 
-Set `semiBold = false` or `bold = false` to drop one of them, or
+`local` also takes a single name. Set `semiBold = false` or `bold = false` to drop one of them, or
 `fontFallback = false` under `params` to drop all three and leave the swap as it
 was.
 
