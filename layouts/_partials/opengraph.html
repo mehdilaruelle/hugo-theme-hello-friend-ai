@@ -21,9 +21,8 @@
 {{- $canonical := partial "canonical.html" . -}}
 <meta property="og:url" content="{{ $canonical.url }}">
 
-{{- /* safeHTML after plainify, as in image.html: since Hugo 0.169 plainify
-       returns a string, and its entities would be escaped a second time. */ -}}
-{{- with or site.Title site.Params.title | plainify | safeHTML }}
+{{- /* The site title is plain text: plainify took "<dev/> notes" for markup. */ -}}
+{{- with or site.Title site.Params.title }}
 	<meta property="og:site_name" content="{{ . }}">
 {{- end }}
 
@@ -77,7 +76,7 @@
 		<meta property="article:modified_time" {{ .Format $ISO8601 | printf "content=%q" | safeHTMLAttr }}>
 	{{- end }}
 	{{- range .GetTerms "tags" | first 6 }}
-		<meta property="article:tag" content="{{ .Page.Title | plainify | safeHTML }}">
+		<meta property="article:tag" content="{{ partialCached "title-plain.html" .Page .Page }}">
 	{{- end }}
 {{- else }}
 	<meta property="og:type" content="website">

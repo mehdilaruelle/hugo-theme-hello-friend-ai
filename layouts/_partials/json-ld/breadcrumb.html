@@ -12,8 +12,10 @@
     {{- $name := "" -}}
     {{- if .IsHome -}}
       {{- $name = partialCached "i18n.html" (dict "key" "home" "fallback" "Home") "home" "Home" -}}
+    {{- else if eq .LinkTitle .Title -}}
+      {{- $name = partialCached "title-plain.html" . . -}}
     {{- else -}}
-      {{- $name = .LinkTitle -}}
+      {{- $name = partial "title-plain.html" (dict "text" .LinkTitle) -}}
     {{- end -}}
     {{- $items = $items | append (dict "@type" "ListItem" "position" $i "name" $name "item" .Permalink) -}}
   {{- end -}}

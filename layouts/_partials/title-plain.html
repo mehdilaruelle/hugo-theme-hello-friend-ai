@@ -17,7 +17,9 @@
        of a series on every part: a second key per page evicts these titles.
        Caching noindex.html by page as well took a 1,001-post site in four
        series from 18 s to 25 s. Cache by value or per language instead. */ -}}
-{{- $title := partial "title.html" . -}}
+{{- /* Or (dict "text" s): a linkTitle, which has no page of its own to cache by. */ -}}
+{{- $title := "" -}}
+{{- if reflect.IsMap . }}{{ $title = .text }}{{ else }}{{ $title = partial "title.html" . }}{{ end -}}
 {{- $html := partial "title-inline.html" (dict "text" $title "with" "&lt;") | markdownify -}}
 {{- if or (strings.Contains $html "<") (strings.ContainsAny $title `\&`) -}}
   {{- $title = $html | plainify | htmlUnescape -}}

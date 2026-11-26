@@ -1,3 +1,6 @@
+# Plain text, not markup: og:site_name keeps the <…>.
+title = "<dev/> notes"
+
 # So the h1 renders the emoji code in posts/shipping.md.
 enableEmoji = true
 
