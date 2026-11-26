@@ -254,6 +254,10 @@ backslash before each, in single quotes: `src = 'photos/lake \[copy\].jpg'`.
 Unescaped, it can match another file or none: the alt lands on the wrong
 picture, or this one falls back to its file name.
 
+A `name` set there leaves the order and the alt fallback to the file name, but
+Hugo tests `match` against the name: keep the folder in it
+(`name = "photos/harbour"`), or the picture drops out of `match="photos/*"`.
+
 A thumbnail is a link, and a link needs a name, so a picture with no `alt`
 falls back to its resource `title` if the front matter sets one, then to its
 file name — `01-arrival.jpg` reads "01 arrival". Write the `alt`.
