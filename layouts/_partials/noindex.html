@@ -12,5 +12,6 @@ Whether this page is kept out of a search engine's index. Returns a boolean.
 {{- $noindex := partialCached "switch.html" .Params.noindex .Params.noindex -}}
 {{- if or (eq .Layout "search") (eq .Kind "404") (not .Permalink) -}}{{- $noindex = true -}}{{- end -}}
 {{- with .Params.build }}{{ if and (reflect.IsMap .) (eq .render "link") }}{{ $noindex = true }}{{ end }}{{ end -}}
-{{- if and (eq .Kind "term") (not .File) (not (partial "list-pages.html" .)) }}{{ $noindex = true }}{{ end -}}
+{{- /* A taxonomy no post uses, like categories on a tags-only site, is as empty. */ -}}
+{{- if and (in (slice "term" "taxonomy") .Kind) (not .File) (not (partial "list-pages.html" .)) }}{{ $noindex = true }}{{ end -}}
 {{- return $noindex -}}

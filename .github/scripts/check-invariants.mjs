@@ -60,21 +60,30 @@ function logoOf(html) {
   return m ? element(html, m.index, "div") : fail("no logo was rendered");
 }
 
+function noEmptyDiv(cls) {
+  const empty = [], seen = [];
+  for (const p of pages(dir)) {
+    const html = readFileSync(p, "utf8");
+    for (const m of html.matchAll(/<div\b[^>]*>/gi)) {
+      if (!hasClass(m[0], cls)) continue;
+      seen.push(p);
+      if (!text(element(html, m.index + m[0].length, "div"))) empty.push(rel(p));
+    }
+  }
+  if (empty.length) fail(`a ${cls} with nothing in it was rendered`, empty.slice(0, 3).join("\n"));
+  if (!seen.length) fail(`no ${cls} was rendered anywhere`);
+}
+
 const checks = {
   // #270
   "post-info"() {
-    const empty = [], seen = [];
-    for (const p of pages(dir)) {
-      const html = readFileSync(p, "utf8");
-      for (const m of html.matchAll(/<div\b[^>]*>/gi)) {
-        if (!hasClass(m[0], "post-info")) continue;
-        seen.push(p);
-        if (!text(element(html, m.index + m[0].length, "div"))) empty.push(rel(p));
-      }
-    }
-    if (empty.length) fail("a post-info with nothing in it was rendered", empty.slice(0, 3).join("\n"));
-    if (!seen.length) fail("no post-info was rendered anywhere");
+    noEmptyDiv("post-info");
     ok("a post-info is rendered only where there is something to put in it");
+  },
+
+  pagination() {
+    noEmptyDiv("pagination");
+    ok("a pagination is rendered only where there is another pager to go to");
   },
 
   // #268 and #274: the table lists levels 2..3, so headings are not the test.

@@ -1062,7 +1062,9 @@ and left out of the lists, the counts and the series blocks. A tag or category
 that only such pages carry has nothing to list, so its taxonomy leaves it out,
 in the HTML, the feed and the Markdown copy, and its page is `noindex`. A term
 with its own `_index.md` is a page in its own right and stays, unless that
-file is `render: link` too.
+file is `render: link` too. The same goes for a taxonomy no post uses, such
+as Hugo's default `categories` on a site that only tags its posts: `noindex`
+and no sitemap entry, unless it has an `_index.md` of its own.
 
 ## Search
 

@@ -276,6 +276,9 @@ jobs:
           for t in described tour; do
             [ -f $p/tags/$t/index.html ] && ! grep -q 'name=robots content="noindex' $p/tags/$t/index.html || { echo "  BAD  the $t term is not indexable"; exit 1; }
           done
+          # No post here has a category.
+          grep -q '<meta name=robots content="noindex' $p/categories/index.html && ! grep -q 'posts-list' $p/categories/index.html \
+            && ! grep -q '/categories/<' $p/sitemap.xml || { echo "  BAD  an unused taxonomy is indexable, or renders an empty list"; exit 1; }
           hugo --themesDir ../.. --gc --minify --panicOnWarning --destination public-series-off \
             --contentDir ../.github/fixtures/series --baseURL "https://example.com/subpath/" \
             --config config.toml,../.github/fixtures/series-off.toml
@@ -682,9 +685,11 @@ jobs:
           done
           echo "  head URLs are relative or complete"
 
-      - name: Check no empty post-info is rendered
+      - name: Check no empty post-info or pagination is rendered
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-invariants.mjs public post-info
+        run: |
+          node ../.github/scripts/check-invariants.mjs public post-info
+          node ../.github/scripts/check-invariants.mjs public pagination
 
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
