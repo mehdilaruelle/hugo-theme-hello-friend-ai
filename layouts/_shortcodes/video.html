@@ -22,10 +22,18 @@
 {{- $controls := partialCached "switch.html" (.Get "controls") (.Get "controls") -}}
 {{- $types := dict "ogv" "ogg" "mov" "quicktime" "m4v" "mp4" -}}
 
-{{- /* A site served from a subpath needs it kept; a remote URL must be left
-       alone. */ -}}
+{{- /* Get, not GetMatch: a "[" in a static path would be read as a glob. */ -}}
+{{- define "partials/inline/video-url" -}}
+  {{- $url := printf "%v" .src -}}
+  {{- with or (.page.Resources.Get $url) (resources.Get $url) -}}
+    {{- $url = .RelPermalink -}}
+  {{- else -}}
+    {{- $url = partialCached "abs-url.html" $url $url -}}
+  {{- end -}}
+  {{- return $url -}}
+{{- end -}}
 {{- $poster := "" -}}
-{{- with .Get "poster" }}{{ $poster = partialCached "abs-url.html" . (printf "%v" .) }}{{ end -}}
+{{- with .Get "poster" }}{{ $poster = partial "inline/video-url" (dict "page" $.Page "src" .) }}{{ end -}}
 
 {{- if $src -}}
 <video
@@ -40,7 +48,7 @@
 {{- with .Get "position" }} class="{{ . }}"{{ end }}>
   {{- range $formats }}
     {{- $ext := trim . " " }}
-    <source src="{{ partialCached "abs-url.html" (printf "%s.%s" $src $ext) (printf "%s.%s" $src $ext) | safeURL }}" type="video/{{ index $types (lower $ext) | default (lower $ext) }}">
+    <source src="{{ partial "inline/video-url" (dict "page" $.Page "src" (printf "%s.%s" $src $ext)) | safeURL }}" type="video/{{ index $types (lower $ext) | default (lower $ext) }}">
   {{- end }}
 </video>
 {{- end -}}

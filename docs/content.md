@@ -177,7 +177,9 @@ the weight. Encode once with ffmpeg and drop the files next to your images.
 
 Properties:
 
-  - `src` (required, the path **without** an extension)
+  - `src` (required, the path **without** an extension). It and `poster` are
+    looked for in the page bundle, then `assets/`, like an image; else under
+    the base URL (`static/`), or as written when remote
   - `poster` (optional, an image shown before the clip loads)
   - `width` / `height` (optional but recommended — a video has no size until it
     loads, and the page jumps around without them)
@@ -193,6 +195,7 @@ Example:
 
 ``` golang
 {{< video src="/video/demo" poster="/video/demo.jpg" width="1600" height="900" alt="A session being recorded" >}}
+{{< video src="demo" poster="demo.jpg" alt="The same clip, in the page bundle" >}}
 ```
 
 Converting a GIF, scaled to twice the width the theme renders. Both encodings
