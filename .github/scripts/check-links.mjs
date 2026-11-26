@@ -21,7 +21,7 @@ const SKIP = /^(?:https?:|mailto:|tel:|data:|javascript:|\/\/|#)/i;
 
 // An empty href, bare under --minify, is what a link to a page with no
 // permalink prints.
-const EMPTY_HREF = /<a\b[^>]*?(?<![-\w])href(?:\s*=\s*(?:""|''))?(?=[\s>])/gi;
+const EMPTY_HREF = /<a\b[^>]*?(?<![-\w])href(?:\s*=\s*(?:""|'')|(?!\s*=))(?=[\s>])/gi;
 
 const decode = (s) =>
   s

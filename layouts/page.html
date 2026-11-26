@@ -30,15 +30,16 @@
                 </div>
             </article>
 
-            {{- /* tags.html and categories.html render nothing without a term
-                   that has a page, and GitInfo is nil unless enableGitInfo is on. */ -}}
-            {{- $hasTerms := or (partial "listable.html" (.GetTerms "tags")) (partial "listable.html" (.GetTerms "categories")) -}}
-            {{- if or $hasTerms .GitInfo }}
+            {{- /* Gate on what tags.html and categories.html print, so a site's
+                   override still shows; GitInfo is nil unless enableGitInfo is on. */ -}}
+            {{- $tags := partial "tags.html" . -}}
+            {{- $categories := partial "categories.html" . -}}
+            {{- if or (strings.TrimSpace (print $tags $categories)) .GitInfo }}
             <hr />
 
             <div class="post-info">
-                {{ partial "tags.html" . }}
-                {{ partial "categories.html" . }}
+                {{ $tags }}
+                {{ $categories }}
 
                 {{- partial "git-info.html" . }}
             </div>
