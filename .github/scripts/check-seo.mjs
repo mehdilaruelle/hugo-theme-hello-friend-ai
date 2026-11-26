@@ -243,15 +243,13 @@ for (const file of walk(root, ".html")) {
     }
   }
 
-  // 9b. Never modified before published: Lastmod defaults to date, not publishDate.
-  const dated = [
-    ["dateModified", article?.dateModified, "datePublished", article?.datePublished],
-    ["article:modified_time", all(og, "article:modified_time")[0], "article:published_time", all(og, "article:published_time")[0]],
-  ];
-  for (const [mod, modified, pub, published] of dated) {
-    if (modified && published && Date.parse(modified) < Date.parse(published)) {
-      failures.push([file, `${mod} ${modified}`, `earlier than ${pub} ${published}`]);
-    }
+  // 9b. Lastmod defaults to date, which can precede publishDate. A missing
+  //     date parses as NaN, and compares false.
+  for (const [modified, published] of [
+    [article?.dateModified, article?.datePublished],
+    [all(og, "article:modified_time")[0], all(og, "article:published_time")[0]],
+  ]) {
+    if (Date.parse(modified) < Date.parse(published)) failures.push([file, `modified ${modified}`, `before published ${published}`]);
   }
 
   // 10. The Dark Reader opt-out. Nothing fails without it: the diagrams just

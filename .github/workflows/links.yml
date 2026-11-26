@@ -184,7 +184,6 @@ jobs:
           grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
             || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
           echo "  a stray % reads as itself"
-          # posts/same-instant.md: its lastmod is its date, written in UTC.
           f=public-seo-shapes/posts/2024/06/one-instant-two-time-zones/index.html
           test -f "$f" && ! grep -qF 'Last updated' "$f" \
             || { echo "  BAD  the date in another time zone reads as an update"; exit 1; }
