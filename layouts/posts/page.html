@@ -98,7 +98,6 @@
 
       {{- $commentoParams := partialCached "param-table.html" "commento" "commento" }}
       {{- $utterances := partialCached "param-table.html" "utterances" "utterances" }}
-      {{- /* The preconnect and wrapper honour the privacy switch, as disqus.html does. */ -}}
       {{ if and .Site.Config.Services.Disqus.Shortname (not .Site.Config.Privacy.Disqus.Disable) }}
         {{ if partial "comments-on.html" . }}
           {{- /* Hugo's embedded partial builds the embed URL in JavaScript, so

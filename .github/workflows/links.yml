@@ -805,7 +805,6 @@ jobs:
           [ "$(count 'data-id-root' public-commento-bad/posts/2026/01/a-video-where-a-gif-used-to-be/index.html)" = 1 ] \
             || { echo "  BAD  an unparsable commento url does not get the Commento markup"; bad=1; }
           [ "$bad" = 0 ] && echo "  an unparsable url still builds, with the Commento markup"
-          # The Disqus privacy switch turns off the preconnect and the wrapper too.
           HUGO_PRIVACY_DISQUS_DISABLE=true \
             hugo --themesDir ../.. --gc --minify \
             --config ../exampleSite/config.toml,config.toml,config-comments.toml \
