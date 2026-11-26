@@ -404,6 +404,7 @@ jobs:
           for id in logo-shape portrait-shape social-shape commento-shape utterances-shape footer-shape favicon-shape ai-shape publisher-shape; do
             grep -q "$id" <<< "$out" || { echo "$out"; echo "  BAD  no $id warning"; exit 1; }
           done
+          grep -q 'params.publisher: .* got a bool' <<< "$out" || { echo "  BAD  publisher = false did not warn"; exit 1; }
           p=public-shapes-plain
           for want in posts/build-string/index.html posts/build-number/index.html fr/posts/build-number/index.html; do
             [ -f "$p/$want" ] || { echo "  BAD  $want was not built"; exit 1; }

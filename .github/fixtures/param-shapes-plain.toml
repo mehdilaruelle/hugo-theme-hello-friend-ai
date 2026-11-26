@@ -27,3 +27,5 @@ enableRobotsTXT = true
   weight = 1
 [languages.fr]
   weight = 2
+  [languages.fr.params]
+    publisher = false   # falsy: param-table.html would not warn
