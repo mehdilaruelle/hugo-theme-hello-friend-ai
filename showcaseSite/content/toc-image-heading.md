@@ -21,3 +21,7 @@ A heading that is only a picture.
 
 One whose alt Hugo drops from the table, as it does any alt the typographer
 touches: with no text to show, it is left out.
+
+### Under it
+
+A subheading keeps its entry, nested under one with no link.
