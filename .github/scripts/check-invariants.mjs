@@ -88,12 +88,12 @@ const checks = {
         seen.push(p);
         const inner = element(html, m.index + m[0].length, "nav");
         if (!text(inner)) empty.push(rel(p));
-        if (/<img\b/i.test(inner)) pictured.push(rel(p));
+        if (/<img\b/i.test(inner) || /<a\b[^>]*>\s*<\/a>/i.test(inner)) pictured.push(rel(p));
         if (/<h[23]\b[^>]*><img\b/i.test(html)) headed++;
       }
     }
     if (empty.length) fail("a table of contents with nothing in it was rendered", empty.slice(0, 3).join("\n"));
-    if (pictured.length) fail("a table of contents carries a picture", pictured.slice(0, 3).join("\n"));
+    if (pictured.length) fail("a table of contents carries a picture, or a link with no text", pictured.slice(0, 3).join("\n"));
     if (!seen.length) fail("no table of contents was rendered anywhere");
     if (!headed) fail("no heading with a picture has a table of contents, so nothing was tested");
     ok("a table of contents is rendered only where there is something to list, and with no picture");

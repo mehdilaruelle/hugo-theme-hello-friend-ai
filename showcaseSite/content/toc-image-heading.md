@@ -6,8 +6,13 @@ toc = true
 noindex = true
 +++
 
-The table of contents lists this heading's words, not its picture.
+The table of contents lists each heading's words, not its picture, or the
+picture's alt when that is all the heading holds.
 
 ## ![The theme's logo](img/logo.svg) A heading with a picture
 
 Prose under it.
+
+## ![Architecture](img/logo.svg)
+
+A heading that is only a picture.
