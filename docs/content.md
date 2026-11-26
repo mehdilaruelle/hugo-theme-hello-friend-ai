@@ -270,7 +270,9 @@ No. Everything is produced at build time.
 ```
 
 The answer takes Markdown. Repeat the shortcode for each pair; they collect into
-one `FAQPage` per page. The `<details>` opens without JavaScript.
+one `FAQPage` per page. The `<details>` opens without JavaScript. An answer's
+own ids (footnotes, headings, code line anchors) are prefixed with `faq<N>-`, so
+they never clash with the page's or another answer's.
 
 Use it where a page really is a list of questions, and nowhere else — it is the
 only shortcode here that asks you to write content in a particular shape, and a

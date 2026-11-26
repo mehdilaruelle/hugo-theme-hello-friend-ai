@@ -7,6 +7,21 @@
 {{- .Page.Store.Set "renderString" true -}}
 {{- $html := .Page.RenderString (dict "display" "block") .Inner -}}
 {{- .Page.Store.Delete "renderString" -}}
+{{- /* RenderString restarts the page's id counters, so the answer's ids and its links to
+       them (bare, after the link hook's page URL, percent-encoded in either hex case) are scoped. */ -}}
+{{- $scope := printf "faq%d-" .Ordinal -}}
+{{- $page := .Page.RelPermalink -}}
+{{- range findRESubmatch `\sid="([^"]+)"` $html -}}
+  {{- $id := index . 1 -}}
+  {{- $enc := urls.PathEscape $id -}}
+  {{- range $frag := uniq (slice $id $enc (cond (eq $id (lower $id)) (lower $enc) $enc)) -}}
+    {{- range slice "" $page -}}
+      {{- /* \ue000 holds the rewritten "#", so a later id cannot match the link again. */ -}}
+      {{- $html = replace $html (printf `href="%s#%s"` . $frag) (printf "href=\"%s\ue000%s%s\"" . $scope $frag) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $html = replace (replaceRE `(\sid=")` (print "${1}" $scope) $html) "\ue000" "#" -}}
 {{- if not ($html | plainify | strings.TrimSpace) -}}
   {{- errorf "faq: %q has no answer — %s" $q .Position -}}
 {{- end -}}

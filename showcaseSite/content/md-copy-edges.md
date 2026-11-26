@@ -62,3 +62,23 @@ After the list, it&rsquo;s prose.
   closed by the end of its item
 
 Out of the list again, it&rsquo;s prose.
+
+Two answers whose ids would repeat the page's.
+
+{{< faq "Does an answer keep its own footnote?" >}}
+## Example
+
+Yes.[^edge]
+
+[^edge]: The first answer's note.
+{{< /faq >}}
+
+{{< faq "And the next answer?" >}}
+## Example
+
+Its own too.[^edge] See [its heading](#example) and [an accented one](#caf%C3%A9).
+
+[^edge]: The second answer's note.
+
+## Café
+{{< /faq >}}
