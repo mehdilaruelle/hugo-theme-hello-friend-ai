@@ -10,6 +10,9 @@
 
   Set searchable = false in a page's front matter to keep it out.
 
+  Each url is relative to the index, since Hugo's URL modes never rewrite a
+  JSON body, and starts with ./ so that a colon in it is not read as a scheme.
+
   htmlUnescape appears twice, and each one has its own job. .Plain leaves
   the entities the renderer produced — the apostrophes Goldmark turns into
   &rsquo;, and so on — so the first decodes those, and truncate then counts
@@ -21,6 +24,7 @@
 {{- $limit := int (float (site.Params.searchContentLimit | default 0)) -}}
 {{- if le $limit 0 }}{{ $limit = 4000 }}{{ end -}}
 {{- $index := slice -}}
+{{- $dir := replaceRE `[^/]*$` "" (.OutputFormats.Get "json").RelPermalink -}}
 {{- /* range then if, not where: where cannot call a partial, and its typed
        compare dropped every page whose searchable was a string. */ -}}
 {{- range partial "listable.html" site.RegularPages -}}
@@ -31,7 +35,7 @@
     {{- if not .Date.IsZero -}}{{- $date = .Date.Format "2006-01-02" -}}{{- end -}}
     {{- $index = $index | append (dict
         "title"   (partial "title-plain.html" .)
-        "url"     .RelPermalink
+        "url"     (cond (hasPrefix .RelPermalink $dir) (printf "./%s" (strings.TrimPrefix $dir .RelPermalink)) .RelPermalink)
         "date"    $date
         "tags"    (partial "as-list.html" (.Params.tags | default slice))
         "summary" (.Summary | plainify | htmlUnescape | chomp)

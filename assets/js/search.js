@@ -14,7 +14,8 @@
   const input = form.querySelector("input[type=search]");
   const status = document.querySelector("[data-search-status]");
   const list = document.querySelector("[data-search-results]");
-  const url = form.getAttribute("data-index");
+  // .href resolves whatever form Hugo wrote; an old head.html override has no link.
+  const url = (document.querySelector("[data-search-index]") || {}).href;
 
   form.hidden = false;
   form.addEventListener("submit", (e) => {
@@ -40,7 +41,7 @@
   function load() {
     if (index) return Promise.resolve(index);
     if (loading) return loading;
-    loading = fetch(url)
+    loading = (url ? fetch(url) : Promise.reject(new Error("no index link")))
       .then((r) => {
         if (!r.ok) throw new Error(r.status);
         return r.json();
@@ -141,7 +142,7 @@
         hits.forEach((h) => {
           const li = document.createElement("li");
           const a = document.createElement("a");
-          a.href = h.page.url;
+          a.href = new URL(h.page.url, url).href;
           a.textContent = h.page.title;
           li.appendChild(a);
           if (h.page.date) {

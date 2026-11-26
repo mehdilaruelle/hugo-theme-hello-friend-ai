@@ -51,6 +51,12 @@
 <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" />
 {{- end }}
 {{- end }}
+{{- /* search.js's index, in an href so that Hugo's URL modes rewrite it. */ -}}
+{{- if eq .Layout "search" }}
+{{- with site.Home.OutputFormats.Get "json" }}
+<link rel="alternate" type="application/json" href="{{ .RelPermalink }}" data-search-index />
+{{- end }}
+{{- end }}
 {{- /* Ownership verification: each console accepts a meta tag instead of a file
        at the site root, and every one of them looks on the home page. */ -}}
 {{- if .IsHome }}

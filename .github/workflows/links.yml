@@ -682,6 +682,18 @@ jobs:
           done
           echo "  head URLs are relative or complete"
 
+      # Hugo rewrites neither a data- attribute nor a JSON body.
+      - name: Check search finds its index and results under canonifyURLs and relativeURLs
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          HUGO_CANONIFYURLS=true hugo --themesDir ../.. --gc --minify --config ../exampleSite/config.toml,config.toml \
+            --baseURL "https://example.com/subpath/showcase/" --destination public-search-canon
+          HUGO_RELATIVEURLS=true hugo --themesDir ../.. --gc --minify --config ../exampleSite/config.toml,config.toml \
+            --destination public-search-relative
+          node ../.github/scripts/check-invariants.mjs public search-urls https://example.com/subpath/showcase/
+          node ../.github/scripts/check-invariants.mjs public-search-canon search-urls https://example.com/subpath/showcase/
+          node ../.github/scripts/check-invariants.mjs public-search-relative search-urls https://example.com/elsewhere/
+
       - name: Check no empty post-info is rendered
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public post-info

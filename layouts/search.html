@@ -7,11 +7,9 @@
   the script blocked, the page says search is unavailable rather than
   presenting a box that does nothing.
 
-  The index URL is passed as an attribute rather than built in the script,
-  because it is per-language and only the template knows it.
+  head.html links the index, where Hugo's URL rewriting reaches it.
 */ -}}
-{{- $index := "" -}}
-{{- with site.Home.OutputFormats.Get "json" }}{{ $index = .RelPermalink }}{{ end -}}
+{{- $index := site.Home.OutputFormats.Get "json" -}}
 
 <div class="content">
   <main id="hf-main" class="post">
@@ -31,7 +29,7 @@
       {{- $many := partialCached "i18n.html" (dict "key" "searchResultsMany" "fallback" "%d results") "searchResultsMany" "%d results" -}}
       {{- $loading := partialCached "i18n.html" (dict "key" "searchLoading" "fallback" "Searching…") "searchLoading" "Searching…" -}}
       {{- $failed := partialCached "i18n.html" (dict "key" "searchFailed" "fallback" "The search index could not be loaded.") "searchFailed" "The search index could not be loaded." -}}
-      <form class="search-form" role="search" data-search data-index="{{ $index }}"
+      <form class="search-form" role="search" data-search
             data-hits-one="{{ $one }}" data-hits-many="{{ $many }}" data-hits-failed="{{ $failed }}" data-hits-loading="{{ $loading }}"
             hidden action="{{ .RelPermalink }}" method="get">
         <label class="screen-reader-text" for="search-input">

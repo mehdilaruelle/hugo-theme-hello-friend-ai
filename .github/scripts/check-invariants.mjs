@@ -675,6 +675,29 @@ const checks = {
     ok("a bare string and a list of one name the same file");
   },
 
+  // FE-20: served at root, each search page's index and results stay under it.
+  "search-urls"(root) {
+    const file = (u) => join(dir, decodeURIComponent(u.pathname.slice(new URL(root).pathname.length)), u.pathname.endsWith("/") ? "index.html" : "");
+    const under = (u, what) => {
+      if (!u.href.startsWith(root) || !existsSync(file(u))) fail(`${what} ${u.href} is not a file under ${root}`);
+    };
+    let seen = 0;
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      const link = [...html.matchAll(tagRe("link"))].find((m) => attr(m[0], "data-search-index") !== null);
+      if (!link) {
+        if ([...html.matchAll(tagRe("form"))].some((m) => attr(m[0], "data-search") !== null)) fail(`${rel(p)}: a search form with no index link`);
+        continue;
+      }
+      seen++;
+      const index = new URL(attr(link[0], "href"), new URL(rel(p).replace(/index\.html$/, ""), root));
+      under(index, `${rel(p)}: the index`);
+      for (const e of JSON.parse(readFileSync(file(index), "utf8"))) under(new URL(e.url, index), `${rel(p)}: the result`);
+    }
+    if (!seen) fail("no page links a search index");
+    ok(`${seen} search pages find their index and every result under ${root}`);
+  },
+
   // A link per favicon file the site ships, with its attributes.
   favicons() {
     const page = read("index.html");

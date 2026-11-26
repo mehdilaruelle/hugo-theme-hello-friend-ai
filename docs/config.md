@@ -1115,7 +1115,9 @@ distinction. So are Arabic vowel marks, hamza and the tatweel; a kana's voicing 
 not: *シ* does not find *ジ*. A hit in the title counts for more than one in the body, and a
 hit in a tag for more than that; ties are broken by date, newest first.
 
-Each language gets its own index and searches only itself.
+Each language gets its own index and searches only itself. A page's URL in the
+index is relative to the index, so search follows `canonifyURLs`,
+`relativeURLs` and a subpath.
 
 ### Without JavaScript
 
