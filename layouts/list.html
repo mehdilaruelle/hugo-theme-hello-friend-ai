@@ -65,11 +65,10 @@
                                         {{- end }}
                                         <span class="post-title">{{ partialCached "title-plain.html" . . }}</span>
                                         {{ if not .Date.IsZero }}{{- /* An undated page has the zero time, and "Jan 1" reads like a real date rather than a missing one. */ -}}<time class="post-day" datetime="{{ .Date.Format "2006-01-02" }}">
-                                            {{ if .Site.Params.dateformShort }}
-                                                {{ time.Format .Site.Params.dateformShort .Date }}
-                                            {{ else }}
-                                                {{ time.Format "Jan 2" .Date }}
-                                            {{ end }}
+                                            {{- /* Hugo's "Jan" is empty in ja, ko, ar and lmo, which left a bare day. */ -}}
+                                            {{- $fmt := .Site.Params.dateformShort | default "Jan 2" }}
+                                            {{- if eq (time.Format "Jan" .Date) "" }}{{ $fmt = replaceRE "Jan(uary)?" "January" $fmt }}{{ end }}
+                                            {{ time.Format $fmt .Date }}
                                         </time>{{ end }}
                                         {{- with $excerpt }}
                                             <span class="post-excerpt">{{ . }}</span>

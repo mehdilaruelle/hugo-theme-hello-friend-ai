@@ -686,6 +686,18 @@ jobs:
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public post-info
 
+      - name: Check a Japanese list date names its month
+        working-directory: hello-friend-ai/showcaseSite
+        run: node ../.github/scripts/check-invariants.mjs public list-month ja/posts/index.html
+
+      # Without hasCJKLanguage, this ~600-character post read 84文字.
+      - name: Check a Japanese post counts its characters
+        working-directory: hello-friend-ai/showcaseSite
+        run: |
+          n=$(grep -o '[0-9]\+文字' public/ja/posts/2026/03/学習は断り引用は断らない/index.html | head -1)
+          [ "${n%文字}" -gt 500 ] 2>/dev/null || { echo "  BAD  the post reads ${n:-no count}"; exit 1; }
+          echo "  the Japanese post reads $n"
+
       - name: Check no HTML entity reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite
         run: node ../.github/scripts/check-invariants.mjs public entities

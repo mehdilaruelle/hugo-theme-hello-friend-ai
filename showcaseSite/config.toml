@@ -208,10 +208,10 @@ copyright = 'Text & images: <a href="https://creativecommons.org/licenses/by-nc/
     weight = 3
     locale = "ja-JP"
     label  = "日本語"
-  # No abbreviated month exists in CLDR for either language, so "Jan" resolves
-  # to an empty string and the list date came out as a bare day number.
+    # Without it, an unspaced paragraph is one word under a "characters" label.
+    hasCJKLanguage = true
+  # No dateformShort, so CI checks the fallback for Hugo's empty "Jan" here.
   [languages.ja.params]
-    dateformShort = "January 2"
     subtitle     = "機能ショーケース"
     description  = "テーマのすべてのオプションを一度に有効にしたサイト"
     homeSubtitle = "すべてのスイッチを入れた状態です"

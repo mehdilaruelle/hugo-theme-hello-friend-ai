@@ -789,6 +789,17 @@ const checks = {
     ok(`${posts.length} posts newest first across ${pagers.length} pagers, each arrow on its neighbour`);
   },
 
+  // Hugo's abbreviated month is empty in some languages, which left a bare day.
+  "list-month"(page) {
+    const html = read(page);
+    const days = [...html.matchAll(/<time\b[^>]*>/g)].filter((m) => hasClass(m[0], "post-day"))
+      .map((m) => text(element(html, m.index, "time")));
+    if (!days.length) fail(`${page}: no list date`);
+    const bare = days.find((d) => !/[^\d\s]/.test(d));
+    if (bare !== undefined) fail(`${page}: a list date reads "${bare}", with no month`);
+    ok(`${page}: ${days.length} list dates name their month, e.g. "${days[0]}"`);
+  },
+
   // A taxonomy lists terms by name: its pagers are pages, not newer or older posts.
   "taxonomy-pager"(page, previous, next) {
     const html = read(page);
