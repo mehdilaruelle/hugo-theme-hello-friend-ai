@@ -66,9 +66,10 @@
         </p>
 
         {{- /* Formatting the zero time prints "0001-01-01 01:00". A guard each,
-               not one around both: Hugo fills Lastmod independently of Date. */ -}}
+               not one around both: Hugo fills Lastmod independently of Date.
+               Equal, because ne also compares the time zone. */ -}}
         {{- $hasDate := not .Date.IsZero -}}
-        {{- $hasLastmod := and (not .Lastmod.IsZero) (ne .Lastmod .Date) -}}
+        {{- $hasLastmod := and (not .Lastmod.IsZero) (not (.Lastmod.Equal .Date)) -}}
         {{ if or $hasDate $hasLastmod }}<p>
           {{ partial "icon.html" (dict "name" "calendar") }}
           {{- if $hasDate }}

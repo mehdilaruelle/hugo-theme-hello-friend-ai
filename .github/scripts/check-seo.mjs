@@ -243,6 +243,15 @@ for (const file of walk(root, ".html")) {
     }
   }
 
+  // 9b. Lastmod defaults to date, which can precede publishDate. A missing
+  //     date parses as NaN, and compares false.
+  for (const [modified, published] of [
+    [article?.dateModified, article?.datePublished],
+    [all(og, "article:modified_time")[0], all(og, "article:published_time")[0]],
+  ]) {
+    if (Date.parse(modified) < Date.parse(published)) failures.push([file, `modified ${modified}`, `before published ${published}`]);
+  }
+
   // 10. The Dark Reader opt-out. Nothing fails without it: the diagrams just
   //     turn light on light for readers using Brave's night mode.
   if (!named.has("darkreader-lock")) {
@@ -268,4 +277,5 @@ console.log("every JSON-LD block parses, an owned picture is in its BlogPosting,
 console.log("no description or alt carries an entity that was escaped twice");
 console.log("the meta, Open Graph and Twitter descriptions are the same sentence");
 console.log("the title element, og:title, twitter:title and the headline name one page");
+console.log("no page was modified before it was published");
 console.log("every page opts out of Dark Reader");

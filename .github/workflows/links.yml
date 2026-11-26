@@ -184,6 +184,10 @@ jobs:
           grep -qF '"sameAs":["https://mastodon.example/@jane%zz"]' public-seo-shapes/index.html \
             || { echo "  BAD  a profile URL with a stray % is not in sameAs"; exit 1; }
           echo "  a stray % reads as itself"
+          f=public-seo-shapes/posts/2024/06/one-instant-two-time-zones/index.html
+          test -f "$f" && ! grep -qF 'Last updated' "$f" \
+            || { echo "  BAD  the date in another time zone reads as an update"; exit 1; }
+          echo "  the date in another time zone is not an update"
           node ../.github/scripts/check-invariants.mjs public-seo-shapes title-plain \
             posts/2026/10/cheap-or-dear/index.html 'Cheap ($$) or dear ($$$$)?'
 
