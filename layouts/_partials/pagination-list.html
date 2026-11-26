@@ -1,4 +1,4 @@
-{{- /* A single pager has nowhere to go, and an empty block still takes its margin. */ -}}
+{{- /* An empty block would still take its margin. */ -}}
 {{- if or .Paginator.HasPrev .Paginator.HasNext -}}
 {{- /* A taxonomy lists terms by title: its pagers are neither newer nor older. */ -}}
 {{- $prev := partialCached "i18n.html" (dict "key" "pagination.newerPosts" "fallback" "Newer posts") "pagination.newerPosts" "Newer posts" -}}

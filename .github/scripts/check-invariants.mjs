@@ -60,7 +60,6 @@ function logoOf(html) {
   return m ? element(html, m.index, "div") : fail("no logo was rendered");
 }
 
-// Every div of that class holds some text, and at least one was rendered.
 function noEmptyDiv(cls) {
   const empty = [], seen = [];
   for (const p of pages(dir)) {
