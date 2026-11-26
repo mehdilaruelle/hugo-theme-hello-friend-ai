@@ -8,7 +8,9 @@
          beside the menu. */}}
   <div id="hf-toc">
     <div class="toc-title" id="hf-toc-title">{{ partialCached "i18n.html" (dict "key" "tableOfContents" "fallback" "Table of Contents") "tableOfContents" "Table of Contents" }}</div>
-    {{ .TableOfContents | replaceRE `<a href="#">(.*?)</a>` "$1" | replaceRE `^<nav id="TableOfContents">` `<nav id="TableOfContents" aria-labelledby="hf-toc-title">` | safeHTML }}
+    {{- /* Hugo builds the table without render hooks, so a picture in a
+           heading keeps its relative src, which 404s here: drop it. */}}
+    {{ .TableOfContents | replaceRE `<a href="#">(.*?)</a>` "$1" | replaceRE `<img[^>]*>\s*` "" | replaceRE `^<nav id="TableOfContents">` `<nav id="TableOfContents" aria-labelledby="hf-toc-title">` | safeHTML }}
   </div>
   <hr />
 {{- end }}

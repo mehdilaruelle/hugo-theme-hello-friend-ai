@@ -78,19 +78,26 @@ const checks = {
   },
 
   // #268 and #274: the table lists levels 2..3, so headings are not the test.
+  // A picture in a heading kept its src as written there, which 404s.
   toc() {
-    const empty = [], seen = [];
+    const empty = [], pictured = [], seen = [];
+    let headed = 0;
     for (const p of pages(dir)) {
       const html = readFileSync(p, "utf8");
       for (const m of html.matchAll(/<nav\b[^>]*>/gi)) {
         if (attr(m[0], "id") !== "TableOfContents") continue;
         seen.push(p);
-        if (!text(element(html, m.index + m[0].length, "nav"))) empty.push(rel(p));
+        const inner = element(html, m.index + m[0].length, "nav");
+        if (!text(inner)) empty.push(rel(p));
+        if (/<img\b/i.test(inner)) pictured.push(rel(p));
+        if (/<h[23]\b[^>]*><img\b/i.test(html)) headed++;
       }
     }
     if (empty.length) fail("a table of contents with nothing in it was rendered", empty.slice(0, 3).join("\n"));
+    if (pictured.length) fail("a table of contents carries a picture", pictured.slice(0, 3).join("\n"));
     if (!seen.length) fail("no table of contents was rendered anywhere");
-    ok("a table of contents is rendered only where there is something to list");
+    if (!headed) fail("no heading with a picture has a table of contents, so nothing was tested");
+    ok("a table of contents is rendered only where there is something to list, and with no picture");
   },
 
   // A screen reader lists landmarks by name: two unnamed navs on one page (the
@@ -580,6 +587,30 @@ const checks = {
     if (!curly) fail("no excerpt carries a curly quote, so nothing was tested");
     if (!described) fail("no JSON-LD description was rendered");
     ok("list excerpts and JSON-LD descriptions carry characters, not entities");
+  },
+
+  // A summary that opens on a numbered code block starts with the code, not "1 2 3".
+  linenos(want) {
+    const bad = [];
+    let excerpts = 0, descriptions = 0;
+    const check = (p, what, s) => {
+      if (!s.includes(want)) return 0;
+      if (!s.startsWith(want)) bad.push(`${rel(p)}: ${what} reads ${s.slice(0, 40)}`);
+      return 1;
+    };
+    for (const p of pages(dir)) {
+      const html = readFileSync(p, "utf8");
+      for (const m of html.matchAll(/<span\b[^>]*>/gi)) {
+        if (hasClass(m[0], "post-excerpt")) excerpts += check(p, "excerpt", text(element(html, m.index + m[0].length, "span")));
+      }
+      for (const m of html.matchAll(tagRe("meta"))) {
+        const name = attr(m[0], "name") ?? attr(m[0], "property") ?? "";
+        if (name.endsWith("description")) descriptions += check(p, name, attr(m[0], "content") ?? "");
+      }
+    }
+    if (bad.length) fail("a summary starts with code line numbers", bad.slice(0, 5).join("\n"));
+    if (!excerpts || !descriptions) fail(`no excerpt and description show ${want}, so nothing was tested`);
+    ok(`${excerpts} excerpts and ${descriptions} descriptions start with the code, not its line numbers`);
   },
   // A tag in a title is text, and the title's Markdown still renders.
   "title-html"(page, want) {
