@@ -692,7 +692,10 @@ jobs:
 
       - name: Check an excerpt does not start with code line numbers
         working-directory: hello-friend-ai/showcaseSite
-        run: node ../.github/scripts/check-invariants.mjs public linenos 'int main()'
+        run: |
+          node ../.github/scripts/check-invariants.mjs public linenos 'int main()'
+          grep -qxF '2026 notice.' public/posts/2026/01/a-summary-that-opens-on-a-numbered-code-block/index.md \
+            || { echo "  BAD  a span that is not a line number lost its text"; exit 1; }
 
       - name: Check a tag in a title reaches the reader as text
         working-directory: hello-friend-ai/showcaseSite

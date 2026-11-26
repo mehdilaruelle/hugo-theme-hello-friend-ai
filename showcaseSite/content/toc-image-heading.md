@@ -16,3 +16,8 @@ Prose under it.
 ## ![Architecture](img/logo.svg)
 
 A heading that is only a picture.
+
+## ![The theme's logo](img/logo.svg)
+
+One whose alt Hugo drops from the table, as it does any alt the typographer
+touches: with no text to show, it is left out.

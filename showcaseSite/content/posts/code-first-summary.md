@@ -2,6 +2,8 @@
 title = "A summary that opens on a numbered code block"
 date = "2026-01-07"
 tags = ["hugo"]
+# Flattened like the summary: an unselectable span that is not Chroma's keeps its text.
+llmsNote = '<span style="user-select:none">2026</span> notice.'
 +++
 
 ```c {linenos=table}
